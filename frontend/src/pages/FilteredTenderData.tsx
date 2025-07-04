@@ -1,21 +1,21 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useState } from "react";
 import {
-  getFilteredTenderNoticesFromDB, 
-  type TenderNoticeInterface
-} from '../api'
+  getFilteredTenderNoticesFromDB,
+  type TenderNoticeInterface,
+} from "../api";
 
 export function FilteredTenderData() {
-  const [tableData, setTableData] = useState<TenderNoticeInterface[]>([])
+  const [tableData, setTableData] = useState<TenderNoticeInterface[]>([]);
 
   useEffect(() => {
     const getOpenTenderNoticesData = async function () {
-      setTableData(await getFilteredTenderNoticesFromDB())
-    }
-    getOpenTenderNoticesData()
-  }, [])
+      setTableData(await getFilteredTenderNoticesFromDB());
+    };
+    getOpenTenderNoticesData();
+  }, []);
 
   const TenderTable = ({ data }: { data: any[] }) => {
-    const headers = Object.keys(data[0])
+    const headers = Object.keys(data[0]);
 
     return (
       <table>
@@ -38,8 +38,8 @@ export function FilteredTenderData() {
           ))}
         </tbody>
       </table>
-    )
-  }
+    );
+  };
 
   return (
     <>
@@ -47,7 +47,7 @@ export function FilteredTenderData() {
         <TenderTable data={tableData} />
       ) : null}
     </>
-  )
+  );
 }
 
-export default FilteredTenderData
+export default FilteredTenderData;

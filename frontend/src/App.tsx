@@ -1,24 +1,21 @@
-import { Route, Routes, Link } from "react-router-dom";
+import { Route, Routes } from "react-router-dom";
+import LandingPage from "./pages/LandingPage";
 import TenderData from "./pages/TenderData";
 import LeadGenChatV2 from "./pages/LeadGenChatV2";
 import Rfp from "./pages/Rfp";
+import SignIn from "./pages/SignIn";
+import SignUp from "./pages/SignUp";
 
 export function App() {
   return (
-    <>
-      <nav className="flex flex-col gap-12 text-5xl font-bold">
-        <Link to="/tenderdata">Check out Tender Data</Link>
-        <Link to="/leadgenchatv2">
-          Go to prompt page to filter leads, generation, v2
-        </Link>
-        <Link to="rfp">Testing page for RFP</Link>
-      </nav>
-      <Routes>
-        <Route path="/tenderdata" element={<TenderData />} />
-        <Route path="/leadgenchatv2" element={<LeadGenChatV2 />} />
-        <Route path="/rfp" element={<Rfp />} />
-      </Routes>
-    </>
+    <Routes>
+      <Route path="/" element={<LandingPage />} />
+      <Route path="/tenderdata" element={<TenderData />} />
+      <Route path="/leadgenchatv2" element={<LeadGenChatV2 />} />
+      <Route path="/rfp" element={<Rfp />} />
+      <Route path="/sign-in" element={<SignIn />} />
+      <Route path="/sign-up" element={<SignUp />} />
+    </Routes>
   );
 }
 

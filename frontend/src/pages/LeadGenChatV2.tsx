@@ -1,31 +1,32 @@
-import { useState } from 'react'
-import { filterOpenTenderNotices, getOpenTenderNoticesToDB } from '../api'
-import { FilteredTenderData } from './FilteredTenderData'
+import { useState } from "react";
+import { filterOpenTenderNotices, getOpenTenderNoticesToDB } from "../api";
+import { FilteredTenderData } from "./FilteredTenderData";
 
 const LeadGenChatV2 = () => {
-    const [formData, setFormData] = useState({ prompt: '' })
-    const [showData, setShowData] = useState(false)
+  const [formData, setFormData] = useState({ prompt: "" });
+  const [showData, setShowData] = useState(false);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-      setFormData((prev) => ({ ...prev, [e.target.name]: e.target.value }))
-  }
+    setFormData((prev) => ({ ...prev, [e.target.name]: e.target.value }));
+  };
 
   const refreshTenders = async () => {
-    try { await getOpenTenderNoticesToDB() }
-    catch (e) {
-      console.log(e)
+    try {
+      await getOpenTenderNoticesToDB();
+    } catch (e) {
+      console.log(e);
     }
-  }
-    const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-        setShowData(false)
-        e.preventDefault()
-        try {
-            await filterOpenTenderNotices(formData.prompt);
-            setShowData(true)
-        } catch (e) {
-            console.error(e);
-        }
+  };
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+    setShowData(false);
+    e.preventDefault();
+    try {
+      await filterOpenTenderNotices(formData.prompt);
+      setShowData(true);
+    } catch (e) {
+      console.error(e);
     }
+  };
 
   return (
     <>
@@ -53,7 +54,7 @@ const LeadGenChatV2 = () => {
       </form>
       {showData && <FilteredTenderData />}
     </>
-  )
-    }
-    
-export default LeadGenChatV2
+  );
+};
+
+export default LeadGenChatV2;

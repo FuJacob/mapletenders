@@ -1,33 +1,33 @@
-import { useState } from 'react'
-import { analyzePdf, getRfpAnalysis } from '../api'
+import { useState } from "react";
+import { analyzePdf, getRfpAnalysis } from "../api";
 
 const Rfp = () => {
-  const [file, setFile] = useState<File | null>(null)
-  const [data, setData] = useState('')
+  const [file, setFile] = useState<File | null>(null);
+  const [data, setData] = useState("");
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files) {
-      setFile(e.target.files[0])
+      setFile(e.target.files[0]);
     }
-  }
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
-    if (!file) return
+    e.preventDefault();
+    if (!file) return;
 
-    const formData = new FormData()
-    formData.append('pdf', file)
+    const formData = new FormData();
+    formData.append("pdf", file);
 
     try {
-      const raw_response = await analyzePdf(formData)
-      console.log(raw_response)
-      setData(await getRfpAnalysis(raw_response))
-      console.log('Successfully uploaded pdf')
+      const raw_response = await analyzePdf(formData);
+      console.log(raw_response);
+      setData(await getRfpAnalysis(raw_response));
+      console.log("Successfully uploaded pdf");
     } catch (e) {
-      console.error(e)
+      console.error(e);
     }
-  }
-  
+  };
+
   return (
     <>
       <div>
@@ -48,7 +48,7 @@ const Rfp = () => {
         {data}
       </div>
     </>
-  )
-}
+  );
+};
 
-export default Rfp
+export default Rfp;

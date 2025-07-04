@@ -1,21 +1,18 @@
-import { useEffect, useState } from 'react'
-import {
-  getOpenTenderNoticesFromDB,
-  type TenderNoticeInterface
-} from '../api'
+import { useEffect, useState } from "react";
+import { getOpenTenderNoticesFromDB, type TenderNoticeInterface } from "../api";
 
 export function TenderData() {
-  const [tableData, setTableData] = useState<TenderNoticeInterface[]>([])
+  const [tableData, setTableData] = useState<TenderNoticeInterface[]>([]);
 
   useEffect(() => {
     const getOpenTenderNoticesData = async function () {
-      setTableData(await getOpenTenderNoticesFromDB())
-    }
-    getOpenTenderNoticesData()
-  }, [])
+      setTableData(await getOpenTenderNoticesFromDB());
+    };
+    getOpenTenderNoticesData();
+  }, []);
 
   const TenderTable = ({ data }: { data: any[] }) => {
-    const headers = Object.keys(data[0])
+    const headers = Object.keys(data[0]);
 
     return (
       <table>
@@ -38,8 +35,8 @@ export function TenderData() {
           ))}
         </tbody>
       </table>
-    )
-  }
+    );
+  };
 
   return (
     <>
@@ -47,7 +44,7 @@ export function TenderData() {
         <TenderTable data={tableData} />
       ) : null}
     </>
-  )
+  );
 }
 
-export default TenderData
+export default TenderData;

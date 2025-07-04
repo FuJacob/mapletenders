@@ -214,13 +214,19 @@ app.get("/getOpenTenderNotices", async (req, res) => {
  * @param {string} req.body.prompt - The filtering criteria
  * @returns {Object[]} Filtered tender notices
  */
-app.post("/filterOpenTenderNotices", async (req, res) => {
+app.get("/filterOpenTenderNotices", async (req, res) => {
   try {
+    const search = req.query.search || "";
     // Clear existing filtered notices
     const { error: deleteError } = await supabase
       .from("filtered_open_tender_notices")
       .delete()
       .neq("referenceNumber-numeroReference", 0);
+
+    if (!search) {
+      res.json([]);
+      return;
+    }
 
     if (deleteError) {
       console.error("Failed to delete existing filtered notices:", deleteError);
@@ -242,7 +248,7 @@ app.post("/filterOpenTenderNotices", async (req, res) => {
     const response = await axios.post(
       "http://localhost:3000/filterTendersWithAI",
       {
-        prompt: req.body.prompt,
+        prompt: search,
         data: data,
       }
     );
