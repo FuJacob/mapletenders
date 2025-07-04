@@ -1,0 +1,23 @@
+FROM node:18-alpine
+
+WORKDIR /app
+
+# Copy package files
+COPY package*.json ./
+COPY nx.json ./
+COPY tsconfig.base.json ./
+COPY tsconfig.json ./
+
+# Install dependencies
+RUN npm ci
+
+# Copy source code
+COPY apps/backend ./apps/backend
+COPY packages ./packages
+
+# Build the backend
+RUN npx nx build backend
+
+EXPOSE 3000
+
+CMD ["npx", "nx", "serve", "backend", "--host", "0.0.0.0"]

@@ -1,0 +1,42 @@
+# docker/DockerFile.python
+FROM python:3.11-slim
+
+WORKDIR /app
+
+# Install system dependencies
+RUN apt-get update && apt-get install -y \
+    curl \
+    gcc \
+    && rm -rf /var/lib/apt/lists/*
+
+# Install Poetry
+RUN pip install poetry
+
+# Copy poetry files
+COPY apps/rfp_backend/pyproject.toml ./apps/rfp_backend/
+COPY apps/rfp_backend/poetry.lock ./apps/rfp_backend/
+
+# Set working directory for poetry
+WORKDIR /app/apps/rfp_backend
+
+# Configure poetry
+RUN poetry config virtualenvs.create false
+
+# Set environment variable to force pre-built wheels for problematic packages
+ENV PIP_ONLY_BINARY=blis,spacy
+
+# Install dependencies
+RUN poetry install --only main --no-root
+
+# Install spaCy model
+RUN python -m spacy download en_core_web_lg
+
+# Go back to app root
+WORKDIR /app
+
+# Copy source code
+COPY apps/rfp_backend ./apps/rfp_backend
+
+EXPOSE 8000
+
+CMD ["python", "-m", "flask", "--app", "apps.rfp_backend.rfp_backend.main:app", "run", "--host", "0.0.0.0", "--port", "8000", "--debug"]
