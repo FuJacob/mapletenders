@@ -4,7 +4,6 @@ import {
   Target,
   ChartBar,
   ArrowsClockwise,
-  Bell,
   Lightning,
   CheckCircle,
   Users,
@@ -19,6 +18,7 @@ import {
 } from "@phosphor-icons/react";
 import { useNavigate } from "react-router-dom";
 import { filterOpenTenderNotices } from "../api";
+import { Header } from "../components/layout";
 export default function LandingPage() {
   const navigate = useNavigate();
   const [searchQuery, setSearchQuery] = useState("");
@@ -73,23 +73,7 @@ export default function LandingPage() {
   return (
     <div className="min-h-screen bg-background">
       {/* Header */}
-      <header className="flex justify-between items-center p-6 border-b border-border bg-surface">
-        <div className="text-2xl font-bold text-primary">Procuroo</div>
-        <div className="flex gap-4">
-          <button
-            onClick={() => navigate("/sign-in")}
-            className="px-4 py-2 text-sm text-text hover:text-primary transition-colors"
-          >
-            Sign In
-          </button>
-          <button
-            onClick={() => navigate("/sign-up")}
-            className="px-4 py-2 bg-primary text-white border rounded text-sm font-medium hover:bg-primary-dark transition-colors"
-          >
-            Get Started
-          </button>
-        </div>
-      </header>
+      <Header />
 
       {/* Hero Search Section */}
       <section className="flex flex-col items-center justify-center min-h-[80vh] px-6 bg-background">
