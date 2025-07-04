@@ -1,47 +1,23 @@
 {
-  "name": "backend",
-  "version": "0.0.1",
-  "private": true,
-  "nx": {
-    "name": "backend",
-    "projectType": "application",
-    "sourceRoot": "apps/backend/src",
-    "targets": {
-      "serve": {
-        "executor": "@nx/js:node",
-        "defaultConfiguration": "development",
-        "dependsOn": [
-          "build"
-        ],
-        "options": {
-          "buildTarget": "backend:build",
-          "runBuildTargetDependencies": false
-        },
-        "configurations": {
-          "development": {
-            "buildTarget": "backend:build:development"
-          },
-          "production": {
-            "buildTarget": "backend:build:production"
-          }
-        }
-      }
-    }
-  },
   "dependencies": {
-    "@supabase/supabase-js": "^2.48.1",
-    "axios": "^1.7.9",
+    "@supabase/supabase-js": "^2.50.3",
+    "axios": "^1.10.0",
     "cors": "^2.8.5",
-    "csv-parser": "^3.2.0",
-    "csv-stringify": "^6.5.2",
-    "express": "^4.18.1",
-    "openai": "^4.83.0",
-    "papaparse": "^5.5.2"
+    "dotenv": "^17.0.1",
+    "express": "^5.1.0",
+    "openai": "^5.8.2",
+    "papaparse": "^5.5.3"
   },
   "devDependencies": {
-    "@types/cors": "^2.8.17",
-    "@types/papaparse": "^5.3.15",
-    "@types/pg": "^8.11.11",
-    "@types/pg-copy-streams": "^1.2.5"
+    "@types/cors": "^2.8.19",
+    "@types/express": "^5.0.3",
+    "@types/papaparse": "^5.3.16",
+    "nodemon": "^3.1.10",
+    "ts-node": "^10.9.2",
+    "typescript": "^5.8.3"
+  },
+  "scripts": {
+    "start": "nodemon server.ts",
+    "dev": "nodemon --watch src --exec ts-node src/server.ts"
   }
 }

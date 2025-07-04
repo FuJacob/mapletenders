@@ -1,0 +1,12 @@
+*.env
+
+
+
+# Node dependencies
+node_modules/
+package-lock.json
+
+# Python stuff
+__pycache__/
+*.py[cod]
+poetry.lock
