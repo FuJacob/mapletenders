@@ -46,12 +46,12 @@ export const signIn =
           .insert({
             onboarding_completed: false,
           });
-        dispatch(setOnboardingCompleted(false));
 
         if (profileInsertError) {
           console.error("Error creating profile:", profileInsertError);
         }
       }
+      dispatch(setOnboardingCompleted(true));
     }
 
     dispatch(setAuthLoading(false));
@@ -71,6 +71,7 @@ export const loadSession = () => async (dispatch: AppDispatch) => {
 
   if (user) {
     dispatch(setSession({ session, user }));
+    dispatch(setOnboardingCompleted(true));
   }
   dispatch(setAuthLoading(false));
 };

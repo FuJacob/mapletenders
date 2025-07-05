@@ -20,7 +20,10 @@ import {
 import { supabase } from "../supabase";
 import { selectAuthUser } from "../features/auth/authSelectors";
 import { useSelector } from "react-redux";
+import { setOnboardingCompleted } from "../features/auth/authSlice";
+import { useAppDispatch } from "../app/hooks";
 export default function Onboarding() {
+  const dispatch = useAppDispatch();
   const user = useSelector(selectAuthUser);
   const [step, setStep] = useState(1);
   const [loading, setLoading] = useState(false);
@@ -214,12 +217,6 @@ export default function Onboarding() {
     setError("");
 
     try {
-      if (!user) {
-        setError("Authentication error. Please sign in again.");
-        navigate("/sign-in");
-        return;
-      }
-
       // Create or update profile
       const { error: profileError } = await supabase.from("profiles").upsert({
         id: user.id,
@@ -233,7 +230,7 @@ export default function Onboarding() {
         setError("Failed to save profile. Please try again.");
         return;
       }
-
+      dispatch(setOnboardingCompleted(true));
       navigate("/home");
     } catch (err) {
       console.error("Unexpected error:", err);

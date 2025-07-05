@@ -17,50 +17,50 @@ const supabase = createClient(
 // Define the target columns to filter the tender notices
 // We need to do this because in our database, the names are forcefully truncated
 // So we define the actual database column names here
-const targetColumns = [
-  "title-titre-eng",
-  "referenceNumber-numeroReference",
-  "amendmentNumber-numeroModification",
-  "solicitationNumber-numeroSollicitation",
-  "publicationDate-datePublication",
-  "tenderClosingDate-appelOffresDateCloture",
-  "amendmentDate-dateModification",
-  "expectedContractStartDate-dateDebutContratPrevue",
-  "expectedContractEndDate-dateFinContratPrevue",
-  "tenderStatus-appelOffresStatut-eng",
-  "gsin-nibs",
-  "gsinDescription-nibsDescription-eng",
-  "unspsc",
-  "unspscDescription-eng",
-  "procurementCategory-categorieApprovisionnement",
-  "noticeType-avisType-eng",
-  "procurementMethod-methodeApprovisionnement-eng",
-  "selectionCriteria-criteresSelection-eng",
-  "limitedTenderingReason-raisonAppelOffresLimite-eng",
-  "tradeAgreements-accordsCommerciaux-eng",
-  "regionsOfOpportunity-regionAppelOffres-eng",
-  "regionsOfDelivery-regionsLivraison-eng",
-  "contractingEntityName-nomEntitContractante-eng",
-  "contractingEntityAddressLine-ligneAdresseEntiteContractante-eng",
-  "contractingEntityAddressCity-entiteContractanteAdresseVille-eng",
-  "contractingEntityAddressProvince-entiteContractanteAdresseProvi",
-  "contractingEntityAddressPostalCode-entiteContractanteAdresseCod",
-  "contractingEntityAddressCountry-entiteContractanteAdressePays-e",
-  "endUserEntitiesName-nomEntitesUtilisateurFinal-eng",
-  "endUserEntitiesAddress-adresseEntitesUtilisateurFinal-eng",
-  "contactInfoName-informationsContactNom",
-  "contactInfoEmail-informationsContactCourriel",
-  "contactInfoPhone-contactInfoTelephone",
-  "contactInfoFax",
-  "contactInfoAddressLine-contactInfoAdresseLigne-eng",
-  "contactInfoCity-contacterInfoVille-eng",
-  "contactInfoProvince-contacterInfoProvince-eng",
-  "contactInfoPostalcode",
-  "contactInfoCountry-contactInfoPays-eng",
-  "noticeURL-URLavis-eng",
-  "attachment-piecesJointes-eng",
-  "tenderDescription-descriptionAppelOffres-eng",
-];
+const targetColumns: { [key: string]: string } = {
+  "title-titre-eng": "title",
+  "referenceNumber-numeroReference": "reference_number",
+  "amendmentNumber-numeroModification": "amendment_number",
+  "solicitationNumber-numeroSollicitation": "solicitation_number",
+  "publicationDate-datePublication": "publication_date",
+  "tenderClosingDate-appelOffresDateCloture": "tender_closing_date",
+  "amendmentDate-dateModification": "amendment_date",
+  "expectedContractStartDate-dateDebutContratPrevue": "expected_contract_start_date",
+  "expectedContractEndDate-dateFinContratPrevue": "expected_contract_end_date",
+  "tenderStatus-appelOffresStatut-eng": "tender_status",
+  "gsin-nibs": "gsin",
+  "gsinDescription-nibsDescription-eng": "gsin_description",
+  "unspsc": "unspsc",
+  "unspscDescription-eng": "unspsc_description",
+  "procurementCategory-categorieApprovisionnement": "procurement_category",
+  "noticeType-avisType-eng": "notice_type",
+  "procurementMethod-methodeApprovisionnement-eng": "procurement_method",
+  "selectionCriteria-criteresSelection-eng": "selection_criteria",
+  "limitedTenderingReason-raisonAppelOffresLimite-eng": "limited_tendering_reason",
+  "tradeAgreements-accordsCommerciaux-eng": "trade_agreements",
+  "regionsOfOpportunity-regionAppelOffres-eng": "regions_of_opportunity",
+  "regionsOfDelivery-regionsLivraison-eng": "regions_of_delivery",
+  "contractingEntityName-nomEntitContractante-eng": "contracting_entity_name",
+  "contractingEntityAddressLine-ligneAdresseEntiteContractante-eng": "contracting_entity_address_line",
+  "contractingEntityAddressCity-entiteContractanteAdresseVille-eng": "contracting_entity_city",
+  "contractingEntityAddressProvince-entiteContractanteAdresseProvince-eng": "contracting_entity_province",
+  "contractingEntityAddressPostalCode-entiteContractanteAdresseCodePostal": "contracting_entity_postal_code",
+  "contractingEntityAddressCountry-entiteContractanteAdressePays-eng": "contracting_entity_country",
+  "endUserEntitiesName-nomEntitesUtilisateurFinal-eng": "end_user_entities_name",
+  "endUserEntitiesAddress-adresseEntitesUtilisateurFinal-eng": "end_user_entities_address",
+  "contactInfoName-informationsContactNom": "contact_name",
+  "contactInfoEmail-informationsContactCourriel": "contact_email",
+  "contactInfoPhone-contactInfoTelephone": "contact_phone",
+  "contactInfoFax": "contact_fax",
+  "contactInfoAddressLine-contactInfoAdresseLigne-eng": "contact_address_line",
+  "contactInfoCity-contacterInfoVille-eng": "contact_city",
+  "contactInfoProvince-contacterInfoProvince-eng": "contact_province",
+  "contactInfoPostalcode": "contact_postal_code",
+  "contactInfoCountry-contactInfoPays-eng": "contact_country",
+  "noticeURL-URLavis-eng": "notice_url",
+  "attachment-piecesJointes-eng": "attachments",
+  "tenderDescription-descriptionAppelOffres-eng": "tender_description"
+};
 
 const app = express();
 app.use(cors({ origin: "*" })); // Allow all origins
@@ -234,11 +234,11 @@ app.get("/filterOpenTenderNotices", async (req, res) => {
 
     // Fetch tender notices
     const { data, error } = await supabase
-      .from("open_tender_notices")
+      .from("tenders")
       .select(
         "referenceNumber-numeroReference, tenderDescription-descriptionAppelOffres-eng"
       )
-      .limit(200);
+      .limit(5);
 
     if (error) {
       throw new Error(`Failed to fetch tender notices: ${error.message}`);
@@ -246,7 +246,7 @@ app.get("/filterOpenTenderNotices", async (req, res) => {
 
     // Filter tenders using AI
     const response = await axios.post(
-      "http://localhost:3000/filterTendersWithAI",
+      "http://localhost:4000/filterTendersWithAI",
       {
         prompt: search,
         data: data,
@@ -257,7 +257,7 @@ app.get("/filterOpenTenderNotices", async (req, res) => {
 
     // Get full data for matched tenders
     const { data: matchedData, error: matchError } = await supabase
-      .from("open_tender_notices")
+      .from("tenders")
       .select("*")
       .in("referenceNumber-numeroReference", filteredIDs);
 
@@ -326,11 +326,11 @@ app.post("/getOpenTenderNoticesToDB", async (req, res) => {
   const filterToTargetColumns = (row: any) =>
     Object.entries(row).reduce((acc, [csvKey, value]) => {
       // Try to find an exact match for the CSV key in targetColumns
-      let match = targetColumns.find((target) => target === csvKey);
-      if (!match) {
-        // If no exact match, check if the target column starts with the CSV key
-        match = targetColumns.find((target) => csvKey.startsWith(target));
+      if (!targetColumns[csvKey]) {
+        return acc;
       }
+
+      let match = targetColumns[csvKey];
       if (match) {
         acc[match] = value;
       }
@@ -340,9 +340,9 @@ app.post("/getOpenTenderNoticesToDB", async (req, res) => {
   try {
     // Clear existing notices
     const { error: deleteError } = await supabase
-      .from("open_tender_notices")
+      .from("tenders")
       .delete()
-      .neq("referenceNumber-numeroReference", 0);
+      .neq("title", 0);
 
     if (deleteError) {
       throw new Error(
@@ -365,9 +365,31 @@ app.post("/getOpenTenderNoticesToDB", async (req, res) => {
 
     const filteredData = results.data.map(filterToTargetColumns);
 
-    // Insert filtered data
+    /**
+     *
+     * NOW WE ARE CREATING THE EMBEDDINGS
+     *
+     */
+    console.log("Generating embeddings for filtered data...");
+
+    const embeddingsResponse = await axios.post(
+      "http://127.0.0.1:8000/embeddings/generate",
+      filteredData
+    );
+    console.log("Embeddings response:", embeddingsResponse.data);
+    if (embeddingsResponse.status !== 200) {
+      throw new Error(
+        `Failed to generate embeddings: ${embeddingsResponse.statusText}`
+      );
+    }
+    for (let i = 0; i < filteredData.length; i++) {
+      // Add embeddings to each row
+      filteredData[i].embedding = embeddingsResponse.data.embeddings[i];
+      filteredData[i].embedding_input =
+        embeddingsResponse.data.embedding_inputs[i];
+    }
     const { error: insertError } = await supabase
-      .from("open_tender_notices")
+      .from("tenders")
       .insert(filteredData);
 
     if (insertError) {
@@ -389,7 +411,7 @@ app.post("/getOpenTenderNoticesToDB", async (req, res) => {
 app.get("/getOpenTenderNoticesFromDB", async (req, res) => {
   try {
     const { data, error } = await supabase
-      .from("open_tender_notices")
+      .from("tenders")
       .select("*");
 
     if (error) {

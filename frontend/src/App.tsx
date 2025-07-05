@@ -1,6 +1,5 @@
 import { Route, Routes } from "react-router-dom";
 import LandingPage from "./pages/LandingPage";
-import TenderData from "./pages/TenderData";
 import LeadGenChatV2 from "./pages/LeadGenChatV2";
 import Rfp from "./pages/Rfp";
 import SignIn from "./pages/SignIn";
@@ -37,14 +36,13 @@ export function App() {
       </Route>
       <Route element={<ProtectedRoutes />}>
         <Route element={<OnboardingRequiredRoutes />}>
-          <Route path="/tenderdata" element={<TenderData />} />
-          <Route path="/leadgenchatv2" element={<LeadGenChatV2 />} />
           <Route path="/rfp" element={<Rfp />} />
           <Route path="/home" element={<Home />} />
         </Route>
         <Route path="/onboarding" element={<Onboarding />} />
       </Route>
       <Route path="/test" element={<Test />} />
+      <Route path="/leadgenchatv2" element={<LeadGenChatV2 />} />
     </Routes>
   );
 }
