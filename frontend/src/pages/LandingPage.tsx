@@ -19,19 +19,11 @@ import {
 import { useNavigate } from "react-router-dom";
 import { filterOpenTenderNotices } from "../api";
 import { Header } from "../components/layout";
-import { selectAuthUser } from "../features/auth/authSelectors";
-import { useSelector } from "react-redux";
+
 export default function LandingPage() {
   const navigate = useNavigate();
   const [searchQuery, setSearchQuery] = useState("");
   const [isSearching, setIsSearching] = useState(false);
-
-  const isSignedIn = useSelector(selectAuthUser);
-console.log("IS SIGNED IN", isSignedIn);
-  if (isSignedIn) {
-    // Redirect to dashboard if already signed in
-    navigate("/dashboard");
-  }
   const handleSearch = async () => {
     setIsSearching(true);
     // Simulate search delay

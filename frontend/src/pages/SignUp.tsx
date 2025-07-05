@@ -13,8 +13,16 @@ import {
   Clock,
 } from "@phosphor-icons/react";
 import { supabase } from "../supabase";
+import { useAppDispatch } from "../app/hooks";
 
+import {
+  selectAuthError,
+  selectAuthLoading,
+} from "../features/auth/authSelectors";
+import { setAuthLoading, setAuthError } from "../features/auth/authSlice";
+import { useSelector } from "react-redux";
 export default function SignUp() {
+  const dispatch = useAppDispatch();
   const [formData, setFormData] = useState({
     email: "",
     password: "",
@@ -22,8 +30,8 @@ export default function SignUp() {
   });
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-  const [setAuthLoading, setsetAuthLoading] = useState(false);
-  const [error, setError] = useState("");
+  const isAuthLoading = useSelector(selectAuthLoading);
+  const authError = useSelector(selectAuthError);
   const [agreedToTerms, setAgreedToTerms] = useState(false);
   const navigate = useNavigate();
 
@@ -37,44 +45,32 @@ export default function SignUp() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!agreedToTerms) {
-      setError("Please agree to the terms and conditions");
+      setAuthError("Please agree to the terms and conditions");
       return;
     }
     if (formData.password !== formData.confirmPassword) {
-      setError("Passwords don't match");
+      setAuthError("Passwords don't match");
       return;
     }
 
-    setsetAuthLoading(true);
-    setError("");
+    dispatch(setAuthLoading(true));
+    dispatch(setAuthError(null));
 
     try {
       const { data, error } = await supabase.auth.signUp({
         email: formData.email,
         password: formData.password,
       });
-
+      console.log("SignUp data:", data);
       if (error) {
-        setError(error.message);
-      } else if (data.user) {
-        // Create basic profile
-        const { error: profileError } = await supabase.from("profiles").insert({
-          id: data.user.id,
-          email: data.user.email,
-          profile_completed: false,
-        });
-
-        if (profileError) {
-          console.error("Profile creation error:", profileError);
-        }
-
-        // Navigate to onboarding or dashboard
-        navigate("/onboarding");
+        setAuthError(error.message);
+      } else {
+        navigate("/sign-in?confirm-email=true");
       }
     } catch (err) {
-      setError("An unexpected error occurred");
+      setAuthError("An unexpected error occurred");
     } finally {
-      setsetAuthLoading(false);
+      setAuthLoading(false);
     }
   };
 
@@ -217,9 +213,9 @@ export default function SignUp() {
           </div>
 
           {/* Error Message */}
-          {error && (
+          {authError && (
             <div className="mb-4 p-3 bg-red-100 border border-red-300 text-red-700 rounded-lg">
-              {error}
+              {authError}
             </div>
           )}
 
@@ -230,7 +226,7 @@ export default function SignUp() {
                 htmlFor="email"
                 className="block text-sm font-medium text-text mb-2"
               >
-                Work Email
+                Email
               </label>
               <input
                 id="email"
@@ -345,10 +341,10 @@ export default function SignUp() {
 
             <button
               type="submit"
-              disabled={!isFormValid || setAuthLoading}
+              disabled={!isFormValid || isAuthLoading}
               className="w-full px-4 py-3 bg-primary text-white rounded-lg font-medium hover:bg-primary-dark transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 mt-6"
             >
-              {setAuthLoading ? (
+              {isAuthLoading ? (
                 <>
                   <Lightning className="w-4 h-4 animate-pulse" />
                   Creating your account...

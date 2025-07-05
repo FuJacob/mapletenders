@@ -6,9 +6,5 @@ interface TableHeaderProps {
 }
 
 export function TableHeader({ children, className = "" }: TableHeaderProps) {
-  return (
-    <thead className={`bg-surface-muted ${className}`}>
-      {children}
-    </thead>
-  );
+  return <thead className={`bg-surface-muted ${className}`}>{children}</thead>;
 }

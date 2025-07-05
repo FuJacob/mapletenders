@@ -6,14 +6,14 @@ import {
 import { useAppSelector } from "../../app/hooks";
 import { tenderColumns } from "../../features/tenders/tenderColumns";
 import { selectTenders } from "../../features/tenders/tendersSelectors";
-import { 
-  Table, 
-  TableHeader, 
-  TableBody, 
-  TableRow, 
-  TableCell, 
+import {
+  Table,
+  TableHeader,
+  TableBody,
+  TableRow,
+  TableCell,
   TableEmptyState,
-  TableLoadingState 
+  TableLoadingState,
 } from "./";
 
 interface TenderTableProps {
@@ -22,7 +22,7 @@ interface TenderTableProps {
 
 export default function TenderTable({ isLoading = false }: TenderTableProps) {
   const tenders = useAppSelector(selectTenders);
-  
+
   const table = useReactTable({
     data: tenders || [],
     columns: tenderColumns,
@@ -42,9 +42,9 @@ export default function TenderTable({ isLoading = false }: TenderTableProps) {
   if (!tenders || tenders.length === 0) {
     return (
       <div className="w-full bg-surface rounded-lg border border-border">
-        <TableEmptyState 
-          message="No tenders found" 
-          description="Try adjusting your search criteria or check back later for new opportunities." 
+        <TableEmptyState
+          message="No tenders found"
+          description="Try adjusting your search criteria or check back later for new opportunities."
         />
       </div>
     );
@@ -73,10 +73,7 @@ export default function TenderTable({ isLoading = false }: TenderTableProps) {
           <TableRow key={row.id}>
             {row.getVisibleCells().map((cell) => (
               <TableCell key={cell.id}>
-                {flexRender(
-                  cell.column.columnDef.cell,
-                  cell.getContext()
-                )}
+                {flexRender(cell.column.columnDef.cell, cell.getContext())}
               </TableCell>
             ))}
           </TableRow>

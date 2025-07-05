@@ -7,8 +7,6 @@ interface TableBodyProps {
 
 export function TableBody({ children, className = "" }: TableBodyProps) {
   return (
-    <tbody className={`divide-y divide-border ${className}`}>
-      {children}
-    </tbody>
+    <tbody className={`divide-y divide-border ${className}`}>{children}</tbody>
   );
 }

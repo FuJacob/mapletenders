@@ -1,5 +1,5 @@
 // Layout Components
 export * from "./layout";
 
-// Table Components  
+// Table Components
 export * from "./table";

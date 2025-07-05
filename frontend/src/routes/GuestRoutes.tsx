@@ -1,13 +1,19 @@
 import { useSelector } from "react-redux";
 import { Navigate, Outlet } from "react-router-dom";
-import { selectAuthSession } from "../features/auth/authSelectors";
+import {
+  selectAuthSession,
+  selectOnboardingCompleted,
+} from "../features/auth/authSelectors";
 
 export default function GuestRoute() {
   const session = useSelector(selectAuthSession);
-
-  // If user is authenticated, redirect to dashboard
+  const isOnboardingCompleted = useSelector(selectOnboardingCompleted);
+  // If user is authenticated, redirect to home
   if (session) {
-    return <Navigate to="/dashboard" replace />;
+    if (!isOnboardingCompleted) {
+      return <Navigate to="/onboarding" replace />;
+    }
+    return <Navigate to="/home" replace />;
   }
 
   // Otherwise, render the child components

@@ -5,9 +5,9 @@ interface TableEmptyStateProps {
   description?: string;
 }
 
-export function TableEmptyState({ 
-  message = "No data available", 
-  description = "There are no items to display at this time." 
+export function TableEmptyState({
+  message = "No data available",
+  description = "There are no items to display at this time.",
 }: TableEmptyStateProps) {
   return (
     <div className="flex flex-col items-center justify-center py-16 px-6 text-center">

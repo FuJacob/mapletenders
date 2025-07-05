@@ -6,6 +6,7 @@ interface AuthState {
   session: Session | null;
   loading: boolean;
   error: string | null;
+  onboarding_completed: boolean; // Optional field for onboarding status
 }
 
 const initialState: AuthState = {
@@ -13,6 +14,7 @@ const initialState: AuthState = {
   session: null,
   loading: false,
   error: null,
+  onboarding_completed: false,
 };
 
 const authSlice = createSlice({
@@ -33,12 +35,20 @@ const authSlice = createSlice({
     setAuthLoading: (state, action: PayloadAction<boolean>) => {
       state.loading = action.payload;
     },
-    setError: (state, action: PayloadAction<string | null>) => {
+    setAuthError: (state, action: PayloadAction<string | null>) => {
       state.error = action.payload;
+    },
+    setOnboardingCompleted: (state, action: PayloadAction<boolean>) => {
+      state.onboarding_completed = action.payload;
     },
   },
 });
 
-export const { setSession, logout, setAuthLoading, setError } =
-  authSlice.actions;
+export const {
+  setSession,
+  logout,
+  setAuthLoading,
+  setAuthError,
+  setOnboardingCompleted,
+} = authSlice.actions;
 export default authSlice.reducer;

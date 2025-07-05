@@ -12,7 +12,7 @@ import Contact from "./pages/Contact";
 import Home from "./pages/Home";
 import GuestRoutes from "./routes/GuestRoutes";
 import ProtectedRoutes from "./routes/ProtectedRoutes";
-
+import OnboardingRequiredRoutes from "./routes/OnboardingRequiredRoutes";
 import { useAppDispatch } from "./app/hooks";
 import { loadSession } from "./features/auth/authThunks";
 import { useEffect } from "react";
@@ -36,12 +36,14 @@ export function App() {
         <Route path="/contact" element={<Contact />} />
       </Route>
       <Route element={<ProtectedRoutes />}>
+        <Route element={<OnboardingRequiredRoutes />}>
+          <Route path="/tenderdata" element={<TenderData />} />
+          <Route path="/leadgenchatv2" element={<LeadGenChatV2 />} />
+          <Route path="/rfp" element={<Rfp />} />
+          <Route path="/home" element={<Home />} />
+        </Route>
         <Route path="/onboarding" element={<Onboarding />} />
-        <Route path="/tenderdata" element={<TenderData />} />
-        <Route path="/leadgenchatv2" element={<LeadGenChatV2 />} />
-        <Route path="/rfp" element={<Rfp />} />
       </Route>
-      <Route path="/home" element={<Home />} />
       <Route path="/test" element={<Test />} />
     </Routes>
   );

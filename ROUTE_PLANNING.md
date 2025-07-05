@@ -53,9 +53,9 @@
   - Template library
   - Export functionality
 
-### **👤 User Dashboard & Management**
+### **👤 User home & Management**
 
-- `/dashboard` - **User Dashboard** 🚧 _TODO_
+- `/home` - **User home** 🚧 _TODO_
 
   - Recent searches
   - Saved tenders
@@ -79,7 +79,7 @@
 
 ### **💼 Business Intelligence**
 
-- `/analytics` - **Analytics Dashboard**
+- `/analytics` - **Analytics home**
 
   - Tender trends
   - Success metrics
@@ -142,7 +142,7 @@
 
 ### **🔧 Platform Management**
 
-- `/admin` - **Admin Dashboard**
+- `/admin` - **Admin home**
 
   - User management
   - System monitoring
@@ -206,7 +206,7 @@
   - QR code access
 
 - `/api` - **API Portal**
-  - Developer dashboard
+  - Developer home
   - API key management
   - Usage analytics
 
@@ -243,7 +243,7 @@
 2. ✅ Authentication (DONE)
 3. 🚧 Search Results page
 4. 🚧 Tender Details page
-5. 🚧 Basic Dashboard
+5. 🚧 Basic home
 
 ### **Week 3-4: User Features**
 
@@ -254,7 +254,7 @@
 
 ### **Month 2: Growth Features**
 
-1. Analytics dashboard
+1. Analytics home
 2. Smart alerts
 3. Team collaboration
 4. Advanced search filters
@@ -272,7 +272,7 @@
 
 ### **Protected Routes**
 
-- All `/dashboard/*`, `/saved/*`, `/profile/*` routes need authentication
+- All `/home/*`, `/saved/*`, `/profile/*` routes need authentication
 - Admin routes need role-based access control
 - API routes need rate limiting
 

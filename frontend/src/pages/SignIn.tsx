@@ -15,18 +15,34 @@ import { selectAuthLoading } from "../features/auth/authSelectors";
 
 import { signIn } from "../features/auth/authThunks";
 import { useAppDispatch } from "../app/hooks";
+import { useSearchParams } from "react-router-dom";
+import { selectAuthError } from "../features/auth/authSelectors";
 export default function SignIn() {
+  const [searchParams, setSearchParams] = useSearchParams();
+  const [needToConfirmEmail] = useState(
+    searchParams.get("confirm-email") === "true"
+  );
   const dispatch = useAppDispatch();
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
+  const [form, setForm] = useState({
+    email: "",
+    password: "",
+  });
   const [showPassword, setShowPassword] = useState(false);
   const isAuthLoading = useSelector(selectAuthLoading);
+  const authError = useSelector(selectAuthError);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    dispatch(signIn(email, password));
+    setSearchParams({});
+    dispatch(signIn(form.email, form.password));
   };
 
+  const handleOnChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setForm((prev) => ({
+      ...prev,
+      [e.target.id]: e.target.value,
+    }));
+  };
   return (
     <div className="min-h-screen bg-background flex">
       {/* Left Side - Form */}
@@ -50,6 +66,22 @@ export default function SignIn() {
 
           {/* Form */}
           <form onSubmit={handleSubmit} className="space-y-6">
+            {/* Error Message */}
+
+            {needToConfirmEmail && (
+              <div className="mb-4 p-3 bg-blue-100 border border-blue-300 rounded-lg text-blue-900">
+                🎉 You're almost there! Please check your inbox and click the
+                confirmation link to activate your account and continue.
+              </div>
+            )}
+
+            {/* Error Message */}
+            {authError && (
+              <div className="mb-4 p-3 bg-red-100 border border-red-300 text-red-700 rounded-lg">
+                {authError}
+              </div>
+            )}
+
             <div>
               <label
                 htmlFor="email"
@@ -60,8 +92,8 @@ export default function SignIn() {
               <input
                 id="email"
                 type="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
+                value={form.email}
+                onChange={handleOnChange}
                 placeholder="your@company.com"
                 className="w-full px-4 py-3 border border-border rounded-lg focus:outline-none focus:border-primary bg-surface text-text placeholder-text-light"
                 required
@@ -79,8 +111,8 @@ export default function SignIn() {
                 <input
                   id="password"
                   type={showPassword ? "text" : "password"}
-                  value={password}
-                  onChange={(e) => setPassword(e.target.value)}
+                  value={form.password}
+                  onChange={handleOnChange}
                   placeholder="••••••••"
                   className="w-full px-4 py-3 border border-border rounded-lg focus:outline-none focus:border-primary bg-surface text-text placeholder-text-light pr-12"
                   required

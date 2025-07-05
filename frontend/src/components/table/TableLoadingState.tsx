@@ -5,9 +5,9 @@ interface TableLoadingStateProps {
   rowCount?: number;
 }
 
-export function TableLoadingState({ 
-  message = "Loading data...", 
-  rowCount = 5 
+export function TableLoadingState({
+  message = "Loading data...",
+  rowCount = 5,
 }: TableLoadingStateProps) {
   return (
     <div className="w-full">
@@ -16,7 +16,7 @@ export function TableLoadingState({
         <CircleNotch size={20} className="text-primary animate-spin mr-3" />
         <span className="text-text-muted">{message}</span>
       </div>
-      
+
       {/* Skeleton rows */}
       <div className="space-y-3 px-6 pb-6">
         {Array.from({ length: rowCount }).map((_, index) => (

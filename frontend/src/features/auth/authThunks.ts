@@ -1,6 +1,13 @@
 import { supabase } from "../../supabase";
-import { setSession, logout, setAuthLoading, setError } from "./authSlice";
+import {
+  setSession,
+  logout,
+  setAuthLoading,
+  setAuthError,
+  setOnboardingCompleted,
+} from "./authSlice";
 import { type AppDispatch } from "../../app/store";
+
 export const signIn =
   (email: string, password: string) => async (dispatch: AppDispatch) => {
     dispatch(setAuthLoading(true));
@@ -12,7 +19,7 @@ export const signIn =
     console.log(data);
     console.log(error);
     if (error) {
-      dispatch(setError(error.message));
+      dispatch(setAuthError(error.message));
     } else {
       dispatch(
         setSession({
@@ -20,6 +27,31 @@ export const signIn =
           user: data.user,
         })
       );
+
+      // Create user profile if not already present
+      const user = data.user;
+      if (!user?.id) throw new Error("No authenticated user");
+
+      const { data: existingProfile, error: profileFetchError } = await supabase
+        .from("profiles")
+        .select("id")
+        .eq("id", user.id)
+        .single();
+
+      if (profileFetchError) {
+        console.error("Error checking profile existence:", profileFetchError);
+      } else if (!existingProfile) {
+        const { error: profileInsertError } = await supabase
+          .from("profiles")
+          .insert({
+            onboarding_completed: false,
+          });
+        dispatch(setOnboardingCompleted(false));
+
+        if (profileInsertError) {
+          console.error("Error creating profile:", profileInsertError);
+        }
+      }
     }
 
     dispatch(setAuthLoading(false));
@@ -33,7 +65,7 @@ export const signOut = () => async (dispatch: AppDispatch) => {
 export const loadSession = () => async (dispatch: AppDispatch) => {
   dispatch(setAuthLoading(true));
 
-  const { data, error } = await supabase.auth.getSession();
+  const { data } = await supabase.auth.getSession();
   const session = data.session;
   const user = session?.user;
 
