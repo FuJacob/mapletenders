@@ -2,7 +2,6 @@ import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import {
   Building,
-  MapPin,
   Briefcase,
   CheckCircle,
   ArrowRight,
@@ -22,31 +21,20 @@ import { supabase } from "../supabase";
 import { selectAuthUser } from "../features/auth/authSelectors";
 import { useSelector } from "react-redux";
 export default function Onboarding() {
+  const user = useSelector(selectAuthUser);
   const [step, setStep] = useState(1);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const navigate = useNavigate();
-  const isSignedIn = useSelector(selectAuthUser);
-
-  if (!isSignedIn) {
-    navigate("/signIn");
-  }
-
   // Form data
   const [formData, setFormData] = useState({
     company_name: "",
     company_size: "",
-    annual_revenue: "",
     industry: "",
-    business_type: "",
     primary_services: [] as string[],
-    headquarters_province: "",
     service_regions: [] as string[],
     government_experience: "",
-    annual_bid_volume: "",
     typical_contract_size: "",
-    primary_use_case: "",
-    referral_source: "",
   });
 
   const companySizes = [
@@ -75,22 +63,6 @@ export default function Onboarding() {
       label: "1000+ employees",
       description: "Major corporation",
     },
-  ];
-
-  const revenueRanges = [
-    {
-      value: "under-1m",
-      label: "Under $1M",
-      description: "Startup/small business",
-    },
-    { value: "1m-10m", label: "$1M - $10M", description: "Growing company" },
-    { value: "10m-50m", label: "$10M - $50M", description: "Mid-market" },
-    {
-      value: "50m-250m",
-      label: "$50M - $250M",
-      description: "Large enterprise",
-    },
-    { value: "250m+", label: "$250M+", description: "Major corporation" },
   ];
 
   const industries = [
@@ -140,50 +112,6 @@ export default function Onboarding() {
       icon: <Wrench className="w-5 h-5" />,
     },
     { value: "other", label: "Other", icon: <Target className="w-5 h-5" /> },
-  ];
-
-  const businessTypes = [
-    {
-      value: "corporation",
-      label: "Corporation",
-      description: "Inc., Corp., Ltd.",
-    },
-    {
-      value: "partnership",
-      label: "Partnership",
-      description: "General or Limited Partnership",
-    },
-    {
-      value: "sole-proprietorship",
-      label: "Sole Proprietorship",
-      description: "Individual business owner",
-    },
-    {
-      value: "non-profit",
-      label: "Non-Profit",
-      description: "NGO, charity, foundation",
-    },
-    {
-      value: "cooperative",
-      label: "Cooperative",
-      description: "Member-owned organization",
-    },
-  ];
-
-  const provinces = [
-    "Alberta",
-    "British Columbia",
-    "Manitoba",
-    "New Brunswick",
-    "Newfoundland and Labrador",
-    "Northwest Territories",
-    "Nova Scotia",
-    "Nunavut",
-    "Ontario",
-    "Prince Edward Island",
-    "Quebec",
-    "Saskatchewan",
-    "Yukon",
   ];
 
   const services = [
@@ -249,44 +177,6 @@ export default function Onboarding() {
     { value: "5m+", label: "$5M+", description: "Enterprise contracts" },
   ];
 
-  const useCases = [
-    {
-      value: "discovery",
-      label: "Discover new opportunities",
-      description: "Find tenders I didn't know existed",
-      icon: <Target className="w-5 h-5 text-primary" />,
-    },
-    {
-      value: "monitoring",
-      label: "Monitor specific contracts",
-      description: "Track particular types of opportunities",
-      icon: <CheckCircle className="w-5 h-5 text-success" />,
-    },
-    {
-      value: "intelligence",
-      label: "Market research",
-      description: "Understand market trends and competition",
-      icon: <TrendUp className="w-5 h-5 text-accent" />,
-    },
-    {
-      value: "all",
-      label: "All of the above",
-      description: "Complete tender intelligence platform",
-      icon: <Lightning className="w-5 h-5 text-secondary" />,
-    },
-  ];
-
-  const referralSources = [
-    "Google Search",
-    "LinkedIn",
-    "Industry Publication",
-    "Colleague Referral",
-    "Conference/Event",
-    "Social Media",
-    "Government Website",
-    "Other",
-  ];
-
   const handleServiceToggle = (service: string) => {
     setFormData((prev) => ({
       ...prev,
@@ -306,7 +196,7 @@ export default function Onboarding() {
   };
 
   const handleNext = () => {
-    if (step < 5) {
+    if (step < 3) {
       setStep(step + 1);
     } else {
       handleComplete();
@@ -324,10 +214,6 @@ export default function Onboarding() {
     setError("");
 
     try {
-      const {
-        data: { user },
-      } = await supabase.auth.getUser();
-
       if (!user) {
         setError("Authentication error. Please sign in again.");
         navigate("/sign-in");
@@ -337,7 +223,6 @@ export default function Onboarding() {
       // Create or update profile
       const { error: profileError } = await supabase.from("profiles").upsert({
         id: user.id,
-        email: user.email,
         ...formData,
         onboarding_completed: true,
         updated_at: new Date().toISOString(),
@@ -349,8 +234,7 @@ export default function Onboarding() {
         return;
       }
 
-      // Navigate to dashboard
-      navigate("/dashboard");
+      navigate("/home");
     } catch (err) {
       console.error("Unexpected error:", err);
       setError("An unexpected error occurred. Please try again.");
@@ -362,27 +246,15 @@ export default function Onboarding() {
   const canProceed = () => {
     switch (step) {
       case 1:
-        return (
-          formData.company_name &&
-          formData.company_size &&
-          formData.annual_revenue
-        );
+        return formData.company_name && formData.company_size;
       case 2:
-        return formData.industry && formData.business_type;
-      case 3:
         return (
+          formData.industry &&
           formData.primary_services.length > 0 &&
-          formData.headquarters_province &&
           formData.service_regions.length > 0
         );
-      case 4:
-        return (
-          formData.government_experience &&
-          formData.annual_bid_volume &&
-          formData.typical_contract_size
-        );
-      case 5:
-        return formData.primary_use_case && formData.referral_source;
+      case 3:
+        return formData.government_experience && formData.typical_contract_size;
       default:
         return false;
     }
@@ -393,13 +265,9 @@ export default function Onboarding() {
       case 1:
         return "Company Basics";
       case 2:
-        return "Business Type";
+        return "Industry & Services";
       case 3:
-        return "Services & Coverage";
-      case 4:
-        return "Procurement Experience";
-      case 5:
-        return "Goals & Preferences";
+        return "Experience & Preferences";
       default:
         return "";
     }
@@ -415,12 +283,12 @@ export default function Onboarding() {
           </Link>
           <div className="flex items-center gap-4">
             <span className="text-sm text-text-light">
-              Step {step} of 5: {getStepTitle()}
+              Step {step} of 3: {getStepTitle()}
             </span>
             <div className="w-40 bg-border rounded-full h-2">
               <div
                 className="bg-primary h-2 rounded-full transition-all duration-300"
-                style={{ width: `${(step / 5) * 100}%` }}
+                style={{ width: `${(step / 3) * 100}%` }}
               />
             </div>
           </div>
@@ -494,49 +362,19 @@ export default function Onboarding() {
                 ))}
               </div>
             </div>
-
-            <div>
-              <label className="block text-sm font-semibold text-text mb-3">
-                Annual Revenue *
-              </label>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                {revenueRanges.map((revenue) => (
-                  <button
-                    key={revenue.value}
-                    type="button"
-                    onClick={() =>
-                      setFormData((prev) => ({
-                        ...prev,
-                        annual_revenue: revenue.value,
-                      }))
-                    }
-                    className={`p-4 border rounded-xl text-left transition-all hover:scale-[1.02] ${
-                      formData.annual_revenue === revenue.value
-                        ? "border-primary bg-primary/10 text-primary shadow-md"
-                        : "border-border hover:border-primary hover:bg-surface"
-                    }`}
-                  >
-                    <div className="font-medium">{revenue.label}</div>
-                    <div className="text-sm text-text-light">
-                      {revenue.description}
-                    </div>
-                  </button>
-                ))}
-              </div>
-            </div>
           </div>
         )}
 
-        {/* Step 2: Business Type */}
+        {/* Step 2: Industry & Services */}
         {step === 2 && (
           <div className="space-y-8">
             <div className="text-center mb-10">
               <Briefcase className="w-16 h-16 text-primary mx-auto mb-4" />
               <h1 className="text-4xl font-bold text-text mb-3">
-                What type of business are you?
+                Industry & Services
               </h1>
               <p className="text-lg text-text-light">
-                Understanding your business helps us customize your experience
+                Tell us about your industry and the services you provide
               </p>
             </div>
 
@@ -572,51 +410,6 @@ export default function Onboarding() {
 
             <div>
               <label className="block text-sm font-semibold text-text mb-3">
-                Business Structure *
-              </label>
-              <div className="space-y-3">
-                {businessTypes.map((type) => (
-                  <button
-                    key={type.value}
-                    type="button"
-                    onClick={() =>
-                      setFormData((prev) => ({
-                        ...prev,
-                        business_type: type.value,
-                      }))
-                    }
-                    className={`w-full p-4 border rounded-xl text-left transition-all hover:scale-[1.01] ${
-                      formData.business_type === type.value
-                        ? "border-primary bg-primary/10 text-primary shadow-md"
-                        : "border-border hover:border-primary hover:bg-surface"
-                    }`}
-                  >
-                    <div className="font-medium">{type.label}</div>
-                    <div className="text-sm text-text-light">
-                      {type.description}
-                    </div>
-                  </button>
-                ))}
-              </div>
-            </div>
-          </div>
-        )}
-
-        {/* Step 3: Services & Coverage */}
-        {step === 3 && (
-          <div className="space-y-8">
-            <div className="text-center mb-10">
-              <MapPin className="w-16 h-16 text-primary mx-auto mb-4" />
-              <h1 className="text-4xl font-bold text-text mb-3">
-                Your services and coverage
-              </h1>
-              <p className="text-lg text-text-light">
-                Help us understand what you do and where you can deliver
-              </p>
-            </div>
-
-            <div>
-              <label className="block text-sm font-semibold text-text mb-3">
                 Primary Services * (Select all that apply)
               </label>
               <div className="grid grid-cols-2 md:grid-cols-3 gap-3 max-h-64 overflow-y-auto">
@@ -642,33 +435,24 @@ export default function Onboarding() {
 
             <div>
               <label className="block text-sm font-semibold text-text mb-3">
-                Headquarters Province *
-              </label>
-              <select
-                value={formData.headquarters_province}
-                onChange={(e) =>
-                  setFormData((prev) => ({
-                    ...prev,
-                    headquarters_province: e.target.value,
-                  }))
-                }
-                className="w-full px-4 py-4 border border-border rounded-xl bg-surface focus:border-primary focus:outline-none text-lg"
-              >
-                <option value="">Select your headquarters province</option>
-                {provinces.map((province) => (
-                  <option key={province} value={province}>
-                    {province}
-                  </option>
-                ))}
-              </select>
-            </div>
-
-            <div>
-              <label className="block text-sm font-semibold text-text mb-3">
                 Service Regions * (Where can you deliver services?)
               </label>
               <div className="grid grid-cols-2 md:grid-cols-3 gap-2 max-h-48 overflow-y-auto border border-border rounded-xl p-4">
-                {provinces.map((province) => (
+                {[
+                  "Alberta",
+                  "British Columbia",
+                  "Manitoba",
+                  "New Brunswick",
+                  "Newfoundland and Labrador",
+                  "Northwest Territories",
+                  "Nova Scotia",
+                  "Nunavut",
+                  "Ontario",
+                  "Prince Edward Island",
+                  "Quebec",
+                  "Saskatchewan",
+                  "Yukon",
+                ].map((province) => (
                   <button
                     key={province}
                     type="button"
@@ -690,8 +474,8 @@ export default function Onboarding() {
           </div>
         )}
 
-        {/* Step 4: Procurement Experience */}
-        {step === 4 && (
+        {/* Step 3: Experience & Preferences */}
+        {step === 3 && (
           <div className="space-y-8">
             <div className="text-center mb-10">
               <Crown className="w-16 h-16 text-primary mx-auto mb-4" />
@@ -740,40 +524,6 @@ export default function Onboarding() {
 
             <div>
               <label className="block text-sm font-semibold text-text mb-3">
-                Annual Bid Volume *
-              </label>
-              <div className="grid grid-cols-2 md:grid-cols-3 gap-3">
-                {[
-                  { value: "0", label: "Haven't bid yet" },
-                  { value: "1-5", label: "1-5 bids" },
-                  { value: "6-20", label: "6-20 bids" },
-                  { value: "21-50", label: "21-50 bids" },
-                  { value: "50+", label: "50+ bids" },
-                  { value: "100+", label: "100+ bids" },
-                ].map((option) => (
-                  <button
-                    key={option.value}
-                    type="button"
-                    onClick={() =>
-                      setFormData((prev) => ({
-                        ...prev,
-                        annual_bid_volume: option.value,
-                      }))
-                    }
-                    className={`p-4 border rounded-xl text-center transition-all hover:scale-[1.02] ${
-                      formData.annual_bid_volume === option.value
-                        ? "border-primary bg-primary/10 text-primary shadow-md"
-                        : "border-border hover:border-primary hover:bg-surface"
-                    }`}
-                  >
-                    <div className="font-medium">{option.label}</div>
-                  </button>
-                ))}
-              </div>
-            </div>
-
-            <div>
-              <label className="block text-sm font-semibold text-text mb-3">
                 Typical Contract Size You Target *
               </label>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
@@ -804,80 +554,6 @@ export default function Onboarding() {
           </div>
         )}
 
-        {/* Step 5: Goals & Preferences */}
-        {step === 5 && (
-          <div className="space-y-8">
-            <div className="text-center mb-10">
-              <Lightning className="w-16 h-16 text-primary mx-auto mb-4" />
-              <h1 className="text-4xl font-bold text-text mb-3">
-                Almost done!
-              </h1>
-              <p className="text-lg text-text-light">
-                Let's understand your goals so we can personalize your
-                experience
-              </p>
-            </div>
-
-            <div>
-              <label className="block text-sm font-semibold text-text mb-3">
-                Primary Goal with Procuroo *
-              </label>
-              <div className="space-y-3">
-                {useCases.map((useCase) => (
-                  <button
-                    key={useCase.value}
-                    type="button"
-                    onClick={() =>
-                      setFormData((prev) => ({
-                        ...prev,
-                        primary_use_case: useCase.value,
-                      }))
-                    }
-                    className={`w-full p-4 border rounded-xl text-left transition-all hover:scale-[1.01] ${
-                      formData.primary_use_case === useCase.value
-                        ? "border-primary bg-primary/10 text-primary shadow-md"
-                        : "border-border hover:border-primary hover:bg-surface"
-                    }`}
-                  >
-                    <div className="flex items-center gap-3">
-                      {useCase.icon}
-                      <div>
-                        <div className="font-medium">{useCase.label}</div>
-                        <div className="text-sm text-text-light">
-                          {useCase.description}
-                        </div>
-                      </div>
-                    </div>
-                  </button>
-                ))}
-              </div>
-            </div>
-
-            <div>
-              <label className="block text-sm font-semibold text-text mb-3">
-                How did you hear about us? *
-              </label>
-              <select
-                value={formData.referral_source}
-                onChange={(e) =>
-                  setFormData((prev) => ({
-                    ...prev,
-                    referral_source: e.target.value,
-                  }))
-                }
-                className="w-full px-4 py-4 border border-border rounded-xl bg-surface focus:border-primary focus:outline-none text-lg"
-              >
-                <option value="">Select referral source</option>
-                {referralSources.map((source) => (
-                  <option key={source} value={source}>
-                    {source}
-                  </option>
-                ))}
-              </select>
-            </div>
-          </div>
-        )}
-
         {/* Navigation */}
         <div className="flex justify-between items-center mt-12 pt-8 border-t border-border">
           <button
@@ -896,7 +572,7 @@ export default function Onboarding() {
           >
             {loading ? (
               "Saving..."
-            ) : step === 5 ? (
+            ) : step === 3 ? (
               <>
                 <CheckCircle className="w-5 h-5" />
                 Complete Setup
