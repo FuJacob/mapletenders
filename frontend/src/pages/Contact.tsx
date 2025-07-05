@@ -27,7 +27,11 @@ export default function Contact() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
+  const handleInputChange = (
+    e: React.ChangeEvent<
+      HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
+    >
+  ) => {
     setFormData({
       ...formData,
       [e.target.name]: e.target.value,
@@ -37,7 +41,7 @@ export default function Contact() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsSubmitting(true);
-    
+
     // Simulate form submission
     setTimeout(() => {
       setIsSubmitting(false);
@@ -56,7 +60,7 @@ export default function Contact() {
     },
     {
       icon: <EnvelopeSimple className="w-6 h-6" />,
-      title: "Email us", 
+      title: "Email us",
       description: "We'll respond within 24 hours",
       contact: "hello@procuroo.com",
       availability: "24/7 support",
@@ -151,13 +155,11 @@ export default function Contact() {
       {/* Hero Section */}
       <section className="py-16 px-6 text-center">
         <div className="max-w-4xl mx-auto">
-          <h1 className="text-4xl font-bold mb-4 text-text">
-            Get in touch
-          </h1>
+          <h1 className="text-4xl font-bold mb-4 text-text">Get in touch</h1>
           <p className="text-xl text-text-light mb-8">
             Have questions about Procuroo? We're here to help you succeed.
           </p>
-          
+
           {/* Quick Stats */}
           <div className="flex items-center justify-center gap-8 text-sm text-text-light">
             <span className="flex items-center gap-2">
@@ -182,17 +184,28 @@ export default function Contact() {
           <h2 className="text-2xl font-bold text-center mb-12 text-text">
             Choose how you'd like to connect
           </h2>
-          
+
           <div className="grid md:grid-cols-3 gap-8">
             {contactMethods.map((method, index) => (
-              <div key={index} className="bg-background rounded-xl p-6 border border-border text-center">
+              <div
+                key={index}
+                className="bg-background rounded-xl p-6 border border-border text-center"
+              >
                 <div className="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-4 text-primary">
                   {method.icon}
                 </div>
-                <h3 className="text-lg font-semibold text-text mb-2">{method.title}</h3>
-                <p className="text-text-light text-sm mb-3">{method.description}</p>
-                <div className="font-medium text-text mb-1">{method.contact}</div>
-                <div className="text-xs text-text-light mb-4">{method.availability}</div>
+                <h3 className="text-lg font-semibold text-text mb-2">
+                  {method.title}
+                </h3>
+                <p className="text-text-light text-sm mb-3">
+                  {method.description}
+                </p>
+                <div className="font-medium text-text mb-1">
+                  {method.contact}
+                </div>
+                <div className="text-xs text-text-light mb-4">
+                  {method.availability}
+                </div>
                 <button className="text-primary text-sm font-medium hover:text-primary-dark flex items-center gap-1 mx-auto">
                   {method.action}
                   <ArrowRight className="w-3 h-3" />
@@ -209,15 +222,20 @@ export default function Contact() {
           <h2 className="text-2xl font-bold text-center mb-12 text-text">
             What can we help you with?
           </h2>
-          
+
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
             {supportTopics.map((topic, index) => (
-              <div key={index} className="bg-surface rounded-lg p-6 border border-border">
+              <div
+                key={index}
+                className="bg-surface rounded-lg p-6 border border-border"
+              >
                 <div className="flex items-center gap-3 mb-3">
                   {topic.icon}
                   <h3 className="font-semibold text-text">{topic.title}</h3>
                 </div>
-                <p className="text-text-light text-sm mb-4">{topic.description}</p>
+                <p className="text-text-light text-sm mb-4">
+                  {topic.description}
+                </p>
                 <button className="text-primary text-sm font-medium hover:text-primary-dark">
                   {topic.cta} →
                 </button>
@@ -237,13 +255,17 @@ export default function Contact() {
                 Send us a message
               </h2>
               <p className="text-text-light mb-8">
-                Fill out the form below and we'll get back to you within 24 hours.
+                Fill out the form below and we'll get back to you within 24
+                hours.
               </p>
 
               <form onSubmit={handleSubmit} className="space-y-6">
                 <div className="grid grid-cols-2 gap-4">
                   <div>
-                    <label htmlFor="name" className="block text-sm font-medium text-text mb-2">
+                    <label
+                      htmlFor="name"
+                      className="block text-sm font-medium text-text mb-2"
+                    >
                       Full name *
                     </label>
                     <input
@@ -258,7 +280,10 @@ export default function Contact() {
                     />
                   </div>
                   <div>
-                    <label htmlFor="email" className="block text-sm font-medium text-text mb-2">
+                    <label
+                      htmlFor="email"
+                      className="block text-sm font-medium text-text mb-2"
+                    >
                       Email address *
                     </label>
                     <input
@@ -275,7 +300,10 @@ export default function Contact() {
                 </div>
 
                 <div>
-                  <label htmlFor="company" className="block text-sm font-medium text-text mb-2">
+                  <label
+                    htmlFor="company"
+                    className="block text-sm font-medium text-text mb-2"
+                  >
                     Company
                   </label>
                   <input
@@ -290,7 +318,10 @@ export default function Contact() {
                 </div>
 
                 <div>
-                  <label htmlFor="inquiryType" className="block text-sm font-medium text-text mb-2">
+                  <label
+                    htmlFor="inquiryType"
+                    className="block text-sm font-medium text-text mb-2"
+                  >
                     Inquiry type
                   </label>
                   <select
@@ -310,7 +341,10 @@ export default function Contact() {
                 </div>
 
                 <div>
-                  <label htmlFor="subject" className="block text-sm font-medium text-text mb-2">
+                  <label
+                    htmlFor="subject"
+                    className="block text-sm font-medium text-text mb-2"
+                  >
                     Subject *
                   </label>
                   <input
@@ -326,7 +360,10 @@ export default function Contact() {
                 </div>
 
                 <div>
-                  <label htmlFor="message" className="block text-sm font-medium text-text mb-2">
+                  <label
+                    htmlFor="message"
+                    className="block text-sm font-medium text-text mb-2"
+                  >
                     Message *
                   </label>
                   <textarea
@@ -366,15 +403,17 @@ export default function Contact() {
               <h3 className="text-xl font-semibold mb-6 text-text">
                 Other ways to reach us
               </h3>
-              
+
               <div className="space-y-6">
                 <div className="flex items-start gap-4">
                   <MapPin className="w-5 h-5 text-primary mt-1" />
                   <div>
                     <div className="font-medium text-text">Our office</div>
                     <div className="text-text-light text-sm">
-                      123 King Street West<br />
-                      Toronto, ON M5H 3T9<br />
+                      123 King Street West
+                      <br />
+                      Toronto, ON M5H 3T9
+                      <br />
                       Canada
                     </div>
                   </div>
@@ -385,7 +424,8 @@ export default function Contact() {
                   <div>
                     <div className="font-medium text-text">Business hours</div>
                     <div className="text-text-light text-sm">
-                      Monday - Friday: 9:00 AM - 6:00 PM EST<br />
+                      Monday - Friday: 9:00 AM - 6:00 PM EST
+                      <br />
                       Saturday - Sunday: Closed
                     </div>
                   </div>
@@ -394,9 +434,12 @@ export default function Contact() {
                 <div className="flex items-start gap-4">
                   <Headset className="w-5 h-5 text-primary mt-1" />
                   <div>
-                    <div className="font-medium text-text">Emergency support</div>
+                    <div className="font-medium text-text">
+                      Emergency support
+                    </div>
                     <div className="text-text-light text-sm">
-                      For critical issues affecting your business,<br />
+                      For critical issues affecting your business,
+                      <br />
                       call +1 (416) 555-0199
                     </div>
                   </div>
@@ -405,11 +448,14 @@ export default function Contact() {
 
               <div className="mt-8 pt-6 border-t border-border">
                 <div className="text-sm text-text-light">
-                  <strong className="text-text">Response times:</strong><br />
-                  • General inquiries: 24 hours<br />
-                  • Sales questions: 4 hours<br />
-                  • Technical support: 2 hours<br />
-                  • Emergency issues: 30 minutes
+                  <strong className="text-text">Response times:</strong>
+                  <br />
+                  • General inquiries: 24 hours
+                  <br />
+                  • Sales questions: 4 hours
+                  <br />
+                  • Technical support: 2 hours
+                  <br />• Emergency issues: 30 minutes
                 </div>
               </div>
             </div>

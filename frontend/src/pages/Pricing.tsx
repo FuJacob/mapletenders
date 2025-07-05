@@ -31,7 +31,9 @@ interface PricingTier {
 
 export default function Pricing() {
   const navigate = useNavigate();
-  const [billingCycle, setBillingCycle] = useState<"monthly" | "yearly">("monthly");
+  const [billingCycle, setBillingCycle] = useState<"monthly" | "yearly">(
+    "monthly"
+  );
 
   const pricingTiers: PricingTier[] = [
     {
@@ -39,7 +41,8 @@ export default function Pricing() {
       name: "Starter",
       price: billingCycle === "monthly" ? 49 : 490,
       billingCycle,
-      description: "Perfect for freelancers and small businesses getting started",
+      description:
+        "Perfect for freelancers and small businesses getting started",
       features: [
         "AI-powered tender search",
         "Basic search filters",
@@ -142,17 +145,25 @@ export default function Pricing() {
             Choose your plan
           </h1>
           <p className="text-xl text-text-light mb-8 max-w-2xl mx-auto">
-            Start winning government contracts with AI-powered tender discovery. 
+            Start winning government contracts with AI-powered tender discovery.
             All plans include a 14-day free trial.
           </p>
 
           {/* Billing Toggle */}
           <div className="flex items-center justify-center gap-4 mb-12">
-            <span className={`text-sm ${billingCycle === "monthly" ? "text-text" : "text-text-light"}`}>
+            <span
+              className={`text-sm ${
+                billingCycle === "monthly" ? "text-text" : "text-text-light"
+              }`}
+            >
               Monthly
             </span>
             <button
-              onClick={() => setBillingCycle(billingCycle === "monthly" ? "yearly" : "monthly")}
+              onClick={() =>
+                setBillingCycle(
+                  billingCycle === "monthly" ? "yearly" : "monthly"
+                )
+              }
               className={`relative w-14 h-7 rounded-full transition-colors ${
                 billingCycle === "yearly" ? "bg-primary" : "bg-border"
               }`}
@@ -164,7 +175,11 @@ export default function Pricing() {
               />
             </button>
             <div className="flex items-center gap-2">
-              <span className={`text-sm ${billingCycle === "yearly" ? "text-text" : "text-text-light"}`}>
+              <span
+                className={`text-sm ${
+                  billingCycle === "yearly" ? "text-text" : "text-text-light"
+                }`}
+              >
                 Yearly
               </span>
               {billingCycle === "yearly" && (
@@ -202,12 +217,22 @@ export default function Pricing() {
                 {/* Plan Header */}
                 <div className="text-center mb-8">
                   <div className="flex items-center justify-center mb-4">
-                    {tier.id === "starter" && <Lightning className="w-8 h-8 text-accent" />}
-                    {tier.id === "professional" && <Target className="w-8 h-8 text-primary" />}
-                    {tier.id === "enterprise" && <Crown className="w-8 h-8 text-secondary" />}
+                    {tier.id === "starter" && (
+                      <Lightning className="w-8 h-8 text-accent" />
+                    )}
+                    {tier.id === "professional" && (
+                      <Target className="w-8 h-8 text-primary" />
+                    )}
+                    {tier.id === "enterprise" && (
+                      <Crown className="w-8 h-8 text-secondary" />
+                    )}
                   </div>
-                  <h3 className="text-2xl font-bold text-text mb-2">{tier.name}</h3>
-                  <p className="text-text-light text-sm mb-4">{tier.description}</p>
+                  <h3 className="text-2xl font-bold text-text mb-2">
+                    {tier.name}
+                  </h3>
+                  <p className="text-text-light text-sm mb-4">
+                    {tier.description}
+                  </p>
                   <div className="flex items-baseline justify-center gap-1">
                     <span className="text-4xl font-bold text-text">
                       ${tier.price}
@@ -228,19 +253,27 @@ export default function Pricing() {
                   <div className="grid grid-cols-2 gap-3 text-xs">
                     <div>
                       <span className="text-text-light">Searches:</span>
-                      <div className="font-medium text-text">{tier.limits.searches}</div>
+                      <div className="font-medium text-text">
+                        {tier.limits.searches}
+                      </div>
                     </div>
                     <div>
                       <span className="text-text-light">Alerts:</span>
-                      <div className="font-medium text-text">{tier.limits.alerts}</div>
+                      <div className="font-medium text-text">
+                        {tier.limits.alerts}
+                      </div>
                     </div>
                     <div>
                       <span className="text-text-light">Exports:</span>
-                      <div className="font-medium text-text">{tier.limits.exports}</div>
+                      <div className="font-medium text-text">
+                        {tier.limits.exports}
+                      </div>
                     </div>
                     <div>
                       <span className="text-text-light">Users:</span>
-                      <div className="font-medium text-text">{tier.limits.users}</div>
+                      <div className="font-medium text-text">
+                        {tier.limits.users}
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -297,18 +330,78 @@ export default function Pricing() {
               </thead>
               <tbody className="text-sm">
                 {[
-                  { feature: "AI-powered search", starter: true, pro: true, enterprise: true },
-                  { feature: "Email notifications", starter: true, pro: true, enterprise: true },
-                  { feature: "Mobile app", starter: true, pro: true, enterprise: true },
-                  { feature: "Win probability analysis", starter: false, pro: true, enterprise: true },
-                  { feature: "Advanced filters", starter: false, pro: true, enterprise: true },
-                  { feature: "Team collaboration", starter: false, pro: true, enterprise: true },
-                  { feature: "API access", starter: false, pro: true, enterprise: true },
-                  { feature: "Custom reports", starter: false, pro: true, enterprise: true },
-                  { feature: "Priority support", starter: false, pro: true, enterprise: true },
-                  { feature: "Phone support", starter: false, pro: false, enterprise: true },
-                  { feature: "SSO integration", starter: false, pro: false, enterprise: true },
-                  { feature: "Custom AI training", starter: false, pro: false, enterprise: true },
+                  {
+                    feature: "AI-powered search",
+                    starter: true,
+                    pro: true,
+                    enterprise: true,
+                  },
+                  {
+                    feature: "Email notifications",
+                    starter: true,
+                    pro: true,
+                    enterprise: true,
+                  },
+                  {
+                    feature: "Mobile app",
+                    starter: true,
+                    pro: true,
+                    enterprise: true,
+                  },
+                  {
+                    feature: "Win probability analysis",
+                    starter: false,
+                    pro: true,
+                    enterprise: true,
+                  },
+                  {
+                    feature: "Advanced filters",
+                    starter: false,
+                    pro: true,
+                    enterprise: true,
+                  },
+                  {
+                    feature: "Team collaboration",
+                    starter: false,
+                    pro: true,
+                    enterprise: true,
+                  },
+                  {
+                    feature: "API access",
+                    starter: false,
+                    pro: true,
+                    enterprise: true,
+                  },
+                  {
+                    feature: "Custom reports",
+                    starter: false,
+                    pro: true,
+                    enterprise: true,
+                  },
+                  {
+                    feature: "Priority support",
+                    starter: false,
+                    pro: true,
+                    enterprise: true,
+                  },
+                  {
+                    feature: "Phone support",
+                    starter: false,
+                    pro: false,
+                    enterprise: true,
+                  },
+                  {
+                    feature: "SSO integration",
+                    starter: false,
+                    pro: false,
+                    enterprise: true,
+                  },
+                  {
+                    feature: "Custom AI training",
+                    starter: false,
+                    pro: false,
+                    enterprise: true,
+                  },
                 ].map((row, index) => (
                   <tr key={index} className="border-b border-border">
                     <td className="py-3 text-text">{row.feature}</td>
@@ -352,28 +445,34 @@ export default function Pricing() {
             {[
               {
                 question: "Can I change plans later?",
-                answer: "Yes, you can upgrade or downgrade your plan at any time. Changes take effect at your next billing cycle."
+                answer:
+                  "Yes, you can upgrade or downgrade your plan at any time. Changes take effect at your next billing cycle.",
               },
               {
                 question: "What happens after my free trial?",
-                answer: "Your free trial lasts 14 days. After that, you'll be charged for your selected plan unless you cancel."
+                answer:
+                  "Your free trial lasts 14 days. After that, you'll be charged for your selected plan unless you cancel.",
               },
               {
                 question: "Do you offer refunds?",
-                answer: "Yes, we offer a 30-day money-back guarantee on all annual plans. Monthly plans can be cancelled anytime."
+                answer:
+                  "Yes, we offer a 30-day money-back guarantee on all annual plans. Monthly plans can be cancelled anytime.",
               },
               {
                 question: "What payment methods do you accept?",
-                answer: "We accept all major credit cards, PayPal, and ACH transfers for annual plans."
+                answer:
+                  "We accept all major credit cards, PayPal, and ACH transfers for annual plans.",
               },
               {
                 question: "Is there a setup fee?",
-                answer: "No setup fees, no hidden costs. The price you see is what you pay."
+                answer:
+                  "No setup fees, no hidden costs. The price you see is what you pay.",
               },
               {
                 question: "Can I get a custom plan?",
-                answer: "Yes! Contact our sales team for custom pricing based on your specific needs."
-              }
+                answer:
+                  "Yes! Contact our sales team for custom pricing based on your specific needs.",
+              },
             ].map((faq, index) => (
               <div key={index} className="border-b border-border pb-6">
                 <h3 className="font-semibold text-text mb-2">{faq.question}</h3>
@@ -391,7 +490,8 @@ export default function Pricing() {
             Ready to start winning?
           </h2>
           <p className="text-lg text-text-light mb-8">
-            Join thousands of businesses already using Procuroo to discover and win government contracts.
+            Join thousands of businesses already using Procuroo to discover and
+            win government contracts.
           </p>
           <div className="flex gap-4 justify-center">
             <button

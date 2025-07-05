@@ -6,15 +6,15 @@ interface HeaderProps {
   className?: string;
 }
 
-export default function Header({ 
-  showNavigation = true, 
+export default function Header({
+  showNavigation = true,
   transparent = false,
-  className = "" 
+  className = "",
 }: HeaderProps) {
   const navigate = useNavigate();
 
   return (
-    <header 
+    <header
       className={`flex justify-between items-center p-6 border-b border-border ${
         transparent ? "bg-transparent" : "bg-surface"
       } ${className}`}
@@ -22,30 +22,30 @@ export default function Header({
       <Link to="/" className="text-2xl font-bold text-primary">
         Procuroo
       </Link>
-      
+
       {showNavigation && (
         <nav className="hidden md:flex items-center gap-8">
-          <Link 
-            to="/pricing" 
+          <Link
+            to="/pricing"
             className="text-sm text-text hover:text-primary transition-colors"
           >
             Pricing
           </Link>
-          <Link 
-            to="/about" 
+          <Link
+            to="/about"
             className="text-sm text-text hover:text-primary transition-colors"
           >
             About
           </Link>
-          <Link 
-            to="/contact" 
+          <Link
+            to="/contact"
             className="text-sm text-text hover:text-primary transition-colors"
           >
             Contact
           </Link>
         </nav>
       )}
-      
+
       <div className="flex gap-4">
         <button
           onClick={() => navigate("/sign-in")}
