@@ -490,7 +490,7 @@ export default function Pricing() {
             Ready to start winning?
           </h2>
           <p className="text-lg text-text-light mb-8">
-            Join thousands of businesses already using Procuroo to discover and
+            Join thousands of businesses already using MapleBids to discover and
             win government contracts.
           </p>
           <div className="flex gap-4 justify-center">
@@ -515,7 +515,7 @@ export default function Pricing() {
       {/* Footer */}
       <footer className="py-8 px-6 border-t text-center text-sm">
         <div className="max-w-4xl mx-auto flex justify-between items-center">
-          <div>© 2025 Procuroo</div>
+          <div>© 2025 MapleBids</div>
           <div className="flex gap-6">
             <Link to="/privacy" className="hover:underline text-text-light">
               Privacy

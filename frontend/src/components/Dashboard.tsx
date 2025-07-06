@@ -1,4 +1,11 @@
-import { Lightning, Bookmark, Bell, Clock, Star, Eye } from '@phosphor-icons/react';
+import {
+  Lightning,
+  Bookmark,
+  Bell,
+  Clock,
+  Star,
+  Eye,
+} from "@phosphor-icons/react";
 
 export default function Dashboard() {
   const mockStats = {
@@ -45,18 +52,31 @@ export default function Dashboard() {
   ];
 
   const mockRecentActivity = [
-    { id: 1, action: "Viewed", title: "Cloud Services RFP", time: "2 hours ago" },
-    { id: 2, action: "Saved", title: "Database Migration Project", time: "1 day ago" },
-    { id: 3, action: "Alert", title: "New IT tender matching your profile", time: "2 days ago" },
+    {
+      id: 1,
+      action: "Viewed",
+      title: "Cloud Services RFP",
+      time: "2 hours ago",
+    },
+    {
+      id: 2,
+      action: "Saved",
+      title: "Database Migration Project",
+      time: "1 day ago",
+    },
+    {
+      id: 3,
+      action: "Alert",
+      title: "New IT tender matching your profile",
+      time: "2 days ago",
+    },
   ];
 
   return (
-    <div className="max-w-7xl mx-auto p-6">
+    <div className=" mx-auto p-6">
       {/* Welcome Section */}
       <div className="mb-8">
-        <h2 className="text-2xl font-bold text-text mb-2">
-          Your Dashboard
-        </h2>
+        <h2 className="text-2xl font-bold text-text mb-2">Your Dashboard</h2>
         <p className="text-lg text-text-light">
           Here's what's happening with your tender opportunities
         </p>
@@ -69,9 +89,13 @@ export default function Dashboard() {
             <div className="p-2 bg-primary/10 rounded-lg">
               <Lightning className="w-5 h-5 text-primary" />
             </div>
-            <span className="text-sm text-green-600 font-medium">+{mockStats.newTenders}</span>
+            <span className="text-sm text-green-600 font-medium">
+              +{mockStats.newTenders}
+            </span>
           </div>
-          <h3 className="text-2xl font-bold text-text">{mockStats.newTenders}</h3>
+          <h3 className="text-2xl font-bold text-text">
+            {mockStats.newTenders}
+          </h3>
           <p className="text-sm text-text-light">New tenders this week</p>
         </div>
 
@@ -81,7 +105,9 @@ export default function Dashboard() {
               <Bookmark className="w-5 h-5 text-blue-600" />
             </div>
           </div>
-          <h3 className="text-2xl font-bold text-text">{mockStats.savedTenders}</h3>
+          <h3 className="text-2xl font-bold text-text">
+            {mockStats.savedTenders}
+          </h3>
           <p className="text-sm text-text-light">Saved opportunities</p>
         </div>
 
@@ -91,7 +117,9 @@ export default function Dashboard() {
               <Bell className="w-5 h-5 text-orange-600" />
             </div>
           </div>
-          <h3 className="text-2xl font-bold text-text">{mockStats.activeAlerts}</h3>
+          <h3 className="text-2xl font-bold text-text">
+            {mockStats.activeAlerts}
+          </h3>
           <p className="text-sm text-text-light">Active alerts</p>
         </div>
 
@@ -101,7 +129,9 @@ export default function Dashboard() {
               <Clock className="w-5 h-5 text-red-600" />
             </div>
           </div>
-          <h3 className="text-2xl font-bold text-text">{mockStats.deadlinesThisWeek}</h3>
+          <h3 className="text-2xl font-bold text-text">
+            {mockStats.deadlinesThisWeek}
+          </h3>
           <p className="text-sm text-text-light">Deadlines this week</p>
         </div>
       </div>
@@ -111,16 +141,25 @@ export default function Dashboard() {
         <div className="lg:col-span-2">
           <div className="bg-surface border border-border rounded-xl p-6">
             <div className="flex items-center justify-between mb-6">
-              <h3 className="text-xl font-semibold text-text">Recommended for You</h3>
-              <button className="text-primary hover:text-primary/80 font-medium">View All</button>
+              <h3 className="text-xl font-semibold text-text">
+                Recommended for You
+              </h3>
+              <button className="text-primary hover:text-primary/80 font-medium">
+                View All
+              </button>
             </div>
-            
+
             <div className="space-y-4">
               {mockRecommendedTenders.map((tender) => (
-                <div key={tender.id} className="p-4 border border-border rounded-lg hover:bg-background transition-colors">
+                <div
+                  key={tender.id}
+                  className="p-4 border border-border rounded-lg hover:bg-background transition-colors"
+                >
                   <div className="flex items-start justify-between mb-3">
                     <div className="flex-1">
-                      <h4 className="font-medium text-text mb-2 line-clamp-1">{tender.title}</h4>
+                      <h4 className="font-medium text-text mb-2 line-clamp-1">
+                        {tender.title}
+                      </h4>
                       <div className="flex items-center gap-4 text-sm text-text-light">
                         <span>{tender.organization}</span>
                         <span>•</span>
@@ -132,7 +171,9 @@ export default function Dashboard() {
                     <div className="flex items-center gap-2 ml-4">
                       <div className="flex items-center gap-1">
                         <Star className="w-4 h-4 text-yellow-500" />
-                        <span className="text-sm font-medium">{tender.relevanceScore}%</span>
+                        <span className="text-sm font-medium">
+                          {tender.relevanceScore}%
+                        </span>
                       </div>
                       <button className="p-1 text-text-light hover:text-text">
                         <Eye className="w-4 h-4" />
@@ -143,7 +184,9 @@ export default function Dashboard() {
                     <span className="text-xs bg-blue-100 text-blue-800 px-2 py-1 rounded-full">
                       {tender.type}
                     </span>
-                    <span className="text-sm text-text-light">Due: {tender.deadline}</span>
+                    <span className="text-sm text-text-light">
+                      Due: {tender.deadline}
+                    </span>
                   </div>
                 </div>
               ))}
@@ -154,16 +197,21 @@ export default function Dashboard() {
         {/* Recent Activity */}
         <div>
           <div className="bg-surface border border-border rounded-xl p-6">
-            <h3 className="text-xl font-semibold text-text mb-6">Recent Activity</h3>
+            <h3 className="text-xl font-semibold text-text mb-6">
+              Recent Activity
+            </h3>
             <div className="space-y-4">
               {mockRecentActivity.map((activity) => (
                 <div key={activity.id} className="flex items-start gap-3">
                   <div className="w-2 h-2 bg-primary rounded-full mt-2"></div>
                   <div className="flex-1">
                     <p className="text-sm text-text">
-                      <span className="font-medium">{activity.action}</span> {activity.title}
+                      <span className="font-medium">{activity.action}</span>{" "}
+                      {activity.title}
                     </p>
-                    <p className="text-xs text-text-light mt-1">{activity.time}</p>
+                    <p className="text-xs text-text-light mt-1">
+                      {activity.time}
+                    </p>
                   </div>
                 </div>
               ))}

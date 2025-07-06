@@ -7,7 +7,7 @@ interface TableProps {
 
 export function Table({ children, className = "" }: TableProps) {
   return (
-    <div className="overflow-hidden rounded-lg border border-border bg-surface shadow-sm">
+    <div className="overflow-hidden rounded-lg border border-border bg-surface max-w-7xl mx-auto">
       <div className="overflow-x-auto">
         <table className={`w-full border-collapse ${className}`}>
           {children}

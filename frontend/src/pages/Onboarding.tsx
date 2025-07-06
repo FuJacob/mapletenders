@@ -276,7 +276,7 @@ export default function Onboarding() {
       <div className="bg-surface border-b border-border p-6">
         <div className="max-w-4xl mx-auto flex justify-between items-center">
           <Link to="/" className="text-2xl font-bold text-primary">
-            Procuroo
+            MapleBids
           </Link>
           <div className="flex items-center gap-4">
             <span className="text-sm text-text-light">

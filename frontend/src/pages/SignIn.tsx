@@ -57,7 +57,9 @@ export default function SignIn() {
               <ArrowLeft className="w-4 h-4" />
               Back to home
             </Link>
-            <div className="text-3xl font-bold text-primary mb-2">Procuroo</div>
+            <div className="text-3xl font-bold text-primary mb-2">
+              MapleBids
+            </div>
             <h1 className="text-2xl font-bold text-text mb-2">Welcome back</h1>
             <p className="text-text-light">
               Sign in to continue finding winning opportunities
@@ -203,8 +205,8 @@ export default function SignIn() {
                   Found $1.2M in contracts
                 </div>
                 <div className="text-sm text-text-light">
-                  "Procuroo helped us discover opportunities we never would have
-                  found manually."
+                  "MapleBids helped us discover opportunities we never would
+                  have found manually."
                 </div>
               </div>
             </div>

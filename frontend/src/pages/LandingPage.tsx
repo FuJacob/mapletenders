@@ -18,7 +18,6 @@ import {
 } from "@phosphor-icons/react";
 import { useNavigate } from "react-router-dom";
 import { filterOpenTenderNotices } from "../api";
-import { Header } from "../components/layout";
 
 export default function LandingPage() {
   const navigate = useNavigate();
@@ -72,9 +71,6 @@ export default function LandingPage() {
 
   return (
     <div className="min-h-screen bg-background">
-      {/* Header */}
-      <Header />
-
       {/* Hero Search Section */}
       <section className="flex flex-col items-center justify-center min-h-[80vh] px-6 bg-background">
         <div className="text-center max-w-4xl mx-auto">
@@ -225,7 +221,7 @@ export default function LandingPage() {
           <div className="grid md:grid-cols-2 gap-12 items-center">
             <div className="text-left">
               <h3 className="text-2xl font-semibold mb-6">
-                Traditional Search vs. Procuroo
+                Traditional Search vs. MapleBids
               </h3>
 
               <div className="space-y-6">
@@ -241,7 +237,7 @@ export default function LandingPage() {
                 </div>
 
                 <div className="border rounded-lg p-4">
-                  <div className="text-sm mb-2">✅ Procuroo AI:</div>
+                  <div className="text-sm mb-2">✅ MapleBids AI:</div>
                   <div className="font-mono text-xs p-2 border rounded">
                     "I need software development help for a small project in
                     Toronto"
@@ -421,24 +417,6 @@ export default function LandingPage() {
           </div>
         </div>
       </section>
-
-      {/* Minimal Footer */}
-      <footer className="py-8 px-6 border-t text-center text-sm">
-        <div className="max-w-4xl mx-auto flex justify-between items-center">
-          <div>© 2025 Procuroo</div>
-          <div className="flex gap-6">
-            <a href="#" className="hover:underline">
-              Privacy
-            </a>
-            <a href="#" className="hover:underline">
-              Terms
-            </a>
-            <a href="#" className="hover:underline">
-              Contact
-            </a>
-          </div>
-        </div>
-      </footer>
     </div>
   );
 }

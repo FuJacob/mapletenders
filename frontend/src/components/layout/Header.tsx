@@ -20,7 +20,7 @@ export default function Header({
       } ${className}`}
     >
       <Link to="/" className="text-2xl font-bold text-primary">
-        Procuroo
+        mapleBids
       </Link>
 
       {showNavigation && (

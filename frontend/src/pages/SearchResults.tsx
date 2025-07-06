@@ -77,7 +77,7 @@ export default function SearchResults() {
     <div className="min-h-screen bg-background">
       {/* Header */}
       <div className="bg-surface border-b border-border p-6">
-        <div className="max-w-7xl mx-auto">
+        <div className=" mx-auto">
           <div className="flex items-center gap-4 mb-4">
             <Link
               to="/"
@@ -86,7 +86,7 @@ export default function SearchResults() {
               <ArrowLeft className="w-5 h-5" />
             </Link>
             <Link to="/" className="text-2xl font-bold text-primary">
-              Procuroo
+              MapleBids
             </Link>
           </div>
 
@@ -104,7 +104,7 @@ export default function SearchResults() {
         </div>
       </div>
 
-      <div className="max-w-7xl mx-auto p-6">
+      <div className=" mx-auto p-6">
         <div className="flex gap-8">
           {/* Filters Sidebar */}
           <div

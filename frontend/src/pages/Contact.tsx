@@ -80,7 +80,7 @@ export default function Contact() {
     {
       icon: <Lightning className="w-5 h-5 text-accent" />,
       title: "Product Demo",
-      description: "See Procuroo in action with a personalized demo",
+      description: "See MapleBids in action with a personalized demo",
       cta: "Book demo",
     },
     {
@@ -98,7 +98,7 @@ export default function Contact() {
     {
       icon: <Calendar className="w-5 h-5 text-secondary" />,
       title: "Training & Onboarding",
-      description: "Learn how to maximize your success with Procuroo",
+      description: "Learn how to maximize your success with MapleBids",
       cta: "Schedule training",
     },
   ];
@@ -157,7 +157,7 @@ export default function Contact() {
         <div className="max-w-4xl mx-auto">
           <h1 className="text-4xl font-bold mb-4 text-text">Get in touch</h1>
           <p className="text-xl text-text-light mb-8">
-            Have questions about Procuroo? We're here to help you succeed.
+            Have questions about MapleBids? We're here to help you succeed.
           </p>
 
           {/* Quick Stats */}
@@ -485,7 +485,7 @@ export default function Contact() {
       {/* Footer */}
       <footer className="py-8 px-6 border-t text-center text-sm">
         <div className="max-w-4xl mx-auto flex justify-between items-center">
-          <div>© 2025 Procuroo</div>
+          <div>© 2025 MapleBids</div>
           <div className="flex gap-6">
             <Link to="/privacy" className="hover:underline text-text-light">
               Privacy

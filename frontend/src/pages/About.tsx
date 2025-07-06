@@ -87,7 +87,7 @@ export default function About() {
       icon: <TrendUp className="w-8 h-8 text-secondary" />,
       number: "$2.8B",
       label: "Contract Value",
-      description: "Total value of opportunities discovered through Procuroo",
+      description: "Total value of opportunities discovered through MapleBids",
     },
   ];
 
@@ -102,7 +102,7 @@ export default function About() {
             We're democratizing government contracts
           </h1>
           <p className="text-xl text-text-light mb-8 max-w-3xl mx-auto">
-            Procuroo was born from a simple frustration: why should finding
+            MapleBids was born from a simple frustration: why should finding
             government opportunities be so hard? We're building AI that makes
             contract discovery as easy as asking a question.
           </p>
@@ -338,7 +338,7 @@ export default function About() {
       {/* Footer */}
       <footer className="py-8 px-6 border-t text-center text-sm">
         <div className="max-w-4xl mx-auto flex justify-between items-center">
-          <div>© 2025 Procuroo</div>
+          <div>© 2025 MapleBids</div>
           <div className="flex gap-6">
             <Link to="/privacy" className="hover:underline text-text-light">
               Privacy

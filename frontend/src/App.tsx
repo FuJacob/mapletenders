@@ -18,6 +18,7 @@ import { loadSession } from "./features/auth/authThunks";
 import { useEffect } from "react";
 import TableView from "./pages/TableView";
 import Test from "./pages/Test";
+import Layout from "./routes/Layout";
 
 export function App() {
   const dispatch = useAppDispatch();
@@ -27,25 +28,27 @@ export function App() {
 
   return (
     <Routes>
-      <Route element={<GuestRoutes />}>
-        <Route path="/" element={<LandingPage />} />
-        <Route path="/sign-in" element={<SignIn />} />
-        <Route path="/sign-up" element={<SignUp />} />
-        <Route path="/pricing" element={<Pricing />} />
-        <Route path="/about" element={<About />} />
-        <Route path="/contact" element={<Contact />} />
-      </Route>
-      <Route element={<ProtectedRoutes />}>
-        <Route element={<OnboardingRequiredRoutes />}>
-          <Route path="/table-view" element={<TableView />} />
-          <Route path="/rfp" element={<Rfp />} />
-          <Route path="/home" element={<Home />} />
-          <Route path="/search" element={<SearchResults />} />
+      <Route element={<Layout />}>
+        <Route element={<GuestRoutes />}>
+          <Route path="/" element={<LandingPage />} />
+          <Route path="/sign-in" element={<SignIn />} />
+          <Route path="/sign-up" element={<SignUp />} />
+          <Route path="/pricing" element={<Pricing />} />
+          <Route path="/about" element={<About />} />
+          <Route path="/contact" element={<Contact />} />
         </Route>
-        <Route path="/onboarding" element={<Onboarding />} />
+        <Route element={<ProtectedRoutes />}>
+          <Route element={<OnboardingRequiredRoutes />}>
+            <Route path="/table-view" element={<TableView />} />
+            <Route path="/rfp" element={<Rfp />} />
+            <Route path="/home" element={<Home />} />
+            <Route path="/search" element={<SearchResults />} />
+          </Route>
+          <Route path="/onboarding" element={<Onboarding />} />
+        </Route>
+        <Route path="/test" element={<Test />} />
+        <Route path="/leadgenchatv2" element={<LeadGenChatV2 />} />
       </Route>
-      <Route path="/test" element={<Test />} />
-      <Route path="/leadgenchatv2" element={<LeadGenChatV2 />} />
     </Routes>
   );
 }

@@ -161,7 +161,7 @@ export default function SignUp() {
                 <span className="font-semibold text-text">
                   5,000+ businesses
                 </span>{" "}
-                already winning with Procuroo
+                already winning with MapleBids
               </div>
             </div>
             <div className="text-sm text-text-light italic">
@@ -187,7 +187,9 @@ export default function SignUp() {
               <ArrowLeft className="w-4 h-4" />
               Back to home
             </Link>
-            <div className="text-3xl font-bold text-primary mb-2">Procuroo</div>
+            <div className="text-3xl font-bold text-primary mb-2">
+              MapleBids
+            </div>
             <h1 className="text-2xl font-bold text-text mb-2">
               Start winning today
             </h1>
