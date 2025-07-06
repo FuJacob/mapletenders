@@ -1,0 +1,22 @@
+/* Table column resizer styles */
+.resizer {
+  position: absolute;
+  right: 0;
+  top: 0;
+  height: 100%;
+  width: 5px;
+  background: rgba(0, 0, 0, 0.05);
+  cursor: col-resize;
+  user-select: none;
+  touch-action: none;
+  opacity: 0;
+}
+
+.resizer.isResizing {
+  background: rgba(0, 0, 0, 0.2);
+  opacity: 1;
+}
+
+*:hover > .resizer {
+  opacity: 1;
+}

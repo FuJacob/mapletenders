@@ -3,6 +3,7 @@ import {
   getCoreRowModel,
   flexRender,
   getPaginationRowModel,
+  type ColumnResizeMode,
 } from "@tanstack/react-table";
 import { useAppSelector } from "../../app/hooks";
 import { tenderColumns } from "../../features/tenders/tenderColumns";
@@ -19,6 +20,7 @@ import {
 
 import { useState } from "react";
 import TablePaginationControls from "./TablePaginationControls";
+import "./tableStyles.css";
 interface TenderTableProps {
   isLoading?: boolean;
 }
@@ -28,6 +30,7 @@ export default function TenderTable({ isLoading = false }: TenderTableProps) {
     pageIndex: 0,
     pageSize: 50,
   });
+  const [columnResizeMode] = useState<ColumnResizeMode>("onChange");
   const tenders = useAppSelector(selectTenders);
 
   const table = useReactTable({
@@ -35,11 +38,13 @@ export default function TenderTable({ isLoading = false }: TenderTableProps) {
     columns: tenderColumns,
     getCoreRowModel: getCoreRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
+    columnResizeMode,
     state: {
       pagination,
     },
     onPaginationChange: setPagination,
     rowCount: tenders ? tenders.length : 0,
+    enableColumnResizing: true,
   });
 
   // Show loading state
@@ -65,35 +70,76 @@ export default function TenderTable({ isLoading = false }: TenderTableProps) {
 
   return (
     <>
-      <Table>
-        <TableHeader>
-          {table.getHeaderGroups().map((headerGroup) => (
-            <TableRow key={headerGroup.id} isHeader>
-              {headerGroup.headers.map((header) => (
-                <TableCell key={header.id} isHeader>
-                  {header.isPlaceholder
-                    ? null
-                    : flexRender(
-                        header.column.columnDef.header,
-                        header.getContext()
+      <div className="rounded-lg border border-border bg-surface">
+        <Table>
+          <TableHeader>
+            {table.getHeaderGroups().map((headerGroup) => (
+              <TableRow key={headerGroup.id} isHeader>
+                {headerGroup.headers.map((header) => {
+                  const column = header.column.columnDef;
+                  const width = column.size ? `${column.size}px` : undefined;
+
+                  return (
+                    <TableCell
+                      key={header.id}
+                      isHeader
+                      width={width}
+                      className="relative select-none"
+                    >
+                      {header.isPlaceholder ? null : (
+                        <div className="flex items-center justify-between">
+                          {flexRender(
+                            header.column.columnDef.header,
+                            header.getContext()
+                          )}
+                        </div>
                       )}
-                </TableCell>
-              ))}
-            </TableRow>
-          ))}
-        </TableHeader>
-        <TableBody>
-          {table.getRowModel().rows.map((row) => (
-            <TableRow key={row.id}>
-              {row.getVisibleCells().map((cell) => (
-                <TableCell key={cell.id}>
-                  {flexRender(cell.column.columnDef.cell, cell.getContext())}
-                </TableCell>
-              ))}
-            </TableRow>
-          ))}
-        </TableBody>
-      </Table>
+                      {header.column.getCanResize() && (
+                        <div
+                          className={`resizer ${
+                            header.column.getIsResizing() ? "isResizing" : ""
+                          }`}
+                          onMouseDown={header.getResizeHandler()}
+                          onTouchStart={header.getResizeHandler()}
+                        />
+                      )}
+                    </TableCell>
+                  );
+                })}
+              </TableRow>
+            ))}
+          </TableHeader>
+          <TableBody>
+            {table.getRowModel().rows.map((row) => (
+              <TableRow key={row.id} className="hover:bg-gray-50">
+                {row.getVisibleCells().map((cell) => {
+                  const column = cell.column.columnDef;
+                  const width = column.size ? `${column.size}px` : undefined;
+
+                  // Only use truncate for columns that aren't Tender or Dates
+                  const useTruncate =
+                    cell.column.id !== "title" &&
+                    cell.column.id !== "publication_date";
+
+                  return (
+                    <TableCell
+                      key={cell.id}
+                      width={width}
+                      truncate={useTruncate}
+                      className={cell.column.id === "title" ? "align-top" : ""}
+                    >
+                      {flexRender(
+                        cell.column.columnDef.cell,
+                        cell.getContext()
+                      )}
+                    </TableCell>
+                  );
+                })}
+              </TableRow>
+            ))}
+          </TableBody>
+        </Table>
+      </div>
       <TablePaginationControls
         getCanNextPage={table.getCanNextPage}
         getCanPreviousPage={table.getCanPreviousPage}
