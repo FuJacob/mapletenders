@@ -6,7 +6,7 @@ import axios from "axios";
  */
 const API_BASE_URL = "http://localhost:4000";
 const PDF_ANALYSIS_URL = "http://localhost:4500";
-
+const ML_BACKEND_URL = "http://127.0.0.1:8000";
 /**
  * Interface defining the structure of a tender notice
  */
@@ -128,4 +128,9 @@ export const analyzePdf = async (formData: FormData) => {
 export const getRfpAnalysis = async (rfpData: any) => {
   const response = await axios.post(`${API_BASE_URL}/getRfpAnalysis`, rfpData);
   return response.data;
+};
+
+export const filterByVector = async (q: string) => {
+  const response = await axios.post(`${API_BASE_URL}/filterByVector`, { q });
+  return response.data.tenders;
 };

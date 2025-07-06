@@ -1,3 +1,4 @@
+import { type Database } from "../../../database.types";
 export interface TenderNoticeInterface {
   "title-titre-eng": string;
   "tenderStatus-appelOffresStatut-eng": string;
@@ -25,3 +26,5 @@ export interface TenderNoticeInterface {
   "attachment-piecesJointes-eng": string;
   "tenderDescription-descriptionAppelOffres-eng": string;
 }
+
+export type Tender = Database["public"]["Tables"]["tenders"]["Row"]

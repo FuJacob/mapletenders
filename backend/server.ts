@@ -25,41 +25,50 @@ const targetColumns: { [key: string]: string } = {
   "publicationDate-datePublication": "publication_date",
   "tenderClosingDate-appelOffresDateCloture": "tender_closing_date",
   "amendmentDate-dateModification": "amendment_date",
-  "expectedContractStartDate-dateDebutContratPrevue": "expected_contract_start_date",
+  "expectedContractStartDate-dateDebutContratPrevue":
+    "expected_contract_start_date",
   "expectedContractEndDate-dateFinContratPrevue": "expected_contract_end_date",
   "tenderStatus-appelOffresStatut-eng": "tender_status",
   "gsin-nibs": "gsin",
   "gsinDescription-nibsDescription-eng": "gsin_description",
-  "unspsc": "unspsc",
+  unspsc: "unspsc",
   "unspscDescription-eng": "unspsc_description",
   "procurementCategory-categorieApprovisionnement": "procurement_category",
   "noticeType-avisType-eng": "notice_type",
   "procurementMethod-methodeApprovisionnement-eng": "procurement_method",
   "selectionCriteria-criteresSelection-eng": "selection_criteria",
-  "limitedTenderingReason-raisonAppelOffresLimite-eng": "limited_tendering_reason",
+  "limitedTenderingReason-raisonAppelOffresLimite-eng":
+    "limited_tendering_reason",
   "tradeAgreements-accordsCommerciaux-eng": "trade_agreements",
   "regionsOfOpportunity-regionAppelOffres-eng": "regions_of_opportunity",
   "regionsOfDelivery-regionsLivraison-eng": "regions_of_delivery",
   "contractingEntityName-nomEntitContractante-eng": "contracting_entity_name",
-  "contractingEntityAddressLine-ligneAdresseEntiteContractante-eng": "contracting_entity_address_line",
-  "contractingEntityAddressCity-entiteContractanteAdresseVille-eng": "contracting_entity_city",
-  "contractingEntityAddressProvince-entiteContractanteAdresseProvince-eng": "contracting_entity_province",
-  "contractingEntityAddressPostalCode-entiteContractanteAdresseCodePostal": "contracting_entity_postal_code",
-  "contractingEntityAddressCountry-entiteContractanteAdressePays-eng": "contracting_entity_country",
-  "endUserEntitiesName-nomEntitesUtilisateurFinal-eng": "end_user_entities_name",
-  "endUserEntitiesAddress-adresseEntitesUtilisateurFinal-eng": "end_user_entities_address",
+  "contractingEntityAddressLine-ligneAdresseEntiteContractante-eng":
+    "contracting_entity_address_line",
+  "contractingEntityAddressCity-entiteContractanteAdresseVille-eng":
+    "contracting_entity_city",
+  "contractingEntityAddressProvince-entiteContractanteAdresseProvince-eng":
+    "contracting_entity_province",
+  "contractingEntityAddressPostalCode-entiteContractanteAdresseCodePostal":
+    "contracting_entity_postal_code",
+  "contractingEntityAddressCountry-entiteContractanteAdressePays-eng":
+    "contracting_entity_country",
+  "endUserEntitiesName-nomEntitesUtilisateurFinal-eng":
+    "end_user_entities_name",
+  "endUserEntitiesAddress-adresseEntitesUtilisateurFinal-eng":
+    "end_user_entities_address",
   "contactInfoName-informationsContactNom": "contact_name",
   "contactInfoEmail-informationsContactCourriel": "contact_email",
   "contactInfoPhone-contactInfoTelephone": "contact_phone",
-  "contactInfoFax": "contact_fax",
+  contactInfoFax: "contact_fax",
   "contactInfoAddressLine-contactInfoAdresseLigne-eng": "contact_address_line",
   "contactInfoCity-contacterInfoVille-eng": "contact_city",
   "contactInfoProvince-contacterInfoProvince-eng": "contact_province",
-  "contactInfoPostalcode": "contact_postal_code",
+  contactInfoPostalcode: "contact_postal_code",
   "contactInfoCountry-contactInfoPays-eng": "contact_country",
   "noticeURL-URLavis-eng": "notice_url",
   "attachment-piecesJointes-eng": "attachments",
-  "tenderDescription-descriptionAppelOffres-eng": "tender_description"
+  "tenderDescription-descriptionAppelOffres-eng": "tender_description",
 };
 
 const app = express();
@@ -214,7 +223,7 @@ app.get("/getOpenTenderNotices", async (req, res) => {
  * @param {string} req.body.prompt - The filtering criteria
  * @returns {Object[]} Filtered tender notices
  */
-app.get("/filterOpenTenderNotices", async (req, res) => {
+app.post("/filterOpenTenderNotices", async (req, res) => {
   try {
     const search = req.query.search || "";
     // Clear existing filtered notices
@@ -373,7 +382,7 @@ app.post("/getOpenTenderNoticesToDB", async (req, res) => {
     console.log("Generating embeddings for filtered data...");
 
     const embeddingsResponse = await axios.post(
-      "http://127.0.0.1:8000/embeddings/generate",
+      "http://127.0.0.1:8000/embeddings/generate/data",
       filteredData
     );
     console.log("Embeddings response:", embeddingsResponse.data);
@@ -410,9 +419,7 @@ app.post("/getOpenTenderNoticesToDB", async (req, res) => {
  */
 app.get("/getOpenTenderNoticesFromDB", async (req, res) => {
   try {
-    const { data, error } = await supabase
-      .from("tenders")
-      .select("*");
+    const { data, error } = await supabase.from("tenders").select("*");
 
     if (error) {
       throw new Error(`Failed to fetch tender notices: ${error.message}`);
@@ -425,10 +432,74 @@ app.get("/getOpenTenderNoticesFromDB", async (req, res) => {
   }
 });
 
+/**
+ * Search tenders using vector similarity
+ * @route POST /filterByVector
+ * @param {string} req.body.query - The search query
+ * @returns {Object[]} Array of matching tender notices
+ */
+app.post("/filterByVector", async (req, res) => {
+  try {
+console.log(req.body);
+    const { q } = req.body || {};
+
+    if (!q) {
+      res.status(400).json({ error: "Query is required" });
+    }
+
+    console.log(`Processing vector search for query: "${q}"`);
+
+    try {
+      // Get embedding from ML endpoint
+      const embeddingResponse = await axios.post(
+        "http://127.0.0.1:8000/embeddings/generate/query",
+        {
+          q,
+        }
+      );
+
+      const vector = embeddingResponse.data.embedded_query;
+
+      // Validate vector
+      if (!Array.isArray(vector) || vector.length === 0) {
+        res
+          .status(400)
+          .json({ error: "Invalid embedding vector returned from ML service" });
+      }
+
+      // Query Supabase for matching tenders using vector similarity
+      const { data: tenders, error } = await supabase.rpc(
+        "match_tenders_by_vector",
+        {
+          query_embedding: vector,
+          match_threshold: 0.78,
+          match_count: 10,
+        }
+      );
+
+      if (error) {
+        throw new Error(`Failed to match tenders: ${error.message}`);
+      }
+
+      console.log(`Found ${tenders?.length || 0} matching tenders`);
+      res.json({ tenders: tenders || [] });
+    } catch (mlError: any) {
+      console.error("Error connecting to ML service:", mlError.message);
+      res
+        .status(503)
+        .json({ error: "ML service unavailable", details: mlError.message });
+    }
+  } catch (error: any) {
+    console.error("Error in /filterByVector:", error);
+    res.status(500).json({ error: "Failed to filter by vector" });
+  }
+});
+
 // Serve static files from the 'assets' folder
 app.use("/assets", express.static(path.join(__dirname, "assets")));
 
-const server = app.listen(process.env.PORT, () => {
-  console.log(`Listening at http://localhost:${process.env.PORT}`);
+const PORT = process.env.PORT || 4000;
+const server = app.listen(PORT, () => {
+  console.log(`Listening at http://localhost:${PORT}`);
 });
 server.on("error", console.error);

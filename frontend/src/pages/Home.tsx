@@ -5,7 +5,7 @@ import {
   selectAuthProfile,
   selectAuthUser,
 } from "../features/auth/authSelectors";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import {
   MagnifyingGlass,
   Bell,
@@ -24,6 +24,7 @@ import {
 } from "@phosphor-icons/react";
 
 export default function Home() {
+  const navigate = useNavigate();
   const dispatch = useAppDispatch();
   const user = useAppSelector(selectAuthUser);
   const profile = useAppSelector(selectAuthProfile);
@@ -39,6 +40,11 @@ export default function Home() {
     savedTenders: 8,
     activeAlerts: 3,
     deadlinesThisWeek: 5,
+  };
+
+  const handleSubmitSearch = () => {
+    console.log("Searching for:", searchQuery);
+    navigate(`/search?q=${encodeURIComponent(searchQuery)}`);
   };
 
   const mockRecommendedTenders = [
@@ -179,6 +185,9 @@ export default function Home() {
               <input
                 type="text"
                 value={searchQuery}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter") handleSubmitSearch();
+                }}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 placeholder="Try: 'IT services contracts in Toronto under $100K'"
                 className="w-full p-6 text-lg border-2 border-border rounded-2xl pr-16 focus:outline-none focus:border-primary bg-surface text-text placeholder-text-light"
@@ -187,6 +196,7 @@ export default function Home() {
               <button
                 className="absolute right-4 top-1/2 transform -translate-y-1/2 px-6 py-3 bg-primary text-white rounded-xl font-medium hover:bg-primary-dark transition-colors flex items-center gap-2"
                 disabled={false}
+                onClick={handleSubmitSearch}
               >
                 <MagnifyingGlass className="w-4 h-4" />
                 Search

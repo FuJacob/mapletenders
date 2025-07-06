@@ -40,7 +40,7 @@ export function App() {
           <Route path="/table-view" element={<TableView />} />
           <Route path="/rfp" element={<Rfp />} />
           <Route path="/home" element={<Home />} />
-          <Route path="/search-results" element={<SearchResults />} />
+          <Route path="/search" element={<SearchResults />} />
         </Route>
         <Route path="/onboarding" element={<Onboarding />} />
       </Route>

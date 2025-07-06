@@ -13,12 +13,30 @@ class EmbeddingResponse(BaseModel):
     embeddings: List[List[float]]
     embedding_inputs: List[str]
 
+class EmbeddingQueryRequest(BaseModel):
+    q: str
+
+class EmbeddingQueryResponse(BaseModel):
+    embedded_query: List[float]
+
 model = SentenceTransformer("all-MiniLM-L6-v2")
 
 router = APIRouter(prefix="/embeddings", tags=["embeddings"])
 
+@router.post("/generate/query", response_model=EmbeddingQueryResponse)
+def generate_embedded_search(request: EmbeddingQueryRequest):
+    """
+    Generate an embedding for a search query
+    """
+    q = request.q
+    if not q:
+        raise HTTPException(status_code=400, detail="Query cannot be empty")
+    embedding = model.encode([q])
+    return {"embedded_query": embedding.tolist()[0]}
 
-@router.post("/generate", response_model=EmbeddingResponse)
+
+
+@router.post("/generate/data", response_model=EmbeddingResponse)
 async def generate_embedding(data: List[Dict[str, Any]]):
     """
     Generate embeddings for a list of tender objects
