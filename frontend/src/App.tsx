@@ -9,6 +9,7 @@ import Pricing from "./pages/Pricing";
 import About from "./pages/About";
 import Contact from "./pages/Contact";
 import Home from "./pages/Home";
+import SearchResults from "./pages/SearchResults";
 import GuestRoutes from "./routes/GuestRoutes";
 import ProtectedRoutes from "./routes/ProtectedRoutes";
 import OnboardingRequiredRoutes from "./routes/OnboardingRequiredRoutes";
@@ -38,6 +39,7 @@ export function App() {
         <Route element={<OnboardingRequiredRoutes />}>
           <Route path="/rfp" element={<Rfp />} />
           <Route path="/home" element={<Home />} />
+          <Route path="/search-results" element={<SearchResults />} />
         </Route>
         <Route path="/onboarding" element={<Onboarding />} />
       </Route>

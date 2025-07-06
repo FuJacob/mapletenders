@@ -255,6 +255,8 @@ export type Database = {
             | string
             | null
           "contractingEntityName-nomEntitContractante-eng": string | null
+          embedding: string | null
+          embedding_input: string | null
           "endUserEntitiesAddress-adresseEntitesUtilisateurFinal-eng":
             | string
             | null
@@ -312,6 +314,8 @@ export type Database = {
             | string
             | null
           "contractingEntityName-nomEntitContractante-eng"?: string | null
+          embedding?: string | null
+          embedding_input?: string | null
           "endUserEntitiesAddress-adresseEntitesUtilisateurFinal-eng"?:
             | string
             | null
@@ -369,6 +373,8 @@ export type Database = {
             | string
             | null
           "contractingEntityName-nomEntitContractante-eng"?: string | null
+          embedding?: string | null
+          embedding_input?: string | null
           "endUserEntitiesAddress-adresseEntitesUtilisateurFinal-eng"?:
             | string
             | null
@@ -401,70 +407,40 @@ export type Database = {
       }
       profiles: {
         Row: {
-          annual_bid_volume: string | null
-          annual_revenue: string | null
-          business_type: string | null
-          company_name: string
+          company_name: string | null
           company_size: string | null
           created_at: string | null
-          current_search_method: string | null
-          email: string
-          full_name: string | null
           government_experience: string | null
-          headquarters_province: string | null
           id: string
           industry: string | null
           onboarding_completed: boolean | null
-          phone: string | null
           primary_services: string[] | null
-          primary_use_case: string | null
-          referral_source: string | null
           service_regions: string[] | null
           typical_contract_size: string | null
           updated_at: string | null
         }
         Insert: {
-          annual_bid_volume?: string | null
-          annual_revenue?: string | null
-          business_type?: string | null
-          company_name: string
+          company_name?: string | null
           company_size?: string | null
           created_at?: string | null
-          current_search_method?: string | null
-          email: string
-          full_name?: string | null
           government_experience?: string | null
-          headquarters_province?: string | null
-          id: string
+          id?: string
           industry?: string | null
           onboarding_completed?: boolean | null
-          phone?: string | null
           primary_services?: string[] | null
-          primary_use_case?: string | null
-          referral_source?: string | null
           service_regions?: string[] | null
           typical_contract_size?: string | null
           updated_at?: string | null
         }
         Update: {
-          annual_bid_volume?: string | null
-          annual_revenue?: string | null
-          business_type?: string | null
-          company_name?: string
+          company_name?: string | null
           company_size?: string | null
           created_at?: string | null
-          current_search_method?: string | null
-          email?: string
-          full_name?: string | null
           government_experience?: string | null
-          headquarters_province?: string | null
           id?: string
           industry?: string | null
           onboarding_completed?: boolean | null
-          phone?: string | null
           primary_services?: string[] | null
-          primary_use_case?: string | null
-          referral_source?: string | null
           service_regions?: string[] | null
           typical_contract_size?: string | null
           updated_at?: string | null
@@ -486,6 +462,150 @@ export type Database = {
           created_at?: string | null
           data?: string | null
           id?: number
+        }
+        Relationships: []
+      }
+      tenders: {
+        Row: {
+          amendment_date: string | null
+          amendment_number: string | null
+          attachments: string | null
+          contact_address_line: string | null
+          contact_city: string | null
+          contact_country: string | null
+          contact_email: string | null
+          contact_fax: string | null
+          contact_name: string | null
+          contact_phone: string | null
+          contact_postal_code: string | null
+          contact_province: string | null
+          contracting_entity_address_line: string | null
+          contracting_entity_city: string | null
+          contracting_entity_country: string | null
+          contracting_entity_name: string | null
+          contracting_entity_postal_code: string | null
+          contracting_entity_province: string | null
+          embedding: string | null
+          embedding_input: string | null
+          end_user_entities_address: string | null
+          end_user_entities_name: string | null
+          expected_contract_end_date: string | null
+          expected_contract_start_date: string | null
+          gsin: string | null
+          gsin_description: string | null
+          id: string
+          limited_tendering_reason: string | null
+          notice_type: string | null
+          notice_url: string | null
+          procurement_category: string | null
+          procurement_method: string | null
+          publication_date: string | null
+          reference_number: string | null
+          regions_of_delivery: string | null
+          regions_of_opportunity: string | null
+          selection_criteria: string | null
+          solicitation_number: string | null
+          tender_closing_date: string | null
+          tender_description: string | null
+          tender_status: string | null
+          title: string | null
+          trade_agreements: string | null
+          unspsc: string | null
+          unspsc_description: string | null
+        }
+        Insert: {
+          amendment_date?: string | null
+          amendment_number?: string | null
+          attachments?: string | null
+          contact_address_line?: string | null
+          contact_city?: string | null
+          contact_country?: string | null
+          contact_email?: string | null
+          contact_fax?: string | null
+          contact_name?: string | null
+          contact_phone?: string | null
+          contact_postal_code?: string | null
+          contact_province?: string | null
+          contracting_entity_address_line?: string | null
+          contracting_entity_city?: string | null
+          contracting_entity_country?: string | null
+          contracting_entity_name?: string | null
+          contracting_entity_postal_code?: string | null
+          contracting_entity_province?: string | null
+          embedding?: string | null
+          embedding_input?: string | null
+          end_user_entities_address?: string | null
+          end_user_entities_name?: string | null
+          expected_contract_end_date?: string | null
+          expected_contract_start_date?: string | null
+          gsin?: string | null
+          gsin_description?: string | null
+          id?: string
+          limited_tendering_reason?: string | null
+          notice_type?: string | null
+          notice_url?: string | null
+          procurement_category?: string | null
+          procurement_method?: string | null
+          publication_date?: string | null
+          reference_number?: string | null
+          regions_of_delivery?: string | null
+          regions_of_opportunity?: string | null
+          selection_criteria?: string | null
+          solicitation_number?: string | null
+          tender_closing_date?: string | null
+          tender_description?: string | null
+          tender_status?: string | null
+          title?: string | null
+          trade_agreements?: string | null
+          unspsc?: string | null
+          unspsc_description?: string | null
+        }
+        Update: {
+          amendment_date?: string | null
+          amendment_number?: string | null
+          attachments?: string | null
+          contact_address_line?: string | null
+          contact_city?: string | null
+          contact_country?: string | null
+          contact_email?: string | null
+          contact_fax?: string | null
+          contact_name?: string | null
+          contact_phone?: string | null
+          contact_postal_code?: string | null
+          contact_province?: string | null
+          contracting_entity_address_line?: string | null
+          contracting_entity_city?: string | null
+          contracting_entity_country?: string | null
+          contracting_entity_name?: string | null
+          contracting_entity_postal_code?: string | null
+          contracting_entity_province?: string | null
+          embedding?: string | null
+          embedding_input?: string | null
+          end_user_entities_address?: string | null
+          end_user_entities_name?: string | null
+          expected_contract_end_date?: string | null
+          expected_contract_start_date?: string | null
+          gsin?: string | null
+          gsin_description?: string | null
+          id?: string
+          limited_tendering_reason?: string | null
+          notice_type?: string | null
+          notice_url?: string | null
+          procurement_category?: string | null
+          procurement_method?: string | null
+          publication_date?: string | null
+          reference_number?: string | null
+          regions_of_delivery?: string | null
+          regions_of_opportunity?: string | null
+          selection_criteria?: string | null
+          solicitation_number?: string | null
+          tender_closing_date?: string | null
+          tender_description?: string | null
+          tender_status?: string | null
+          title?: string | null
+          trade_agreements?: string | null
+          unspsc?: string | null
+          unspsc_description?: string | null
         }
         Relationships: []
       }

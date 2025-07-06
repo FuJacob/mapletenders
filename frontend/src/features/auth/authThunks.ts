@@ -5,6 +5,7 @@ import {
   setAuthLoading,
   setAuthError,
   setOnboardingCompleted,
+  setAuthProfile,
 } from "./authSlice";
 import { type AppDispatch } from "../../app/store";
 
@@ -69,8 +70,19 @@ export const loadSession = () => async (dispatch: AppDispatch) => {
   const session = data.session;
   const user = session?.user;
 
+  const { data: existingProfile, error: profileFetchError } = await supabase
+    .from("profiles")
+    .select("*")
+    .eq("id", user?.id)
+    .single();
+
+  if (profileFetchError) {
+    console.error("Error fetching profile:", profileFetchError);
+  }
+
   if (user) {
     dispatch(setSession({ session, user }));
+    dispatch(setAuthProfile(existingProfile));
     dispatch(setOnboardingCompleted(true));
   }
   dispatch(setAuthLoading(false));

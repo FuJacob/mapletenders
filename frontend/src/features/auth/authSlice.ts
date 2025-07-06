@@ -1,13 +1,16 @@
 import { createSlice, type PayloadAction } from "@reduxjs/toolkit";
 import type { Session, User } from "@supabase/supabase-js";
-
+import { type Database } from "../../../database.types";
 interface AuthState {
   user: User | null;
   session: Session | null;
   loading: boolean;
   error: string | null;
   onboarding_completed: boolean; // Optional field for onboarding status
+  profile: Profile | null; // Optional field for user profile
 }
+
+type Profile = Database["public"]["Tables"]["profiles"]["Row"];
 
 const initialState: AuthState = {
   user: null,
@@ -15,6 +18,7 @@ const initialState: AuthState = {
   loading: false,
   error: null,
   onboarding_completed: false,
+  profile: null, // Optional field for user profile
 };
 
 const authSlice = createSlice({
@@ -41,6 +45,9 @@ const authSlice = createSlice({
     setOnboardingCompleted: (state, action: PayloadAction<boolean>) => {
       state.onboarding_completed = action.payload;
     },
+    setAuthProfile: (state, action: PayloadAction<Profile | null>) => {
+      state.profile = action.payload;
+    },
   },
 });
 
@@ -50,5 +57,6 @@ export const {
   setAuthLoading,
   setAuthError,
   setOnboardingCompleted,
+  setAuthProfile,
 } = authSlice.actions;
 export default authSlice.reducer;

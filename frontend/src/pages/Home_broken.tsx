@@ -5,7 +5,8 @@ import {
   selectAuthProfile,
   selectAuthUser,
 } from "../features/auth/authSelectors";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import SearchModal from "../components/SearchModal";
 import {
   MagnifyingGlass,
   Bell,
@@ -21,6 +22,10 @@ import {
   Lightning,
   Eye,
   Gear,
+  Sparkle,
+  Table,
+  BookOpen,
+  Lightbulb,
 } from "@phosphor-icons/react";
 
 export default function Home() {
@@ -28,10 +33,21 @@ export default function Home() {
   const user = useAppSelector(selectAuthUser);
   const profile = useAppSelector(selectAuthProfile);
   const [searchQuery, setSearchQuery] = useState("");
+  const [isSearchModalOpen, setIsSearchModalOpen] = useState(false);
+  const navigate = useNavigate();
 
   useEffect(() => {
     dispatch(loadTenders());
   }, [dispatch]);
+
+  const handleSearchClick = () => {
+    setIsSearchModalOpen(true);
+  };
+
+  const handleSearch = (query: string) => {
+    navigate(`/search-results?q=${encodeURIComponent(query)}`);
+    setIsSearchModalOpen(false);
+  };
 
   // Mock data for demonstration - replace with real data later
   const mockStats = {
@@ -138,41 +154,45 @@ export default function Home() {
           </p>
         </div>
 
-        <div className="flex flex-row">
-          <div className="flex flex-col items-center gap-5">
-            <div className="bg-surface border border-border rounded-xl p-6">
-              <div className="flex items-center justify-between mb-2">
-                <div className="p-2 bg-primary/10 rounded-lg">
-                  <Lightning className="w-5 h-5 text-primary" />
-                </div>
-                <span className="text-sm text-success font-medium">
-                  +{mockStats.newTenders}
-                </span>
+        {/* Main Content Grid with 5 boxes */}
+        <div className="grid grid-cols-1 lg:grid-cols-5 gap-6 mb-8 max-w-7xl mx-auto">
+          {/* Left Side - Box 1: Tender of the Day */}
+          <div className="bg-surface border border-border rounded-xl p-6 hover:shadow-lg transition-shadow cursor-pointer">
+            <div className="flex items-center gap-3 mb-4">
+              <div className="p-2 bg-yellow-100 rounded-lg">
+                <Star className="w-6 h-6 text-yellow-600" />
               </div>
-              <h3 className="text-2xl font-bold text-text">
-                {mockStats.newTenders}
-              </h3>
-              <p className="text-sm text-text-light">New tenders this week</p>
+              <h3 className="text-lg font-semibold text-text">Tender of the Day</h3>
             </div>
-            <div className="bg-surface border border-border rounded-xl p-6">
-              <div className="flex items-center justify-between mb-2">
-                <div className="p-2 bg-primary/10 rounded-lg">
-                  <Lightning className="w-5 h-5 text-primary" />
-                </div>
-                <span className="text-sm text-success font-medium">
-                  +{mockStats.newTenders}
-                </span>
-              </div>
-              <h3 className="text-2xl font-bold text-text">
-                {mockStats.newTenders}
-              </h3>
-              <p className="text-sm text-text-light">New tenders this week</p>
+            <div className="space-y-2">
+              <h4 className="font-medium text-text text-sm line-clamp-2">Healthcare IT Modernization</h4>
+              <p className="text-xs text-text-light">Government of Ontario</p>
+              <p className="text-xs text-green-600 font-medium">95% match • $150K</p>
             </div>
+            <button className="w-full mt-4 bg-primary text-white py-2 rounded-lg text-sm hover:bg-primary/90 transition-colors">
+              View Details
+            </button>
           </div>
 
-          {/* Search Section */}
-          <div className="flex-1 bg-surface max-w-3xl mx-auto border border-border rounded-xl p-6 mb-8 text-center">
-            <h2 className="text-3xl font-semibold text-text mb-4 p-4 text-center">
+          {/* Left Side - Box 2: Table View */}
+          <div className="bg-surface border border-border rounded-xl p-6 hover:shadow-lg transition-shadow cursor-pointer">
+            <div className="flex items-center gap-3 mb-4">
+              <div className="p-2 bg-blue-100 rounded-lg">
+                <Table className="w-6 h-6 text-blue-600" />
+              </div>
+              <h3 className="text-lg font-semibold text-text">Browse All</h3>
+            </div>
+            <p className="text-sm text-text-light mb-4">
+              View all tenders in a traditional table format with filters and sorting.
+            </p>
+            <button className="w-full bg-blue-600 text-white py-2 rounded-lg text-sm hover:bg-blue-700 transition-colors">
+              Open Table View
+            </button>
+          </div>
+
+          {/* Center - Main Search Box */}
+          <div className="bg-surface border-2 border-primary rounded-xl p-8 shadow-lg">
+            <h2 className="text-2xl font-semibold text-text mb-6 text-center">
               What contracts are you here to win today?
             </h2>
             <div className="relative mb-4">
@@ -180,64 +200,79 @@ export default function Home() {
                 type="text"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                placeholder="Try: 'IT services contracts in Toronto under $100K'"
-                className="w-full p-6 text-lg border-2 border-border rounded-2xl pr-16 focus:outline-none focus:border-primary bg-surface text-text placeholder-text-light"
+                onClick={handleSearchClick}
+                placeholder="Describe what you're looking for..."
+                className="w-full pl-12 pr-4 py-4 border border-border rounded-xl bg-background focus:border-primary focus:outline-none text-lg cursor-pointer"
               />
-
-              <button
-                className="absolute right-4 top-1/2 transform -translate-y-1/2 px-6 py-3 bg-primary text-white rounded-xl font-medium hover:bg-primary-dark transition-colors flex items-center gap-2"
-                disabled={false}
-              >
-                <MagnifyingGlass className="w-4 h-4" />
-                Search
-              </button>
+              <MagnifyingGlass className="absolute left-4 top-1/2 transform -translate-y-1/2 w-5 h-5 text-text-light" />
             </div>
-            <div>
-              <p className="text-sm text-text-light mb-2 text-center">
-                Try these examples:
-              </p>
-              <div className="flex flex-wrap justify-center gap-2">
-                {exampleSearches.map((example, index) => (
-                  <button
-                    key={index}
-                    onClick={() => setSearchQuery(example)}
-                    className="text-xs bg-border text-text-light px-3 py-1 rounded-full hover:bg-primary hover:text-white transition-colors"
-                  >
-                    {example}
-                  </button>
-                ))}
-              </div>
-            </div>
+            <button 
+              onClick={handleSearchClick}
+              className="w-full bg-primary text-white py-3 rounded-xl font-semibold hover:bg-primary/90 transition-colors flex items-center justify-center gap-2"
+            >
+              <Sparkle className="w-5 h-5" />
+              Start Smart Search
+            </button>
           </div>
-          {/* Stats Section */}
-          <div className="flex flex-col items-center gap-5">
-            <div className="bg-surface border border-border rounded-xl p-6">
-              <div className="flex items-center justify-between mb-2">
-                <div className="p-2 bg-primary/10 rounded-lg">
-                  <Lightning className="w-5 h-5 text-primary" />
-                </div>
-                <span className="text-sm text-success font-medium">
-                  +{mockStats.newTenders}
-                </span>
+
+          {/* Right Side - Box 3: How Procurement Works */}
+          <div className="bg-surface border border-border rounded-xl p-6 hover:shadow-lg transition-shadow cursor-pointer">
+            <div className="flex items-center gap-3 mb-4">
+              <div className="p-2 bg-green-100 rounded-lg">
+                <BookOpen className="w-6 h-6 text-green-600" />
               </div>
-              <h3 className="text-2xl font-bold text-text">
-                {mockStats.newTenders}
-              </h3>
-              <p className="text-sm text-text-light">New tenders this week</p>
+              <h3 className="text-lg font-semibold text-text">How Procurement Works</h3>
             </div>
-            <div className="bg-surface border border-border rounded-xl p-6">
-              <div className="flex items-center justify-between mb-2">
-                <div className="p-2 bg-primary/10 rounded-lg">
-                  <Lightning className="w-5 h-5 text-primary" />
-                </div>
-                <span className="text-sm text-success font-medium">
-                  +{mockStats.newTenders}
-                </span>
+            <p className="text-sm text-text-light mb-4">
+              Learn the basics of government procurement process and requirements.
+            </p>
+            <button className="w-full bg-green-600 text-white py-2 rounded-lg text-sm hover:bg-green-700 transition-colors">
+              Read Guide
+            </button>
+          </div>
+
+          {/* Right Side - Box 4: Tips on Using Procuroo */}
+          <div className="bg-surface border border-border rounded-xl p-6 hover:shadow-lg transition-shadow cursor-pointer">
+            <div className="flex items-center gap-3 mb-4">
+              <div className="p-2 bg-purple-100 rounded-lg">
+                <Lightbulb className="w-6 h-6 text-purple-600" />
               </div>
-              <h3 className="text-2xl font-bold text-text">
-                {mockStats.newTenders}
-              </h3>
-              <p className="text-sm text-text-light">New tenders this week</p>
+              <h3 className="text-lg font-semibold text-text">Procuroo Tips</h3>
+            </div>
+            <p className="text-sm text-text-light mb-4">
+              Get the most out of our AI search and discover hidden opportunities.
+            </p>
+            <button className="w-full bg-purple-600 text-white py-2 rounded-lg text-sm hover:bg-purple-700 transition-colors">
+              View Tips
+            </button>
+          </div>
+        </div>
+
+        {/* Search Modal */}
+        <SearchModal 
+          isOpen={isSearchModalOpen}
+          onClose={() => setIsSearchModalOpen(false)}
+          onSearch={handleSearch}
+        />
+      </div>
+    </div>
+  );
+}
+          </div>
+          <div>
+            <p className="text-sm text-text-light mb-2 text-center">
+              Try these examples:
+            </p>
+            <div className="flex flex-wrap justify-center gap-2">
+              {exampleSearches.map((example, index) => (
+                <button
+                  key={index}
+                  onClick={() => setSearchQuery(example)}
+                  className="text-xs bg-border text-text-light px-3 py-1 rounded-full hover:bg-primary hover:text-white transition-colors"
+                >
+                  {example}
+                </button>
+              ))}
             </div>
           </div>
         </div>
