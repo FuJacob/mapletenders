@@ -473,7 +473,7 @@ console.log(req.body);
         {
           query_embedding: vector,
           match_threshold: 0.78,
-          match_count: 10,
+          match_count: 30,
         }
       );
 
