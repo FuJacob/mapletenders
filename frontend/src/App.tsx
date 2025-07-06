@@ -16,7 +16,7 @@ import OnboardingRequiredRoutes from "./routes/OnboardingRequiredRoutes";
 import { useAppDispatch } from "./app/hooks";
 import { loadSession } from "./features/auth/authThunks";
 import { useEffect } from "react";
-
+import TableView from "./pages/TableView";
 import Test from "./pages/Test";
 
 export function App() {
@@ -37,6 +37,7 @@ export function App() {
       </Route>
       <Route element={<ProtectedRoutes />}>
         <Route element={<OnboardingRequiredRoutes />}>
+          <Route path="/table-view" element={<TableView />} />
           <Route path="/rfp" element={<Rfp />} />
           <Route path="/home" element={<Home />} />
           <Route path="/search-results" element={<SearchResults />} />

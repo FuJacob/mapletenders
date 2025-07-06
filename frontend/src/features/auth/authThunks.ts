@@ -8,7 +8,8 @@ import {
   setAuthProfile,
 } from "./authSlice";
 import { type AppDispatch } from "../../app/store";
-
+import { useSelector } from "react-redux";
+import { selectAuthSession } from "./authSelectors";
 export const signIn =
   (email: string, password: string) => async (dispatch: AppDispatch) => {
     dispatch(setAuthLoading(true));
@@ -54,13 +55,14 @@ export const signIn =
       }
       dispatch(setOnboardingCompleted(true));
     }
-
     dispatch(setAuthLoading(false));
   };
 
 export const signOut = () => async (dispatch: AppDispatch) => {
+  dispatch(setAuthLoading(true));
   await supabase.auth.signOut();
   dispatch(logout());
+  dispatch(setAuthLoading(false));
 };
 
 export const loadSession = () => async (dispatch: AppDispatch) => {
