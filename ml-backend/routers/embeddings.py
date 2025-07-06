@@ -1,6 +1,4 @@
 import os
-SUPABASE_URL = "https://bzlyducvtzmuflltsaho.supabase.co"
-SUPABASE_SERVICE_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImJ6bHlkdWN2dHptdWZsbHRzYWhvIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc1MTU3Njk0NywiZXhwIjoyMDY3MTUyOTQ3fQ.M32T-6JXDJ_PK9rN-GU1vZxYBG_i-K2NguWwi2CYznc"
 from fastapi import APIRouter, HTTPException
 from sentence_transformers import SentenceTransformer
 from typing import List, Dict, Any
@@ -18,8 +16,6 @@ class EmbeddingResponse(BaseModel):
 model = SentenceTransformer("all-MiniLM-L6-v2")
 
 router = APIRouter(prefix="/embeddings", tags=["embeddings"])
-
-supabase: Client = create_client(SUPABASE_URL, SUPABASE_SERVICE_KEY)
 
 
 @router.post("/generate", response_model=EmbeddingResponse)
