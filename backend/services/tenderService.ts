@@ -37,7 +37,9 @@ export class TenderService {
     // 1. Clear existing data
     const { error: deleteError } = await this.dbService.clearTenders();
     if (deleteError) {
-      throw new Error(`Failed to clear existing notices: ${deleteError.message}`);
+      throw new Error(
+        `Failed to clear existing notices: ${deleteError.message}`
+      );
     }
 
     // 2. Download CSV data
@@ -45,21 +47,27 @@ export class TenderService {
 
     // 3. Parse and transform data
     const parsedData = await this.csvService.parseCsvData(csvResponse.data);
-    const transformedData = this.dataTransformService.transformTenderData(parsedData.data);
+    const transformedData = this.dataTransformService.transformTenderData(
+      parsedData.data
+    );
 
     // 4. Generate embeddings
     console.log("Generating embeddings for filtered data...");
-    const embeddingsData = await this.mlService.generateEmbeddings(transformedData);
+    const embeddingsData = await this.mlService.generateEmbeddings(
+      transformedData
+    );
     console.log("Embeddings response:", embeddingsData);
 
     // 5. Combine data with embeddings
     const finalData = this.dataTransformService.combineDataWithEmbeddings(
-      transformedData, 
+      transformedData,
       embeddingsData
     );
 
     // 6. Save to database
-    const { error: insertError } = await this.dbService.insertTenders(finalData);
+    const { error: insertError } = await this.dbService.insertTenders(
+      finalData
+    );
     if (insertError) {
       throw new Error(`Failed to insert notices: ${insertError.message}`);
     }
@@ -76,7 +84,9 @@ export class TenderService {
 
     try {
       // 1. Generate query embedding
-      const embeddingResponse = await this.mlService.generateQueryEmbedding(query);
+      const embeddingResponse = await this.mlService.generateQueryEmbedding(
+        query
+      );
       const vector = embeddingResponse.embedded_query;
 
       // 2. Validate vector
@@ -85,7 +95,8 @@ export class TenderService {
       }
 
       // 3. Search using vector similarity
-      const { data: tenders, error } = await this.dbService.searchTendersByVector(vector);
+      const { data: tenders, error } =
+        await this.dbService.searchTendersByVector(vector);
       if (error) {
         throw new Error(`Failed to match tenders: ${error.message}`);
       }
@@ -104,7 +115,8 @@ export class TenderService {
 
   async filterOpenTenderNotices(search: string) {
     // Clear existing filtered notices
-    const { error: deleteError } = await this.dbService.clearFilteredTenderNotices();
+    const { error: deleteError } =
+      await this.dbService.clearFilteredTenderNotices();
     if (!search) {
       return [];
     }
@@ -124,21 +136,26 @@ export class TenderService {
     const filteredIDs = JSON.parse(aiFilterResult).matches;
 
     // Get full data for matched tenders
-    const { data: matchedData, error: matchError } = await this.dbService.getTendersByReferenceNumbers(filteredIDs);
+    const { data: matchedData, error: matchError } =
+      await this.dbService.getTendersByReferenceNumbers(filteredIDs);
     if (matchError) {
       throw new Error(`Failed to fetch matched data: ${matchError.message}`);
     }
 
     // Insert filtered results
-    const { error: insertError } = await this.dbService.insertFilteredTenderNotices(matchedData);
+    const { error: insertError } =
+      await this.dbService.insertFilteredTenderNotices(matchedData);
     if (insertError) {
       throw new Error(`Failed to insert filtered data: ${insertError.message}`);
     }
 
     // Return filtered results
-    const { data: fetchFilteredData, error: fetchFilteredDataError } = await this.dbService.getFilteredTenderNotices();
+    const { data: fetchFilteredData, error: fetchFilteredDataError } =
+      await this.dbService.getFilteredTenderNotices();
     if (fetchFilteredDataError) {
-      throw new Error(`Failed to fetch filtered data: ${fetchFilteredDataError.message}`);
+      throw new Error(
+        `Failed to fetch filtered data: ${fetchFilteredDataError.message}`
+      );
     }
 
     return fetchFilteredData;

@@ -10,7 +10,8 @@ export class DataTransformationService {
     "amendmentDate-dateModification": "amendment_date",
     "expectedContractStartDate-dateDebutContratPrevue":
       "expected_contract_start_date",
-    "expectedContractEndDate-dateFinContratPrevue": "expected_contract_end_date",
+    "expectedContractEndDate-dateFinContratPrevue":
+      "expected_contract_end_date",
     "tenderStatus-appelOffresStatut-eng": "tender_status",
     "gsin-nibs": "gsin",
     "gsinDescription-nibsDescription-eng": "gsin_description",
@@ -44,7 +45,8 @@ export class DataTransformationService {
     "contactInfoEmail-informationsContactCourriel": "contact_email",
     "contactInfoPhone-contactInfoTelephone": "contact_phone",
     contactInfoFax: "contact_fax",
-    "contactInfoAddressLine-contactInfoAdresseLigne-eng": "contact_address_line",
+    "contactInfoAddressLine-contactInfoAdresseLigne-eng":
+      "contact_address_line",
     "contactInfoCity-contacterInfoVille-eng": "contact_city",
     "contactInfoProvince-contacterInfoProvince-eng": "contact_province",
     contactInfoPostalcode: "contact_postal_code",
@@ -55,7 +57,7 @@ export class DataTransformationService {
   };
 
   transformTenderData(rawData: any[]): any[] {
-    return rawData.map(row => this.filterToTargetColumns(row));
+    return rawData.map((row) => this.filterToTargetColumns(row));
   }
 
   private filterToTargetColumns(row: any): Record<string, any> {
@@ -75,16 +77,19 @@ export class DataTransformationService {
 
   combineDataWithEmbeddings(tenderData: any[], embeddingsData: any): any[] {
     const combinedData = [...tenderData];
-    
+
     for (let i = 0; i < combinedData.length; i++) {
       if (embeddingsData.embeddings && embeddingsData.embeddings[i]) {
         combinedData[i].embedding = embeddingsData.embeddings[i];
       }
-      if (embeddingsData.embedding_inputs && embeddingsData.embedding_inputs[i]) {
+      if (
+        embeddingsData.embedding_inputs &&
+        embeddingsData.embedding_inputs[i]
+      ) {
         combinedData[i].embedding_input = embeddingsData.embedding_inputs[i];
       }
     }
-    
+
     return combinedData;
   }
 }

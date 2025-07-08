@@ -9,6 +9,8 @@ const router = Router();
  * @param {string} req.params.id - The ID of the tender notice
  * @returns {Object} Tender notice data
  */
-router.get("/:id", (req, res) => tenderNoticeController.getTenderNoticeById(req, res));
+router.get("/:id", (req, res) =>
+  tenderNoticeController.getTenderNoticeById(req, res)
+);
 
 export default router;

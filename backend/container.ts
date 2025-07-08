@@ -5,13 +5,13 @@ import {
   AiService,
   DataTransformationService,
   TenderService,
-  RfpService
+  RfpService,
 } from "./services";
 
 import {
   AiController,
   TenderController,
-  TenderNoticeController
+  TenderNoticeController,
 } from "./controllers";
 
 // Initialize services
@@ -29,10 +29,7 @@ const tenderService = new TenderService(
   aiService
 );
 
-const rfpService = new RfpService(
-  databaseService,
-  aiService
-);
+const rfpService = new RfpService(databaseService, aiService);
 
 // Initialize controllers
 export const aiController = new AiController(rfpService, tenderService);

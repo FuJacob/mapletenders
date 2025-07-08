@@ -16,7 +16,9 @@ export class RfpService {
     const analysisResult = await this.aiService.analyzeRfp(rfpData);
 
     // 2. Store the analysis
-    const { error } = await this.dbService.insertRfpAnalysis(analysisResult || "{}");
+    const { error } = await this.dbService.insertRfpAnalysis(
+      analysisResult || "{}"
+    );
     if (error) {
       console.error("Error storing RFP analysis:", error);
       throw new Error("Failed to store RFP analysis");

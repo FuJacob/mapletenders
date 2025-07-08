@@ -11,16 +11,11 @@ export class DatabaseService {
   }
 
   async clearTenders() {
-    return await this.supabase
-      .from("tenders")
-      .delete()
-      .neq("title", 0);
+    return await this.supabase.from("tenders").delete().neq("title", 0);
   }
 
   async insertTenders(tenderData: any[]) {
-    return await this.supabase
-      .from("tenders")
-      .insert(tenderData);
+    return await this.supabase.from("tenders").insert(tenderData);
   }
 
   async getTenderById(id: string) {
@@ -69,19 +64,18 @@ export class DatabaseService {
   }
 
   async insertRfpAnalysis(data: string) {
-    return await this.supabase
-      .from("rfp_analysis")
-      .insert({ data });
+    return await this.supabase.from("rfp_analysis").insert({ data });
   }
 
-  async searchTendersByVector(queryEmbedding: number[], matchThreshold: number = 0.78, matchCount: number = 30) {
-    return await this.supabase.rpc(
-      "match_tenders_by_vector",
-      {
-        query_embedding: queryEmbedding,
-        match_threshold: matchThreshold,
-        match_count: matchCount,
-      }
-    );
+  async searchTendersByVector(
+    queryEmbedding: number[],
+    matchThreshold: number = 0.78,
+    matchCount: number = 30
+  ) {
+    return await this.supabase.rpc("match_tenders_by_vector", {
+      query_embedding: queryEmbedding,
+      match_threshold: matchThreshold,
+      match_count: matchCount,
+    });
   }
 }

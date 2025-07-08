@@ -8,13 +8,11 @@ export class MlService {
       `${this.baseUrl}/embeddings/generate/data`,
       data
     );
-    
+
     if (response.status !== 200) {
-      throw new Error(
-        `Failed to generate embeddings: ${response.statusText}`
-      );
+      throw new Error(`Failed to generate embeddings: ${response.statusText}`);
     }
-    
+
     return response.data;
   }
 
@@ -23,7 +21,7 @@ export class MlService {
       `${this.baseUrl}/embeddings/generate/query`,
       { q: query }
     );
-    
+
     return response.data;
   }
 

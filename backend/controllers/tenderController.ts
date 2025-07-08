@@ -21,7 +21,7 @@ export class TenderController {
 
   filterOpenTenderNotices = async (req: Request, res: Response) => {
     try {
-      const search = req.query.search as string || "";
+      const search = (req.query.search as string) || "";
       const result = await this.tenderService.filterOpenTenderNotices(search);
       res.json(result);
     } catch (error: any) {
@@ -63,7 +63,7 @@ export class TenderController {
   filterByVector = async (req: Request, res: Response) => {
     try {
       const { q } = req.body || {};
-      
+
       if (!q) {
         res.status(400).json({ error: "Query is required" });
         return;
@@ -74,7 +74,9 @@ export class TenderController {
     } catch (error: any) {
       console.error("Error in /filterByVector:", error);
       if (error.message.includes("ML service unavailable")) {
-        res.status(503).json({ error: "ML service unavailable", details: error.message });
+        res
+          .status(503)
+          .json({ error: "ML service unavailable", details: error.message });
       } else {
         res.status(500).json({ error: "Failed to filter by vector" });
       }
