@@ -21,10 +21,12 @@ import { useEffect } from "react";
 import TableView from "./pages/TableView";
 import Test from "./pages/Test";
 import Layout from "./routes/Layout";
+import { refreshTenders } from "./api";
 
 export function App() {
   const dispatch = useAppDispatch();
   useEffect(() => {
+    refreshTenders();
     dispatch(loadSession());
   }, [dispatch]);
 

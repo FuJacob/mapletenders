@@ -1,5 +1,5 @@
 import { configureStore } from "@reduxjs/toolkit";
-import counterReducer from "../features/counter/counterSlice";
+
 import authReducer from "../features/auth/authSlice";
 import tendersReducer from "../features/tenders/tendersSlice";
 import { persistStore, persistCombineReducers } from "redux-persist";
@@ -7,13 +7,12 @@ import storage from "redux-persist/lib/storage"; // defaults to localStorage for
 
 const persistConfig = {
   key: "root",
-
+  blacklist: ["tenders"], // do not persist counter state
   storage,
 };
 
 const persistedReducer = persistCombineReducers(persistConfig, {
   auth: authReducer,
-  counter: counterReducer,
   tenders: tendersReducer,
 });
 

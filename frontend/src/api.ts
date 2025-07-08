@@ -6,6 +6,38 @@ import axios from "axios";
  */
 const API_BASE_URL = "http://localhost:4000";
 const PDF_ANALYSIS_URL = "http://localhost:4500";
+
+// Configure axios defaults
+axios.defaults.baseURL = API_BASE_URL;
+
+// Add response interceptor for global error handling
+axios.interceptors.response.use(
+  (response) => response,
+  (error) => {
+    const operation = error.config?.url || "Unknown operation";
+    console.error(
+      `API Error [${operation}]:`,
+      error.response?.data || error.message
+    );
+
+    // You can add global error notifications here
+    // toast.error(`Failed to ${operation}`);
+
+    return Promise.reject(error);
+  }
+);
+
+/**
+ * Generic error handler for API operations
+ * @param error - The error object
+ * @param operation - Description of the operation that failed
+ */
+const handleApiError = (error: any, operation: string): never => {
+  console.error(`${operation} failed:`, error);
+  throw new Error(
+    `${operation} failed: ${error.response?.data?.error || error.message}`
+  );
+};
 /**
  * Interface defining the structure of a tender notice
  */
@@ -50,11 +82,15 @@ export interface TenderNoticeInterface {
  * Retrieve open tender notices from database
  * @returns {Promise<TenderNoticeInterface[]>} Array of tender notices
  */
-export const getOpenTenderNoticesFromDB = async () => {
-  const response = await axios.get(
-    `${API_BASE_URL}/tenders/getOpenTenderNoticesFromDB`
-  );
-  return response.data;
+export const getOpenTenderNoticesFromDB = async (): Promise<
+  TenderNoticeInterface[]
+> => {
+  try {
+    const response = await axios.get("/tenders/getOpenTenderNoticesFromDB");
+    return response.data;
+  } catch (error) {
+    return handleApiError(error, "Fetch tender notices");
+  }
 };
 
 /**
@@ -62,12 +98,13 @@ export const getOpenTenderNoticesFromDB = async () => {
  * @param {any} formData - Form data for lead generation
  * @returns {Promise<any>} Generated leads data
  */
-export const generateLeads = async (formData: any) => {
-  const response = await axios.post(
-    `${API_BASE_URL}/ai/generateLeads`,
-    formData
-  );
-  return response.data;
+export const generateLeads = async (formData: any): Promise<any> => {
+  try {
+    const response = await axios.post("/ai/generateLeads", formData);
+    return response.data;
+  } catch (error) {
+    return handleApiError(error, "Generate leads");
+  }
 };
 
 /**
@@ -81,34 +118,46 @@ export const getOpenTenderNotices = () => {
  * Get filtered tender notices from database
  * @returns {Promise<TenderNoticeInterface[]>} Filtered tender notices
  */
-export const getFilteredTenderNoticesFromDB = async () => {
-  const response = await axios.get(
-    `${API_BASE_URL}/tenders/getFilteredTenderNoticesFromDB`
-  );
-  return response.data;
+export const getFilteredTenderNoticesFromDB = async (): Promise<
+  TenderNoticeInterface[]
+> => {
+  try {
+    const response = await axios.get("/tenders/getFilteredTenderNoticesFromDB");
+    return response.data;
+  } catch (error) {
+    return handleApiError(error, "Fetch filtered tender notices");
+  }
 };
 
 /**
- * Filter open tender notices based on prompt
- * @param {string} prompt - Filter criteria
+ * Filter open tender notices based on search criteria
+ * @param {string} search - Filter criteria
  * @returns {Promise<TenderNoticeInterface[]>} Filtered tender notices
  */
-export const filterOpenTenderNotices = async (search: string) => {
-  const response = await axios.get(
-    `${API_BASE_URL}/tenders/filterOpenTenderNotices?search=${search}`
-  );
-  return response.data;
+export const filterOpenTenderNotices = async (
+  search: string
+): Promise<TenderNoticeInterface[]> => {
+  try {
+    const response = await axios.get(
+      `/tenders/filterOpenTenderNotices?search=${search}`
+    );
+    return response.data;
+  } catch (error) {
+    return handleApiError(error, "Filter tender notices");
+  }
 };
 
 /**
  * Save open tender notices to database
  * @returns {Promise<any>} Operation result
  */
-export const getOpenTenderNoticesToDB = async () => {
-  const response = await axios.post(
-    `${API_BASE_URL}/tenders/getOpenTenderNoticesToDB`
-  );
-  return response.data;
+export const getOpenTenderNoticesToDB = async (): Promise<any> => {
+  try {
+    const response = await axios.post("/tenders/getOpenTenderNoticesToDB");
+    return response.data;
+  } catch (error) {
+    return handleApiError(error, "Import tender notices to database");
+  }
 };
 
 /**
@@ -116,12 +165,16 @@ export const getOpenTenderNoticesToDB = async () => {
  * @param {FormData} formData - Form data containing PDF file
  * @returns {Promise<any>} Analysis results
  */
-export const analyzePdf = async (formData: FormData) => {
-  const response = await axios.post(
-    `${PDF_ANALYSIS_URL}/analyze_pdf`,
-    formData
-  );
-  return response.data;
+export const analyzePdf = async (formData: FormData): Promise<any> => {
+  try {
+    const response = await axios.post(
+      `${PDF_ANALYSIS_URL}/analyze_pdf`,
+      formData
+    );
+    return response.data;
+  } catch (error) {
+    return handleApiError(error, "Analyze PDF");
+  }
 };
 
 /**
@@ -129,22 +182,57 @@ export const analyzePdf = async (formData: FormData) => {
  * @param {any} rfpData - RFP data to analyze
  * @returns {Promise<any>} Analysis results
  */
-export const getRfpAnalysis = async (rfpData: any) => {
-  const response = await axios.post(
-    `${API_BASE_URL}/ai/getRfpAnalysis`,
-    rfpData
-  );
-  return response.data;
+export const getRfpAnalysis = async (rfpData: any): Promise<any> => {
+  try {
+    const response = await axios.post("/ai/getRfpAnalysis", rfpData);
+    return response.data;
+  } catch (error) {
+    return handleApiError(error, "Get RFP analysis");
+  }
 };
 
-export const filterByVector = async (q: string) => {
-  const response = await axios.post(`${API_BASE_URL}/tenders/filterByVector`, {
-    q,
-  });
-  return response.data.tenders;
+/**
+ * Search tenders using vector similarity
+ * @param {string} q - The search query
+ * @returns {Promise<TenderNoticeInterface[]>} Array of matching tender notices
+ */
+export const filterByVector = async (
+  q: string
+): Promise<TenderNoticeInterface[]> => {
+  try {
+    const response = await axios.post("/tenders/filterByVector", { q });
+    // Fixed: Return response.data directly instead of response.data.tenders for consistency
+    return response.data;
+  } catch (error) {
+    return handleApiError(error, "Filter by vector search");
+  }
 };
 
-export const getTenderNotice = async (tenderId: string) => {
-  const response = await axios.get(`${API_BASE_URL}/tender-notice/${tenderId}`);
-  return response.data;
+/**
+ * Get individual tender notice details
+ * @param {string} tenderId - The tender ID
+ * @returns {Promise<TenderNoticeInterface>} Tender notice details
+ */
+export const getTenderNotice = async (
+  tenderId: string
+): Promise<TenderNoticeInterface> => {
+  try {
+    const response = await axios.get(`/tender-notice/${tenderId}`);
+    return response.data;
+  } catch (error) {
+    return handleApiError(error, `Fetch tender notice ${tenderId}`);
+  }
+};
+
+/**
+ * Refresh tender data (rate limited to once per 24 hours)
+ * @returns {Promise<any>} Refresh operation result
+ */
+export const refreshTenders = async (): Promise<any> => {
+  try {
+    const response = await axios.post("/tenders/refreshTenders");
+    return response.data;
+  } catch (error) {
+    return handleApiError(error, "Refresh tenders");
+  }
 };

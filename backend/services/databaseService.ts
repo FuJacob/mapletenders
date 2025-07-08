@@ -10,6 +10,21 @@ export class DatabaseService {
     );
   }
 
+  async resetTenderLastRefreshDate() {
+    return await this.supabase.from("metadata").upsert({
+      key: "tenders_last_refresh",
+      value: String(new Date().getTime()),
+    });
+  }
+
+  async getLastRefreshDate() {
+    return await this.supabase
+      .from("metadata")
+      .select("value")
+      .eq("key", "tenders_last_refresh")
+      .single();
+  }
+
   async clearTenders() {
     return await this.supabase.from("tenders").delete().neq("title", 0);
   }

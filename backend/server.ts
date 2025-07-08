@@ -1,14 +1,11 @@
 import * as path from "path";
 import express from "express";
 import cors from "cors";
-import dotenv from "dotenv";
 
 // Import route modules
 import aiRoutes from "./routes/ai";
 import tendersRoutes from "./routes/tenders";
 import tenderNoticeRoutes from "./routes/tender-notice";
-
-dotenv.config(); // Load environment variables from .env file
 
 const app = express();
 app.use(cors({ origin: "*" })); // Allow all origins

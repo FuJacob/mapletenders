@@ -6,7 +6,7 @@ import {
   type ColumnResizeMode,
 } from "@tanstack/react-table";
 import { useAppSelector } from "../../app/hooks";
-import { tenderColumns } from "../../features/tenders/tenderColumns";
+import { tenderColumns } from "../../features/tenders/tenderColumns.tsx";
 import { selectTenders } from "../../features/tenders/tendersSelectors";
 import {
   Table,

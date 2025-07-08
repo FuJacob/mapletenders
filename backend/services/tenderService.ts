@@ -168,4 +168,53 @@ export class TenderService {
     }
     return data;
   }
+
+  /**
+   * Refresh tenders by clearing existing data and importing fresh data
+   * Silently skips if refreshed within last 24 hours
+   * @returns {Promise<any>} Operation result
+   */
+  async refreshTendersIfNeeded() {
+    console.log("Checking if tender refresh is needed...");
+
+    // 1. Check rate limiting
+    const currentDate = new Date().getTime();
+    const { data: refreshData, error } =
+      await this.dbService.getLastRefreshDate();
+
+    if (!error && refreshData?.value) {
+      const lastRefresh = Number(refreshData.value);
+      const timeSinceLastRefresh = currentDate - lastRefresh;
+      const twentyFourHours = 24 * 60 * 60 * 1000;
+
+      if (timeSinceLastRefresh < twentyFourHours) {
+        const hoursRemaining = Math.ceil(
+          (twentyFourHours - timeSinceLastRefresh) / (60 * 60 * 1000)
+        );
+        console.log(`Refresh not needed - ${hoursRemaining} hours remaining`);
+        return {
+          message: "Refresh skipped - too soon",
+          hoursUntilNextRefresh: hoursRemaining,
+          lastRefreshAt: new Date(lastRefresh).toISOString(),
+        };
+      }
+    }
+
+    console.log("Starting tender refresh...");
+
+    // 2. Clear existing tenders
+    await this.dbService.clearTenders();
+
+    // 3. Import fresh tender data
+    const importResult = await this.importTendersFromCsv();
+
+    // 4. Update last refresh timestamp
+    await this.dbService.resetTenderLastRefreshDate();
+
+    return {
+      message: "Tenders refreshed successfully",
+      importedCount: importResult?.count || 0,
+      refreshedAt: new Date().toISOString(),
+    };
+  }
 }

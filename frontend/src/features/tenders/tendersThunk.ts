@@ -1,9 +1,10 @@
-const BACKEND_URL = import.meta.env.VITE_BACKEND_URL || "https://localhost:3000";
+const BACKEND_URL =
+  import.meta.env.VITE_BACKEND_URL || "https://localhost:3000";
 import { setTenders } from "./tendersSlice";
 export const loadTenders = () => async (dispatch: any) => {
   try {
     const response = await fetch(
-      `${BACKEND_URL}/getOpenTenderNoticesFromDB`,
+      `${BACKEND_URL}/tenders/getOpenTenderNoticesFromDB`,
       {
         method: "GET",
         headers: {

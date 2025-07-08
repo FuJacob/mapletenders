@@ -4,6 +4,30 @@ import { TenderService } from "../services";
 export class TenderController {
   constructor(private tenderService: TenderService) {}
 
+  refreshTenders = async (req: Request, res: Response) => {
+    try {
+      console.log("Attempting to refresh tenders...");
+
+      // Let the service handle all the business logic including rate limiting
+      const result = await this.tenderService.refreshTendersIfNeeded();
+
+      console.log("Tenders refreshed successfully:", result);
+      res.json(result);
+    } catch (error: any) {
+      console.error("Error refreshing tenders:", error);
+
+      // Handle rate limiting error specifically
+      if (error.message.includes("24 hours")) {
+        res.status(429).json({
+          error: error.message,
+          code: "RATE_LIMITED",
+        });
+      } else {
+        res.status(500).json({ error: "Failed to refresh tenders" });
+      }
+    }
+  };
+
   getOpenTenderNotices = async (req: Request, res: Response) => {
     try {
       const response = await this.tenderService.downloadTendersCsv();

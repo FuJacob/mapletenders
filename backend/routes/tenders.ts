@@ -4,6 +4,15 @@ import { tenderController } from "../container";
 const router = Router();
 
 /**
+ * Refresh tender data (rate limited to once per 24 hours)
+ * @route POST /refreshTenders
+ * @returns {Object} Refresh operation result
+ */
+router.post("/refreshTenders", (req, res) =>
+  tenderController.refreshTenders(req, res)
+);
+
+/**
  * Downloads open tender notices as CSV
  * @route GET /getOpenTenderNotices
  * @returns {File} CSV file containing tender notices
