@@ -39,13 +39,15 @@ export class DatabaseService {
    */
   async tryAcquireRefreshLock() {
     try {
-      const { data, error } = await this.supabase.rpc('try_acquire_refresh_lock');
-      
+      const { data, error } = await this.supabase.rpc(
+        "try_acquire_refresh_lock"
+      );
+
       if (error) {
         console.error("Error acquiring refresh lock:", error);
         return false;
       }
-      
+
       return data === true;
     } catch (error) {
       console.error("Error calling try_acquire_refresh_lock function:", error);
