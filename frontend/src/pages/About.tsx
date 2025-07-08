@@ -13,7 +13,6 @@ import {
   Robot,
   ChartBar,
 } from "@phosphor-icons/react";
-import { Header } from "../components/layout";
 
 export default function About() {
   const teamMembers = [
@@ -93,8 +92,6 @@ export default function About() {
 
   return (
     <div className="min-h-screen bg-background">
-      <Header />
-
       {/* Hero Section */}
       <section className="py-20 px-6 text-center">
         <div className="max-w-4xl mx-auto">

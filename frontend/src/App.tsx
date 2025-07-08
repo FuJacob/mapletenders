@@ -6,6 +6,7 @@ import SignIn from "./pages/SignIn";
 import SignUp from "./pages/SignUp";
 import Onboarding from "./pages/Onboarding";
 import Profile from "./pages/Profile";
+import TenderNotice from "./pages/TenderNotice";
 import Pricing from "./pages/Pricing";
 import About from "./pages/About";
 import Contact from "./pages/Contact";
@@ -45,6 +46,7 @@ export function App() {
             <Route path="/home" element={<Home />} />
             <Route path="/search" element={<SearchResults />} />
             <Route path="/profile" element={<Profile />} />
+            <Route path="/tender-notice/:tenderId" element={<TenderNotice />} />
           </Route>
           <Route path="/onboarding" element={<Onboarding />} />
         </Route>

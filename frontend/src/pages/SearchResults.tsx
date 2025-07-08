@@ -196,9 +196,12 @@ export default function SearchResults() {
                     <div className="flex items-start justify-between mb-4">
                       <div className="flex-1">
                         <div className="flex items-center gap-3 mb-2">
-                          <h3 className="text-xl font-semibold text-text hover:text-primary cursor-pointer">
+                          <Link
+                            to={`/tender-notice/${result.id}`}
+                            className="text-xl font-semibold text-text hover:text-primary cursor-pointer transition-colors"
+                          >
                             {result.title}
-                          </h3>
+                          </Link>
                           <div className="flex items-center gap-2">
                             <span className="text-xs bg-green-100 text-green-800 px-2 py-1 rounded-full font-medium">
                               {(result.similarity * 100).toFixed(0)}% match
@@ -279,12 +282,18 @@ export default function SearchResults() {
                       </div>
 
                       <div className="flex items-center gap-3">
-                        <button className="text-primary hover:text-primary/80 font-medium">
+                        <Link
+                          to={`/tender-notice/${result.id}`}
+                          className="text-primary hover:text-primary/80 font-medium"
+                        >
                           View Details
-                        </button>
-                        <button className="bg-primary text-white px-4 py-2 rounded-lg hover:bg-primary/90 transition-colors">
+                        </Link>
+                        <Link
+                          to={`/tender-notice/${result.id}`}
+                          className="bg-primary text-white px-4 py-2 rounded-lg hover:bg-primary/90 transition-colors"
+                        >
                           View Tender
-                        </button>
+                        </Link>
                       </div>
                     </div>
                   </div>

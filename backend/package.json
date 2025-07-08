@@ -1,5 +1,6 @@
 {
   "dependencies": {
+    "@google/genai": "^1.8.0",
     "@supabase/supabase-js": "^2.50.3",
     "axios": "^1.10.0",
     "cors": "^2.8.5",

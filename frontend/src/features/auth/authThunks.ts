@@ -6,7 +6,7 @@ import {
   setAuthError,
   setOnboardingCompleted,
 } from "./authSlice";
-import { type AppDispatch } from "../../app/store";
+import { type AppDispatch } from "../../app/configureStore";
 export const signIn =
   (email: string, password: string) => async (dispatch: AppDispatch) => {
     dispatch(setAuthLoading(true));
@@ -97,12 +97,13 @@ export const loadSession = () => async (dispatch: AppDispatch) => {
       dispatch(
         setOnboardingCompleted(existingProfile.onboarding_completed || false)
       );
-    }  }
-  
+    }
+  }
+
   dispatch(setAuthLoading(false));
 };
 
-export const updateProfile = 
+export const updateProfile =
   (profileData: any) => async (dispatch: AppDispatch) => {
     dispatch(setAuthLoading(true));
     dispatch(setAuthError(null));
@@ -114,7 +115,7 @@ export const updateProfile =
       if (!user?.id) {
         dispatch(setAuthError("No authenticated user"));
         dispatch(setAuthLoading(false));
-        return { type: 'auth/updateProfile/rejected' };
+        return { type: "auth/updateProfile/rejected" };
       }
 
       // Update the profile in Supabase
@@ -132,18 +133,18 @@ export const updateProfile =
         console.error("Profile update error:", updateError);
         dispatch(setAuthError("Failed to update profile"));
         dispatch(setAuthLoading(false));
-        return { type: 'auth/updateProfile/rejected' };
+        return { type: "auth/updateProfile/rejected" };
       }
 
       // Update Redux state with the new profile data
       dispatch(setUser(updatedProfile));
       dispatch(setAuthLoading(false));
-      
-      return { type: 'auth/updateProfile/fulfilled', payload: updatedProfile };
+
+      return { type: "auth/updateProfile/fulfilled", payload: updatedProfile };
     } catch (error) {
       console.error("Unexpected error during profile update:", error);
       dispatch(setAuthError("An unexpected error occurred"));
       dispatch(setAuthLoading(false));
-      return { type: 'auth/updateProfile/rejected' };
+      return { type: "auth/updateProfile/rejected" };
     }
   };

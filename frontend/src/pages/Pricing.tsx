@@ -9,7 +9,6 @@ import {
   Star,
   Phone,
 } from "@phosphor-icons/react";
-import { Header } from "../components/layout";
 
 interface PricingTier {
   id: string;
@@ -128,7 +127,6 @@ export default function Pricing() {
   return (
     <div className="min-h-screen bg-background">
       {/* Header */}
-      <Header />
 
       {/* Hero Section */}
       <section className="py-16 px-6 text-center">

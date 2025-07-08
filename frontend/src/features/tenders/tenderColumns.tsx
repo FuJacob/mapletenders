@@ -1,7 +1,12 @@
 import { createColumnHelper } from "@tanstack/react-table";
 import { type TenderNoticeInterface } from "./types";
 
-import { ArrowSquareOutIcon, Calendar, Clock } from "@phosphor-icons/react";
+import {
+  ArrowSquareOutIcon,
+  Calendar,
+  Clock,
+  LinkIcon,
+} from "@phosphor-icons/react";
 import { convertTenderCategory, formatTenderLocation } from "../../utils";
 const columnHelper = createColumnHelper<TenderNoticeInterface>();
 
@@ -16,7 +21,7 @@ export const tenderColumns = [
 
       return (
         <a
-          href={row.notice_url}
+          href={`/tender-notice/${row.id}`}
           target="_blank"
           rel="noopener noreferrer"
           className="block space-y-2 py-1 hover:underline"
@@ -82,5 +87,14 @@ export const tenderColumns = [
     },
     size: 150,
     minSize: 120,
+  }),
+  columnHelper.accessor("notice_url", {
+    header: "External Notice Link",
+    cell: (info) => (
+      <a href={info.getValue()} target="_blank" rel="noopener noreferrer">
+        {<LinkIcon />}
+      </a>
+    ),
+    size: 150,
   }),
 ];

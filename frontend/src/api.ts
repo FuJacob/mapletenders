@@ -6,7 +6,6 @@ import axios from "axios";
  */
 const API_BASE_URL = "http://localhost:4000";
 const PDF_ANALYSIS_URL = "http://localhost:4500";
-const ML_BACKEND_URL = "http://127.0.0.1:8000";
 /**
  * Interface defining the structure of a tender notice
  */
@@ -39,13 +38,13 @@ export interface TenderNoticeInterface {
 }
 
 /**
- * Get AI completion
+ * Get AI completion - DEPRECATED: This endpoint no longer exists
  * @returns {Promise<any>} Completion response data
  */
-export const getCompletion = async () => {
-  const response = await axios.post(`${API_BASE_URL}/api/completion`);
-  return response.data;
-};
+// export const getCompletion = async () => {
+//   const response = await axios.post(`${API_BASE_URL}/api/completion`);
+//   return response.data;
+// };
 
 /**
  * Retrieve open tender notices from database
@@ -53,7 +52,7 @@ export const getCompletion = async () => {
  */
 export const getOpenTenderNoticesFromDB = async () => {
   const response = await axios.get(
-    `${API_BASE_URL}/getOpenTenderNoticesFromDB`
+    `${API_BASE_URL}/tenders/getOpenTenderNoticesFromDB`
   );
   return response.data;
 };
@@ -64,7 +63,10 @@ export const getOpenTenderNoticesFromDB = async () => {
  * @returns {Promise<any>} Generated leads data
  */
 export const generateLeads = async (formData: any) => {
-  const response = await axios.post(`${API_BASE_URL}/generateLeads`, formData);
+  const response = await axios.post(
+    `${API_BASE_URL}/ai/generateLeads`,
+    formData
+  );
   return response.data;
 };
 
@@ -72,7 +74,7 @@ export const generateLeads = async (formData: any) => {
  * Redirect to open tender notices page
  */
 export const getOpenTenderNotices = () => {
-  window.location.href = `${API_BASE_URL}/getOpenTenderNotices`;
+  window.location.href = `${API_BASE_URL}/tenders/getOpenTenderNotices`;
 };
 
 /**
@@ -81,7 +83,7 @@ export const getOpenTenderNotices = () => {
  */
 export const getFilteredTenderNoticesFromDB = async () => {
   const response = await axios.get(
-    `${API_BASE_URL}/getFilteredTenderNoticesFromDB`
+    `${API_BASE_URL}/tenders/getFilteredTenderNoticesFromDB`
   );
   return response.data;
 };
@@ -93,7 +95,7 @@ export const getFilteredTenderNoticesFromDB = async () => {
  */
 export const filterOpenTenderNotices = async (search: string) => {
   const response = await axios.get(
-    `${API_BASE_URL}/filterOpenTenderNotices?search=${search}`
+    `${API_BASE_URL}/tenders/filterOpenTenderNotices?search=${search}`
   );
   return response.data;
 };
@@ -103,7 +105,9 @@ export const filterOpenTenderNotices = async (search: string) => {
  * @returns {Promise<any>} Operation result
  */
 export const getOpenTenderNoticesToDB = async () => {
-  const response = await axios.post(`${API_BASE_URL}/getOpenTenderNoticesToDB`);
+  const response = await axios.post(
+    `${API_BASE_URL}/tenders/getOpenTenderNoticesToDB`
+  );
   return response.data;
 };
 
@@ -126,11 +130,21 @@ export const analyzePdf = async (formData: FormData) => {
  * @returns {Promise<any>} Analysis results
  */
 export const getRfpAnalysis = async (rfpData: any) => {
-  const response = await axios.post(`${API_BASE_URL}/getRfpAnalysis`, rfpData);
+  const response = await axios.post(
+    `${API_BASE_URL}/ai/getRfpAnalysis`,
+    rfpData
+  );
   return response.data;
 };
 
 export const filterByVector = async (q: string) => {
-  const response = await axios.post(`${API_BASE_URL}/filterByVector`, { q });
+  const response = await axios.post(`${API_BASE_URL}/tenders/filterByVector`, {
+    q,
+  });
   return response.data.tenders;
+};
+
+export const getTenderNotice = async (tenderId: string) => {
+  const response = await axios.get(`${API_BASE_URL}/tender-notice/${tenderId}`);
+  return response.data;
 };

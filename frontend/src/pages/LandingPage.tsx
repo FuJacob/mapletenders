@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useCallback, useState } from "react";
 import {
   MagnifyingGlass,
   Target,
@@ -18,8 +18,12 @@ import {
 } from "@phosphor-icons/react";
 import { useNavigate } from "react-router-dom";
 import { filterOpenTenderNotices } from "../api";
+import WelcomeBanner from "../components/WelcomeBanner";
 
 export default function LandingPage() {
+  const [showBanner, setShowBanner] = useState(
+    localStorage.getItem("maplebids:welcomeBannerClosed") !== "true"
+  );
   const navigate = useNavigate();
   const [searchQuery, setSearchQuery] = useState("");
   const [isSearching, setIsSearching] = useState(false);
@@ -69,8 +73,13 @@ export default function LandingPage() {
     },
   ];
 
+  const handleCloseBanner = useCallback(() => {
+    setShowBanner(false);
+    localStorage.setItem("maplebids:welcomeBannerClosed", "true");
+  }, []);
   return (
     <div className="min-h-screen bg-background">
+      <WelcomeBanner closeBanner={handleCloseBanner} />
       {/* Hero Search Section */}
       <section className="flex flex-col items-center justify-center min-h-[80vh] px-6 bg-background">
         <div className="text-center max-w-4xl mx-auto">

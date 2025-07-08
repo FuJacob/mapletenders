@@ -1,0 +1,266 @@
+import {
+  Calendar,
+  User,
+  Phone,
+  Envelope,
+  Building,
+  Globe,
+  Bookmark,
+  Download,
+} from "@phosphor-icons/react";
+
+interface TenderNoticeSidebarProps {
+  tender: {
+    publication_date: string | null;
+    tender_closing_date: string | null;
+    expected_contract_start_date: string | null;
+    expected_contract_end_date: string | null;
+    amendment_date: string | null;
+    contact_name: string | null;
+    contact_email: string | null;
+    contact_phone: string | null;
+    contact_fax: string | null;
+    contact_address_line: string | null;
+    contact_city: string | null;
+    contact_province: string | null;
+    contact_postal_code: string | null;
+    contracting_entity_name: string | null;
+    contracting_entity_address_line: string | null;
+    contracting_entity_city: string | null;
+    contracting_entity_province: string | null;
+    contracting_entity_country: string | null;
+    contracting_entity_postal_code: string | null;
+    end_user_entities_name: string | null;
+    end_user_entities_address: string | null;
+    notice_url: string | null;
+    attachments: string | null;
+  };
+  isBookmarked: boolean;
+  isUrgent: boolean;
+  onBookmark: () => void;
+  formatDate: (dateString: string | null) => string;
+  formatDateTime: (dateString: string | null) => string;
+}
+
+export default function TenderNoticeSidebar({
+  tender,
+  isBookmarked,
+  isUrgent,
+  onBookmark,
+  formatDate,
+  formatDateTime,
+}: TenderNoticeSidebarProps) {
+  return (
+    <div className="space-y-6">
+      {/* Important Dates */}
+      <div className="bg-surface border border-border rounded-xl p-6">
+        <h3 className="text-lg font-semibold text-text mb-4 flex items-center gap-2">
+          <Calendar className="w-5 h-5" />
+          Important Dates
+        </h3>
+        <div className="space-y-3">
+          <div>
+            <label className="text-sm font-medium text-text">
+              Publication Date
+            </label>
+            <p className="text-text-light">
+              {formatDate(tender.publication_date)}
+            </p>
+          </div>
+          <div>
+            <label className="text-sm font-medium text-text">
+              Closing Date
+            </label>
+            <p
+              className={
+                isUrgent ? "text-red-600 font-medium" : "text-text-light"
+              }
+            >
+              {formatDateTime(tender.tender_closing_date)}
+            </p>
+          </div>
+          {tender.expected_contract_start_date && (
+            <div>
+              <label className="text-sm font-medium text-text">
+                Expected Start Date
+              </label>
+              <p className="text-text-light">
+                {formatDate(tender.expected_contract_start_date)}
+              </p>
+            </div>
+          )}
+          {tender.expected_contract_end_date && (
+            <div>
+              <label className="text-sm font-medium text-text">
+                Expected End Date
+              </label>
+              <p className="text-text-light">
+                {formatDate(tender.expected_contract_end_date)}
+              </p>
+            </div>
+          )}
+          {tender.amendment_date && (
+            <div>
+              <label className="text-sm font-medium text-text">
+                Amendment Date
+              </label>
+              <p className="text-text-light">
+                {formatDate(tender.amendment_date)}
+              </p>
+            </div>
+          )}
+        </div>
+      </div>
+
+      {/* Contact Information */}
+      <div className="bg-surface border border-border rounded-xl p-6">
+        <h3 className="text-lg font-semibold text-text mb-4 flex items-center gap-2">
+          <User className="w-5 h-5" />
+          Contact Information
+        </h3>
+        <div className="space-y-3">
+          {tender.contact_name && (
+            <div>
+              <label className="text-sm font-medium text-text">
+                Contact Name
+              </label>
+              <p className="text-text-light">{tender.contact_name}</p>
+            </div>
+          )}
+          {tender.contact_email && (
+            <div>
+              <label className="text-sm font-medium text-text">Email</label>
+              <a
+                href={`mailto:${tender.contact_email}`}
+                className="text-primary hover:text-primary-dark flex items-center gap-1"
+              >
+                <Envelope className="w-4 h-4" />
+                {tender.contact_email}
+              </a>
+            </div>
+          )}
+          {tender.contact_phone && (
+            <div>
+              <label className="text-sm font-medium text-text">Phone</label>
+              <a
+                href={`tel:${tender.contact_phone}`}
+                className="text-primary hover:text-primary-dark flex items-center gap-1"
+              >
+                <Phone className="w-4 h-4" />
+                {tender.contact_phone}
+              </a>
+            </div>
+          )}
+          {tender.contact_fax && (
+            <div>
+              <label className="text-sm font-medium text-text">Fax</label>
+              <p className="text-text-light">{tender.contact_fax}</p>
+            </div>
+          )}
+          {(tender.contact_address_line || tender.contact_city) && (
+            <div>
+              <label className="text-sm font-medium text-text">Address</label>
+              <p className="text-text-light">
+                {[
+                  tender.contact_address_line,
+                  tender.contact_city,
+                  tender.contact_province,
+                  tender.contact_postal_code,
+                ]
+                  .filter(Boolean)
+                  .join(", ")}
+              </p>
+            </div>
+          )}
+        </div>
+      </div>
+
+      {/* Contracting Entity */}
+      <div className="bg-surface border border-border rounded-xl p-6">
+        <h3 className="text-lg font-semibold text-text mb-4 flex items-center gap-2">
+          <Building className="w-5 h-5" />
+          Contracting Entity
+        </h3>
+        <div className="space-y-3">
+          <div>
+            <label className="text-sm font-medium text-text">
+              Organization
+            </label>
+            <p className="text-text-light">
+              {tender.contracting_entity_name || "Not specified"}
+            </p>
+          </div>
+          {(tender.contracting_entity_address_line ||
+            tender.contracting_entity_city) && (
+            <div>
+              <label className="text-sm font-medium text-text">Address</label>
+              <p className="text-text-light">
+                {[
+                  tender.contracting_entity_address_line,
+                  tender.contracting_entity_city,
+                  tender.contracting_entity_province,
+                  tender.contracting_entity_country,
+                  tender.contracting_entity_postal_code,
+                ]
+                  .filter(Boolean)
+                  .join(", ")}
+              </p>
+            </div>
+          )}
+        </div>
+      </div>
+
+      {/* End User Entities */}
+      {tender.end_user_entities_name && (
+        <div className="bg-surface border border-border rounded-xl p-6">
+          <h3 className="text-lg font-semibold text-text mb-4">
+            End User Entities
+          </h3>
+          <div className="space-y-2">
+            <p className="text-text-light">{tender.end_user_entities_name}</p>
+            {tender.end_user_entities_address && (
+              <p className="text-sm text-text-light">
+                {tender.end_user_entities_address}
+              </p>
+            )}
+          </div>
+        </div>
+      )}
+
+      {/* Actions */}
+      <div className="bg-surface border border-border rounded-xl p-6">
+        <h3 className="text-lg font-semibold text-text mb-4">Actions</h3>
+        <div className="space-y-3">
+          {tender.notice_url && (
+            <a
+              href={tender.notice_url}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="w-full bg-primary text-white py-2 px-4 rounded-lg hover:bg-primary-dark transition-colors flex items-center justify-center gap-2"
+            >
+              <Globe className="w-4 h-4" />
+              View Official Notice
+            </a>
+          )}
+          {tender.attachments && (
+            <button className="w-full bg-secondary text-white py-2 px-4 rounded-lg hover:bg-secondary-dark transition-colors flex items-center justify-center gap-2">
+              <Download className="w-4 h-4" />
+              Download Attachments
+            </button>
+          )}
+          <button
+            onClick={onBookmark}
+            className={`w-full py-2 px-4 rounded-lg transition-colors flex items-center justify-center gap-2 ${
+              isBookmarked
+                ? "bg-accent text-white"
+                : "border border-border text-text hover:bg-border"
+            }`}
+          >
+            <Bookmark className="w-4 h-4" />
+            {isBookmarked ? "Bookmarked" : "Bookmark Tender"}
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
