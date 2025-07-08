@@ -15,7 +15,7 @@ export function LogoTitle({ size = "text-2xl" }: { size?: string }) {
     <div className="flex items-center gap-2">
       <img src="logo.svg" className={iconSize} />
       <p className={`font-bold text-primary ${size}`}>
-        <span className="font-light"> maple</span>Bids
+        <span className="font-light"> maple</span>Tenders
       </p>
     </div>
   );
