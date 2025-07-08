@@ -1,26 +1,18 @@
-import { useEffect } from "react";
-import TenderTable from "../components/table/TenderTable";
-import { getOpenTenderNoticesToDB } from "../api";
-import { useState } from "react";
-import { useAppDispatch } from "../app/hooks";
-import { loadTenders } from "../features/tenders/tendersThunk";
+import { LogoTitle } from "../components/ui/LogoTitle";
+
 export default function Test() {
-  const dispatch = useAppDispatch();
-  const [show, setShow] = useState(false);
-  useEffect(() => {
-    dispatch(loadTenders());
-    // getOpenTenderNoticesToDB();
-    setTimeout(() => {
-      setShow(true);
-    }, 1000);
-  }, [dispatch]);
-  if (show) {
-    return <TenderTable />;
-  }
   return (
-    <div>
-      <h1>Test Page</h1>
-      <p>This is a test page.</p>
+    <div className="p-8">
+      <h1 className="text-3xl mb-4">Logo Test Page</h1>
+      <div className="space-y-4">
+        <LogoTitle size="text-sm" />
+        <LogoTitle size="text-base" />
+        <LogoTitle size="text-lg" />
+        <LogoTitle size="text-xl" />
+        <LogoTitle size="text-2xl" />
+        <LogoTitle size="text-3xl" />
+        <LogoTitle size="text-4xl" />
+      </div>
     </div>
   );
 }

@@ -1,7 +1,7 @@
 import { useState } from "react";
 
 import { useAppSelector } from "../../app/hooks";
-import { selectAuthProfile } from "../../features/auth/authSelectors";
+import { selectAuthUser } from "../../features/auth/authSelectors";
 import { Link, useNavigate } from "react-router-dom";
 import {
   MagnifyingGlass,
@@ -21,7 +21,7 @@ import {
 export default function Home() {
   const navigate = useNavigate();
 
-  const profile = useAppSelector(selectAuthProfile);
+  const user = useAppSelector(selectAuthUser);
   const [searchQuery, setSearchQuery] = useState("");
 
   // Mock data for demonstration - replace with real data later
@@ -106,7 +106,7 @@ export default function Home() {
       {/* Welcome Section */}
       <div className="mb-8">
         <h1 className="text-3xl font-bold text-text mb-2">
-          Welcome back {profile?.company_name}!
+          Welcome back {user?.company_name}!
         </h1>
         <p className="text-lg text-text-light">
           Here's what's happening with your tender opportunities

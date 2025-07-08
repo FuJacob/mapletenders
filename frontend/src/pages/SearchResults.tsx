@@ -16,9 +16,11 @@ import {
 } from "@phosphor-icons/react";
 import { filterByVector } from "../api";
 import { type Tender } from "../features/tenders/types";
+import { LogoTitle } from "../components/ui/LogoTitle";
+
 export default function SearchResults() {
-  const [searchParms, setSearchParms] = useSearchParams();
-  const [firstQuery, setFirstQuery] = useState(searchParms.get("q") || "");
+  const [searchParms, _setSearchParms] = useSearchParams();
+  const [firstQuery, _setFirstQuery] = useState(searchParms.get("q") || "");
   const [query, setQuery] = useState(searchParms.get("q") || "");
   const [sortBy, setSortBy] = useState("relevance");
   const [showFilters, setShowFilters] = useState(false);
@@ -85,9 +87,7 @@ export default function SearchResults() {
             >
               <ArrowLeft className="w-5 h-5" />
             </Link>
-            <Link to="/" className="text-2xl font-bold text-primary">
-              MapleBids
-            </Link>
+            <LogoTitle size="text-2xl" />
           </div>
 
           {/* Search Bar */}

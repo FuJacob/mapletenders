@@ -70,7 +70,7 @@ export default function TenderTable({ isLoading = false }: TenderTableProps) {
 
   return (
     <>
-      <div className="rounded-lg border border-border bg-surface">
+      <div className="rounded-lg bg-surface">
         <Table>
           <TableHeader>
             {table.getHeaderGroups().map((headerGroup) => (
@@ -139,18 +139,18 @@ export default function TenderTable({ isLoading = false }: TenderTableProps) {
             ))}
           </TableBody>
         </Table>
+        <TablePaginationControls
+          getCanNextPage={table.getCanNextPage}
+          getCanPreviousPage={table.getCanPreviousPage}
+          nextPage={table.nextPage}
+          previousPage={table.previousPage}
+          pageIndex={pagination.pageIndex}
+          pageSize={pagination.pageSize}
+          pageCount={table.getPageCount()}
+          setPageIndex={table.setPageIndex}
+          rowCount={table.getRowCount()}
+        />
       </div>
-      <TablePaginationControls
-        getCanNextPage={table.getCanNextPage}
-        getCanPreviousPage={table.getCanPreviousPage}
-        nextPage={table.nextPage}
-        previousPage={table.previousPage}
-        pageIndex={pagination.pageIndex}
-        pageSize={pagination.pageSize}
-        pageCount={table.getPageCount()}
-        setPageIndex={table.setPageIndex}
-        rowCount={table.getRowCount()}
-      />
     </>
   );
 }

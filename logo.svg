@@ -1,0 +1,17 @@
+ <svg xmlns="http://www.w3.org/2000/svg" width="160" height="50">
+        <text
+          x="50%"
+          y="50%"
+          text-anchor="middle"
+          dominant-baseline="middle"
+          font-size="20"
+          font-family="LexendDeca, sans-serif"
+        >
+          <tspan fill="#f75567" font-weight="300">
+            maple
+          </tspan>
+          <tspan fill="#f75567" font-weight="700" dy="-0.5">
+            Bids
+          </tspan>
+        </text>
+      </svg>

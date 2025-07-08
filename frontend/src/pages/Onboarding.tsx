@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import {
   Building,
   Briefcase,
@@ -22,6 +22,8 @@ import { selectAuthUser } from "../features/auth/authSelectors";
 import { useSelector } from "react-redux";
 import { setOnboardingCompleted } from "../features/auth/authSlice";
 import { useAppDispatch } from "../app/hooks";
+import { LogoTitle } from "../components/ui/LogoTitle";
+
 export default function Onboarding() {
   const dispatch = useAppDispatch();
   const user = useSelector(selectAuthUser);
@@ -275,9 +277,7 @@ export default function Onboarding() {
       {/* Header */}
       <div className="bg-surface border-b border-border p-6">
         <div className="max-w-4xl mx-auto flex justify-between items-center">
-          <Link to="/" className="text-2xl font-bold text-primary">
-            MapleBids
-          </Link>
+          <LogoTitle size="text-2xl" />
           <div className="flex items-center gap-4">
             <span className="text-sm text-text-light">
               Step {step} of 3: {getStepTitle()}

@@ -1,7 +1,7 @@
 import { createColumnHelper } from "@tanstack/react-table";
 import { type TenderNoticeInterface } from "./types";
 
-import { ArrowSquareOutIcon } from "@phosphor-icons/react";
+import { ArrowSquareOutIcon, Calendar, Clock } from "@phosphor-icons/react";
 import { convertTenderCategory, formatTenderLocation } from "../../utils";
 const columnHelper = createColumnHelper<TenderNoticeInterface>();
 
@@ -67,11 +67,13 @@ export const tenderColumns = [
 
       return (
         <div className="space-y-1 py-1">
-          <div className="text-xs">
+          <div className="text-xs flex items-center gap-1">
+            <Calendar size={12} />
             <span className="font-medium">Published:</span>{" "}
             {pubDate ? new Date(pubDate).toLocaleDateString() : "-"}
           </div>
-          <div className="text-xs">
+          <div className="text-xs flex items-center gap-1">
+            <Clock size={12} />
             <span className="font-medium">Closing:</span>{" "}
             {closeDate ? new Date(closeDate).toLocaleDateString() : "-"}
           </div>

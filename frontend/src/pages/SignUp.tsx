@@ -21,6 +21,8 @@ import {
 } from "../features/auth/authSelectors";
 import { setAuthLoading, setAuthError } from "../features/auth/authSlice";
 import { useSelector } from "react-redux";
+import { LogoTitle } from "../components/ui/LogoTitle";
+
 export default function SignUp() {
   const dispatch = useAppDispatch();
   const [formData, setFormData] = useState({
@@ -187,9 +189,7 @@ export default function SignUp() {
               <ArrowLeft className="w-4 h-4" />
               Back to home
             </Link>
-            <div className="text-3xl font-bold text-primary mb-2">
-              MapleBids
-            </div>
+            <LogoTitle size="text-3xl" />
             <h1 className="text-2xl font-bold text-text mb-2">
               Start winning today
             </h1>

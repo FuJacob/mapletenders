@@ -1,11 +1,18 @@
-import { Spinner } from "@phosphor-icons/react";
+import { CircleNotchIcon } from "@phosphor-icons/react";
+import { LogoTitle } from "../ui/LogoTitle";
+interface LoadingSpinnerProps {
+  message?: string;
+}
 
-export default function LoadingSpinner() {
+export default function LoadingSpinner({
+  message = "Getting you closer to your next contract...",
+}: LoadingSpinnerProps) {
   return (
-    <div className="fixed inset-0 bg-white bg-opacity-75 flex items-center justify-center z-50">
-      <div className="flex flex-col items-center">
-        <Spinner size={48} className="text-blue-500 animate-spin" />
-        <p className="mt-4 text-lg text-gray-700">Loading...</p>
+    <div className="fixed inset-0 bg-surface bg-opacity-90 backdrop-blur-sm flex items-center justify-center z-50">
+      <div className="flex flex-col items-center text-center">
+        <LogoTitle />
+        <p className="text-text mb-6">{message}</p>
+        <CircleNotchIcon size={48} className="text-primary animate-spin" />
       </div>
     </div>
   );

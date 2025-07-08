@@ -1,14 +1,14 @@
 import { useSelector } from "react-redux";
 import { Navigate, Outlet } from "react-router-dom";
 import {
-  selectAuthSession,
+  selectIsAuthenticated,
   selectOnboardingCompleted,
   selectAuthLoading,
 } from "../features/auth/authSelectors";
 import LoadingSpinner from "../components/common/LoadingSpinner";
 
 export default function GuestRoute() {
-  const session = useSelector(selectAuthSession);
+  const isAuthenticated = useSelector(selectIsAuthenticated);
   const isOnboardingCompleted = useSelector(selectOnboardingCompleted);
   const loading = useSelector(selectAuthLoading);
   // If user is authenticated, redirect to home
@@ -16,7 +16,7 @@ export default function GuestRoute() {
     // If the session is still loading, you can return a loading state or null
     return <LoadingSpinner />; // or a loading spinner component
   }
-  if (session) {
+  if (isAuthenticated) {
     if (!isOnboardingCompleted) {
       return <Navigate to="/onboarding" replace />;
     }

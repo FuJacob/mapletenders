@@ -1,15 +1,12 @@
 import { supabase } from "../../supabase";
 import {
-  setSession,
+  setUser,
   logout,
   setAuthLoading,
   setAuthError,
   setOnboardingCompleted,
-  setAuthProfile,
 } from "./authSlice";
 import { type AppDispatch } from "../../app/store";
-import { useSelector } from "react-redux";
-import { selectAuthSession } from "./authSelectors";
 export const signIn =
   (email: string, password: string) => async (dispatch: AppDispatch) => {
     dispatch(setAuthLoading(true));
@@ -18,43 +15,56 @@ export const signIn =
       email,
       password,
     });
-    console.log(data);
-    console.log(error);
+
     if (error) {
       dispatch(setAuthError(error.message));
-    } else {
-      dispatch(
-        setSession({
-          session: data.session,
-          user: data.user,
-        })
-      );
+      dispatch(setAuthLoading(false));
+      return;
+    }
 
-      // Create user profile if not already present
-      const user = data.user;
-      if (!user?.id) throw new Error("No authenticated user");
+    // Get or create user profile
+    const user = data.user;
+    if (!user?.id) {
+      dispatch(setAuthError("No authenticated user"));
+      dispatch(setAuthLoading(false));
+      return;
+    }
 
-      const { data: existingProfile, error: profileFetchError } = await supabase
+    let { data: profile, error: profileFetchError } = await supabase
+      .from("profiles")
+      .select("*")
+      .eq("id", user.id)
+      .single();
+
+    // If profile doesn't exist, create it
+    if (profileFetchError && profileFetchError.code === "PGRST116") {
+      const { data: newProfile, error: profileInsertError } = await supabase
         .from("profiles")
-        .select("id")
-        .eq("id", user.id)
+        .insert({
+          id: user.id,
+          email: user.email,
+          onboarding_completed: false,
+        })
+        .select("*")
         .single();
 
-      if (profileFetchError) {
-        console.error("Error checking profile existence:", profileFetchError);
-      } else if (!existingProfile) {
-        const { error: profileInsertError } = await supabase
-          .from("profiles")
-          .insert({
-            onboarding_completed: false,
-          });
-
-        if (profileInsertError) {
-          console.error("Error creating profile:", profileInsertError);
-        }
+      if (profileInsertError) {
+        console.error("Error creating profile:", profileInsertError);
+        dispatch(setAuthError("Failed to create user profile"));
+        dispatch(setAuthLoading(false));
+        return;
       }
-      dispatch(setOnboardingCompleted(true));
+      profile = newProfile;
+    } else if (profileFetchError) {
+      console.error("Error fetching profile:", profileFetchError);
+      dispatch(setAuthError("Failed to fetch user profile"));
+      dispatch(setAuthLoading(false));
+      return;
     }
+
+    // Set user and onboarding status
+    dispatch(setUser(profile));
+    dispatch(setOnboardingCompleted(profile?.onboarding_completed || false));
     dispatch(setAuthLoading(false));
   };
 
@@ -72,20 +82,68 @@ export const loadSession = () => async (dispatch: AppDispatch) => {
   const session = data.session;
   const user = session?.user;
 
-  const { data: existingProfile, error: profileFetchError } = await supabase
-    .from("profiles")
-    .select("*")
-    .eq("id", user?.id)
-    .single();
+  if (user?.id) {
+    const { data: existingProfile, error: profileFetchError } = await supabase
+      .from("profiles")
+      .select("*")
+      .eq("id", user.id)
+      .single();
 
-  if (profileFetchError) {
-    console.error("Error fetching profile:", profileFetchError);
-  }
-
-  if (user) {
-    dispatch(setSession({ session, user }));
-    dispatch(setAuthProfile(existingProfile));
-    dispatch(setOnboardingCompleted(true));
-  }
+    if (profileFetchError) {
+      console.error("Error fetching profile:", profileFetchError);
+      dispatch(setAuthError("Failed to load user profile"));
+    } else if (existingProfile) {
+      dispatch(setUser(existingProfile));
+      dispatch(
+        setOnboardingCompleted(existingProfile.onboarding_completed || false)
+      );
+    }  }
+  
   dispatch(setAuthLoading(false));
 };
+
+export const updateProfile = 
+  (profileData: any) => async (dispatch: AppDispatch) => {
+    dispatch(setAuthLoading(true));
+    dispatch(setAuthError(null));
+
+    try {
+      const { data } = await supabase.auth.getSession();
+      const user = data.session?.user;
+
+      if (!user?.id) {
+        dispatch(setAuthError("No authenticated user"));
+        dispatch(setAuthLoading(false));
+        return { type: 'auth/updateProfile/rejected' };
+      }
+
+      // Update the profile in Supabase
+      const { data: updatedProfile, error: updateError } = await supabase
+        .from("profiles")
+        .update({
+          ...profileData,
+          updated_at: new Date().toISOString(),
+        })
+        .eq("id", user.id)
+        .select("*")
+        .single();
+
+      if (updateError) {
+        console.error("Profile update error:", updateError);
+        dispatch(setAuthError("Failed to update profile"));
+        dispatch(setAuthLoading(false));
+        return { type: 'auth/updateProfile/rejected' };
+      }
+
+      // Update Redux state with the new profile data
+      dispatch(setUser(updatedProfile));
+      dispatch(setAuthLoading(false));
+      
+      return { type: 'auth/updateProfile/fulfilled', payload: updatedProfile };
+    } catch (error) {
+      console.error("Unexpected error during profile update:", error);
+      dispatch(setAuthError("An unexpected error occurred"));
+      dispatch(setAuthLoading(false));
+      return { type: 'auth/updateProfile/rejected' };
+    }
+  };

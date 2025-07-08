@@ -1,5 +1,6 @@
 import { EnvelopeSimple, Phone, MapPin } from "@phosphor-icons/react";
 import { Link } from "react-router-dom";
+import { LogoTitle } from "../ui/LogoTitle";
 
 export default function Footer() {
   const currentYear = new Date().getFullYear();
@@ -11,7 +12,9 @@ export default function Footer() {
         <div className="py-12 grid grid-cols-1 md:grid-cols-4 gap-8">
           {/* Column 1: About */}
           <div>
-            <h3 className="font-bold text-lg mb-4">Procuroo</h3>
+            <div className="mb-4">
+              <LogoTitle />
+            </div>
             <p className="text-sm text-text-light mb-4">
               AI-powered tender discovery platform helping businesses find
               relevant government contract opportunities across Canada.

@@ -17,6 +17,8 @@ import { signIn } from "../features/auth/authThunks";
 import { useAppDispatch } from "../app/hooks";
 import { useSearchParams } from "react-router-dom";
 import { selectAuthError } from "../features/auth/authSelectors";
+import { LogoTitle } from "../components/ui/LogoTitle";
+
 export default function SignIn() {
   const [searchParams, setSearchParams] = useSearchParams();
   const [needToConfirmEmail] = useState(
@@ -57,9 +59,7 @@ export default function SignIn() {
               <ArrowLeft className="w-4 h-4" />
               Back to home
             </Link>
-            <div className="text-3xl font-bold text-primary mb-2">
-              MapleBids
-            </div>
+            <LogoTitle size="text-3xl" />
             <h1 className="text-2xl font-bold text-text mb-2">Welcome back</h1>
             <p className="text-text-light">
               Sign in to continue finding winning opportunities
