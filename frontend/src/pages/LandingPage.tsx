@@ -79,7 +79,7 @@ export default function LandingPage() {
   }, []);
   return (
     <div className="min-h-screen bg-background">
-      <WelcomeBanner closeBanner={handleCloseBanner} />
+      {showBanner && <WelcomeBanner closeBanner={handleCloseBanner} />}
       {/* Hero Search Section */}
       <section className="flex flex-col items-center justify-center min-h-[80vh] px-6 bg-background">
         <div className="text-center max-w-4xl mx-auto">

@@ -65,7 +65,8 @@ export class TenderController {
       const { q } = req.body || {};
       
       if (!q) {
-        return res.status(400).json({ error: "Query is required" });
+        res.status(400).json({ error: "Query is required" });
+        return;
       }
 
       const result = await this.tenderService.searchTendersByVector(q);
