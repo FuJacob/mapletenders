@@ -25,6 +25,41 @@ export class DatabaseService {
       .single();
   }
 
+  async getRefreshInProgress() {
+    return await this.supabase
+      .from("metadata")
+      .select("value")
+      .eq("key", "tenders_refresh_in_progress")
+      .single();
+  }
+
+  /**
+   * Atomically try to acquire the refresh lock using Supabase function
+   * @returns {Promise<boolean>} true if lock was acquired, false if already locked
+   */
+  async tryAcquireRefreshLock() {
+    try {
+      const { data, error } = await this.supabase.rpc('try_acquire_refresh_lock');
+      
+      if (error) {
+        console.error("Error acquiring refresh lock:", error);
+        return false;
+      }
+      
+      return data === true;
+    } catch (error) {
+      console.error("Error calling try_acquire_refresh_lock function:", error);
+      return false;
+    }
+  }
+
+  async setRefreshInProgress(inProgress: boolean) {
+    return await this.supabase.from("metadata").upsert({
+      key: "tenders_refresh_in_progress",
+      value: String(inProgress),
+    });
+  }
+
   async clearTenders() {
     return await this.supabase.from("tenders").delete().neq("title", 0);
   }

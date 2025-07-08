@@ -177,44 +177,62 @@ export class TenderService {
   async refreshTendersIfNeeded() {
     console.log("Checking if tender refresh is needed...");
 
-    // 1. Check rate limiting
-    const currentDate = new Date().getTime();
-    const { data: refreshData, error } =
-      await this.dbService.getLastRefreshDate();
-
-    if (!error && refreshData?.value) {
-      const lastRefresh = Number(refreshData.value);
-      const timeSinceLastRefresh = currentDate - lastRefresh;
-      const twentyFourHours = 24 * 60 * 60 * 1000;
-
-      if (timeSinceLastRefresh < twentyFourHours) {
-        const hoursRemaining = Math.ceil(
-          (twentyFourHours - timeSinceLastRefresh) / (60 * 60 * 1000)
-        );
-        console.log(`Refresh not needed - ${hoursRemaining} hours remaining`);
-        return {
-          message: "Refresh skipped - too soon",
-          hoursUntilNextRefresh: hoursRemaining,
-          lastRefreshAt: new Date(lastRefresh).toISOString(),
-        };
-      }
+    // 1. Atomically try to acquire the refresh lock
+    const lockAcquired = await this.dbService.tryAcquireRefreshLock();
+    if (!lockAcquired) {
+      console.log("Refresh already in progress, skipping...");
+      return {
+        message: "Refresh already in progress",
+        status: "skipped",
+      };
     }
 
-    console.log("Starting tender refresh...");
+    try {
+      console.log("Lock acquired, checking rate limiting...");
 
-    // 2. Clear existing tenders
-    await this.dbService.clearTenders();
+      // 2. Check rate limiting
+      const currentDate = new Date().getTime();
+      const { data: refreshData, error } =
+        await this.dbService.getLastRefreshDate();
 
-    // 3. Import fresh tender data
-    const importResult = await this.importTendersFromCsv();
+      if (!error && refreshData?.value) {
+        const lastRefresh = Number(refreshData.value);
+        const timeSinceLastRefresh = currentDate - lastRefresh;
+        const twentyFourHours = 24 * 60 * 60 * 1000;
 
-    // 4. Update last refresh timestamp
-    await this.dbService.resetTenderLastRefreshDate();
+        if (timeSinceLastRefresh < twentyFourHours) {
+          const hoursRemaining = Math.ceil(
+            (twentyFourHours - timeSinceLastRefresh) / (60 * 60 * 1000)
+          );
+          console.log(`Refresh not needed - ${hoursRemaining} hours remaining`);
+          return {
+            message: "Refresh skipped - too soon",
+            hoursUntilNextRefresh: hoursRemaining,
+            lastRefreshAt: new Date(lastRefresh).toISOString(),
+          };
+        }
+      }
 
-    return {
-      message: "Tenders refreshed successfully",
-      importedCount: importResult?.count || 0,
-      refreshedAt: new Date().toISOString(),
-    };
+      console.log("Starting tender refresh...");
+
+      // 3. Clear existing tenders
+      await this.dbService.clearTenders();
+
+      // 4. Import fresh tender data
+      const importResult = await this.importTendersFromCsv();
+
+      // 5. Update last refresh timestamp
+      await this.dbService.resetTenderLastRefreshDate();
+
+      return {
+        message: "Tenders refreshed successfully",
+        importedCount: importResult?.count || 0,
+        refreshedAt: new Date().toISOString(),
+      };
+    } finally {
+      // 6. Always release the lock, even if refresh fails
+      await this.dbService.setRefreshInProgress(false);
+      console.log("Refresh lock released");
+    }
   }
 }
