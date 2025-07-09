@@ -218,6 +218,12 @@ export default function Onboarding() {
     setLoading(true);
     setError("");
 
+    if (!user?.id) {
+      setError("User not authenticated. Please sign in again.");
+      setLoading(false);
+      return;
+    }
+
     try {
       // Create or update profile
       const { error: profileError } = await supabase.from("profiles").upsert({
