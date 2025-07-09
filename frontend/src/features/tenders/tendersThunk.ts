@@ -1,7 +1,9 @@
 const BACKEND_URL =
   import.meta.env.VITE_BACKEND_URL || "https://localhost:3000";
 import { setTenders } from "./tendersSlice";
-export const loadTenders = () => async (dispatch: any) => {
+import type { AppDispatch } from "../../app/configureStore";
+
+export const loadTenders = () => async (dispatch: AppDispatch) => {
   try {
     const response = await fetch(
       `${BACKEND_URL}/tenders/getOpenTenderNoticesFromDB`,

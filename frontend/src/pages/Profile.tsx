@@ -240,7 +240,7 @@ export default function Profile() {
 
     try {
       // Dispatch the update profile thunk
-      const result = await dispatch(updateProfile(formData) as any);
+      const result = await dispatch(updateProfile(formData));
 
       if (result.type === "auth/updateProfile/fulfilled") {
         setSuccess("Profile updated successfully!");

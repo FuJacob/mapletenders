@@ -1,11 +1,9 @@
 import { useEffect, useState } from "react";
-import {
-  getFilteredTenderNoticesFromDB,
-  type TenderNoticeInterface,
-} from "../api";
+import { getFilteredTenderNoticesFromDB } from "../api";
+import { type Tender } from "../features/tenders/types";
 
 export function FilteredTenderData() {
-  const [tableData, setTableData] = useState<TenderNoticeInterface[]>([]);
+  const [tableData, setTableData] = useState<Tender[]>([]);
 
   useEffect(() => {
     const getOpenTenderNoticesData = async function () {
@@ -14,7 +12,7 @@ export function FilteredTenderData() {
     getOpenTenderNoticesData();
   }, []);
 
-  const TenderTable = ({ data }: { data: any[] }) => {
+  const TenderTable = ({ data }: { data: Tender[] }) => {
     const headers = Object.keys(data[0]);
 
     return (
@@ -31,7 +29,11 @@ export function FilteredTenderData() {
             <tr key={index}>
               {headers.map((header, cellIndex) => (
                 <td key={cellIndex}>
-                  <div className="max-h-12 overflow-y-auto">{row[header]}</div>
+                  <div className="max-h-12 overflow-y-auto">
+                    {String(
+                      (row as unknown as Record<string, unknown>)[header] || ""
+                    )}
+                  </div>
                 </td>
               ))}
             </tr>

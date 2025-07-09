@@ -1,8 +1,10 @@
-export const selectAuthLoading = (state: any) => state.auth.loading;
-export const selectAuthError = (state: any) => state.auth.error;
-export const selectAuthUser = (state: any) => state.auth.user; // This now returns the profile data
-export const selectOnboardingCompleted = (state: any) =>
+import type { RootState } from "../../app/configureStore";
+
+export const selectAuthLoading = (state: RootState) => state.auth.loading;
+export const selectAuthError = (state: RootState) => state.auth.error;
+export const selectAuthUser = (state: RootState) => state.auth.user; // This now returns the profile data
+export const selectOnboardingCompleted = (state: RootState) =>
   state.auth.onboarding_completed;
 
 // Helper selector to check if user is logged in
-export const selectIsAuthenticated = (state: any) => !!state.auth.user;
+export const selectIsAuthenticated = (state: RootState) => !!state.auth.user;

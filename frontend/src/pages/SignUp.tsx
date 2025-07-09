@@ -69,8 +69,9 @@ export default function SignUp() {
       } else {
         navigate("/sign-in?confirm-email=true");
       }
-    } catch (err) {
-      setAuthError("An unexpected error occurred");
+    } catch (err: unknown) {
+      const errorMessage = err instanceof Error ? err.message : "An unexpected error occurred";
+      setAuthError(errorMessage);
     } finally {
       setAuthLoading(false);
     }

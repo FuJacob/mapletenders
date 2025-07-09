@@ -6,6 +6,7 @@ import { useState, useEffect, useRef } from "react";
 import { useDispatch } from "react-redux";
 import { signOut } from "../../features/auth/authThunks";
 import { User, Gear, SignOut, Bell, CaretDown } from "@phosphor-icons/react";
+import type { AppDispatch } from "../../app/configureStore";
 
 interface HeaderProps {
   transparent?: boolean;
@@ -17,7 +18,7 @@ export default function Header({
 }: HeaderProps) {
   const navigate = useNavigate();
   const location = useLocation();
-  const dispatch = useDispatch();
+  const dispatch = useDispatch<AppDispatch>();
   const { user } = useAuth();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [currentView, setCurrentView] = useState<"search" | "table">("search");
@@ -39,7 +40,7 @@ export default function Header({
   }, []);
 
   const handleSignOut = async () => {
-    await dispatch(signOut() as any);
+    await dispatch(signOut());
     navigate("/");
   };
 

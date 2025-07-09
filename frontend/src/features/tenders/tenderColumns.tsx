@@ -1,5 +1,5 @@
 import { createColumnHelper } from "@tanstack/react-table";
-import { type TenderNoticeInterface } from "./types";
+import { type Tender } from "./types";
 
 import {
   ArrowSquareOutIcon,
@@ -8,7 +8,7 @@ import {
   LinkIcon,
 } from "@phosphor-icons/react";
 import { convertTenderCategory, formatTenderLocation } from "../../utils";
-const columnHelper = createColumnHelper<TenderNoticeInterface>();
+const columnHelper = createColumnHelper<Tender>();
 
 export const tenderColumns = [
   columnHelper.accessor("title", {
@@ -26,7 +26,7 @@ export const tenderColumns = [
           rel="noopener noreferrer"
           className="block space-y-2 py-1 hover:underline"
         >
-          <div className="font-medium text-blue-900" title={title}>
+          <div className="font-medium text-blue-900" title={title || "-"}>
             {title || "-"} <ArrowSquareOutIcon size={16} className="inline" />
           </div>
           <div className="space-y-1 text-xs text-gray-600">
@@ -91,7 +91,11 @@ export const tenderColumns = [
   columnHelper.accessor("notice_url", {
     header: "External Notice Link",
     cell: (info) => (
-      <a href={info.getValue()} target="_blank" rel="noopener noreferrer">
+      <a
+        href={info.getValue() || undefined}
+        target="_blank"
+        rel="noopener noreferrer"
+      >
         {<LinkIcon />}
       </a>
     ),

@@ -1,1 +1,3 @@
-export const selectTenders = (state: any) => state.tenders;
+import type { RootState } from "../../app/configureStore";
+
+export const selectTenders = (state: RootState) => state.tenders;

@@ -90,7 +90,7 @@ export default function TenderNotice() {
     };
 
     fetchTender();
-  }, [tenderId]);
+  }, [tenderId, error]);
 
   const formatDate = (dateString: string | null): string => {
     if (!dateString) return "Not specified";

@@ -1,5 +1,6 @@
 import axios from "axios";
-
+import { type Tender } from "./features/tenders/types";
+import type { TenderNoticeInterface } from "./features/tenders/types";
 /**
  * Base URL for API endpoints
  * @constant {string}
@@ -32,42 +33,13 @@ axios.interceptors.response.use(
  * @param error - The error object
  * @param operation - Description of the operation that failed
  */
-const handleApiError = (error: any, operation: string): never => {
+const handleApiError = (error: unknown, operation: string): never => {
   console.error(`${operation} failed:`, error);
-  throw new Error(
-    `${operation} failed: ${error.response?.data?.error || error.message}`
-  );
+  const errorMessage = error instanceof Error ? error.message : "Unknown error";
+  const responseError = (error as { response?: { data?: { error?: string } } })
+    ?.response?.data?.error;
+  throw new Error(`${operation} failed: ${responseError || errorMessage}`);
 };
-/**
- * Interface defining the structure of a tender notice
- */
-export interface TenderNoticeInterface {
-  "title-titre-eng": string;
-  "tenderStatus-appelOffresStatut-eng": string;
-  "gsinDescription-nibsDescription-eng": string;
-  "unspscDescription-eng": string;
-  "noticeType-avisType-eng": string;
-  "procurementMethod-methodeApprovisionnement-eng": string;
-  "selectionCriteria-criteresSelection-eng": string;
-  "limitedTenderingReason-raisonAppelOffresLimite-eng": string;
-  "tradeAgreements-accordsCommerciaux-eng": string;
-  "regionsOfOpportunity-regionAppelOffres-eng": string;
-  "regionsOfDelivery-regionsLivraison-eng": string;
-  "contractingEntityName-nomEntitContractante-eng": string;
-  "contractingEntityAddressLine-ligneAdresseEntiteContractante-eng": string;
-  "contractingEntityAddressCity-entiteContractanteAdresseVille-eng": string;
-  "contractingEntityAddressProvince-entiteContractanteAdresseProvince-eng": string;
-  "contractingEntityAddressCountry-entiteContractanteAdressePays-eng": string;
-  "endUserEntitiesName-nomEntitesUtilisateurFinal-eng": string;
-  "endUserEntitiesAddress-adresseEntitesUtilisateurFinal-eng": string;
-  "contactInfoAddressLine-contactInfoAdresseLigne-eng": string;
-  "contactInfoCity-contacterInfoVille-eng": string;
-  "contactInfoProvince-contacterInfoProvince-eng": string;
-  "contactInfoCountry-contactInfoPays-eng": string;
-  "noticeURL-URLavis-eng": string;
-  "attachment-piecesJointes-eng": string;
-  "tenderDescription-descriptionAppelOffres-eng": string;
-}
 
 /**
  * Get AI completion - DEPRECATED: This endpoint no longer exists
@@ -80,11 +52,9 @@ export interface TenderNoticeInterface {
 
 /**
  * Retrieve open tender notices from database
- * @returns {Promise<TenderNoticeInterface[]>} Array of tender notices
+ * @returns {Promise<Tender[]>} Array of tender notices
  */
-export const getOpenTenderNoticesFromDB = async (): Promise<
-  TenderNoticeInterface[]
-> => {
+export const getOpenTenderNoticesFromDB = async (): Promise<Tender[]> => {
   try {
     const response = await axios.get("/tenders/getOpenTenderNoticesFromDB");
     return response.data;
@@ -93,12 +63,24 @@ export const getOpenTenderNoticesFromDB = async (): Promise<
   }
 };
 
+export interface LeadGenerationFormData {
+  [key: string]: string | number | boolean | string[];
+}
+
+export interface LeadGenerationResponse {
+  leads: unknown[];
+  success: boolean;
+  message?: string;
+}
+
 /**
  * Generate leads based on form data
- * @param {any} formData - Form data for lead generation
- * @returns {Promise<any>} Generated leads data
+ * @param {LeadGenerationFormData} formData - Form data for lead generation
+ * @returns {Promise<LeadGenerationResponse>} Generated leads data
  */
-export const generateLeads = async (formData: any): Promise<any> => {
+export const generateLeads = async (
+  formData: LeadGenerationFormData
+): Promise<LeadGenerationResponse> => {
   try {
     const response = await axios.post("/ai/generateLeads", formData);
     return response.data;
@@ -116,11 +98,9 @@ export const getOpenTenderNotices = () => {
 
 /**
  * Get filtered tender notices from database
- * @returns {Promise<TenderNoticeInterface[]>} Filtered tender notices
+ * @returns {Promise<Tender[]>} Filtered tender notices
  */
-export const getFilteredTenderNoticesFromDB = async (): Promise<
-  TenderNoticeInterface[]
-> => {
+export const getFilteredTenderNoticesFromDB = async (): Promise<Tender[]> => {
   try {
     const response = await axios.get("/tenders/getFilteredTenderNoticesFromDB");
     return response.data;
@@ -132,11 +112,11 @@ export const getFilteredTenderNoticesFromDB = async (): Promise<
 /**
  * Filter open tender notices based on search criteria
  * @param {string} search - Filter criteria
- * @returns {Promise<TenderNoticeInterface[]>} Filtered tender notices
+ * @returns {Promise<Tender[]>} Filtered tender notices
  */
 export const filterOpenTenderNotices = async (
   search: string
-): Promise<TenderNoticeInterface[]> => {
+): Promise<Tender[]> => {
   try {
     const response = await axios.get(
       `/tenders/filterOpenTenderNotices?search=${search}`
@@ -151,7 +131,7 @@ export const filterOpenTenderNotices = async (
  * Save open tender notices to database
  * @returns {Promise<any>} Operation result
  */
-export const getOpenTenderNoticesToDB = async (): Promise<any> => {
+export const getOpenTenderNoticesToDB = async (): Promise<{ success: boolean; message: string }> => {
   try {
     const response = await axios.post("/tenders/getOpenTenderNoticesToDB");
     return response.data;
@@ -165,7 +145,7 @@ export const getOpenTenderNoticesToDB = async (): Promise<any> => {
  * @param {FormData} formData - Form data containing PDF file
  * @returns {Promise<any>} Analysis results
  */
-export const analyzePdf = async (formData: FormData): Promise<any> => {
+export const analyzePdf = async (formData: FormData): Promise<{ analysis: Record<string, unknown>; success: boolean; message?: string }> => {
   try {
     const response = await axios.post(
       `${PDF_ANALYSIS_URL}/analyze_pdf`,
@@ -177,12 +157,24 @@ export const analyzePdf = async (formData: FormData): Promise<any> => {
   }
 };
 
+export interface RfpAnalysisData {
+  [key: string]: unknown;
+}
+
+export interface RfpAnalysisResponse {
+  analysis: unknown;
+  success: boolean;
+  message?: string;
+}
+
 /**
  * Get RFP analysis
- * @param {any} rfpData - RFP data to analyze
- * @returns {Promise<any>} Analysis results
+ * @param {RfpAnalysisData} rfpData - RFP data to analyze
+ * @returns {Promise<RfpAnalysisResponse>} Analysis results
  */
-export const getRfpAnalysis = async (rfpData: any): Promise<any> => {
+export const getRfpAnalysis = async (
+  rfpData: RfpAnalysisData
+): Promise<RfpAnalysisResponse> => {
   try {
     const response = await axios.post("/ai/getRfpAnalysis", rfpData);
     return response.data;
@@ -194,11 +186,9 @@ export const getRfpAnalysis = async (rfpData: any): Promise<any> => {
 /**
  * Search tenders using vector similarity
  * @param {string} q - The search query
- * @returns {Promise<TenderNoticeInterface[]>} Array of matching tender notices
+ * @returns {Promise<Tender[]>} Array of matching tender notices
  */
-export const filterByVector = async (
-  q: string
-): Promise<TenderNoticeInterface[]> => {
+export const filterByVector = async (q: string): Promise<Tender[]> => {
   try {
     const response = await axios.post("/tenders/filterByVector", { q });
     // Fixed: Return response.data directly instead of response.data.tenders for consistency
@@ -228,7 +218,7 @@ export const getTenderNotice = async (
  * Refresh tender data (rate limited to once per 24 hours)
  * @returns {Promise<any>} Refresh operation result
  */
-export const refreshTenders = async (): Promise<any> => {
+export const refreshTenders = async (): Promise<{ success: boolean; updatedCount: number }> => {
   try {
     const response = await axios.post("/tenders/refreshTenders");
     return response.data;

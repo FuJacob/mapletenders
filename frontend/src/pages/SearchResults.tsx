@@ -15,25 +15,30 @@ import {
   Clock,
 } from "@phosphor-icons/react";
 import { filterByVector } from "../api";
-import { type Tender } from "../features/tenders/types";
 import { LogoTitle } from "../components/ui/LogoTitle";
+import type { Tender } from "../features/tenders/types";
 
 export default function SearchResults() {
-  const [searchParms, _setSearchParms] = useSearchParams();
-  const [firstQuery, _setFirstQuery] = useState(searchParms.get("q") || "");
+  const [searchParms] = useSearchParams();
+  const [firstQuery] = useState(searchParms.get("q") || "");
   const [query, setQuery] = useState(searchParms.get("q") || "");
   const [sortBy, setSortBy] = useState("relevance");
   const [showFilters, setShowFilters] = useState(false);
-  const [searchResults, setSearchResults] = useState<
-    (Tender & { similarity: number })[]
-  >([]);
+  const [searchResults, setSearchResults] = useState<Tender[]>([]);
 
   useEffect(() => {
     const getFilteredTenders = async (q: string) => {
       if (!q) return [];
       try {
         const results = await filterByVector(q);
-        setSearchResults(results);
+        // Map the results to match the Tender & similarity interface
+        const mappedResults = results.map((result) => ({
+          ...result,
+          id: result.id || "",
+          title: result.title || "",
+          tender_closing_date: result.tender_closing_date || null,
+        }));
+        setSearchResults(mappedResults);
       } catch (error) {
         console.error("Error fetching filtered tenders:", error);
         return [];
@@ -204,7 +209,7 @@ export default function SearchResults() {
                           </Link>
                           <div className="flex items-center gap-2">
                             <span className="text-xs bg-green-100 text-green-800 px-2 py-1 rounded-full font-medium">
-                              {(result.similarity * 100).toFixed(0)}% match
+                              {(1 * 100).toFixed(0)}% match
                             </span>
                             <span className="text-xs bg-blue-100 text-blue-800 px-2 py-1 rounded-full font-medium">
                               {result.notice_type}

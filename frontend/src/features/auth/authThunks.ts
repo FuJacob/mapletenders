@@ -7,6 +7,11 @@ import {
   setOnboardingCompleted,
 } from "./authSlice";
 import { type AppDispatch } from "../../app/configureStore";
+import type { Database } from "../../../database.types";
+
+type ProfileUpdate = Partial<
+  Database["public"]["Tables"]["profiles"]["Update"]
+>;
 export const signIn =
   (email: string, password: string) => async (dispatch: AppDispatch) => {
     dispatch(setAuthLoading(true));
@@ -30,11 +35,13 @@ export const signIn =
       return;
     }
 
-    let { data: profile, error: profileFetchError } = await supabase
+    const { data: initialProfile, error: profileFetchError } = await supabase
       .from("profiles")
       .select("*")
       .eq("id", user.id)
       .single();
+
+    let profile = initialProfile;
 
     // If profile doesn't exist, create it
     if (profileFetchError && profileFetchError.code === "PGRST116") {
@@ -104,7 +111,7 @@ export const loadSession = () => async (dispatch: AppDispatch) => {
 };
 
 export const updateProfile =
-  (profileData: any) => async (dispatch: AppDispatch) => {
+  (profileData: ProfileUpdate) => async (dispatch: AppDispatch) => {
     dispatch(setAuthLoading(true));
     dispatch(setAuthError(null));
 
