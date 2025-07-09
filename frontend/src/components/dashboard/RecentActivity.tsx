@@ -7,13 +7,11 @@ interface RecentActivityProps {
 
 export default function RecentActivity({ activities }: RecentActivityProps) {
   return (
-    <div className="bg-surface border border-border rounded-xl p-6">
+    <div className="bg-surface border border-border rounded-xl p-6 h-[1200px] flex flex-col">
       <div className="flex items-center justify-between mb-6">
-        <h2 className="text-xl font-semibold text-text">
-          Recent Activity
-        </h2>
+        <h2 className="text-xl font-semibold text-text">Recent Activity</h2>
       </div>
-      <div className="space-y-4">
+      <div className="flex-1 overflow-y-auto space-y-4">
         {activities.map((activity) => (
           <ActivityItem key={activity.id} activity={activity} />
         ))}

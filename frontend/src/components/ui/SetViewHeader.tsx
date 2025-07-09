@@ -1,3 +1,5 @@
+import { MagnifyingGlass, Table } from "@phosphor-icons/react";
+
 export default function SetViewHeader({
   view,
   setView,
@@ -12,23 +14,25 @@ export default function SetViewHeader({
           <h2 className="text-sm font-light text-text-muted">Select a view</h2>
           <div className="flex gap-2 rounded-lg p-1 bg-surface items-center justify-center transition-all duration-300">
             <button
-              className={`px-4 py-2 rounded-xl transition-all duration-200 ${
+              className={`px-4 py-2 rounded-xl transition-all duration-200 flex items-center gap-2 ${
                 view === "search"
                   ? "bg-primary text-white"
                   : "text-text-light hover:bg-border"
               }`}
               onClick={() => setView("search")}
             >
+              <MagnifyingGlass className="w-4 h-4" />
               Search
             </button>
             <button
-              className={`px-4 py-2 rounded-xl transition-all duration-200 ${
+              className={`px-4 py-2 rounded-xl transition-all duration-200 flex items-center gap-2 ${
                 view === "table"
                   ? "bg-primary text-white"
                   : "text-text-light hover:bg-border"
               }`}
               onClick={() => setView("table")}
             >
+              <Table className="w-4 h-4" />
               Table
             </button>
           </div>

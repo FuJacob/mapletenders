@@ -10,16 +10,22 @@ import {
   Lightning,
   Bookmark,
   Clock,
+  Star,
+  ClockCounterClockwise,
+  Robot,
 } from "@phosphor-icons/react";
 import RecommendedTenders from "../../components/dashboard/RecommendedTenders";
 import RecentActivity from "../../components/dashboard/RecentActivity";
+import BreezeChat from "../../components/dashboard/BreezeChat";
 
 export default function Home() {
   const navigate = useNavigate();
 
   const user = useAppSelector(selectAuthUser);
   const [searchQuery, setSearchQuery] = useState("");
-  const [mainViewMode, setMainViewMode] = useState<"recommended" | "history">("recommended");
+  const [mainViewMode, setMainViewMode] = useState<
+    "recommended" | "history" | "chat"
+  >("recommended");
 
   // Mock data for demonstration - replace with real data later
   const mockStats = {
@@ -36,70 +42,124 @@ export default function Home() {
 
   const mockRecommendedTenders = [
     {
-      id: 1,
+      id: "1",
       title: "Software Development Services for Digital Transformation",
-      organization: "Government of Ontario",
-      value: "$150,000",
-      deadline: "2025-07-25",
-      location: "Toronto, ON",
+      contracting_entity_name: "Government of Ontario",
+      tender_closing_date: "2025-07-25",
+      regions_of_delivery: "Toronto, ON",
       relevanceScore: 95,
-      type: "RFP",
-      status: "Open",
+      notice_type: "RFP",
+      tender_status: "Open",
+      publication_date: "2025-06-25",
+      procurement_category: "Information Technology",
     },
     {
-      id: 2,
+      id: "2",
       title: "IT Infrastructure Consulting Services",
-      organization: "City of Vancouver",
-      value: "$75,000",
-      deadline: "2025-07-30",
-      location: "Vancouver, BC",
+      contracting_entity_name: "City of Vancouver",
+      tender_closing_date: "2025-07-30",
+      regions_of_delivery: "Vancouver, BC",
       relevanceScore: 88,
-      type: "RFQ",
-      status: "Open",
+      notice_type: "RFQ",
+      tender_status: "Open",
+      publication_date: "2025-06-30",
+      procurement_category: "Consulting Services",
     },
     {
-      id: 3,
+      id: "3",
       title: "Cybersecurity Assessment and Implementation",
-      organization: "Government of Canada",
-      value: "$200,000",
-      deadline: "2025-08-05",
-      location: "Ottawa, ON",
+      contracting_entity_name: "Government of Canada",
+      tender_closing_date: "2025-08-05",
+      regions_of_delivery: "Ottawa, ON",
       relevanceScore: 92,
-      type: "RFP",
-      status: "Open",
+      notice_type: "RFP",
+      tender_status: "Open",
+      publication_date: "2025-07-05",
+      procurement_category: "Security Services",
     },
     {
-      id: 4,
+      id: "4",
       title: "Cloud Migration and DevOps Services",
-      organization: "City of Calgary",
-      value: "$120,000",
-      deadline: "2025-08-15",
-      location: "Calgary, AB",
+      contracting_entity_name: "City of Calgary",
+      tender_closing_date: "2025-08-15",
+      regions_of_delivery: "Calgary, AB",
       relevanceScore: 89,
-      type: "RFP",
-      status: "Open",
+      notice_type: "RFP",
+      tender_status: "Open",
+      publication_date: "2025-07-15",
+      procurement_category: "Information Technology",
     },
     {
-      id: 5,
+      id: "5",
       title: "Database Modernization Project",
-      organization: "Province of British Columbia",
-      value: "$180,000",
-      deadline: "2025-08-20",
-      location: "Victoria, BC",
+      contracting_entity_name: "Province of British Columbia",
+      tender_closing_date: "2025-08-20",
+      regions_of_delivery: "Victoria, BC",
       relevanceScore: 91,
-      type: "RFQ",
-      status: "Open",
+      notice_type: "RFQ",
+      tender_status: "Open",
+      publication_date: "2025-07-20",
+      procurement_category: "Data Management",
     },
     {
-      id: 6,
+      id: "6",
       title: "Mobile Application Development",
-      organization: "City of Montreal",
-      value: "$95,000",
-      deadline: "2025-09-01",
-      location: "Montreal, QC",
+      contracting_entity_name: "City of Montreal",
+      tender_closing_date: "2025-09-01",
+      regions_of_delivery: "Montreal, QC",
       relevanceScore: 86,
-      type: "RFP",
-      status: "Open",
+      notice_type: "RFP",
+      tender_status: "Open",
+      publication_date: "2025-08-01",
+      procurement_category: "Software Development",
+    },
+    {
+      id: "7",
+      title: "Data Analytics Platform Implementation",
+      contracting_entity_name: "Government of Alberta",
+      tender_closing_date: "2025-09-10",
+      regions_of_delivery: "Edmonton, AB",
+      relevanceScore: 94,
+      notice_type: "RFP",
+      tender_status: "Open",
+      publication_date: "2025-08-10",
+      procurement_category: "Analytics Services",
+    },
+    {
+      id: "8",
+      title: "Enterprise Software Licensing",
+      contracting_entity_name: "City of Winnipeg",
+      tender_closing_date: "2025-09-15",
+      regions_of_delivery: "Winnipeg, MB",
+      relevanceScore: 82,
+      notice_type: "RFQ",
+      tender_status: "Open",
+      publication_date: "2025-08-15",
+      procurement_category: "Software Licensing",
+    },
+    {
+      id: "9",
+      title: "Network Security Upgrade",
+      contracting_entity_name: "Province of Nova Scotia",
+      tender_closing_date: "2025-09-20",
+      regions_of_delivery: "Halifax, NS",
+      relevanceScore: 90,
+      notice_type: "RFP",
+      tender_status: "Open",
+      publication_date: "2025-08-20",
+      procurement_category: "Network Security",
+    },
+    {
+      id: "10",
+      title: "Digital Workflow Automation",
+      contracting_entity_name: "City of Quebec",
+      tender_closing_date: "2025-09-25",
+      regions_of_delivery: "Quebec City, QC",
+      relevanceScore: 87,
+      notice_type: "RFP",
+      tender_status: "Open",
+      publication_date: "2025-08-25",
+      procurement_category: "Process Automation",
     },
   ];
 
@@ -108,43 +168,155 @@ export default function Home() {
       id: 1,
       action: "Viewed",
       title: "Cloud Services RFP",
-      time: "2 hours ago",
+      time: "2025-07-08T14:00:00Z",
+      description:
+        "Comprehensive cloud infrastructure migration services for government agencies. This RFP covers multi-cloud strategy implementation and security compliance.",
+      location: "Toronto, ON",
+      publishDate: "2025-07-01",
+      closingDate: "2025-07-25",
     },
     {
       id: 2,
       action: "Saved",
       title: "Database Migration Project",
-      time: "1 day ago",
+      time: "2025-07-07T09:30:00Z",
+      description:
+        "Legacy database modernization and data migration services. Includes performance optimization and backup strategy implementation.",
+      location: "Vancouver, BC",
+      publishDate: "2025-06-28",
+      closingDate: "2025-07-30",
     },
     {
       id: 3,
       action: "Alert",
       title: "New IT tender matching your profile",
-      time: "2 days ago",
+      time: "2025-07-06T16:45:00Z",
+      description:
+        "Enterprise software development and system integration services. Focus on agile methodologies and DevOps practices.",
+      location: "Ottawa, ON",
+      publishDate: "2025-07-05",
+      closingDate: "2025-08-05",
     },
     {
       id: 4,
       action: "Applied",
       title: "Software Development Services RFP",
-      time: "3 days ago",
+      time: "2025-07-05T11:20:00Z",
+      description:
+        "Full-stack web application development with modern frameworks. Includes user experience design and accessibility compliance.",
+      location: "Calgary, AB",
+      publishDate: "2025-06-25",
+      closingDate: "2025-07-20",
     },
     {
       id: 5,
       action: "Viewed",
       title: "Cybersecurity Assessment Project",
-      time: "4 days ago",
+      time: "2025-07-04T13:15:00Z",
+      description:
+        "Comprehensive security audit and penetration testing services. Includes compliance assessment and vulnerability management.",
+      location: "Montreal, QC",
+      publishDate: "2025-06-30",
+      closingDate: "2025-08-10",
     },
     {
       id: 6,
       action: "Bookmarked",
       title: "Mobile App Development Tender",
-      time: "5 days ago",
+      time: "2025-07-03T08:30:00Z",
+      description:
+        "Cross-platform mobile application development for citizen services. Focus on accessibility and offline capabilities.",
+      location: "Victoria, BC",
+      publishDate: "2025-06-20",
+      closingDate: "2025-07-28",
     },
     {
       id: 7,
       action: "Alert",
       title: "Deadline reminder: Infrastructure RFQ",
-      time: "1 week ago",
+      time: "2025-07-01T10:00:00Z",
+      description:
+        "Network infrastructure upgrade and maintenance services. Includes 24/7 support and disaster recovery planning.",
+      location: "Edmonton, AB",
+      publishDate: "2025-06-15",
+      closingDate: "2025-07-15",
+    },
+    {
+      id: 8,
+      action: "Downloaded",
+      title: "Enterprise Software RFP Documents",
+      time: "2025-07-01T15:30:00Z",
+      description:
+        "Enterprise resource planning system implementation and customization. Includes training and change management services.",
+      location: "Winnipeg, MB",
+      publishDate: "2025-06-18",
+      closingDate: "2025-08-01",
+    },
+    {
+      id: 9,
+      action: "Viewed",
+      title: "Network Security Tender",
+      time: "2025-07-01T12:45:00Z",
+      description:
+        "Advanced firewall and intrusion detection system deployment. Includes security monitoring and incident response.",
+      location: "Halifax, NS",
+      publishDate: "2025-06-22",
+      closingDate: "2025-08-15",
+    },
+    {
+      id: 10,
+      action: "Saved",
+      title: "Digital Transformation Project",
+      time: "2025-06-24T14:20:00Z",
+      description:
+        "Government digital services modernization initiative. Covers citizen portal development and process automation.",
+      location: "Quebec City, QC",
+      publishDate: "2025-06-10",
+      closingDate: "2025-07-22",
+    },
+    {
+      id: 11,
+      action: "Applied",
+      title: "Data Analytics Platform RFP",
+      time: "2025-06-24T09:15:00Z",
+      description:
+        "Business intelligence and data analytics platform implementation. Includes dashboard development and reporting tools.",
+      location: "Saskatoon, SK",
+      publishDate: "2025-06-12",
+      closingDate: "2025-07-30",
+    },
+    {
+      id: 12,
+      action: "Alert",
+      title: "New tender: Workflow Automation",
+      time: "2025-06-24T11:30:00Z",
+      description:
+        "Business process automation and workflow management system. Focus on efficiency improvements and cost reduction.",
+      location: "Regina, SK",
+      publishDate: "2025-06-14",
+      closingDate: "2025-08-05",
+    },
+    {
+      id: 13,
+      action: "Viewed",
+      title: "Cloud Infrastructure Services",
+      time: "2025-06-17T16:00:00Z",
+      description:
+        "Hybrid cloud infrastructure design and implementation. Includes migration strategy and performance optimization.",
+      location: "St. John's, NL",
+      publishDate: "2025-06-08",
+      closingDate: "2025-07-18",
+    },
+    {
+      id: 14,
+      action: "Bookmarked",
+      title: "AI Implementation Consulting",
+      time: "2025-06-17T13:45:00Z",
+      description:
+        "Artificial intelligence and machine learning solution development. Includes model training and deployment strategies.",
+      location: "Charlottetown, PE",
+      publishDate: "2025-06-05",
+      closingDate: "2025-07-25",
     },
   ];
 
@@ -244,22 +416,35 @@ export default function Home() {
           <div className="flex items-center gap-2">
             <button
               onClick={() => setMainViewMode("recommended")}
-              className={`px-4 py-2 rounded-lg font-medium transition-colors ${
+              className={`px-4 py-2 rounded-lg font-medium transition-colors flex items-center gap-2 ${
                 mainViewMode === "recommended"
                   ? "bg-primary text-white"
                   : "bg-surface border border-border text-text hover:bg-primary/5"
               }`}
             >
+              <Star className="w-4 h-4" />
               Recommended for You
             </button>
             <button
+              onClick={() => setMainViewMode("chat")}
+              className={`px-4 py-2 rounded-lg font-medium transition-colors flex items-center gap-2 ${
+                mainViewMode === "chat"
+                  ? "bg-primary text-white"
+                  : "bg-surface border border-border text-text hover:bg-primary/5"
+              }`}
+            >
+              <Robot className="w-4 h-4" />
+              Breeze Chat
+            </button>
+            <button
               onClick={() => setMainViewMode("history")}
-              className={`px-4 py-2 rounded-lg font-medium transition-colors ${
+              className={`px-4 py-2 rounded-lg font-medium transition-colors flex items-center gap-2 ${
                 mainViewMode === "history"
                   ? "bg-primary text-white"
                   : "bg-surface border border-border text-text hover:bg-primary/5"
               }`}
             >
+              <ClockCounterClockwise className="w-4 h-4" />
               Recent Activity
             </button>
           </div>
@@ -267,6 +452,8 @@ export default function Home() {
           {/* Dynamic Content Based on Toggle */}
           {mainViewMode === "recommended" ? (
             <RecommendedTenders tenders={mockRecommendedTenders} />
+          ) : mainViewMode === "chat" ? (
+            <BreezeChat />
           ) : (
             <RecentActivity activities={mockRecentActivity} />
           )}
