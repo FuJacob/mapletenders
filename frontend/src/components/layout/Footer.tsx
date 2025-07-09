@@ -181,7 +181,7 @@ export default function Footer() {
                 <li className="flex items-center gap-3">
                   <EnvelopeSimple className="w-5 h-5 text-primary flex-shrink-0" />
                   <a href="mailto:info@procuroo.com" className="text-text-light hover:text-primary transition-colors">
-                    info@procuroo.com
+                    info@mapletenders.com
                   </a>
                 </li>
                 <li className="flex items-center gap-3">
@@ -196,7 +196,7 @@ export default function Footer() {
         {/* Bottom Bar - Enhanced */}
         <div className="py-8 border-t border-border flex flex-col md:flex-row justify-between items-center">
           <div className="mb-4 md:mb-0 text-text-light">
-            © {currentYear} Procuroo. All rights reserved.
+            © {currentYear} MapleTenders. All rights reserved.
           </div>
           <div className="flex flex-wrap gap-6 text-sm">
             <Link to="/privacy" className="text-text-light hover:text-primary transition-colors">
