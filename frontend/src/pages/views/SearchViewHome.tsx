@@ -2,27 +2,24 @@ import { useState } from "react";
 
 import { useAppSelector } from "../../app/hooks";
 import { selectAuthUser } from "../../features/auth/authSelectors";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import {
   MagnifyingGlass,
   Bell,
-  Bookmark,
-  Calendar,
-  MapPin,
-  CurrencyDollar,
-  Clock,
-  Star,
   Plus,
   Lightning,
-  Eye,
-  Gear,
+  Bookmark,
+  Clock,
 } from "@phosphor-icons/react";
+import RecommendedTenders from "../../components/dashboard/RecommendedTenders";
+import RecentActivity from "../../components/dashboard/RecentActivity";
 
 export default function Home() {
   const navigate = useNavigate();
 
   const user = useAppSelector(selectAuthUser);
   const [searchQuery, setSearchQuery] = useState("");
+  const [mainViewMode, setMainViewMode] = useState<"recommended" | "history">("recommended");
 
   // Mock data for demonstration - replace with real data later
   const mockStats = {
@@ -71,6 +68,39 @@ export default function Home() {
       type: "RFP",
       status: "Open",
     },
+    {
+      id: 4,
+      title: "Cloud Migration and DevOps Services",
+      organization: "City of Calgary",
+      value: "$120,000",
+      deadline: "2025-08-15",
+      location: "Calgary, AB",
+      relevanceScore: 89,
+      type: "RFP",
+      status: "Open",
+    },
+    {
+      id: 5,
+      title: "Database Modernization Project",
+      organization: "Province of British Columbia",
+      value: "$180,000",
+      deadline: "2025-08-20",
+      location: "Victoria, BC",
+      relevanceScore: 91,
+      type: "RFQ",
+      status: "Open",
+    },
+    {
+      id: 6,
+      title: "Mobile Application Development",
+      organization: "City of Montreal",
+      value: "$95,000",
+      deadline: "2025-09-01",
+      location: "Montreal, QC",
+      relevanceScore: 86,
+      type: "RFP",
+      status: "Open",
+    },
   ];
 
   const mockRecentActivity = [
@@ -92,6 +122,30 @@ export default function Home() {
       title: "New IT tender matching your profile",
       time: "2 days ago",
     },
+    {
+      id: 4,
+      action: "Applied",
+      title: "Software Development Services RFP",
+      time: "3 days ago",
+    },
+    {
+      id: 5,
+      action: "Viewed",
+      title: "Cybersecurity Assessment Project",
+      time: "4 days ago",
+    },
+    {
+      id: 6,
+      action: "Bookmarked",
+      title: "Mobile App Development Tender",
+      time: "5 days ago",
+    },
+    {
+      id: 7,
+      action: "Alert",
+      title: "Deadline reminder: Infrastructure RFQ",
+      time: "1 week ago",
+    },
   ];
 
   const exampleSearches = [
@@ -102,9 +156,9 @@ export default function Home() {
   ];
 
   return (
-    <div className="max-w-7xl mx-auto text-center">
+    <div className="max-w-7xl mx-auto">
       {/* Welcome Section */}
-      <div className="mb-8">
+      <div className="mb-8 text-center">
         <h1 className="text-3xl font-bold text-text mb-2">
           Welcome back {user?.company_name}!
         </h1>
@@ -114,33 +168,8 @@ export default function Home() {
       </div>
 
       <div className="flex flex-row gap-6 mb-8">
-        {/* Left side - Recent Activity */}
-        <div className="w-80">
-          <div className="bg-surface border border-border rounded-xl p-6 h-full">
-            <h3 className="text-lg font-semibold text-text mb-4">
-              Recent Activity
-            </h3>
-            <div className="space-y-4">
-              {mockRecentActivity.map((activity) => (
-                <div key={activity.id} className="flex items-start gap-3">
-                  <div className="p-2 bg-border rounded-lg">
-                    <Eye className="w-4 h-4 text-text-light" />
-                  </div>
-                  <div className="flex-1">
-                    <p className="text-sm text-text">
-                      <span className="font-medium">{activity.action}</span>{" "}
-                      {activity.title}
-                    </p>
-                    <p className="text-xs text-text-light">{activity.time}</p>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
-
         {/* Center - Search Section */}
-        <div className="flex-1 bg-surface max-w-3xl mx-auto border border-border rounded-xl p-6 text-center">
+        <div className="flex-1 bg-surface max-w-5xl mx-auto border border-border rounded-xl p-6 text-center">
           <h2 className="text-3xl font-semibold text-text mb-4 p-4 text-center">
             What contracts are you here to win today?
           </h2>
@@ -183,106 +212,123 @@ export default function Home() {
           </div>
         </div>
 
-        {/* Right side - Quick Actions */}
-        <div className="w-80">
-          <div className="bg-surface border border-border rounded-xl p-6 h-full">
-            <h3 className="text-lg font-semibold text-text mb-4">
-              Quick Actions
-            </h3>
-            <div className="space-y-3">
-              <button className="w-full flex items-center gap-3 p-3 border border-border rounded-lg hover:border-primary hover:bg-primary/5 transition-colors text-left">
-                <Plus className="w-5 h-5 text-primary" />
-                <span className="text-text">Set up Alert</span>
-              </button>
-              <button className="w-full flex items-center gap-3 p-3 border border-border rounded-lg hover:border-primary hover:bg-primary/5 transition-colors text-left">
-                <Bookmark className="w-5 h-5 text-accent" />
-                <span className="text-text">View Saved</span>
-              </button>
-              <button className="w-full flex items-center gap-3 p-3 border border-border rounded-lg hover:border-primary hover:bg-primary/5 transition-colors text-left">
-                <Gear className="w-5 h-5 text-text-light" />
-                <span className="text-text">Update Profile</span>
-              </button>
-            </div>
-          </div>
+        {/* Right side - Quick Action Buttons */}
+        <div className="w-80 flex flex-col gap-3">
+          <button className="w-full flex items-center gap-3 p-4 bg-surface border border-border rounded-xl hover:border-primary hover:bg-primary/5 transition-colors text-left">
+            <Plus className="w-5 h-5 text-primary" />
+            <span className="text-text font-medium">Set up Alert</span>
+          </button>
+          <button className="w-full flex items-center gap-3 p-4 bg-surface border border-border rounded-xl hover:border-primary hover:bg-primary/5 transition-colors text-left">
+            <Bookmark className="w-5 h-5 text-accent" />
+            <span className="text-text font-medium">View Saved</span>
+          </button>
+          <button className="w-full flex items-center gap-3 p-4 bg-surface border border-border rounded-xl hover:border-primary hover:bg-primary/5 transition-colors text-left">
+            <MagnifyingGlass className="w-5 h-5 text-blue-500" />
+            <span className="text-text font-medium">Advanced Search</span>
+          </button>
+          <button className="w-full flex items-center gap-3 p-4 bg-surface border border-border rounded-xl hover:border-primary hover:bg-primary/5 transition-colors text-left">
+            <Bell className="w-5 h-5 text-orange-500" />
+            <span className="text-text font-medium">Manage Alerts</span>
+          </button>
+          <button className="w-full flex items-center gap-3 p-4 bg-surface border border-border rounded-xl hover:border-primary hover:bg-primary/5 transition-colors text-left">
+            <Clock className="w-5 h-5 text-red-500" />
+            <span className="text-text font-medium">Track Deadlines</span>
+          </button>
         </div>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         {/* Main Content */}
         <div className="lg:col-span-2 space-y-8">
-          {/* Recommended Tenders */}
-          <div className="bg-surface border border-border rounded-xl p-6">
-            <div className="flex items-center justify-between mb-6">
-              <h2 className="text-xl font-semibold text-text">
-                Recommended for You
-              </h2>
-              <Link
-                to="/tenders"
-                className="text-primary hover:text-primary-dark text-sm font-medium"
-              >
-                View all →
-              </Link>
-            </div>
-            <div className="space-y-4">
-              {mockRecommendedTenders.map((tender) => (
-                <div
-                  key={tender.id}
-                  className="border border-border rounded-lg p-4 hover:border-primary transition-colors cursor-pointer"
-                >
-                  <div className="flex items-start justify-between mb-3">
-                    <div className="flex-1">
-                      <h3 className="font-semibold text-text mb-2 hover:text-primary transition-colors">
-                        {tender.title}
-                      </h3>
-                      <p className="text-sm text-text-light mb-2">
-                        {tender.organization}
-                      </p>
-                      <div className="flex items-center gap-4 text-sm text-text-light">
-                        <span className="flex items-center gap-1">
-                          <CurrencyDollar className="w-4 h-4" />
-                          {tender.value}
-                        </span>
-                        <span className="flex items-center gap-1">
-                          <MapPin className="w-4 h-4" />
-                          {tender.location}
-                        </span>
-                        <span className="flex items-center gap-1">
-                          <Calendar className="w-4 h-4" />
-                          Due {tender.deadline}
-                        </span>
-                      </div>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <div className="flex items-center gap-1 bg-primary/10 text-primary px-2 py-1 rounded text-xs font-medium">
-                        <Star className="w-3 h-3" />
-                        {tender.relevanceScore}%
-                      </div>
-                      <button className="p-2 text-text-light hover:text-accent transition-colors">
-                        <Bookmark className="w-4 h-4" />
-                      </button>
-                    </div>
-                  </div>
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-2">
-                      <span className="bg-border text-text-light px-2 py-1 rounded text-xs">
-                        {tender.type}
-                      </span>
-                      <span className="bg-success/10 text-success px-2 py-1 rounded text-xs">
-                        {tender.status}
-                      </span>
-                    </div>
-                    <button className="text-primary hover:text-primary-dark text-sm font-medium">
-                      View Details →
-                    </button>
-                  </div>
-                </div>
-              ))}
-            </div>
+          {/* Toggle Buttons */}
+          <div className="flex items-center gap-2">
+            <button
+              onClick={() => setMainViewMode("recommended")}
+              className={`px-4 py-2 rounded-lg font-medium transition-colors ${
+                mainViewMode === "recommended"
+                  ? "bg-primary text-white"
+                  : "bg-surface border border-border text-text hover:bg-primary/5"
+              }`}
+            >
+              Recommended for You
+            </button>
+            <button
+              onClick={() => setMainViewMode("history")}
+              className={`px-4 py-2 rounded-lg font-medium transition-colors ${
+                mainViewMode === "history"
+                  ? "bg-primary text-white"
+                  : "bg-surface border border-border text-text hover:bg-primary/5"
+              }`}
+            >
+              Recent Activity
+            </button>
           </div>
+
+          {/* Dynamic Content Based on Toggle */}
+          {mainViewMode === "recommended" ? (
+            <RecommendedTenders tenders={mockRecommendedTenders} />
+          ) : (
+            <RecentActivity activities={mockRecentActivity} />
+          )}
         </div>
 
         {/* Sidebar */}
         <div className="space-y-6">
+          {/* Stats Cards */}
+          <div className="grid grid-cols-2 gap-3">
+            <div className="bg-surface border border-border rounded-xl p-3 text-left">
+              <div className="flex items-center justify-between mb-2">
+                <div className="p-2 bg-primary/10 rounded-lg">
+                  <Lightning className="w-4 h-4 text-primary" />
+                </div>
+                <span className="text-xs text-success font-medium">
+                  +{mockStats.newTenders}
+                </span>
+              </div>
+              <h3 className="text-3xl font-bold text-text mb-1">
+                {mockStats.newTenders}
+              </h3>
+              <p className="text-xs text-text-light">New tenders</p>
+            </div>
+
+            <div className="bg-surface border border-border rounded-xl p-3 text-left">
+              <div className="flex items-center justify-between mb-2">
+                <div className="p-2 bg-accent/10 rounded-lg">
+                  <Bookmark className="w-4 h-4 text-accent" />
+                </div>
+              </div>
+              <h3 className="text-3xl font-bold text-text mb-1">
+                {mockStats.savedTenders}
+              </h3>
+              <p className="text-xs text-text-light">Saved</p>
+            </div>
+
+            <div className="bg-surface border border-border rounded-xl p-3 text-left">
+              <div className="flex items-center justify-between mb-2">
+                <div className="p-2 bg-secondary/10 rounded-lg">
+                  <Bell className="w-4 h-4 text-secondary" />
+                </div>
+              </div>
+              <h3 className="text-3xl font-bold text-text mb-1">
+                {mockStats.activeAlerts}
+              </h3>
+              <p className="text-xs text-text-light">Active alerts</p>
+            </div>
+
+            <div className="bg-surface border border-border rounded-xl p-3 text-left">
+              <div className="flex items-center justify-between mb-2">
+                <div className="p-2 bg-red-100 rounded-lg">
+                  <Clock className="w-4 h-4 text-red-500" />
+                </div>
+                <span className="text-xs text-red-500 font-medium">Urgent</span>
+              </div>
+              <h3 className="text-3xl font-bold text-text mb-1">
+                {mockStats.deadlinesThisWeek}
+              </h3>
+              <p className="text-xs text-text-light">Deadlines</p>
+            </div>
+          </div>
+
           {/* Urgent Deadlines */}
           <div className="bg-surface border border-border rounded-xl p-6">
             <h3 className="text-lg font-semibold text-text mb-4 flex items-center gap-2">
@@ -302,61 +348,6 @@ export default function Home() {
                 </p>
                 <p className="text-xs text-yellow-600">Due in 5 days</p>
               </div>
-            </div>
-          </div>
-
-          {/* Stats Cards */}
-          <div className="grid grid-cols-1 gap-4">
-            <div className="bg-surface border border-border rounded-xl p-4">
-              <div className="flex items-center justify-between mb-2">
-                <div className="p-2 bg-primary/10 rounded-lg">
-                  <Lightning className="w-5 h-5 text-primary" />
-                </div>
-                <span className="text-sm text-success font-medium">
-                  +{mockStats.newTenders}
-                </span>
-              </div>
-              <h3 className="text-2xl font-bold text-text">
-                {mockStats.newTenders}
-              </h3>
-              <p className="text-sm text-text-light">New tenders this week</p>
-            </div>
-
-            <div className="bg-surface border border-border rounded-xl p-4">
-              <div className="flex items-center justify-between mb-2">
-                <div className="p-2 bg-accent/10 rounded-lg">
-                  <Bookmark className="w-5 h-5 text-accent" />
-                </div>
-              </div>
-              <h3 className="text-2xl font-bold text-text">
-                {mockStats.savedTenders}
-              </h3>
-              <p className="text-sm text-text-light">Saved opportunities</p>
-            </div>
-
-            <div className="bg-surface border border-border rounded-xl p-4">
-              <div className="flex items-center justify-between mb-2">
-                <div className="p-2 bg-secondary/10 rounded-lg">
-                  <Bell className="w-5 h-5 text-secondary" />
-                </div>
-              </div>
-              <h3 className="text-2xl font-bold text-text">
-                {mockStats.activeAlerts}
-              </h3>
-              <p className="text-sm text-text-light">Active alerts</p>
-            </div>
-
-            <div className="bg-surface border border-border rounded-xl p-4">
-              <div className="flex items-center justify-between mb-2">
-                <div className="p-2 bg-red-100 rounded-lg">
-                  <Clock className="w-5 h-5 text-red-500" />
-                </div>
-                <span className="text-sm text-red-500 font-medium">Urgent</span>
-              </div>
-              <h3 className="text-2xl font-bold text-text">
-                {mockStats.deadlinesThisWeek}
-              </h3>
-              <p className="text-sm text-text-light">Deadlines this week</p>
             </div>
           </div>
         </div>
