@@ -14,14 +14,12 @@ import {
   Eye,
   Heart,
   TrendUp,
-  Shield,
   Rocket,
   Brain,
   Globe,
   Star,
   Medal,
   Fire,
-  Sparkle,
   Play,
 } from "@phosphor-icons/react";
 import { useNavigate } from "react-router-dom";
@@ -232,7 +230,10 @@ export default function LandingPage() {
               <div className="space-y-8">
                 <div className="inline-block">
                   <div className="flex items-center justify-end gap-3 mb-2">
-                    <TrendUp className="w-10 h-10 text-success" weight="duotone" />
+                    <TrendUp
+                      className="w-10 h-10 text-success"
+                      weight="duotone"
+                    />
                     <div className="text-8xl font-bold text-success">47K+</div>
                   </div>
                   <div className="text-lg text-text-light uppercase tracking-wider">
@@ -241,7 +242,10 @@ export default function LandingPage() {
                 </div>
                 <div className="inline-block ml-16">
                   <div className="flex items-center justify-end gap-3 mb-2">
-                    <CurrencyDollar className="w-8 h-8 text-text" weight="duotone" />
+                    <CurrencyDollar
+                      className="w-8 h-8 text-text"
+                      weight="duotone"
+                    />
                     <div className="text-6xl font-bold text-text">$3.2B</div>
                   </div>
                   <div className="text-lg text-text-light uppercase tracking-wider">
@@ -914,7 +918,10 @@ export default function LandingPage() {
                 </div>
               </div>
               <div className="bg-background border border-border rounded-3xl p-12 transform rotate-1">
-                <Star className="w-12 h-12 text-success mx-auto mb-4" weight="fill" />
+                <Star
+                  className="w-12 h-12 text-success mx-auto mb-4"
+                  weight="fill"
+                />
                 <div className="text-5xl font-bold text-success mb-4">
                   4.8/5
                 </div>

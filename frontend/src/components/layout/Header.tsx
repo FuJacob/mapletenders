@@ -45,7 +45,7 @@ export default function Header({
 
   return (
     <header
-      className={`flex items-center p-6 border-b border-border ${
+      className={`flex items-center justify-between p-6 max-w-7xl mx-auto border-b border-border ${
         transparent ? "bg-transparent" : "bg-surface"
       } ${className}`}
     >
@@ -56,30 +56,122 @@ export default function Header({
         </Link>
       </div>
 
-      {/* Center Section - View Switcher (only show if user is logged in and on home page) */}
-      <div className="flex-1 flex justify-center">
-        {user && isHomePage && (
+      {/* Center Section - Navigation */}
+      <nav className="hidden md:flex items-center gap-8">
+        {user ? (
+          // Logged in user navigation
+          <>
+            <Link
+              to="/home"
+              className={`text-sm font-medium transition-colors ${
+                location.pathname === "/home"
+                  ? "text-primary"
+                  : "text-text hover:text-primary"
+              }`}
+            >
+              Dashboard
+            </Link>
+            <Link
+              to="/table-view"
+              className={`text-sm font-medium transition-colors ${
+                location.pathname === "/table-view"
+                  ? "text-primary"
+                  : "text-text hover:text-primary"
+              }`}
+            >
+              Browse Tenders
+            </Link>
+            <Link
+              to="/analytics"
+              className={`text-sm font-medium transition-colors ${
+                location.pathname === "/analytics"
+                  ? "text-primary"
+                  : "text-text hover:text-primary"
+              }`}
+            >
+              Analytics
+            </Link>
+            <Link
+              to="/pipeline"
+              className={`text-sm font-medium transition-colors ${
+                location.pathname === "/pipeline"
+                  ? "text-primary"
+                  : "text-text hover:text-primary"
+              }`}
+            >
+              Pipeline
+            </Link>
+          </>
+        ) : (
+          // Guest navigation
+          <>
+            <Link
+              to="/about"
+              className={`text-sm font-medium transition-colors ${
+                location.pathname === "/about"
+                  ? "text-primary"
+                  : "text-text hover:text-primary"
+              }`}
+            >
+              About
+            </Link>
+            <Link
+              to="/pricing"
+              className={`text-sm font-medium transition-colors ${
+                location.pathname === "/pricing"
+                  ? "text-primary"
+                  : "text-text hover:text-primary"
+              }`}
+            >
+              Pricing
+            </Link>
+            <Link
+              to="/contact"
+              className={`text-sm font-medium transition-colors ${
+                location.pathname === "/contact"
+                  ? "text-primary"
+                  : "text-text hover:text-primary"
+              }`}
+            >
+              Contact
+            </Link>
+            <Link
+              to="/help"
+              className={`text-sm font-medium transition-colors ${
+                location.pathname === "/help"
+                  ? "text-primary"
+                  : "text-text hover:text-primary"
+              }`}
+            >
+              Help
+            </Link>
+          </>
+        )}
+      </nav>
+
+      {/* View Switcher for Home Page */}
+      {user && isHomePage && (
+        <div className="absolute left-1/2 transform -translate-x-1/2">
           <ViewSwitcher
             currentView={currentView}
             onViewChange={(view) => {
               setCurrentView(view);
-              // Dispatch custom event to notify Home component
               window.dispatchEvent(
                 new CustomEvent("viewChange", { detail: view })
               );
             }}
           />
-        )}
-      </div>
+        </div>
+      )}
 
       {/* Right Section - User Menu / Auth Buttons */}
-
       <div className="flex items-center gap-4">
         {user ? (
           // Logged in user menu
           <>
-            <button className="p-2 text-text-light hover:text-primary transition-colors">
+            <button className="p-2 text-text-light hover:text-primary transition-colors relative">
               <Bell className="w-5 h-5" />
+              <span className="absolute -top-1 -right-1 w-3 h-3 bg-primary rounded-full"></span>
             </button>
 
             <div className="relative" ref={menuRef}>
@@ -120,7 +212,7 @@ export default function Header({
                     <button
                       onClick={() => {
                         setIsMenuOpen(false);
-                        // TODO: Navigate to settings when page exists
+                        navigate("/settings");
                       }}
                       className="w-full flex items-center gap-3 px-3 py-2 text-sm text-text hover:bg-border transition-colors text-left"
                     >
@@ -144,19 +236,19 @@ export default function Header({
             </div>
           </>
         ) : (
-          // Guest buttons
+          // Guest buttons - Enhanced styling
           <>
             <button
               onClick={() => navigate("/sign-in")}
-              className="px-4 py-2 text-sm text-text hover:text-primary transition-colors"
+              className="px-4 py-2 text-sm text-text hover:text-primary transition-colors font-medium"
             >
               Sign In
             </button>
             <button
               onClick={() => navigate("/sign-up")}
-              className="px-4 py-2 bg-primary text-white border rounded text-sm font-medium hover:bg-primary-dark transition-colors"
+              className="px-6 py-2 bg-primary text-white rounded-lg text-sm font-medium hover:bg-primary-dark transition-colors shadow-sm"
             >
-              Get Started
+              Start Free Trial
             </button>
           </>
         )}
