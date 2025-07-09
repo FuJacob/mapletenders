@@ -12,6 +12,17 @@ import {
   CurrencyDollar,
   Clock,
   Eye,
+  Heart,
+  TrendUp,
+  Shield,
+  Rocket,
+  Brain,
+  Globe,
+  Star,
+  Medal,
+  Fire,
+  Sparkle,
+  Play,
 } from "@phosphor-icons/react";
 import { useNavigate } from "react-router-dom";
 import { filterOpenTenderNotices } from "../api";
@@ -183,8 +194,8 @@ export default function LandingPage() {
           {/* INSERT VIDEO: Product demo video showing MapleTenders in action - AI search, instant results, smart filtering, and how businesses find and win government contracts. Should be professional, modern, and showcase the key value proposition of operational efficiency and business intelligence. Video should be 2-3 minutes, high quality, with clear narration explaining the platform's enterprise benefits and ROI. */}
           <div className="w-full h-[500px] bg-gradient-to-br from-primary to-primary-dark rounded-3xl flex items-center justify-center shadow-2xl">
             <div className="text-center text-white">
-              <div className="w-24 h-24 mx-auto mb-6 rounded-full bg-white/20 flex items-center justify-center">
-                <div className="w-0 h-0 border-l-8 border-l-white border-t-6 border-t-transparent border-b-6 border-b-transparent ml-2"></div>
+              <div className="w-24 h-24 mx-auto mb-6 rounded-full bg-white/20 flex items-center justify-center hover:bg-white/30 transition-colors cursor-pointer">
+                <Play className="w-10 h-10 text-white ml-1" weight="fill" />
               </div>
               <p className="text-2xl font-medium">Product Demo Video</p>
               <p className="text-lg opacity-90 mt-2">
@@ -201,13 +212,16 @@ export default function LandingPage() {
           {/* Diagonal Split Layout */}
           <div className="grid md:grid-cols-2 gap-24 items-center mb-32">
             <div className="text-left">
-              <h2 className="text-9xl font-light mb-8 text-text leading-[0.8] tracking-tighter">
-                Loved by
-                <br />
-                <span className="text-7xl text-primary font-black">
-                  thousands
-                </span>
-              </h2>
+              <div className="flex items-center gap-4 mb-6">
+                <Heart className="w-12 h-12 text-primary" weight="duotone" />
+                <h2 className="text-9xl font-light text-text leading-[0.8] tracking-tighter">
+                  Loved by
+                  <br />
+                  <span className="text-7xl text-primary font-black">
+                    thousands
+                  </span>
+                </h2>
+              </div>
               <p className="text-2xl text-text-light max-w-lg leading-relaxed font-light">
                 Join businesses winning more government contracts with
                 AI-powered intelligence
@@ -217,15 +231,19 @@ export default function LandingPage() {
             <div className="text-right">
               <div className="space-y-8">
                 <div className="inline-block">
-                  <div className="text-8xl font-bold text-success mb-2">
-                    47K+
+                  <div className="flex items-center justify-end gap-3 mb-2">
+                    <TrendUp className="w-10 h-10 text-success" weight="duotone" />
+                    <div className="text-8xl font-bold text-success">47K+</div>
                   </div>
                   <div className="text-lg text-text-light uppercase tracking-wider">
                     Active Tenders
                   </div>
                 </div>
                 <div className="inline-block ml-16">
-                  <div className="text-6xl font-bold text-text mb-2">$3.2B</div>
+                  <div className="flex items-center justify-end gap-3 mb-2">
+                    <CurrencyDollar className="w-8 h-8 text-text" weight="duotone" />
+                    <div className="text-6xl font-bold text-text">$3.2B</div>
+                  </div>
                   <div className="text-lg text-text-light uppercase tracking-wider">
                     Contract Value
                   </div>
@@ -238,13 +256,19 @@ export default function LandingPage() {
           <div className="relative">
             <div className="absolute top-0 left-1/4 transform -translate-x-1/2 -translate-y-4">
               <div className="bg-background border-2 border-primary rounded-2xl p-8 shadow-2xl">
-                <div className="text-4xl font-bold text-text mb-2">2,847</div>
+                <div className="flex items-center gap-3 mb-2">
+                  <Users className="w-6 h-6 text-primary" weight="duotone" />
+                  <div className="text-4xl font-bold text-text">2,847</div>
+                </div>
                 <div className="text-sm text-text-light">Active Users</div>
               </div>
             </div>
             <div className="absolute top-12 right-1/4 transform translate-x-1/2">
               <div className="bg-primary text-white rounded-2xl p-8 shadow-2xl">
-                <div className="text-4xl font-bold mb-2">95%</div>
+                <div className="flex items-center gap-3 mb-2">
+                  <Rocket className="w-6 h-6 text-white" weight="duotone" />
+                  <div className="text-4xl font-bold">95%</div>
+                </div>
                 <div className="text-sm opacity-90">Time Saved</div>
               </div>
             </div>
@@ -269,15 +293,18 @@ export default function LandingPage() {
         <div className="max-w-7xl mx-auto w-full">
           {/* Top Text - Center but Offset */}
           <div className="max-w-5xl ml-auto mr-16 mb-32">
-            <h2 className="text-9xl font-light mb-8 text-text leading-[0.8] text-right">
-              Government
-              <br />
-              procurement
-              <br />
-              <span className="text-primary font-black text-7xl">
-                is broken
-              </span>
-            </h2>
+            <div className="flex items-center justify-end gap-4 mb-8">
+              <Fire className="w-12 h-12 text-red-500" weight="duotone" />
+              <h2 className="text-9xl font-light text-text leading-[0.8] text-right">
+                Government
+                <br />
+                procurement
+                <br />
+                <span className="text-primary font-black text-7xl">
+                  is broken
+                </span>
+              </h2>
+            </div>
             <p className="text-2xl text-text-light leading-relaxed text-right">
               Businesses waste 60% of their procurement team's time
               <br />
@@ -314,15 +341,18 @@ export default function LandingPage() {
 
           {/* Bottom Text - Left Aligned */}
           <div className="max-w-4xl ml-16">
-            <h3 className="text-6xl font-light mb-8 text-text leading-tight">
-              MapleTenders transforms
-              <br />
-              <span className="text-primary font-bold">
-                business operations
-              </span>
-              <br />
-              with AI
-            </h3>
+            <div className="flex items-center gap-4 mb-8">
+              <Brain className="w-12 h-12 text-primary" weight="duotone" />
+              <h3 className="text-6xl font-light text-text leading-tight">
+                MapleTenders transforms
+                <br />
+                <span className="text-primary font-bold">
+                  business operations
+                </span>
+                <br />
+                with AI
+              </h3>
+            </div>
             <p className="text-xl text-text-light leading-relaxed">
               Our enterprise-grade AI understands your business capabilities and
               delivers precision-matched opportunities to accelerate growth
@@ -335,11 +365,14 @@ export default function LandingPage() {
       <section className="min-h-screen flex items-center py-32 px-6 border-t border-border">
         <div className="max-w-7xl mx-auto w-full">
           <div className="text-center mb-32">
-            <h2 className="text-7xl font-light mb-16 text-text leading-tight">
-              Compare the table views
-              <br />
-              <span className="text-primary font-bold">side by side</span>
-            </h2>
+            <div className="flex items-center justify-center gap-4 mb-16">
+              <Globe className="w-12 h-12 text-primary" weight="duotone" />
+              <h2 className="text-7xl font-light text-text leading-tight">
+                Compare the table views
+                <br />
+                <span className="text-primary font-bold">side by side</span>
+              </h2>
+            </div>
             <p className="text-3xl text-text-light max-w-4xl mx-auto">
               See how MapleTenders transforms cluttered government data into
               actionable insights
@@ -488,16 +521,19 @@ export default function LandingPage() {
             </h4>
             <div className="grid md:grid-cols-3 gap-8 text-center">
               <div>
+                <Lightning className="w-10 h-10 text-success mx-auto mb-4" />
                 <div className="text-5xl font-bold mb-4 text-success">5x</div>
                 <div className="text-xl text-text-light">
                   Faster to scan results
                 </div>
               </div>
               <div>
+                <Eye className="w-10 h-10 text-success mx-auto mb-4" />
                 <div className="text-5xl font-bold mb-4 text-success">90%</div>
                 <div className="text-xl text-text-light">Less eye strain</div>
               </div>
               <div>
+                <Target className="w-10 h-10 text-success mx-auto mb-4" />
                 <div className="text-5xl font-bold mb-4 text-success">100%</div>
                 <div className="text-xl text-text-light">
                   Relevance transparency
@@ -737,13 +773,16 @@ export default function LandingPage() {
         <div className="max-w-7xl mx-auto w-full">
           {/* Offset Header */}
           <div className="max-w-4xl ml-auto mr-8 mb-32 text-right">
-            <h2 className="text-8xl font-light mb-8 text-text leading-[0.8]">
-              Real results from
-              <br />
-              <span className="text-6xl text-primary font-black">
-                real businesses
-              </span>
-            </h2>
+            <div className="flex items-center justify-end gap-4 mb-8">
+              <Medal className="w-12 h-12 text-primary" weight="duotone" />
+              <h2 className="text-8xl font-light text-text leading-[0.8]">
+                Real results from
+                <br />
+                <span className="text-6xl text-primary font-black">
+                  real businesses
+                </span>
+              </h2>
+            </div>
             <p className="text-xl text-text-light leading-relaxed">
               See how MapleTenders is driving procurement success for
               organizations across Canada
@@ -757,9 +796,11 @@ export default function LandingPage() {
               <div>
                 <div className="flex items-center gap-2 mb-12">
                   {[...Array(5)].map((_, i) => (
-                    <div key={i} className="w-8 h-8 text-white text-2xl">
-                      ★
-                    </div>
+                    <Star
+                      key={i}
+                      className="w-8 h-8 text-white"
+                      weight="fill"
+                    />
                   ))}
                 </div>
                 <p className="text-3xl mb-12 leading-relaxed font-light">
@@ -791,9 +832,11 @@ export default function LandingPage() {
               <div className="bg-background border border-border rounded-3xl p-8">
                 <div className="flex items-center gap-2 mb-6">
                   {[...Array(5)].map((_, i) => (
-                    <div key={i} className="w-6 h-6 text-accent text-lg">
-                      ★
-                    </div>
+                    <Star
+                      key={i}
+                      className="w-6 h-6 text-accent"
+                      weight="fill"
+                    />
                   ))}
                 </div>
                 <p className="text-lg mb-6 text-text leading-relaxed">
@@ -817,9 +860,11 @@ export default function LandingPage() {
               <div className="bg-accent/10 border border-accent/30 rounded-3xl p-8">
                 <div className="flex items-center gap-2 mb-6">
                   {[...Array(5)].map((_, i) => (
-                    <div key={i} className="w-6 h-6 text-accent text-lg">
-                      ★
-                    </div>
+                    <Star
+                      key={i}
+                      className="w-6 h-6 text-accent"
+                      weight="fill"
+                    />
                   ))}
                 </div>
                 <p className="text-lg mb-6 text-text leading-relaxed">
@@ -846,6 +891,7 @@ export default function LandingPage() {
           <div className="relative">
             <div className="grid md:grid-cols-4 gap-8 text-center">
               <div className="bg-background border border-border rounded-3xl p-12 transform -rotate-1">
+                <CurrencyDollar className="w-12 h-12 text-success mx-auto mb-4" />
                 <div className="text-5xl font-bold text-success mb-4">
                   $12.4M
                 </div>
@@ -854,18 +900,21 @@ export default function LandingPage() {
                 </div>
               </div>
               <div className="bg-background border border-border rounded-3xl p-12 transform rotate-2">
+                <TrendUp className="w-12 h-12 text-success mx-auto mb-4" />
                 <div className="text-5xl font-bold text-success mb-4">340%</div>
                 <div className="text-xl text-text-light">
                   Average business growth acceleration
                 </div>
               </div>
               <div className="bg-background border border-border rounded-3xl p-12 transform -rotate-1">
+                <Lightning className="w-12 h-12 text-success mx-auto mb-4" />
                 <div className="text-5xl font-bold text-success mb-4">95%</div>
                 <div className="text-xl text-text-light">
                   Operational efficiency improvement
                 </div>
               </div>
               <div className="bg-background border border-border rounded-3xl p-12 transform rotate-1">
+                <Star className="w-12 h-12 text-success mx-auto mb-4" weight="fill" />
                 <div className="text-5xl font-bold text-success mb-4">
                   4.8/5
                 </div>
@@ -1032,8 +1081,9 @@ export default function LandingPage() {
               {/* Floating Stats */}
               <div className="space-y-6">
                 <div className="inline-block bg-background border border-border rounded-2xl p-8 shadow-lg transform rotate-2">
-                  <div className="text-4xl font-bold text-success mb-2">
-                    340%
+                  <div className="flex items-center gap-3 mb-2">
+                    <TrendUp className="w-8 h-8 text-success" />
+                    <div className="text-4xl font-bold text-success">340%</div>
                   </div>
                   <div className="text-sm text-text-light uppercase tracking-wider">
                     GROWTH RATE
@@ -1041,7 +1091,10 @@ export default function LandingPage() {
                 </div>
                 <div className="block">
                   <div className="inline-block bg-primary text-white rounded-2xl p-8 shadow-lg transform -rotate-1">
-                    <div className="text-4xl font-bold mb-2">$12.4M</div>
+                    <div className="flex items-center gap-3 mb-2">
+                      <CurrencyDollar className="w-8 h-8 text-white" />
+                      <div className="text-4xl font-bold">$12.4M</div>
+                    </div>
                     <div className="text-sm opacity-90 uppercase tracking-wider">
                       SECURED
                     </div>
@@ -1053,9 +1106,11 @@ export default function LandingPage() {
               <div className="inline-block bg-accent/10 border border-accent/30 rounded-2xl p-6 mt-8">
                 <div className="flex items-center gap-2 mb-2">
                   {[...Array(5)].map((_, i) => (
-                    <div key={i} className="w-6 h-6 text-accent text-lg">
-                      ★
-                    </div>
+                    <Star
+                      key={i}
+                      className="w-6 h-6 text-accent"
+                      weight="fill"
+                    />
                   ))}
                 </div>
                 <div className="text-lg font-semibold text-text">
