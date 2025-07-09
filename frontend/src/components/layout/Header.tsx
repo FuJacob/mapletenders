@@ -1,5 +1,6 @@
-import { useNavigate, Link } from "react-router-dom";
+import { useNavigate, Link, useLocation } from "react-router-dom";
 import { LogoTitle } from "../ui/LogoTitle";
+import { ViewSwitcher } from "../ui";
 import { useAuth } from "../../hooks/auth";
 import { useState, useEffect, useRef } from "react";
 import { useDispatch } from "react-redux";
@@ -7,20 +8,23 @@ import { signOut } from "../../features/auth/authThunks";
 import { User, Gear, SignOut, Bell, CaretDown } from "@phosphor-icons/react";
 
 interface HeaderProps {
-  showNavigation?: boolean;
   transparent?: boolean;
   className?: string;
 }
 export default function Header({
-  showNavigation = true,
   transparent = false,
   className = "",
 }: HeaderProps) {
   const navigate = useNavigate();
+  const location = useLocation();
   const dispatch = useDispatch();
   const { user } = useAuth();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [currentView, setCurrentView] = useState<"search" | "table">("search");
   const menuRef = useRef<HTMLDivElement>(null);
+
+  // Check if we're on the home page to show view switcher
+  const isHomePage = location.pathname === "/home";
 
   // Close menu when clicking outside
   useEffect(() => {
@@ -41,63 +45,34 @@ export default function Header({
 
   return (
     <header
-      className={`flex justify-between items-center p-6 border-b border-border ${
+      className={`flex items-center p-6 border-b border-border ${
         transparent ? "bg-transparent" : "bg-surface"
       } ${className}`}
     >
-      <Link to={user ? "/home" : "/"}>
-        <LogoTitle />
-      </Link>
+      {/* Left Section - Logo */}
+      <div className="flex-shrink-0">
+        <Link to={user ? "/home" : "/"}>
+          <LogoTitle />
+        </Link>
+      </div>
 
-      {showNavigation && (
-        <nav className="hidden md:flex items-center gap-8">
-          {user ? (
-            // Logged in navigation
-            <>
-              <Link
-                to="/search"
-                className="text-sm text-text hover:text-primary transition-colors"
-              >
-                Search
-              </Link>
-              <Link
-                to="/saved"
-                className="text-sm text-text hover:text-primary transition-colors"
-              >
-                Saved
-              </Link>
-              <Link
-                to="/alerts"
-                className="text-sm text-text hover:text-primary transition-colors"
-              >
-                Alerts
-              </Link>
-            </>
-          ) : (
-            // Guest navigation
-            <>
-              <Link
-                to="/pricing"
-                className="text-sm text-text hover:text-primary transition-colors"
-              >
-                Pricing
-              </Link>
-              <Link
-                to="/about"
-                className="text-sm text-text hover:text-primary transition-colors"
-              >
-                About
-              </Link>
-              <Link
-                to="/contact"
-                className="text-sm text-text hover:text-primary transition-colors"
-              >
-                Contact
-              </Link>
-            </>
-          )}
-        </nav>
-      )}
+      {/* Center Section - View Switcher (only show if user is logged in and on home page) */}
+      <div className="flex-1 flex justify-center">
+        {user && isHomePage && (
+          <ViewSwitcher
+            currentView={currentView}
+            onViewChange={(view) => {
+              setCurrentView(view);
+              // Dispatch custom event to notify Home component
+              window.dispatchEvent(
+                new CustomEvent("viewChange", { detail: view })
+              );
+            }}
+          />
+        )}
+      </div>
+
+      {/* Right Section - User Menu / Auth Buttons */}
 
       <div className="flex items-center gap-4">
         {user ? (

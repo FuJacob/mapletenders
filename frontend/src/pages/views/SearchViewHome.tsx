@@ -331,11 +331,12 @@ export default function Home() {
     <div className="max-w-7xl mx-auto">
       {/* Welcome Section */}
       <div className="mb-8 text-center">
-        <h1 className="text-3xl font-bold text-text mb-2">
+        <h1 className="text-5xl font-bold text-text mb-4">
           Welcome back {user?.company_name}!
         </h1>
-        <p className="text-lg text-text-light">
-          Here's what's happening with your tender opportunities
+        <p className="text-2xl text-text-light">
+          Discover and search through thousands of government contract
+          opportunities
         </p>
       </div>
 
