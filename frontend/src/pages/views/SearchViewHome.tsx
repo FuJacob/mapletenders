@@ -113,40 +113,34 @@ export default function Home() {
         </p>
       </div>
 
-      <div className="flex flex-row">
-        <div className="flex flex-col items-center gap-5">
-          <div className="bg-surface border border-border rounded-xl p-6">
-            <div className="flex items-center justify-between mb-2">
-              <div className="p-2 bg-primary/10 rounded-lg">
-                <Lightning className="w-5 h-5 text-primary" />
-              </div>
-              <span className="text-sm text-success font-medium">
-                +{mockStats.newTenders}
-              </span>
-            </div>
-            <h3 className="text-2xl font-bold text-text">
-              {mockStats.newTenders}
+      <div className="flex flex-row gap-6 mb-8">
+        {/* Left side - Recent Activity */}
+        <div className="w-80">
+          <div className="bg-surface border border-border rounded-xl p-6 h-full">
+            <h3 className="text-lg font-semibold text-text mb-4">
+              Recent Activity
             </h3>
-            <p className="text-sm text-text-light">New tenders this week</p>
-          </div>
-          <div className="bg-surface border border-border rounded-xl p-6">
-            <div className="flex items-center justify-between mb-2">
-              <div className="p-2 bg-primary/10 rounded-lg">
-                <Lightning className="w-5 h-5 text-primary" />
-              </div>
-              <span className="text-sm text-success font-medium">
-                +{mockStats.newTenders}
-              </span>
+            <div className="space-y-4">
+              {mockRecentActivity.map((activity) => (
+                <div key={activity.id} className="flex items-start gap-3">
+                  <div className="p-2 bg-border rounded-lg">
+                    <Eye className="w-4 h-4 text-text-light" />
+                  </div>
+                  <div className="flex-1">
+                    <p className="text-sm text-text">
+                      <span className="font-medium">{activity.action}</span>{" "}
+                      {activity.title}
+                    </p>
+                    <p className="text-xs text-text-light">{activity.time}</p>
+                  </div>
+                </div>
+              ))}
             </div>
-            <h3 className="text-2xl font-bold text-text">
-              {mockStats.newTenders}
-            </h3>
-            <p className="text-sm text-text-light">New tenders this week</p>
           </div>
         </div>
 
-        {/* Search Section */}
-        <div className="flex-1 bg-surface max-w-3xl mx-auto border border-border rounded-xl p-6 mb-8 text-center">
+        {/* Center - Search Section */}
+        <div className="flex-1 bg-surface max-w-3xl mx-auto border border-border rounded-xl p-6 text-center">
           <h2 className="text-3xl font-semibold text-text mb-4 p-4 text-center">
             What contracts are you here to win today?
           </h2>
@@ -188,35 +182,27 @@ export default function Home() {
             </div>
           </div>
         </div>
-        {/* Stats Section */}
-        <div className="flex flex-col items-center gap-5">
-          <div className="bg-surface border border-border rounded-xl p-6">
-            <div className="flex items-center justify-between mb-2">
-              <div className="p-2 bg-primary/10 rounded-lg">
-                <Lightning className="w-5 h-5 text-primary" />
-              </div>
-              <span className="text-sm text-success font-medium">
-                +{mockStats.newTenders}
-              </span>
-            </div>
-            <h3 className="text-2xl font-bold text-text">
-              {mockStats.newTenders}
+
+        {/* Right side - Quick Actions */}
+        <div className="w-80">
+          <div className="bg-surface border border-border rounded-xl p-6 h-full">
+            <h3 className="text-lg font-semibold text-text mb-4">
+              Quick Actions
             </h3>
-            <p className="text-sm text-text-light">New tenders this week</p>
-          </div>
-          <div className="bg-surface border border-border rounded-xl p-6">
-            <div className="flex items-center justify-between mb-2">
-              <div className="p-2 bg-primary/10 rounded-lg">
-                <Lightning className="w-5 h-5 text-primary" />
-              </div>
-              <span className="text-sm text-success font-medium">
-                +{mockStats.newTenders}
-              </span>
+            <div className="space-y-3">
+              <button className="w-full flex items-center gap-3 p-3 border border-border rounded-lg hover:border-primary hover:bg-primary/5 transition-colors text-left">
+                <Plus className="w-5 h-5 text-primary" />
+                <span className="text-text">Set up Alert</span>
+              </button>
+              <button className="w-full flex items-center gap-3 p-3 border border-border rounded-lg hover:border-primary hover:bg-primary/5 transition-colors text-left">
+                <Bookmark className="w-5 h-5 text-accent" />
+                <span className="text-text">View Saved</span>
+              </button>
+              <button className="w-full flex items-center gap-3 p-3 border border-border rounded-lg hover:border-primary hover:bg-primary/5 transition-colors text-left">
+                <Gear className="w-5 h-5 text-text-light" />
+                <span className="text-text">Update Profile</span>
+              </button>
             </div>
-            <h3 className="text-2xl font-bold text-text">
-              {mockStats.newTenders}
-            </h3>
-            <p className="text-sm text-text-light">New tenders this week</p>
           </div>
         </div>
       </div>
@@ -224,61 +210,6 @@ export default function Home() {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         {/* Main Content */}
         <div className="lg:col-span-2 space-y-8">
-          {/* Stats Cards */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
-            <div className="bg-surface border border-border rounded-xl p-6">
-              <div className="flex items-center justify-between mb-2">
-                <div className="p-2 bg-primary/10 rounded-lg">
-                  <Lightning className="w-5 h-5 text-primary" />
-                </div>
-                <span className="text-sm text-success font-medium">
-                  +{mockStats.newTenders}
-                </span>
-              </div>
-              <h3 className="text-2xl font-bold text-text">
-                {mockStats.newTenders}
-              </h3>
-              <p className="text-sm text-text-light">New tenders this week</p>
-            </div>
-
-            <div className="bg-surface border border-border rounded-xl p-6">
-              <div className="flex items-center justify-between mb-2">
-                <div className="p-2 bg-accent/10 rounded-lg">
-                  <Bookmark className="w-5 h-5 text-accent" />
-                </div>
-              </div>
-              <h3 className="text-2xl font-bold text-text">
-                {mockStats.savedTenders}
-              </h3>
-              <p className="text-sm text-text-light">Saved opportunities</p>
-            </div>
-
-            <div className="bg-surface border border-border rounded-xl p-6">
-              <div className="flex items-center justify-between mb-2">
-                <div className="p-2 bg-secondary/10 rounded-lg">
-                  <Bell className="w-5 h-5 text-secondary" />
-                </div>
-              </div>
-              <h3 className="text-2xl font-bold text-text">
-                {mockStats.activeAlerts}
-              </h3>
-              <p className="text-sm text-text-light">Active alerts</p>
-            </div>
-
-            <div className="bg-surface border border-border rounded-xl p-6">
-              <div className="flex items-center justify-between mb-2">
-                <div className="p-2 bg-red-100 rounded-lg">
-                  <Clock className="w-5 h-5 text-red-500" />
-                </div>
-                <span className="text-sm text-red-500 font-medium">Urgent</span>
-              </div>
-              <h3 className="text-2xl font-bold text-text">
-                {mockStats.deadlinesThisWeek}
-              </h3>
-              <p className="text-sm text-text-light">Deadlines this week</p>
-            </div>
-          </div>
-
           {/* Recommended Tenders */}
           <div className="bg-surface border border-border rounded-xl p-6">
             <div className="flex items-center justify-between mb-6">
@@ -352,50 +283,6 @@ export default function Home() {
 
         {/* Sidebar */}
         <div className="space-y-6">
-          {/* Quick Actions */}
-          <div className="bg-surface border border-border rounded-xl p-6">
-            <h3 className="text-lg font-semibold text-text mb-4">
-              Quick Actions
-            </h3>
-            <div className="space-y-3">
-              <button className="w-full flex items-center gap-3 p-3 border border-border rounded-lg hover:border-primary hover:bg-primary/5 transition-colors text-left">
-                <Plus className="w-5 h-5 text-primary" />
-                <span className="text-text">Set up Alert</span>
-              </button>
-              <button className="w-full flex items-center gap-3 p-3 border border-border rounded-lg hover:border-primary hover:bg-primary/5 transition-colors text-left">
-                <Bookmark className="w-5 h-5 text-accent" />
-                <span className="text-text">View Saved</span>
-              </button>
-              <button className="w-full flex items-center gap-3 p-3 border border-border rounded-lg hover:border-primary hover:bg-primary/5 transition-colors text-left">
-                <Gear className="w-5 h-5 text-text-light" />
-                <span className="text-text">Update Profile</span>
-              </button>
-            </div>
-          </div>
-
-          {/* Recent Activity */}
-          <div className="bg-surface border border-border rounded-xl p-6">
-            <h3 className="text-lg font-semibold text-text mb-4">
-              Recent Activity
-            </h3>
-            <div className="space-y-3">
-              {mockRecentActivity.map((activity) => (
-                <div key={activity.id} className="flex items-start gap-3">
-                  <div className="p-1 bg-border rounded">
-                    <Eye className="w-3 h-3 text-text-light" />
-                  </div>
-                  <div className="flex-1">
-                    <p className="text-sm text-text">
-                      <span className="font-medium">{activity.action}</span>{" "}
-                      {activity.title}
-                    </p>
-                    <p className="text-xs text-text-light">{activity.time}</p>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-
           {/* Urgent Deadlines */}
           <div className="bg-surface border border-border rounded-xl p-6">
             <h3 className="text-lg font-semibold text-text mb-4 flex items-center gap-2">
@@ -415,6 +302,61 @@ export default function Home() {
                 </p>
                 <p className="text-xs text-yellow-600">Due in 5 days</p>
               </div>
+            </div>
+          </div>
+
+          {/* Stats Cards */}
+          <div className="grid grid-cols-1 gap-4">
+            <div className="bg-surface border border-border rounded-xl p-4">
+              <div className="flex items-center justify-between mb-2">
+                <div className="p-2 bg-primary/10 rounded-lg">
+                  <Lightning className="w-5 h-5 text-primary" />
+                </div>
+                <span className="text-sm text-success font-medium">
+                  +{mockStats.newTenders}
+                </span>
+              </div>
+              <h3 className="text-2xl font-bold text-text">
+                {mockStats.newTenders}
+              </h3>
+              <p className="text-sm text-text-light">New tenders this week</p>
+            </div>
+
+            <div className="bg-surface border border-border rounded-xl p-4">
+              <div className="flex items-center justify-between mb-2">
+                <div className="p-2 bg-accent/10 rounded-lg">
+                  <Bookmark className="w-5 h-5 text-accent" />
+                </div>
+              </div>
+              <h3 className="text-2xl font-bold text-text">
+                {mockStats.savedTenders}
+              </h3>
+              <p className="text-sm text-text-light">Saved opportunities</p>
+            </div>
+
+            <div className="bg-surface border border-border rounded-xl p-4">
+              <div className="flex items-center justify-between mb-2">
+                <div className="p-2 bg-secondary/10 rounded-lg">
+                  <Bell className="w-5 h-5 text-secondary" />
+                </div>
+              </div>
+              <h3 className="text-2xl font-bold text-text">
+                {mockStats.activeAlerts}
+              </h3>
+              <p className="text-sm text-text-light">Active alerts</p>
+            </div>
+
+            <div className="bg-surface border border-border rounded-xl p-4">
+              <div className="flex items-center justify-between mb-2">
+                <div className="p-2 bg-red-100 rounded-lg">
+                  <Clock className="w-5 h-5 text-red-500" />
+                </div>
+                <span className="text-sm text-red-500 font-medium">Urgent</span>
+              </div>
+              <h3 className="text-2xl font-bold text-text">
+                {mockStats.deadlinesThisWeek}
+              </h3>
+              <p className="text-sm text-text-light">Deadlines this week</p>
             </div>
           </div>
         </div>
