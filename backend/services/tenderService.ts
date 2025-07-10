@@ -3,6 +3,7 @@ import { CsvService } from "./csvService";
 import { MlService } from "./mlService";
 import { DataTransformationService } from "./dataTransformationService";
 import { AiService } from "./aiService";
+import type { Database } from "../database.types";
 
 export class TenderService {
   constructor(

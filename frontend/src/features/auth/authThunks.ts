@@ -10,28 +10,41 @@ import { type AppDispatch } from "../../app/configureStore";
 import type { Database } from "../../../database.types";
 import type { ProfileData } from "../../api/profile";
 
-type ProfileUpdate = Partial<
-  Database["public"]["Tables"]["profiles"]["Update"]
->;
-
+// Use database types as source of truth
+type ProfileUpdate = Database["public"]["Tables"]["profiles"]["Update"];
 type DatabaseProfile = Database["public"]["Tables"]["profiles"]["Row"];
 
 // Helper function to convert database profile to API format
 const convertDatabaseProfileToAPI = (dbProfile: Partial<DatabaseProfile>): ProfileData => {
-  const converted: Partial<ProfileData> = {};
-  for (const [key, value] of Object.entries(dbProfile)) {
-    (converted as Record<string, unknown>)[key] = value === null ? undefined : value;
-  }
-  return converted as ProfileData;
+  return {
+    id: dbProfile.id!,
+    company_name: dbProfile.company_name ?? undefined,
+    company_size: dbProfile.company_size ?? undefined,
+    industry: dbProfile.industry ?? undefined,
+    primary_services: dbProfile.primary_services ?? undefined,
+    service_regions: dbProfile.service_regions ?? undefined,
+    government_experience: dbProfile.government_experience ?? undefined,
+    typical_contract_size: dbProfile.typical_contract_size ?? undefined,
+    onboarding_completed: dbProfile.onboarding_completed ?? undefined,
+    updated_at: dbProfile.updated_at ?? undefined,
+  };
 };
 
 // Helper function to convert API profile to database format
 const convertAPIProfileToDatabase = (apiProfile: ProfileData): DatabaseProfile => {
-  const converted: Partial<DatabaseProfile> = {};
-  for (const [key, value] of Object.entries(apiProfile)) {
-    (converted as Record<string, unknown>)[key] = value === undefined ? null : value;
-  }
-  return converted as DatabaseProfile;
+  return {
+    id: apiProfile.id,
+    company_name: apiProfile.company_name ?? null,
+    company_size: apiProfile.company_size ?? null,
+    created_at: null, // Set by database
+    government_experience: apiProfile.government_experience ?? null,
+    industry: apiProfile.industry ?? null,
+    onboarding_completed: apiProfile.onboarding_completed ?? null,
+    primary_services: apiProfile.primary_services ?? null,
+    service_regions: apiProfile.service_regions ?? null,
+    typical_contract_size: apiProfile.typical_contract_size ?? null,
+    updated_at: apiProfile.updated_at ?? null,
+  };
 };
 export const signIn =
   (email: string, password: string) => async (dispatch: AppDispatch) => {

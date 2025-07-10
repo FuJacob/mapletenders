@@ -1,27 +1,33 @@
 import type { Database } from "../../../database.types";
 
-// Base database types
-type TenderRow = Database["public"]["Tables"]["tenders"]["Row"];
-
-// Dashboard-specific tender interface using database column names
-export interface Tender extends Partial<TenderRow> {
+// Use database types as source of truth
+export type Tender = Database["public"]["Tables"]["tenders"]["Row"] & {
   relevanceScore?: number; // Custom field for dashboard
-}
+};
 
-// Alternative interface with friendly names for easier component usage
-export interface TenderDisplay {
-  id: string;
-  title: string;
-  organization: string;
-  location: string;
-  deadline: string;
-  publishDate: string;
-  category: string;
-  status: string;
-  noticeUrl: string;
-  description?: string;
+// Minimal tender data for components and mock data
+export type TenderSummary = Pick<
+  Database["public"]["Tables"]["tenders"]["Row"], 
+  "id" | "title" | "contracting_entity_name" | "tender_closing_date" | "regions_of_delivery" | 
+  "notice_type" | "tender_status" | "publication_date" | "procurement_category"
+> & {
   relevanceScore?: number;
-}
+};
+
+// Display interface using utility types to transform database fields to friendly names
+export type TenderDisplay = {
+  id: string;
+  title: NonNullable<Database["public"]["Tables"]["tenders"]["Row"]["title"]>;
+  organization: NonNullable<Database["public"]["Tables"]["tenders"]["Row"]["contracting_entity_name"]>;
+  location: string; // Computed from multiple address fields
+  deadline: NonNullable<Database["public"]["Tables"]["tenders"]["Row"]["tender_closing_date"]>;
+  publishDate: NonNullable<Database["public"]["Tables"]["tenders"]["Row"]["publication_date"]>;
+  category: NonNullable<Database["public"]["Tables"]["tenders"]["Row"]["procurement_category"]>;
+  status: NonNullable<Database["public"]["Tables"]["tenders"]["Row"]["tender_status"]>;
+  noticeUrl: NonNullable<Database["public"]["Tables"]["tenders"]["Row"]["notice_url"]>;
+  description?: Database["public"]["Tables"]["tenders"]["Row"]["tender_description"];
+  relevanceScore?: number;
+};
 
 export interface Activity {
   id: number;
@@ -36,7 +42,7 @@ export interface Activity {
 
 // Helper function to convert database tender to display format
 export const mapTenderToDisplay = (
-  tender: Partial<TenderRow> & { relevanceScore?: number }
+  tender: Tender
 ): TenderDisplay => ({
   id: tender.id || "",
   title: tender.title || "Untitled",

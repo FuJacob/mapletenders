@@ -1,9 +1,9 @@
 import { Link } from "react-router-dom";
 import TenderCard from "./TenderCard.tsx";
-import type { Tender } from "./types.tsx";
+import type { TenderSummary } from "./types.tsx";
 
 interface RecommendedTendersProps {
-  tenders: Tender[];
+  tenders: TenderSummary[];
 }
 
 export default function RecommendedTenders({

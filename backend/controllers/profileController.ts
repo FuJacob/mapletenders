@@ -1,12 +1,13 @@
 import { Request, Response } from "express";
 import { DatabaseService } from "../services";
+import type { Database } from "../database.types";
 
 export class ProfileController {
   constructor(private databaseService: DatabaseService) {}
 
   createOrUpdateProfile = async (req: Request, res: Response) => {
     try {
-      const profileData = req.body;
+      const profileData: Database["public"]["Tables"]["profiles"]["Insert"] | Database["public"]["Tables"]["profiles"]["Update"] = req.body;
 
       if (!profileData.id) {
         return res.status(400).json({

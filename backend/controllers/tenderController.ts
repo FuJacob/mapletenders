@@ -1,5 +1,6 @@
 import { Request, Response } from "express";
 import { TenderService } from "../services";
+import type { Database } from "../database.types";
 
 export class TenderController {
   constructor(private tenderService: TenderService) {}

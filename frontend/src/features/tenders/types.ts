@@ -1,48 +1,14 @@
-import { type Database } from "../../../database.types";
-export interface TenderNoticeInterface {
-  id: string;
-  title: string;
-  reference_number: string;
-  amendment_number: string;
-  solicitation_number: string;
-  publication_date: string;
-  tender_closing_date: string;
-  amendment_date: string;
-  expected_contract_start_date: string;
-  expected_contract_end_date: string;
-  tender_status: string;
-  gsin: string;
-  gsin_description: string;
-  unspsc: string;
-  unspsc_description: string;
-  procurement_category: string;
-  notice_type: string;
-  procurement_method: string;
-  selection_criteria: string;
-  limited_tendering_reason: string;
-  trade_agreements: string;
-  regions_of_opportunity: string;
-  regions_of_delivery: string;
-  contracting_entity_name: string;
-  contracting_entity_address_line: string;
-  contracting_entity_city: string;
-  contracting_entity_province: string;
-  contracting_entity_postal_code: string;
-  contracting_entity_country: string;
-  end_user_entities_name: string;
-  end_user_entities_address: string;
-  contact_name: string;
-  contact_email: string;
-  contact_phone: string;
-  contact_fax: string;
-  contact_address_line: string;
-  contact_city: string;
-  contact_province: string;
-  contact_postal_code: string;
-  contact_country: string;
-  notice_url: string;
-  attachments: string;
-  tender_description: string;
-}
+import type { Database } from "../../../database.types";
 
+// Use database types as source of truth
 export type Tender = Database["public"]["Tables"]["tenders"]["Row"];
+export type TenderInsert = Database["public"]["Tables"]["tenders"]["Insert"];
+export type TenderUpdate = Database["public"]["Tables"]["tenders"]["Update"];
+
+// For open tender notices (the main view table)
+export type OpenTenderNotice = Database["public"]["Tables"]["open_tender_notices"]["Row"];
+export type FilteredOpenTenderNotice = Database["public"]["Tables"]["filtered_open_tender_notices"]["Row"];
+
+// Legacy interface - DEPRECATED: Use Tender type instead
+/** @deprecated Use Tender type instead */
+export type TenderNoticeInterface = Tender;

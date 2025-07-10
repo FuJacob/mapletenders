@@ -1,9 +1,11 @@
 import { createClient } from "@supabase/supabase-js";
+import type { Database } from "../database.types";
+
 export class DatabaseService {
   private supabase;
 
   constructor() {
-    this.supabase = createClient(
+    this.supabase = createClient<Database>(
       process.env.SUPABASE_URL || "",
       process.env.SUPABASE_SERVICE_KEY || ""
     );
@@ -105,10 +107,10 @@ export class DatabaseService {
   }
 
   async clearTenders() {
-    return await this.supabase.from("tenders").delete().neq("title", 0);
+    return await this.supabase.from("tenders").delete().neq("title", "");
   }
 
-  async insertTenders(tenderData: any[]) {
+  async insertTenders(tenderData: Database["public"]["Tables"]["tenders"]["Insert"][]) {
     return await this.supabase.from("tenders").insert(tenderData);
   }
 
@@ -144,10 +146,10 @@ export class DatabaseService {
     return await this.supabase
       .from("filtered_open_tender_notices")
       .delete()
-      .neq("referenceNumber-numeroReference", 0);
+      .neq("referenceNumber-numeroReference", "");
   }
 
-  async insertFilteredTenderNotices(data: any[]) {
+  async insertFilteredTenderNotices(data: Database["public"]["Tables"]["filtered_open_tender_notices"]["Insert"][]) {
     return await this.supabase
       .from("filtered_open_tender_notices")
       .insert(data);
@@ -158,7 +160,9 @@ export class DatabaseService {
   }
 
   async insertRfpAnalysis(data: string) {
-    return await this.supabase.from("rfp_analysis").insert({ data });
+    // Generate a unique id for the analysis
+    const id = Date.now(); // Simple timestamp-based ID
+    return await this.supabase.from("rfp_analysis").insert({ id, data });
   }
 
   async searchTendersByVector(
@@ -167,7 +171,7 @@ export class DatabaseService {
     matchCount: number = 30
   ) {
     return await this.supabase.rpc("match_tenders_by_vector", {
-      query_embedding: queryEmbedding,
+      query_embedding: JSON.stringify(queryEmbedding),
       match_threshold: matchThreshold,
       match_count: matchCount,
     });
@@ -245,7 +249,7 @@ export class DatabaseService {
   }
 
   // Profile methods
-  async createOrUpdateProfile(profileData: any) {
+  async createOrUpdateProfile(profileData: Database["public"]["Tables"]["profiles"]["Insert"] | Database["public"]["Tables"]["profiles"]["Update"]) {
     try {
       const { data, error } = await this.supabase
         .from("profiles")
@@ -264,7 +268,7 @@ export class DatabaseService {
     }
   }
 
-  async getProfile(userId: string) {
+  async getProfile(userId: string): Promise<Database["public"]["Tables"]["profiles"]["Row"] | null> {
     try {
       const { data, error } = await this.supabase
         .from("profiles")

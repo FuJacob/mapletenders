@@ -7,10 +7,10 @@ import {
   Bookmark,
   ArrowSquareOut,
 } from "@phosphor-icons/react";
-import type { Tender } from "./types.tsx";
+import type { TenderSummary } from "./types.tsx";
 
 interface TenderCardProps {
-  tender: Tender;
+  tender: TenderSummary;
   onBookmark?: (tenderId: string) => void;
   onViewDetails?: (tenderId: string) => void;
 }

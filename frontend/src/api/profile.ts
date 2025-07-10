@@ -1,8 +1,10 @@
 import axios from "axios";
 import { handleApiError } from "./config";
+import type { Database } from "../../database.types";
 
-export interface ProfileData {
-  id: string;
+// Use database types as source of truth with proper optional handling
+export type ProfileData = Pick<Database["public"]["Tables"]["profiles"]["Row"], "id"> & {
+  // Convert null database fields to optional undefined fields for API
   company_name?: string;
   company_size?: string;
   industry?: string;
@@ -12,7 +14,10 @@ export interface ProfileData {
   typical_contract_size?: string;
   onboarding_completed?: boolean;
   updated_at?: string;
-}
+};
+
+export type ProfileInsert = Database["public"]["Tables"]["profiles"]["Insert"];
+export type ProfileUpdate = Database["public"]["Tables"]["profiles"]["Update"];
 
 export interface ProfileResponse {
   profile?: ProfileData;
