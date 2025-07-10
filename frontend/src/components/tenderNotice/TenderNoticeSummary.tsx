@@ -1,5 +1,5 @@
 import { Sparkle } from "@phosphor-icons/react";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo, useRef } from "react";
 import { generateTenderSummary, type TenderSummaryData } from "../../api";
 
 interface TenderNoticeBodyProps {
@@ -22,12 +22,13 @@ interface TenderNoticeBodyProps {
 export function TenderNoticeSummary({ tender }: TenderNoticeBodyProps) {
   const [tenderSummary, setTenderSummary] =
     useState<TenderSummaryData | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
+  const [lastTenderId, setLastTenderId] = useState<string | null>(null);
+  const abortControllerRef = useRef<AbortController | null>(null);
 
-  useEffect(() => {
-    const getTenderSummary = async () => {
-      try {
-        // Create a structured tender data string with relevant information
-        const structuredTenderData = `
+  // Memoize the structured data to prevent unnecessary recreations
+  const structuredTenderData = useMemo(() => {
+    return `
 Title: ${tender.tender_description || "Not specified"}
 Procurement Method: ${tender.procurement_method || "Not specified"}
 Category: ${tender.procurement_category || "Not specified"}
@@ -37,9 +38,47 @@ Delivery Regions: ${tender.regions_of_delivery || "Not specified"}
 Opportunity Regions: ${tender.regions_of_opportunity || "Not specified"}
 Selection Criteria: ${tender.selection_criteria || "Not specified"}
 Trade Agreements: ${tender.trade_agreements || "Not specified"}
-        `.trim();
+    `.trim();
+  }, [
+    tender.tender_description,
+    tender.procurement_method,
+    tender.procurement_category,
+    tender.gsin,
+    tender.gsin_description,
+    tender.unspsc,
+    tender.unspsc_description,
+    tender.regions_of_delivery,
+    tender.regions_of_opportunity,
+    tender.selection_criteria,
+    tender.trade_agreements,
+  ]);
 
+  useEffect(() => {
+    const getTenderSummary = async () => {
+      // Check if this is a new tender or if we're already loading
+      if (isLoading || tender.id === lastTenderId) return;
+      
+      // Cancel any previous request
+      if (abortControllerRef.current) {
+        abortControllerRef.current.abort();
+      }
+      
+      // Create new abort controller for this request
+      abortControllerRef.current = new AbortController();
+      
+      // Reset state for new tender
+      setTenderSummary(null);
+      setIsLoading(true);
+      setLastTenderId(tender.id);
+      
+      try {
         const response = await generateTenderSummary(tender.id, structuredTenderData);
+        
+        // Check if request was aborted
+        if (abortControllerRef.current?.signal.aborted) {
+          return;
+        }
+        
         console.log("Raw API response:", response);
 
         // The backend now returns a parsed summary directly
@@ -47,12 +86,26 @@ Trade Agreements: ${tender.trade_agreements || "Not specified"}
         console.log("Parsed summary:", parsedSummary);
         setTenderSummary(parsedSummary);
       } catch (error) {
+        // Don't log error if request was aborted
+        if (abortControllerRef.current?.signal.aborted) {
+          return;
+        }
         console.error("Error generating tender summary:", error);
         setTenderSummary(null);
+      } finally {
+        setIsLoading(false);
       }
     };
+    
     getTenderSummary();
-  }, [tender]);
+    
+    // Cleanup function to abort request if component unmounts
+    return () => {
+      if (abortControllerRef.current) {
+        abortControllerRef.current.abort();
+      }
+    };
+  }, [tender.id, structuredTenderData]);
 
   return (
     <div className="bg-primary border border-primary rounded-xl p-6 mb-8">
