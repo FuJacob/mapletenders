@@ -5,6 +5,9 @@ export class AiService {
   private openai: OpenAI;
   private genAI: GoogleGenAI;
 
+  // Chat sessions storage (in-memory for now)
+  private chatSessions = new Map<string, any>();
+
   constructor() {
     this.openai = new OpenAI({
       baseURL: process.env.GEMINI_BASE_URL,
@@ -139,5 +142,55 @@ Focus on the most important information that drives business decisions.`,
       console.error("Error generating tender summary with Gemini:", error);
       throw new Error("Failed to generate tender summary");
     }
+  }
+
+  async createChatSession(sessionId: string) {
+    const chat = this.genAI.chats.create({
+      model: "gemini-2.5-flash",
+      history: [
+        {
+          role: "user",
+          parts: [{ text: "Hello! I'm looking for help with government tenders and procurement opportunities." }],
+        },
+        {
+          role: "model",
+          parts: [{ text: "Hello! I'm here to help you with government tenders and procurement opportunities. I can answer questions about tender processes, requirements, deadlines, and help you understand specific opportunities. What would you like to know?" }],
+        },
+      ],
+    });
+
+    this.chatSessions.set(sessionId, chat);
+    return chat;
+  }
+
+  async sendChatMessage(sessionId: string, message: string) {
+    try {
+      let chat = this.chatSessions.get(sessionId);
+      
+      if (!chat) {
+        // Create new chat session if it doesn't exist
+        chat = await this.createChatSession(sessionId);
+      }
+
+      const response = await chat.sendMessage({
+        message: message,
+      });
+
+      return {
+        message: response.text,
+        sessionId: sessionId,
+      };
+    } catch (error) {
+      console.error("Error sending chat message:", error);
+      throw new Error("Failed to send chat message");
+    }
+  }
+
+  getChatSession(sessionId: string) {
+    return this.chatSessions.get(sessionId);
+  }
+
+  deleteChatSession(sessionId: string) {
+    return this.chatSessions.delete(sessionId);
   }
 }

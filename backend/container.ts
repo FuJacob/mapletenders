@@ -17,6 +17,7 @@ import {
   TenderNoticeController,
   AuthController,
   ProfileController,
+  ChatController,
 } from "./controllers";
 
 // Initialize services
@@ -47,3 +48,4 @@ export const tenderController = new TenderController(tenderService);
 export const tenderNoticeController = new TenderNoticeController(tenderService);
 export const authController = new AuthController(databaseService);
 export const profileController = new ProfileController(databaseService);
+export const chatController = new ChatController(aiService);

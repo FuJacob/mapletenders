@@ -1,105 +1,107 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useRef, useCallback } from "react";
 import {
   PaperPlaneTilt,
   Robot,
-  User,
-  Lightbulb,
-  MagnifyingGlass,
-  TrendUp,
-  Bell,
 } from "@phosphor-icons/react";
-
-interface ChatMessage {
-  id: number;
-  type: "user" | "bot";
-  content: string;
-  timestamp: Date;
-  suggestions?: string[];
-}
+import MessageBubble from "../common/MessageBubble";
+import { createChatSession, sendChatMessage, type ChatMessage } from "../../api";
 
 const BreezeChat: React.FC = () => {
-  const [messages, setMessages] = useState<ChatMessage[]>([
-    {
-      id: 1,
-      type: "bot",
-      content:
-        "Hi! I'm Breeze, your AI procurement assistant. I can help you find relevant tenders, analyze opportunities, and provide insights about government contracts. What would you like to know?",
-      timestamp: new Date(),
-      suggestions: [
-        "Find IT contracts in Ontario under $100K",
-        "Show me trending opportunities this week",
-        "What are the most competitive tender categories?",
-        "Help me write a compelling proposal",
-      ],
-    },
-  ]);
+  const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [inputMessage, setInputMessage] = useState("");
   const [isTyping, setIsTyping] = useState(false);
+  const [sessionId, setSessionId] = useState<string | null>(null);
+  const [error, setError] = useState<string | null>(null);
+  const messagesEndRef = useRef<HTMLDivElement>(null);
 
-  const handleSendMessage = async () => {
-    if (!inputMessage.trim()) return;
+  // Auto-scroll to bottom when new messages arrive
+  const scrollToBottom = useCallback(() => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, []);
 
-    // Add user message
+  useEffect(() => {
+    scrollToBottom();
+  }, [messages, scrollToBottom]);
+
+  // Initialize chat session when component mounts
+  useEffect(() => {
+    const initializeChat = async () => {
+      try {
+        const response = await createChatSession();
+        setSessionId(response.sessionId);
+        
+        // Add welcome message from API
+        const welcomeMessage: ChatMessage = {
+          role: "model",
+          message: "Hello! I'm here to help you with government tenders and procurement opportunities. I can answer questions about tender processes, requirements, deadlines, and help you understand specific opportunities. What would you like to know?",
+          timestamp: new Date(),
+        };
+        
+        setMessages([welcomeMessage]);
+        setError(null);
+      } catch (err) {
+        console.error("Failed to initialize chat:", err);
+        setError("Failed to start chat session. Please try again.");
+      }
+    };
+
+    initializeChat();
+  }, []);
+
+  const handleSendMessage = useCallback(async () => {
+    if (!inputMessage.trim() || !sessionId || isTyping) return;
+
     const userMessage: ChatMessage = {
-      id: messages.length + 1,
-      type: "user",
-      content: inputMessage,
+      role: "user",
+      message: inputMessage.trim(),
       timestamp: new Date(),
     };
 
-    setMessages((prev) => [...prev, userMessage]);
+    // Add user message immediately
+    setMessages(prev => [...prev, userMessage]);
     setInputMessage("");
     setIsTyping(true);
+    setError(null);
 
-    // Simulate AI response (replace with actual API call)
-    setTimeout(() => {
-      const botResponse: ChatMessage = {
-        id: messages.length + 2,
-        type: "bot",
-        content:
-          "I understand you're looking for information about that. Let me help you find the most relevant opportunities and insights. This is a mockup response - in the full version, I'll provide personalized recommendations based on your company profile and past activity.",
+    try {
+      // Send message to API
+      const response = await sendChatMessage(sessionId, userMessage.message);
+      
+      // Add bot response
+      const botMessage: ChatMessage = {
+        role: "model",
+        message: response.message,
         timestamp: new Date(),
-        suggestions: [
-          "Tell me more about deadline management",
-          "Show me similar successful bids",
-          "What's my win rate in this category?",
-        ],
       };
 
-      setMessages((prev) => [...prev, botResponse]);
+      setMessages(prev => [...prev, botMessage]);
+    } catch (err) {
+      console.error("Failed to send message:", err);
+      setError("Failed to send message. Please try again.");
+      
+      // Add error message to chat
+      const errorMessage: ChatMessage = {
+        role: "model",
+        message: "I apologize, but I'm having trouble processing your message right now. Please try again.",
+        timestamp: new Date(),
+      };
+      
+      setMessages(prev => [...prev, errorMessage]);
+    } finally {
       setIsTyping(false);
-    }, 1500);
-  };
+    }
+  }, [inputMessage, sessionId, isTyping]);
 
-  const handleSuggestionClick = (suggestion: string) => {
-    setInputMessage(suggestion);
-  };
-
-  const quickActions = [
-    {
-      icon: MagnifyingGlass,
-      label: "Smart Search",
-      description: "Find tenders using natural language",
-    },
-    {
-      icon: TrendUp,
-      label: "Market Analysis",
-      description: "Get insights on tender trends",
-    },
-    {
-      icon: Bell,
-      label: "Alert Setup",
-      description: "Create intelligent notifications",
-    },
-    {
-      icon: Lightbulb,
-      label: "Proposal Tips",
-      description: "Get AI-powered writing help",
-    },
-  ];
+  const handleKeyDown = useCallback((e: React.KeyboardEvent) => {
+    if (e.key === "Enter" && !e.shiftKey) {
+      e.preventDefault();
+      handleSendMessage();
+    }
+  }, [handleSendMessage]);
 
   return (
     <div className="bg-surface border border-border rounded-xl p-6 h-[1200px] flex flex-col">
+      {/* Header */}
       <div className="flex items-center gap-3 mb-4 pb-4 border-b border-border">
         <div className="w-10 h-10 bg-primary/10 rounded-full flex items-center justify-center">
           <Robot className="w-6 h-6 text-primary" />
@@ -114,98 +116,31 @@ const BreezeChat: React.FC = () => {
         </div>
       </div>
 
-      {/* Quick Actions */}
-      {messages.length === 1 && (
-        <div className="mb-4">
-          <p className="text-sm text-text-light mb-3">
-            Try these quick actions:
-          </p>
-          <div className="grid grid-cols-2 gap-2">
-            {quickActions.map((action, index) => (
-              <button
-                key={index}
-                onClick={() => handleSuggestionClick(action.description)}
-                className="p-3 bg-surface border border-border rounded-lg text-left hover:bg-primary/5 transition-colors"
-              >
-                <div className="flex items-center gap-2 mb-1">
-                  <action.icon className="w-4 h-4 text-primary" />
-                  <span className="text-sm font-medium text-text">
-                    {action.label}
-                  </span>
-                </div>
-                <p className="text-xs text-text-light">{action.description}</p>
-              </button>
-            ))}
-          </div>
+      {/* Error Message */}
+      {error && (
+        <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-lg text-red-600 text-sm">
+          {error}
         </div>
       )}
 
       {/* Chat Messages */}
-      <div className="flex-1 overflow-y-auto space-y-4 mb-4">
-        {messages.map((message) => (
-          <div
-            key={message.id}
-            className={`flex gap-3 ${
-              message.type === "user" ? "justify-end" : "justify-start"
-            }`}
-          >
-            {message.type === "bot" && (
-              <div className="w-8 h-8 bg-primary/10 rounded-full flex items-center justify-center flex-shrink-0">
-                <Robot className="w-4 h-4 text-primary" />
-              </div>
-            )}
-
-            <div
-              className={`max-w-[80%] ${
-                message.type === "user" ? "order-first" : ""
-              }`}
-            >
-              <div
-                className={`p-3 rounded-xl ${
-                  message.type === "user"
-                    ? "bg-primary text-white"
-                    : "bg-gray-50 text-text border border-border"
-                }`}
-              >
-                <p className="text-sm">{message.content}</p>
-              </div>
-
-              {message.suggestions && (
-                <div className="mt-2 space-y-1">
-                  {message.suggestions.map((suggestion, index) => (
-                    <button
-                      key={index}
-                      onClick={() => handleSuggestionClick(suggestion)}
-                      className="block text-xs text-primary hover:underline text-left"
-                    >
-                      💡 {suggestion}
-                    </button>
-                  ))}
-                </div>
-              )}
-
-              <div className="text-xs text-text-light mt-1">
-                {message.timestamp.toLocaleTimeString([], {
-                  hour: "2-digit",
-                  minute: "2-digit",
-                })}
-              </div>
-            </div>
-
-            {message.type === "user" && (
-              <div className="w-8 h-8 bg-accent/10 rounded-full flex items-center justify-center flex-shrink-0">
-                <User className="w-4 h-4 text-accent" />
-              </div>
-            )}
-          </div>
+      <div className="flex-1 overflow-y-auto mb-4 space-y-2">
+        {messages.map((message, index) => (
+          <MessageBubble
+            key={index}
+            message={message.message}
+            isUser={message.role === "user"}
+            timestamp={message.timestamp}
+          />
         ))}
 
+        {/* Typing Indicator */}
         {isTyping && (
           <div className="flex gap-3">
-            <div className="w-8 h-8 bg-primary/10 rounded-full flex items-center justify-center">
-              <Robot className="w-4 h-4 text-primary" />
+            <div className="w-8 h-8 bg-primary rounded-full flex items-center justify-center">
+              <Robot className="w-4 h-4 text-white" />
             </div>
-            <div className="bg-gray-50 border border-border rounded-xl p-3">
+            <div className="bg-surface border border-border rounded-2xl px-4 py-2">
               <div className="flex space-x-1">
                 <div className="w-2 h-2 bg-text-light rounded-full animate-bounce"></div>
                 <div
@@ -220,6 +155,8 @@ const BreezeChat: React.FC = () => {
             </div>
           </div>
         )}
+        
+        <div ref={messagesEndRef} />
       </div>
 
       {/* Input Area */}
@@ -229,18 +166,14 @@ const BreezeChat: React.FC = () => {
             type="text"
             value={inputMessage}
             onChange={(e) => setInputMessage(e.target.value)}
-            onKeyDown={(e) => {
-              if (e.key === "Enter" && !e.shiftKey) {
-                e.preventDefault();
-                handleSendMessage();
-              }
-            }}
+            onKeyDown={handleKeyDown}
             placeholder="Ask me anything about tenders, deadlines, or procurement strategies..."
             className="flex-1 p-3 border border-border rounded-lg focus:outline-none focus:border-primary bg-surface text-text placeholder-text-light"
+            disabled={isTyping || !sessionId}
           />
           <button
             onClick={handleSendMessage}
-            disabled={!inputMessage.trim() || isTyping}
+            disabled={!inputMessage.trim() || isTyping || !sessionId}
             className="px-4 py-3 bg-primary text-white rounded-lg hover:bg-primary-dark disabled:opacity-50 disabled:cursor-not-allowed transition-colors flex items-center gap-2"
           >
             <PaperPlaneTilt className="w-4 h-4" />

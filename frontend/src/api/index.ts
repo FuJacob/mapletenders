@@ -8,3 +8,4 @@ export * from "./ai";
 export * from "./documents";
 export * from "./auth";
 export * from "./profile";
+export * from "./chat";
