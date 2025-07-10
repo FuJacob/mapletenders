@@ -1,3 +1,4 @@
-export { default as TenderNoticeHeader } from "./TenderNoticeHeader";
-export { default as TenderNoticeBody } from "./TenderNoticeBody";
-export { default as TenderNoticeSidebar } from "./TenderNoticeSidebar";
+export { TenderNoticeHeader } from "./TenderNoticeHeader";
+export { TenderNoticeBody } from "./TenderNoticeBody";
+export { TenderNoticeSidebar } from "./TenderNoticeSidebar";
+export { TenderNoticeSummary } from "./TenderNoticeSummary";

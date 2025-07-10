@@ -7,53 +7,9 @@ import {
   TenderNoticeHeader,
   TenderNoticeBody,
   TenderNoticeSidebar,
+  TenderNoticeSummary,
 } from "../components/tenderNotice";
-
-interface TenderData {
-  id: string;
-  title: string | null;
-  tender_description: string | null;
-  contracting_entity_name: string | null;
-  contracting_entity_address_line: string | null;
-  contracting_entity_city: string | null;
-  contracting_entity_province: string | null;
-  contracting_entity_country: string | null;
-  contracting_entity_postal_code: string | null;
-  contact_name: string | null;
-  contact_email: string | null;
-  contact_phone: string | null;
-  contact_fax: string | null;
-  contact_address_line: string | null;
-  contact_city: string | null;
-  contact_province: string | null;
-  contact_country: string | null;
-  contact_postal_code: string | null;
-  publication_date: string | null;
-  tender_closing_date: string | null;
-  expected_contract_start_date: string | null;
-  expected_contract_end_date: string | null;
-  notice_type: string | null;
-  procurement_method: string | null;
-  procurement_category: string | null;
-  tender_status: string | null;
-  reference_number: string | null;
-  solicitation_number: string | null;
-  gsin: string | null;
-  gsin_description: string | null;
-  unspsc: string | null;
-  unspsc_description: string | null;
-  regions_of_delivery: string | null;
-  regions_of_opportunity: string | null;
-  selection_criteria: string | null;
-  trade_agreements: string | null;
-  limited_tendering_reason: string | null;
-  end_user_entities_name: string | null;
-  end_user_entities_address: string | null;
-  notice_url: string | null;
-  attachments: string | null;
-  amendment_number: string | null;
-  amendment_date: string | null;
-}
+import { type Tender as TenderData } from "../features/tenders/types";
 
 export default function TenderNotice() {
   const { tenderId } = useParams<{ tenderId: string }>();
@@ -236,6 +192,7 @@ export default function TenderNotice() {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           {/* Main Content */}
           <div className="lg:col-span-2">
+            <TenderNoticeSummary tender={tender} />
             <TenderNoticeBody tender={tender} />
           </div>
 

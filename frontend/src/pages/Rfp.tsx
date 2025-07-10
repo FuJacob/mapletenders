@@ -21,7 +21,7 @@ const Rfp = () => {
     try {
       const raw_response = await analyzePdf(formData);
       console.log(raw_response);
-      const analysisResult = await getRfpAnalysis(raw_response);
+      const analysisResult = await getRfpAnalysis(raw_response.analysis);
       setData(analysisResult);
       console.log("Successfully uploaded pdf");
     } catch (e) {

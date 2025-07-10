@@ -1,5 +1,4 @@
 import { createClient } from "@supabase/supabase-js";
-
 export class DatabaseService {
   private supabase;
 
@@ -8,6 +7,49 @@ export class DatabaseService {
       process.env.SUPABASE_URL || "",
       process.env.SUPABASE_SERVICE_KEY || ""
     );
+  }
+
+  // AI Summary methods for tender_ai_summaries table
+  async getTenderAiSummary(tenderId: string) {
+    try {
+      const { data, error } = await this.supabase
+        .from("tender_ai_summaries")
+        .select("summary")
+        .eq("id", tenderId)
+        .single();
+
+      if (error && error.code !== 'PGRST116') { // PGRST116 = no rows found
+        console.error("Error fetching tender AI summary:", error);
+        throw error;
+      }
+
+      return data?.summary || null;
+    } catch (error) {
+      console.error("Failed to fetch tender AI summary:", error);
+      return null;
+    }
+  }
+
+  async saveTenderAiSummary(tenderId: string, summary: any) {
+    try {
+      const { data, error } = await this.supabase
+        .from("tender_ai_summaries")
+        .upsert({ 
+          id: tenderId, 
+          summary: summary 
+        })
+        .select();
+
+      if (error) {
+        console.error("Error saving tender AI summary:", error);
+        throw error;
+      }
+
+      return data;
+    } catch (error) {
+      console.error("Failed to save tender AI summary:", error);
+      throw error;
+    }
   }
 
   async resetTenderLastRefreshDate() {

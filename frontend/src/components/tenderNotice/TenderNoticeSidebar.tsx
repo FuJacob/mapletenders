@@ -42,7 +42,7 @@ interface TenderNoticeSidebarProps {
   formatDateTime: (dateString: string | null) => string;
 }
 
-export default function TenderNoticeSidebar({
+export function TenderNoticeSidebar({
   tender,
   isBookmarked,
   isUrgent,

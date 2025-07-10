@@ -36,7 +36,7 @@ interface TenderNoticeHeaderProps {
   getStatusColor: (status: string | null) => string;
 }
 
-export default function TenderNoticeHeader({
+export function TenderNoticeHeader({
   tender,
   isBookmarked,
   isUrgent,

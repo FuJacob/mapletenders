@@ -34,4 +34,14 @@ router.post("/filterTendersWithAI", (req, res) =>
   aiController.filterTendersWithAI(req, res)
 );
 
+/**
+ * Generates AI summary for tender data
+ * @route POST /generateTenderSummary
+ * @param {string} req.body.tenderData - The tender data as a string to summarize
+ * @returns {string} AI generated summary
+ */
+router.post("/generateTenderSummary", (req, res) => {
+  aiController.generateTenderSummary(req, res);
+});
+
 export default router;

@@ -37,10 +37,9 @@ const QuickFilters: React.FC = () => {
 
   return (
     <div className="bg-surface border border-border rounded-xl p-6 mb-6">
-      {/* Search and Filter Buttons Row */}
-      <div className="flex items-center gap-4 mb-4">
-        {/* Search Bar */}
-        <div className="flex-1 relative">
+      {/* Search Bar Row */}
+      <div className="mb-4">
+        <div className="relative">
           <input
             type="text"
             value={searchQuery}
@@ -50,8 +49,10 @@ const QuickFilters: React.FC = () => {
           />
           <MagnifyingGlass className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-text-light" />
         </div>
+      </div>
 
-        {/* Filter Buttons */}
+      {/* Filter Buttons Row */}
+      <div className="flex items-center gap-4 mb-4">
         {filterButtons.map((filter, index) => (
           <FilterButton
             key={index}

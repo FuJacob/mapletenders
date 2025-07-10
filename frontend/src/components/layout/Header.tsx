@@ -59,51 +59,7 @@ export default function Header({
 
       {/* Center Section - Navigation */}
       <nav className="hidden md:flex items-center gap-8">
-        {user ? (
-          // Logged in user navigation
-          <>
-            <Link
-              to="/home"
-              className={`text-sm font-medium transition-colors ${
-                location.pathname === "/home"
-                  ? "text-primary"
-                  : "text-text hover:text-primary"
-              }`}
-            >
-              Dashboard
-            </Link>
-            <Link
-              to="/table-view"
-              className={`text-sm font-medium transition-colors ${
-                location.pathname === "/table-view"
-                  ? "text-primary"
-                  : "text-text hover:text-primary"
-              }`}
-            >
-              Browse Tenders
-            </Link>
-            <Link
-              to="/analytics"
-              className={`text-sm font-medium transition-colors ${
-                location.pathname === "/analytics"
-                  ? "text-primary"
-                  : "text-text hover:text-primary"
-              }`}
-            >
-              Analytics
-            </Link>
-            <Link
-              to="/pipeline"
-              className={`text-sm font-medium transition-colors ${
-                location.pathname === "/pipeline"
-                  ? "text-primary"
-                  : "text-text hover:text-primary"
-              }`}
-            >
-              Pipeline
-            </Link>
-          </>
-        ) : (
+        {!user && (
           // Guest navigation
           <>
             <Link

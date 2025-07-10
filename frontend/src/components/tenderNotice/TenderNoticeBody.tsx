@@ -16,7 +16,7 @@ interface TenderNoticeBodyProps {
   };
 }
 
-export default function TenderNoticeBody({ tender }: TenderNoticeBodyProps) {
+export function TenderNoticeBody({ tender }: TenderNoticeBodyProps) {
   return (
     <div className="space-y-6">
       {/* Description */}

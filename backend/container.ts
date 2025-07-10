@@ -35,6 +35,11 @@ const tenderService = new TenderService(
 const rfpService = new RfpService(databaseService, aiService);
 
 // Initialize controllers
-export const aiController = new AiController(rfpService, tenderService);
+export const aiController = new AiController(
+  rfpService,
+  tenderService,
+  databaseService,
+  aiService
+);
 export const tenderController = new TenderController(tenderService);
 export const tenderNoticeController = new TenderNoticeController(tenderService);
