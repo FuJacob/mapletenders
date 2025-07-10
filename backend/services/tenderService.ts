@@ -35,42 +35,44 @@ export class TenderService {
   }
 
   async importTendersFromCsv() {
-    // 1. Clear existing data
-    const { error: deleteError } = await this.dbService.clearTenders();
-    if (deleteError) {
-      throw new Error(
-        `Failed to clear existing notices: ${deleteError.message}`
-      );
-    }
-
-    // 2. Download CSV data
+    // 1. Download CSV data (no longer clearing first to preserve bookmarks)
     const csvResponse = await this.csvService.downloadTendersCsvData();
 
-    // 3. Parse and transform data
+    // 2. Parse and transform data
     const parsedData = await this.csvService.parseCsvData(csvResponse.data);
     const transformedData = this.dataTransformService.transformTenderData(
       parsedData.data
     );
 
-    // 4. Generate embeddings
+    // 3. Generate embeddings
     console.log("Generating embeddings for filtered data...");
     const embeddingsData = await this.mlService.generateEmbeddings(
       transformedData
     );
     console.log("Embeddings response:", embeddingsData);
 
-    // 5. Combine data with embeddings
+    // 4. Combine data with embeddings
     const finalData = this.dataTransformService.combineDataWithEmbeddings(
       transformedData,
       embeddingsData
     );
 
-    // 6. Save to database
-    const { error: insertError } = await this.dbService.insertTenders(
-      finalData
-    );
-    if (insertError) {
-      throw new Error(`Failed to insert notices: ${insertError.message}`);
+    // 5. Upsert to database to preserve existing tender IDs and bookmarks
+    console.log("Upserting tenders to preserve bookmarks...");
+    try {
+      await this.dbService.upsertTenders(finalData);
+    } catch (error: any) {
+      throw new Error(`Failed to upsert tenders: ${error.message}`);
+    }
+
+    // 6. Remove tenders that are no longer in the dataset
+    const currentReferenceNumbers = finalData
+      .map(tender => tender.reference_number)
+      .filter(ref => ref !== null) as string[];
+    
+    if (currentReferenceNumbers.length > 0) {
+      console.log("Removing stale tenders...");
+      await this.dbService.removeStaleTemders(currentReferenceNumbers);
     }
 
     return { message: "Data imported successfully!", count: finalData.length };
@@ -216,13 +218,10 @@ export class TenderService {
 
       console.log("Starting tender refresh...");
 
-      // 3. Clear existing tenders
-      await this.dbService.clearTenders();
-
-      // 4. Import fresh tender data
+      // 3. Import fresh tender data (using upsert to preserve bookmarks)
       const importResult = await this.importTendersFromCsv();
 
-      // 5. Update last refresh timestamp
+      // 4. Update last refresh timestamp
       await this.dbService.resetTenderLastRefreshDate();
 
       return {

@@ -47,7 +47,7 @@ export type Database = {
             foreignKeyName: "bookmarks_tender_notice_id_fkey"
             columns: ["tender_notice_id"]
             isOneToOne: false
-            referencedRelation: "open_tender_notices"
+            referencedRelation: "tenders"
             referencedColumns: ["id"]
           },
           {

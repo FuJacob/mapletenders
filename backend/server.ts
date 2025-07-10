@@ -9,6 +9,7 @@ import tenderNoticeRoutes from "./routes/tender-notice";
 import authRoutes from "./routes/auth";
 import profileRoutes from "./routes/profile";
 import chatRoutes from "./routes/chat";
+import bookmarkRoutes from "./routes/bookmarks";
 
 const app = express();
 app.use(cors({ origin: "*" })); // Allow all origins
@@ -30,6 +31,7 @@ app.use("/tender-notice", tenderNoticeRoutes);
 app.use("/auth", authRoutes);
 app.use("/profile", profileRoutes);
 app.use("/chat", chatRoutes);
+app.use("/bookmarks", bookmarkRoutes);
 
 // Serve static files from the 'assets' folder
 app.use("/assets", express.static(path.join(__dirname, "assets")));

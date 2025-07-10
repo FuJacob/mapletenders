@@ -4,3 +4,4 @@ export { TenderNoticeController } from "./tenderNoticeController";
 export { AuthController } from "./authController";
 export { ProfileController } from "./profileController";
 export { ChatController } from "./chatController";
+export { BookmarkController } from "./bookmarkController";

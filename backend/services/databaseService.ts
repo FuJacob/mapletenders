@@ -114,6 +114,52 @@ export class DatabaseService {
     return await this.supabase.from("tenders").insert(tenderData);
   }
 
+  // New method: Upsert tenders to preserve bookmarks
+  async upsertTenders(tenderData: Database["public"]["Tables"]["tenders"]["Insert"][]) {
+    try {
+      // Use reference_number as the unique identifier for upserting
+      // This preserves existing tender IDs and thus maintains bookmark relationships
+      const { data, error } = await this.supabase
+        .from("tenders")
+        .upsert(tenderData, {
+          onConflict: "reference_number",
+          ignoreDuplicates: false
+        })
+        .select();
+
+      if (error) {
+        console.error("Error upserting tenders:", error);
+        throw error;
+      }
+
+      return { data, error: null };
+    } catch (error) {
+      console.error("Failed to upsert tenders:", error);
+      throw error;
+    }
+  }
+
+  // Method to remove tenders that are no longer in the fresh data
+  async removeStaleTemders(currentReferenceNumbers: string[]) {
+    try {
+      // Delete tenders whose reference numbers are not in the current dataset
+      const { data, error } = await this.supabase
+        .from("tenders")
+        .delete()
+        .not("reference_number", "in", `(${currentReferenceNumbers.join(",")})`);
+
+      if (error) {
+        console.error("Error removing stale tenders:", error);
+        throw error;
+      }
+
+      return { data, error: null };
+    } catch (error) {
+      console.error("Failed to remove stale tenders:", error);
+      throw error;
+    }
+  }
+
   async getTenderById(id: string) {
     return await this.supabase
       .from("tenders")
@@ -285,6 +331,128 @@ export class DatabaseService {
     } catch (error) {
       console.error("Failed to fetch profile:", error);
       return null;
+    }
+  }
+
+  // Bookmark methods
+  async createBookmark(userId: string, tenderNoticeId: string, notes?: string) {
+    try {
+      const bookmarkData: Database["public"]["Tables"]["bookmarks"]["Insert"] = {
+        user_id: userId,
+        tender_notice_id: tenderNoticeId,
+        notes: notes || null,
+        status: "active",
+        created_at: new Date().toISOString(),
+        updated_at: new Date().toISOString(),
+      };
+
+      const { data, error } = await this.supabase
+        .from("bookmarks")
+        .upsert(bookmarkData, {
+          onConflict: "user_id,tender_notice_id"
+        })
+        .select();
+
+      if (error) {
+        console.error("Error creating bookmark:", error);
+        throw error;
+      }
+
+      return data;
+    } catch (error) {
+      console.error("Failed to create bookmark:", error);
+      throw error;
+    }
+  }
+
+  async removeBookmark(userId: string, tenderNoticeId: string) {
+    try {
+      const { data, error } = await this.supabase
+        .from("bookmarks")
+        .delete()
+        .eq("user_id", userId)
+        .eq("tender_notice_id", tenderNoticeId)
+        .select();
+
+      if (error) {
+        console.error("Error removing bookmark:", error);
+        throw error;
+      }
+
+      return data;
+    } catch (error) {
+      console.error("Failed to remove bookmark:", error);
+      throw error;
+    }
+  }
+
+  async getUserBookmarks(userId: string): Promise<Database["public"]["Tables"]["bookmarks"]["Row"][]> {
+    try {
+      const { data, error } = await this.supabase
+        .from("bookmarks")
+        .select(`
+          *,
+          tender_notice:tenders(*)
+        `)
+        .eq("user_id", userId)
+        .eq("status", "active")
+        .order("created_at", { ascending: false });
+
+      if (error) {
+        console.error("Error fetching user bookmarks:", error);
+        throw error;
+      }
+
+      return data || [];
+    } catch (error) {
+      console.error("Failed to fetch user bookmarks:", error);
+      return [];
+    }
+  }
+
+  async updateBookmarkNotes(userId: string, tenderNoticeId: string, notes: string) {
+    try {
+      const { data, error } = await this.supabase
+        .from("bookmarks")
+        .update({
+          notes,
+          updated_at: new Date().toISOString(),
+        })
+        .eq("user_id", userId)
+        .eq("tender_notice_id", tenderNoticeId)
+        .select();
+
+      if (error) {
+        console.error("Error updating bookmark notes:", error);
+        throw error;
+      }
+
+      return data;
+    } catch (error) {
+      console.error("Failed to update bookmark notes:", error);
+      throw error;
+    }
+  }
+
+  async isBookmarked(userId: string, tenderNoticeId: string): Promise<boolean> {
+    try {
+      const { data, error } = await this.supabase
+        .from("bookmarks")
+        .select("id")
+        .eq("user_id", userId)
+        .eq("tender_notice_id", tenderNoticeId)
+        .eq("status", "active")
+        .single();
+
+      if (error && error.code !== 'PGRST116') { // PGRST116 = no rows found
+        console.error("Error checking bookmark status:", error);
+        return false;
+      }
+
+      return !!data;
+    } catch (error) {
+      console.error("Failed to check bookmark status:", error);
+      return false;
     }
   }
 }
