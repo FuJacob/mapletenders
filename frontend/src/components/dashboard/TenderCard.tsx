@@ -1,3 +1,4 @@
+import React, { useMemo, useCallback } from "react";
 import {
   Calendar,
   MapPin,
@@ -10,9 +11,26 @@ import type { Tender } from "./types.tsx";
 
 interface TenderCardProps {
   tender: Tender;
+  onBookmark?: (tenderId: string) => void;
+  onViewDetails?: (tenderId: string) => void;
 }
 
-export default function TenderCard({ tender }: TenderCardProps) {
+function TenderCard({ tender, onBookmark, onViewDetails }: TenderCardProps) {
+  // Memoize formatted date to prevent recalculation
+  const formattedDate = useMemo(() => {
+    return tender.tender_closing_date
+      ? new Date(tender.tender_closing_date).toLocaleDateString()
+      : "TBD";
+  }, [tender.tender_closing_date]);
+
+  // Memoize click handlers
+  const handleBookmark = useCallback(() => {
+    if (tender.id) onBookmark?.(tender.id);
+  }, [onBookmark, tender.id]);
+
+  const handleViewDetails = useCallback(() => {
+    if (tender.id) onViewDetails?.(tender.id);
+  }, [onViewDetails, tender.id]);
   return (
     <div className="border border-border rounded-lg p-4 hover:border-primary transition-colors cursor-pointer">
       <div className="flex items-start justify-between mb-3">
@@ -35,10 +53,7 @@ export default function TenderCard({ tender }: TenderCardProps) {
             </span>
             <span className="flex items-center gap-1">
               <Calendar className="w-4 h-4" />
-              Due{" "}
-              {tender.tender_closing_date
-                ? new Date(tender.tender_closing_date).toLocaleDateString()
-                : "TBD"}
+              Due {formattedDate}
             </span>
           </div>
         </div>
@@ -47,7 +62,7 @@ export default function TenderCard({ tender }: TenderCardProps) {
             <Star className="w-3 h-3" />
             {tender.relevanceScore}%
           </div>
-          <button className="p-2 text-text-light hover:text-accent transition-colors">
+          <button onClick={handleBookmark} className="p-2 text-text-light hover:text-accent transition-colors">
             <Bookmark className="w-4 h-4" />
           </button>
         </div>
@@ -61,10 +76,12 @@ export default function TenderCard({ tender }: TenderCardProps) {
             {tender.tender_status || "Open"}
           </span>
         </div>
-        <button className="text-primary hover:text-primary-dark text-sm font-medium">
+        <button onClick={handleViewDetails} className="text-primary hover:text-primary-dark text-sm font-medium">
           View Details →
         </button>
       </div>
     </div>
   );
 }
+
+export default React.memo(TenderCard);

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useCallback } from "react";
 import {
   MagnifyingGlass,
   ArrowsClockwise,
@@ -12,11 +12,36 @@ import {
 import { filterOpenTenderNotices } from "../../api";
 import { LogoTitle } from "../ui/LogoTitle";
 
+// Static data moved outside component
+const mockResults = [
+  {
+    title: "IT Infrastructure Modernization - Health Canada",
+    value: "$185,000",
+    deadline: "Aug 15, 2025",
+    location: "Ottawa, ON",
+    relevance: "98%",
+  },
+  {
+    title: "Network Security Assessment - Transport Canada",
+    value: "$142,000",
+    deadline: "Aug 22, 2025",
+    location: "Toronto, ON",
+    relevance: "95%",
+  },
+  {
+    title: "Cloud Migration Services - ESDC",
+    value: "$230,000",
+    deadline: "Sep 5, 2025",
+    location: "Gatineau, QC",
+    relevance: "92%",
+  },
+];
+
 export default function HeroSection() {
   const [searchQuery, setSearchQuery] = useState("");
   const [isSearching, setIsSearching] = useState(false);
 
-  const handleSearch = async () => {
+  const handleSearch = useCallback(async () => {
     setIsSearching(true);
     if (!searchQuery.trim()) {
       setIsSearching(false);
@@ -26,31 +51,7 @@ export default function HeroSection() {
     console.log("SEARCHING" + searchQuery);
     console.log("RESPONSE", response);
     setTimeout(() => setIsSearching(false), 2000);
-  };
-
-  const mockResults = [
-    {
-      title: "IT Infrastructure Modernization - Health Canada",
-      value: "$185,000",
-      deadline: "Aug 15, 2025",
-      location: "Ottawa, ON",
-      relevance: "98%",
-    },
-    {
-      title: "Network Security Assessment - Transport Canada",
-      value: "$142,000",
-      deadline: "Aug 22, 2025",
-      location: "Toronto, ON",
-      relevance: "95%",
-    },
-    {
-      title: "Cloud Migration Services - ESDC",
-      value: "$230,000",
-      deadline: "Sep 5, 2025",
-      location: "Gatineau, QC",
-      relevance: "92%",
-    },
-  ];
+  }, [searchQuery]);
 
   return (
     <section className="min-h-screen flex flex-col items-center justify-center px-6 bg-background py-24">

@@ -15,6 +15,8 @@ import {
   AiController,
   TenderController,
   TenderNoticeController,
+  AuthController,
+  ProfileController,
 } from "./controllers";
 
 // Initialize services
@@ -43,3 +45,5 @@ export const aiController = new AiController(
 );
 export const tenderController = new TenderController(tenderService);
 export const tenderNoticeController = new TenderNoticeController(tenderService);
+export const authController = new AuthController(databaseService);
+export const profileController = new ProfileController(databaseService);

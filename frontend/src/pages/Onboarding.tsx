@@ -17,7 +17,7 @@ import {
   Car,
   Factory,
 } from "@phosphor-icons/react";
-import { supabase } from "../supabase";
+import { createOrUpdateProfile } from "../api";
 import { selectAuthUser } from "../features/auth/authSelectors";
 import { useSelector } from "react-redux";
 import { setOnboardingCompleted } from "../features/auth/authSlice";
@@ -226,15 +226,14 @@ export default function Onboarding() {
 
     try {
       // Create or update profile
-      const { error: profileError } = await supabase.from("profiles").upsert({
+      const response = await createOrUpdateProfile({
         id: user.id,
         ...formData,
         onboarding_completed: true,
-        updated_at: new Date().toISOString(),
       });
 
-      if (profileError) {
-        console.error("Profile update error:", profileError);
+      if (response.error) {
+        console.error("Profile update error:", response.error);
         setError("Failed to save profile. Please try again.");
         return;
       }

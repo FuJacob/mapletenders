@@ -172,4 +172,115 @@ export class DatabaseService {
       match_count: matchCount,
     });
   }
+
+  // Authentication methods
+  async signUpUser(email: string, password: string) {
+    try {
+      const { data, error } = await this.supabase.auth.signUp({
+        email,
+        password,
+      });
+
+      if (error) {
+        console.error("Error signing up user:", error);
+        throw error;
+      }
+
+      return data;
+    } catch (error) {
+      console.error("Failed to sign up user:", error);
+      throw error;
+    }
+  }
+
+  async signInUser(email: string, password: string) {
+    try {
+      const { data, error } = await this.supabase.auth.signInWithPassword({
+        email,
+        password,
+      });
+
+      if (error) {
+        console.error("Error signing in user:", error);
+        throw error;
+      }
+
+      return data;
+    } catch (error) {
+      console.error("Failed to sign in user:", error);
+      throw error;
+    }
+  }
+
+  async signOutUser() {
+    try {
+      const { error } = await this.supabase.auth.signOut();
+
+      if (error) {
+        console.error("Error signing out user:", error);
+        throw error;
+      }
+
+      return { success: true };
+    } catch (error) {
+      console.error("Failed to sign out user:", error);
+      throw error;
+    }
+  }
+
+  async getSession() {
+    try {
+      const { data, error } = await this.supabase.auth.getSession();
+
+      if (error) {
+        console.error("Error getting session:", error);
+        throw error;
+      }
+
+      return data;
+    } catch (error) {
+      console.error("Failed to get session:", error);
+      throw error;
+    }
+  }
+
+  // Profile methods
+  async createOrUpdateProfile(profileData: any) {
+    try {
+      const { data, error } = await this.supabase
+        .from("profiles")
+        .upsert(profileData)
+        .select();
+
+      if (error) {
+        console.error("Error creating/updating profile:", error);
+        throw error;
+      }
+
+      return data;
+    } catch (error) {
+      console.error("Failed to create/update profile:", error);
+      throw error;
+    }
+  }
+
+  async getProfile(userId: string) {
+    try {
+      const { data, error } = await this.supabase
+        .from("profiles")
+        .select("*")
+        .eq("id", userId)
+        .single();
+
+      if (error && error.code !== 'PGRST116') { // PGRST116 = no rows found
+        console.error("Error fetching profile:", error);
+        throw error;
+      }
+
+      return data;
+    } catch (error) {
+      console.error("Failed to fetch profile:", error);
+      return null;
+    }
+  }
 }

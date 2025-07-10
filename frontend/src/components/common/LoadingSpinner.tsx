@@ -1,10 +1,11 @@
+import React from "react";
 import { CircleNotchIcon } from "@phosphor-icons/react";
 import { LogoTitle } from "../ui/LogoTitle";
 interface LoadingSpinnerProps {
   message?: string;
 }
 
-export default function LoadingSpinner({
+function LoadingSpinner({
   message = "Getting you closer to your next contract...",
 }: LoadingSpinnerProps) {
   return (
@@ -17,3 +18,5 @@ export default function LoadingSpinner({
     </div>
   );
 }
+
+export default React.memo(LoadingSpinner);

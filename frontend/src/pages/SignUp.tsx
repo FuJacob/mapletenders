@@ -12,7 +12,7 @@ import {
   TrendUp,
   Clock,
 } from "@phosphor-icons/react";
-import { supabase } from "../supabase";
+import { signUpUser } from "../api";
 import { useAppDispatch } from "../app/hooks";
 
 import {
@@ -59,13 +59,13 @@ export default function SignUp() {
     dispatch(setAuthError(null));
 
     try {
-      const { data, error } = await supabase.auth.signUp({
+      const response = await signUpUser({
         email: formData.email,
         password: formData.password,
       });
-      console.log("SignUp data:", data);
-      if (error) {
-        setAuthError(error.message);
+      console.log("SignUp response:", response);
+      if (response.error) {
+        setAuthError(response.error);
       } else {
         navigate("/sign-in?confirm-email=true");
       }

@@ -17,7 +17,7 @@ import ProtectedRoutes from "./routes/ProtectedRoutes";
 import OnboardingRequiredRoutes from "./routes/OnboardingRequiredRoutes";
 import { useAppDispatch } from "./app/hooks";
 import { loadSession } from "./features/auth/authThunks";
-import { useEffect } from "react";
+import { useEffect, useCallback } from "react";
 import TableView from "./pages/TableView";
 import Test from "./pages/Test";
 import Layout from "./routes/Layout";
@@ -25,10 +25,16 @@ import { refreshTenders } from "./api";
 
 export function App() {
   const dispatch = useAppDispatch();
-  useEffect(() => {
+  
+  // Memoize initialization logic
+  const initializeApp = useCallback(() => {
     refreshTenders();
     dispatch(loadSession());
   }, [dispatch]);
+
+  useEffect(() => {
+    initializeApp();
+  }, [initializeApp]);
 
   return (
     <Routes>

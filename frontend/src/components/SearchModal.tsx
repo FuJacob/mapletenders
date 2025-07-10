@@ -1,5 +1,14 @@
-import { useState } from 'react';
+import { useState, useCallback } from 'react';
 import { MagnifyingGlass, Microphone, X, Sparkle } from '@phosphor-icons/react';
+
+// Static data moved outside component
+const exampleSearches = [
+  "IT consulting projects in Toronto under $200K",
+  "Healthcare software development opportunities",
+  "Construction projects in BC closing next month",
+  "Marketing services for federal departments",
+  "Similar to projects I've won before"
+];
 
 interface SearchModalProps {
   isOpen: boolean;
@@ -11,25 +20,19 @@ export default function SearchModal({ isOpen, onClose, onSearch }: SearchModalPr
   const [searchQuery, setSearchQuery] = useState('');
   const [isListening, setIsListening] = useState(false);
 
-  const exampleSearches = [
-    "IT consulting projects in Toronto under $200K",
-    "Healthcare software development opportunities",
-    "Construction projects in BC closing next month",
-    "Marketing services for federal departments",
-    "Similar to projects I've won before"
-  ];
-
-  const handleSearch = () => {
+  // Memoize search handler
+  const handleSearch = useCallback(() => {
     if (searchQuery.trim()) {
       onSearch(searchQuery);
     }
-  };
+  }, [searchQuery, onSearch]);
 
-  const handleKeyPress = (e: React.KeyboardEvent) => {
+  // Memoize key press handler
+  const handleKeyPress = useCallback((e: React.KeyboardEvent) => {
     if (e.key === 'Enter') {
       handleSearch();
     }
-  };
+  }, [handleSearch]);
 
   if (!isOpen) return null;
 

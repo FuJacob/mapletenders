@@ -4,6 +4,8 @@ import {
   flexRender,
   getPaginationRowModel,
   type ColumnResizeMode,
+  type Updater,
+  type PaginationState,
 } from "@tanstack/react-table";
 import { useAppSelector } from "../../app/hooks";
 import { tenderColumns } from "../../features/tenders/tenderColumns.tsx";
@@ -18,7 +20,7 @@ import {
   TableLoadingState,
 } from "./";
 
-import { useState } from "react";
+import { useState, useMemo, useCallback } from "react";
 import TablePaginationControls from "./TablePaginationControls";
 import "./tableStyles.css";
 interface TenderTableProps {
@@ -33,8 +35,16 @@ export default function TenderTable({ isLoading = false }: TenderTableProps) {
   const [columnResizeMode] = useState<ColumnResizeMode>("onChange");
   const tenders = useAppSelector(selectTenders);
 
+  // Memoize table data to prevent unnecessary re-renders
+  const tableData = useMemo(() => tenders || [], [tenders]);
+
+  // Memoize pagination change handler
+  const onPaginationChange = useCallback((updater: Updater<PaginationState>) => {
+    setPagination(updater);
+  }, []);
+
   const table = useReactTable({
-    data: tenders || [],
+    data: tableData,
     columns: tenderColumns,
     getCoreRowModel: getCoreRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
@@ -42,8 +52,8 @@ export default function TenderTable({ isLoading = false }: TenderTableProps) {
     state: {
       pagination,
     },
-    onPaginationChange: setPagination,
-    rowCount: tenders ? tenders.length : 0,
+    onPaginationChange,
+    rowCount: tableData.length,
     enableColumnResizing: true,
   });
 
@@ -57,7 +67,7 @@ export default function TenderTable({ isLoading = false }: TenderTableProps) {
   }
 
   // Show empty state if no data
-  if (!tenders || tenders.length === 0) {
+  if (!tableData || tableData.length === 0) {
     return (
       <div className="w-full bg-surface rounded-lg border border-border">
         <TableEmptyState

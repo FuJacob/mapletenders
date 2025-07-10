@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback, useMemo } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import { Warning, FileText } from "@phosphor-icons/react";
 import { getTenderNotice } from "../api";
@@ -10,6 +10,60 @@ import {
   TenderNoticeSummary,
 } from "../components/tenderNotice";
 import { type Tender as TenderData } from "../features/tenders/types";
+
+// Pure utility functions moved outside component
+const formatDate = (dateString: string | null): string => {
+  if (!dateString) return "Not specified";
+  const date = new Date(dateString);
+  if (isNaN(date.getTime())) return "Invalid date";
+  return date.toLocaleDateString("en-CA", {
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+  });
+};
+
+const formatDateTime = (dateString: string | null): string => {
+  if (!dateString) return "Not specified";
+  const date = new Date(dateString);
+  if (isNaN(date.getTime())) return "Invalid date";
+  return date.toLocaleString("en-CA", {
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+    hour: "2-digit",
+    minute: "2-digit",
+  });
+};
+
+const getStatusColor = (status: string | null) => {
+  switch (status?.toLowerCase()) {
+    case "open":
+    case "active":
+      return "bg-green-100 text-green-800 border-green-200";
+    case "closed":
+      return "bg-red-100 text-red-800 border-red-200";
+    case "cancelled":
+      return "bg-gray-100 text-gray-800 border-gray-200";
+    case "awarded":
+      return "bg-blue-100 text-blue-800 border-blue-200";
+    default:
+      return "bg-yellow-100 text-yellow-800 border-yellow-200";
+  }
+};
+
+const getDaysUntilClosing = (closingDate: string | null): string => {
+  if (!closingDate) return "";
+  const closing = new Date(closingDate);
+  const now = new Date();
+  const diffTime = closing.getTime() - now.getTime();
+  const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+
+  if (diffDays < 0) return "Closed";
+  if (diffDays === 0) return "Closes today";
+  if (diffDays === 1) return "Closes tomorrow";
+  return `${diffDays} days remaining`;
+};
 
 export default function TenderNotice() {
   const { tenderId } = useParams<{ tenderId: string }>();
@@ -48,65 +102,12 @@ export default function TenderNotice() {
     fetchTender();
   }, [tenderId, error]);
 
-  const formatDate = (dateString: string | null): string => {
-    if (!dateString) return "Not specified";
-    const date = new Date(dateString);
-    if (isNaN(date.getTime())) return "Invalid date";
-    return date.toLocaleDateString("en-CA", {
-      year: "numeric",
-      month: "long",
-      day: "numeric",
-    });
-  };
-
-  const formatDateTime = (dateString: string | null): string => {
-    if (!dateString) return "Not specified";
-    const date = new Date(dateString);
-    if (isNaN(date.getTime())) return "Invalid date";
-    return date.toLocaleString("en-CA", {
-      year: "numeric",
-      month: "long",
-      day: "numeric",
-      hour: "2-digit",
-      minute: "2-digit",
-    });
-  };
-
-  const getStatusColor = (status: string | null) => {
-    switch (status?.toLowerCase()) {
-      case "open":
-      case "active":
-        return "bg-green-100 text-green-800 border-green-200";
-      case "closed":
-        return "bg-red-100 text-red-800 border-red-200";
-      case "cancelled":
-        return "bg-gray-100 text-gray-800 border-gray-200";
-      case "awarded":
-        return "bg-blue-100 text-blue-800 border-blue-200";
-      default:
-        return "bg-yellow-100 text-yellow-800 border-yellow-200";
-    }
-  };
-
-  const getDaysUntilClosing = (closingDate: string | null): string => {
-    if (!closingDate) return "";
-    const closing = new Date(closingDate);
-    const now = new Date();
-    const diffTime = closing.getTime() - now.getTime();
-    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-
-    if (diffDays < 0) return "Closed";
-    if (diffDays === 0) return "Closes today";
-    if (diffDays === 1) return "Closes tomorrow";
-    return `${diffDays} days remaining`;
-  };
-
-  const handleBookmark = () => {
+  const handleBookmark = useCallback(() => {
     setIsBookmarked(!isBookmarked);
     // TODO: Implement bookmark functionality with backend
-  };
+  }, [isBookmarked]);
 
-  const handleShare = () => {
+  const handleShare = useCallback(() => {
     if (navigator.share) {
       navigator.share({
         title: tender?.title || "Government Tender",
@@ -116,7 +117,14 @@ export default function TenderNotice() {
       navigator.clipboard.writeText(window.location.href);
       // TODO: Show toast notification
     }
-  };
+  }, [tender?.title]);
+
+  // Calculate values before early returns to comply with rules of hooks
+  const closingDays = useMemo(() => getDaysUntilClosing(tender?.tender_closing_date || null), [tender?.tender_closing_date]);
+  const isUrgent = useMemo(() =>
+    closingDays.includes("today") ||
+    closingDays.includes("tomorrow") ||
+    (closingDays.includes("days") && parseInt(closingDays) <= 7), [closingDays]);
 
   if (loading) {
     return <LoadingSpinner message="Loading tender details..." />;
@@ -167,12 +175,6 @@ export default function TenderNotice() {
       </div>
     );
   }
-
-  const closingDays = getDaysUntilClosing(tender.tender_closing_date);
-  const isUrgent =
-    closingDays.includes("today") ||
-    closingDays.includes("tomorrow") ||
-    (closingDays.includes("days") && parseInt(closingDays) <= 7);
 
   return (
     <div className="min-h-screen bg-background">

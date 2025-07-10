@@ -2,7 +2,7 @@ import { useNavigate, Link, useLocation } from "react-router-dom";
 import { LogoTitle } from "../ui/LogoTitle";
 import { ViewSwitcher } from "../ui";
 import { useAuth } from "../../hooks/auth";
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import { useDispatch } from "react-redux";
 import { signOut } from "../../features/auth/authThunks";
 import { User, Gear, SignOut, Bell, CaretDown } from "@phosphor-icons/react";
@@ -27,22 +27,23 @@ export default function Header({
   // Check if we're on the home page to show view switcher
   const isHomePage = location.pathname === "/home";
 
-  // Close menu when clicking outside
-  useEffect(() => {
-    const handleClickOutside = (event: MouseEvent) => {
-      if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
-        setIsMenuOpen(false);
-      }
-    };
-
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => document.removeEventListener("mousedown", handleClickOutside);
+  // Memoize click outside handler
+  const handleClickOutside = useCallback((event: MouseEvent) => {
+    if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
+      setIsMenuOpen(false);
+    }
   }, []);
 
-  const handleSignOut = async () => {
+  // Close menu when clicking outside
+  useEffect(() => {
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => document.removeEventListener("mousedown", handleClickOutside);
+  }, [handleClickOutside]);
+
+  const handleSignOut = useCallback(async () => {
     await dispatch(signOut());
     navigate("/");
-  };
+  }, [dispatch, navigate]);
 
   return (
     <header

@@ -6,6 +6,8 @@ import cors from "cors";
 import aiRoutes from "./routes/ai";
 import tendersRoutes from "./routes/tenders";
 import tenderNoticeRoutes from "./routes/tender-notice";
+import authRoutes from "./routes/auth";
+import profileRoutes from "./routes/profile";
 
 const app = express();
 app.use(cors({ origin: "*" })); // Allow all origins
@@ -24,6 +26,8 @@ app.get("/", (req, res) => {
 app.use("/ai", aiRoutes);
 app.use("/tenders", tendersRoutes);
 app.use("/tender-notice", tenderNoticeRoutes);
+app.use("/auth", authRoutes);
+app.use("/profile", profileRoutes);
 
 // Serve static files from the 'assets' folder
 app.use("/assets", express.static(path.join(__dirname, "assets")));

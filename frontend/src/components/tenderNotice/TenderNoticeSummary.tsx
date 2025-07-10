@@ -1,5 +1,5 @@
 import { Sparkle } from "@phosphor-icons/react";
-import { useEffect, useState, useMemo, useRef } from "react";
+import { useEffect, useState, useMemo, useRef, useCallback } from "react";
 import { generateTenderSummary, type TenderSummaryData } from "../../api";
 
 interface TenderNoticeBodyProps {
@@ -53,50 +53,50 @@ Trade Agreements: ${tender.trade_agreements || "Not specified"}
     tender.trade_agreements,
   ]);
 
-  useEffect(() => {
-    const getTenderSummary = async () => {
-      // Check if this is a new tender or if we're already loading
-      if (isLoading || tender.id === lastTenderId) return;
-      
-      // Cancel any previous request
-      if (abortControllerRef.current) {
-        abortControllerRef.current.abort();
-      }
-      
-      // Create new abort controller for this request
-      abortControllerRef.current = new AbortController();
-      
-      // Reset state for new tender
-      setTenderSummary(null);
-      setIsLoading(true);
-      setLastTenderId(tender.id);
-      
-      try {
-        const response = await generateTenderSummary(tender.id, structuredTenderData);
-        
-        // Check if request was aborted
-        if (abortControllerRef.current?.signal.aborted) {
-          return;
-        }
-        
-        console.log("Raw API response:", response);
-
-        // The backend now returns a parsed summary directly
-        const parsedSummary = response.summary;
-        console.log("Parsed summary:", parsedSummary);
-        setTenderSummary(parsedSummary);
-      } catch (error) {
-        // Don't log error if request was aborted
-        if (abortControllerRef.current?.signal.aborted) {
-          return;
-        }
-        console.error("Error generating tender summary:", error);
-        setTenderSummary(null);
-      } finally {
-        setIsLoading(false);
-      }
-    };
+  const getTenderSummary = useCallback(async () => {
+    // Check if this is a new tender or if we're already loading
+    if (isLoading || tender.id === lastTenderId) return;
     
+    // Cancel any previous request
+    if (abortControllerRef.current) {
+      abortControllerRef.current.abort();
+    }
+    
+    // Create new abort controller for this request
+    abortControllerRef.current = new AbortController();
+    
+    // Reset state for new tender
+    setTenderSummary(null);
+    setIsLoading(true);
+    setLastTenderId(tender.id);
+    
+    try {
+      const response = await generateTenderSummary(tender.id, structuredTenderData);
+      
+      // Check if request was aborted
+      if (abortControllerRef.current?.signal.aborted) {
+        return;
+      }
+      
+      console.log("Raw API response:", response);
+
+      // The backend now returns a parsed summary directly
+      const parsedSummary = response.summary;
+      console.log("Parsed summary:", parsedSummary);
+      setTenderSummary(parsedSummary);
+    } catch (error) {
+      // Don't log error if request was aborted
+      if (abortControllerRef.current?.signal.aborted) {
+        return;
+      }
+      console.error("Error generating tender summary:", error);
+      setTenderSummary(null);
+    } finally {
+      setIsLoading(false);
+    }
+  }, [tender.id, structuredTenderData, isLoading, lastTenderId]);
+
+  useEffect(() => {
     getTenderSummary();
     
     // Cleanup function to abort request if component unmounts
@@ -105,7 +105,7 @@ Trade Agreements: ${tender.trade_agreements || "Not specified"}
         abortControllerRef.current.abort();
       }
     };
-  }, [tender.id, structuredTenderData]);
+  }, [getTenderSummary]);
 
   return (
     <div className="bg-primary border border-primary rounded-xl p-6 mb-8">
