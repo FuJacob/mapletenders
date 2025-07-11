@@ -4,7 +4,6 @@ import {
   HeroSection,
   TrustStatsSection,
   ProblemSolutionSection,
-  TableComparisonSection,
   BuiltForSection,
   KeyFeaturesSection,
   TestimonialsSection,
@@ -28,7 +27,6 @@ export default function LandingPage() {
       <HeroSection />
       <TrustStatsSection />
       <ProblemSolutionSection />
-      <TableComparisonSection />
       <BuiltForSection />
       <KeyFeaturesSection />
       <TestimonialsSection />

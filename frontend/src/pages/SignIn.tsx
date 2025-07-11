@@ -51,7 +51,7 @@ export default function SignIn() {
       <div className="flex-1 flex items-center justify-center px-6 py-12">
         <div className="max-w-md w-full">
           {/* Header */}
-          <div className="text-center mb-8">
+          <div className="text-center mb-8 flex justify-center items-center flex-col">
             <Link
               to="/"
               className="inline-flex items-center gap-2 text-sm text-text-light hover:text-primary transition-colors mb-6"
@@ -59,7 +59,9 @@ export default function SignIn() {
               <ArrowLeft className="w-4 h-4" />
               Back to home
             </Link>
-            <LogoTitle size="text-3xl" />
+            <div className="mb-4">
+              <LogoTitle size="text-3xl" />
+            </div>{" "}
             <h1 className="text-2xl font-bold text-text mb-2">Welcome back</h1>
             <p className="text-text-light">
               Sign in to continue finding winning opportunities
@@ -134,13 +136,9 @@ export default function SignIn() {
             </div>
 
             <div className="flex items-center justify-between">
-              <label className="flex items-center">
-                <input
-                  type="checkbox"
-                  className="w-4 h-4 text-primary border-border rounded focus:ring-primary"
-                />
-                <span className="ml-2 text-sm text-text">Remember me</span>
-              </label>
+              <div className="text-sm text-text-light italic">
+                We'll remember you. You'll need to log out manually.
+              </div>
               <Link
                 to="/forgot-password"
                 className="text-sm text-primary hover:text-primary-dark"
