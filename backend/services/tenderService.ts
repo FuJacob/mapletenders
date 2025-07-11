@@ -67,9 +67,9 @@ export class TenderService {
 
     // 6. Remove tenders that are no longer in the dataset
     const currentReferenceNumbers = finalData
-      .map(tender => tender.reference_number)
-      .filter(ref => ref !== null) as string[];
-    
+      .map((tender) => tender.reference_number)
+      .filter((ref) => ref !== null) as string[];
+
     if (currentReferenceNumbers.length > 0) {
       console.log("Removing stale tenders...");
       await this.dbService.removeStaleTemders(currentReferenceNumbers);

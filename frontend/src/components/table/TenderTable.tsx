@@ -39,9 +39,12 @@ export default function TenderTable({ isLoading = false }: TenderTableProps) {
   const tableData = useMemo(() => tenders || [], [tenders]);
 
   // Memoize pagination change handler
-  const onPaginationChange = useCallback((updater: Updater<PaginationState>) => {
-    setPagination(updater);
-  }, []);
+  const onPaginationChange = useCallback(
+    (updater: Updater<PaginationState>) => {
+      setPagination(updater);
+    },
+    []
+  );
 
   const table = useReactTable({
     data: tableData,

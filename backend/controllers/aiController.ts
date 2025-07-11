@@ -50,12 +50,14 @@ export class AiController {
 
       if (!tenderId || !tenderData) {
         return res.status(400).json({
-          error: "tenderId and tenderData are required"
+          error: "tenderId and tenderData are required",
         });
       }
 
       // Check if summary already exists
-      const existingSummary = await this.databaseService.getTenderAiSummary(tenderId);
+      const existingSummary = await this.databaseService.getTenderAiSummary(
+        tenderId
+      );
       if (existingSummary) {
         console.log(`Using cached summary for tender ${tenderId}`);
         return res.json({ summary: existingSummary });
@@ -63,8 +65,11 @@ export class AiController {
 
       // Generate new summary
       console.log(`Generating new summary for tender ${tenderId}`);
-      const result = await this.aiService.generateTenderSummary(tenderId, tenderData);
-      
+      const result = await this.aiService.generateTenderSummary(
+        tenderId,
+        tenderData
+      );
+
       // Parse the summary from the result
       let parsedSummary;
       try {
@@ -76,7 +81,7 @@ export class AiController {
         console.error("Failed to parse AI summary JSON:", error);
         return res.status(500).json({ error: "Failed to parse AI summary" });
       }
-      
+
       // Save to database
       if (parsedSummary) {
         await this.databaseService.saveTenderAiSummary(tenderId, parsedSummary);

@@ -25,7 +25,7 @@ import { refreshTenders } from "./api";
 
 export function App() {
   const dispatch = useAppDispatch();
-  
+
   // Memoize initialization logic
   const initializeApp = useCallback(() => {
     refreshTenders();

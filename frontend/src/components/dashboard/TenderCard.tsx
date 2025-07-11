@@ -62,7 +62,10 @@ function TenderCard({ tender, onBookmark, onViewDetails }: TenderCardProps) {
             <Star className="w-3 h-3" />
             {tender.relevanceScore}%
           </div>
-          <button onClick={handleBookmark} className="p-2 text-text-light hover:text-accent transition-colors">
+          <button
+            onClick={handleBookmark}
+            className="p-2 text-text-light hover:text-accent transition-colors"
+          >
             <Bookmark className="w-4 h-4" />
           </button>
         </div>
@@ -76,7 +79,10 @@ function TenderCard({ tender, onBookmark, onViewDetails }: TenderCardProps) {
             {tender.tender_status || "Open"}
           </span>
         </div>
-        <button onClick={handleViewDetails} className="text-primary hover:text-primary-dark text-sm font-medium">
+        <button
+          onClick={handleViewDetails}
+          className="text-primary hover:text-primary-dark text-sm font-medium"
+        >
           View Details →
         </button>
       </div>

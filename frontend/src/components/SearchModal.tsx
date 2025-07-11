@@ -1,5 +1,5 @@
-import { useState, useCallback } from 'react';
-import { MagnifyingGlass, Microphone, X, Sparkle } from '@phosphor-icons/react';
+import { useState, useCallback } from "react";
+import { MagnifyingGlass, Microphone, X, Sparkle } from "@phosphor-icons/react";
 
 // Static data moved outside component
 const exampleSearches = [
@@ -7,7 +7,7 @@ const exampleSearches = [
   "Healthcare software development opportunities",
   "Construction projects in BC closing next month",
   "Marketing services for federal departments",
-  "Similar to projects I've won before"
+  "Similar to projects I've won before",
 ];
 
 interface SearchModalProps {
@@ -16,8 +16,12 @@ interface SearchModalProps {
   onSearch: (query: string) => void;
 }
 
-export default function SearchModal({ isOpen, onClose, onSearch }: SearchModalProps) {
-  const [searchQuery, setSearchQuery] = useState('');
+export default function SearchModal({
+  isOpen,
+  onClose,
+  onSearch,
+}: SearchModalProps) {
+  const [searchQuery, setSearchQuery] = useState("");
   const [isListening, setIsListening] = useState(false);
 
   // Memoize search handler
@@ -28,11 +32,14 @@ export default function SearchModal({ isOpen, onClose, onSearch }: SearchModalPr
   }, [searchQuery, onSearch]);
 
   // Memoize key press handler
-  const handleKeyPress = useCallback((e: React.KeyboardEvent) => {
-    if (e.key === 'Enter') {
-      handleSearch();
-    }
-  }, [handleSearch]);
+  const handleKeyPress = useCallback(
+    (e: React.KeyboardEvent) => {
+      if (e.key === "Enter") {
+        handleSearch();
+      }
+    },
+    [handleSearch]
+  );
 
   if (!isOpen) return null;
 
@@ -77,14 +84,14 @@ export default function SearchModal({ isOpen, onClose, onSearch }: SearchModalPr
                 <button
                   onClick={() => setIsListening(!isListening)}
                   className={`p-2 rounded-lg transition-colors ${
-                    isListening 
-                      ? 'bg-red-100 text-red-600' 
-                      : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                    isListening
+                      ? "bg-red-100 text-red-600"
+                      : "bg-gray-100 text-gray-600 hover:bg-gray-200"
                   }`}
                 >
                   <Microphone className="h-5 w-5" />
                 </button>
-                <button 
+                <button
                   onClick={handleSearch}
                   className="bg-primary text-white px-6 py-2 rounded-lg hover:bg-primary/90 transition-colors font-medium"
                 >
@@ -101,7 +108,9 @@ export default function SearchModal({ isOpen, onClose, onSearch }: SearchModalPr
 
           {/* Example Searches */}
           <div className="mb-8">
-            <h4 className="text-lg font-medium text-gray-900 mb-4">Try these example searches:</h4>
+            <h4 className="text-lg font-medium text-gray-900 mb-4">
+              Try these example searches:
+            </h4>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
               {exampleSearches.map((example, index) => (
                 <button
@@ -120,23 +129,33 @@ export default function SearchModal({ isOpen, onClose, onSearch }: SearchModalPr
 
           {/* AI Features */}
           <div className="bg-gradient-to-r from-blue-50 to-indigo-50 rounded-xl p-6">
-            <h4 className="text-lg font-semibold text-gray-900 mb-3">🤖 AI-Powered Search Features:</h4>
+            <h4 className="text-lg font-semibold text-gray-900 mb-3">
+              🤖 AI-Powered Search Features:
+            </h4>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
               <div className="flex items-center gap-2">
                 <div className="w-2 h-2 bg-primary rounded-full"></div>
-                <span className="text-gray-700">Understands natural language</span>
+                <span className="text-gray-700">
+                  Understands natural language
+                </span>
               </div>
               <div className="flex items-center gap-2">
                 <div className="w-2 h-2 bg-primary rounded-full"></div>
-                <span className="text-gray-700">Finds hidden relevant opportunities</span>
+                <span className="text-gray-700">
+                  Finds hidden relevant opportunities
+                </span>
               </div>
               <div className="flex items-center gap-2">
                 <div className="w-2 h-2 bg-primary rounded-full"></div>
-                <span className="text-gray-700">Shows relevance explanations</span>
+                <span className="text-gray-700">
+                  Shows relevance explanations
+                </span>
               </div>
               <div className="flex items-center gap-2">
                 <div className="w-2 h-2 bg-primary rounded-full"></div>
-                <span className="text-gray-700">Learns from your preferences</span>
+                <span className="text-gray-700">
+                  Learns from your preferences
+                </span>
               </div>
             </div>
           </div>

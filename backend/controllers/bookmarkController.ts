@@ -11,15 +11,21 @@ export class BookmarkController {
 
       if (!userId || !tenderNoticeId) {
         return res.status(400).json({
-          error: "User ID and tender notice ID are required"
+          error: "User ID and tender notice ID are required",
         });
       }
 
-      const data = await this.databaseService.createBookmark(userId, tenderNoticeId, notes);
+      const data = await this.databaseService.createBookmark(
+        userId,
+        tenderNoticeId,
+        notes
+      );
       res.json({ success: true, bookmark: data[0] });
     } catch (error: any) {
       console.error("Error in createBookmark:", error);
-      res.status(500).json({ error: error.message || "Failed to create bookmark" });
+      res
+        .status(500)
+        .json({ error: error.message || "Failed to create bookmark" });
     }
   };
 
@@ -29,15 +35,20 @@ export class BookmarkController {
 
       if (!userId || !tenderNoticeId) {
         return res.status(400).json({
-          error: "User ID and tender notice ID are required"
+          error: "User ID and tender notice ID are required",
         });
       }
 
-      const data = await this.databaseService.removeBookmark(userId, tenderNoticeId);
+      const data = await this.databaseService.removeBookmark(
+        userId,
+        tenderNoticeId
+      );
       res.json({ success: true, removed: data.length > 0 });
     } catch (error: any) {
       console.error("Error in removeBookmark:", error);
-      res.status(500).json({ error: error.message || "Failed to remove bookmark" });
+      res
+        .status(500)
+        .json({ error: error.message || "Failed to remove bookmark" });
     }
   };
 
@@ -47,7 +58,7 @@ export class BookmarkController {
 
       if (!userId) {
         return res.status(400).json({
-          error: "User ID is required"
+          error: "User ID is required",
         });
       }
 
@@ -55,7 +66,9 @@ export class BookmarkController {
       res.json({ bookmarks });
     } catch (error: any) {
       console.error("Error in getUserBookmarks:", error);
-      res.status(500).json({ error: error.message || "Failed to fetch bookmarks" });
+      res
+        .status(500)
+        .json({ error: error.message || "Failed to fetch bookmarks" });
     }
   };
 
@@ -66,15 +79,21 @@ export class BookmarkController {
 
       if (!userId || !tenderNoticeId) {
         return res.status(400).json({
-          error: "User ID and tender notice ID are required"
+          error: "User ID and tender notice ID are required",
         });
       }
 
-      const data = await this.databaseService.updateBookmarkNotes(userId, tenderNoticeId, notes);
+      const data = await this.databaseService.updateBookmarkNotes(
+        userId,
+        tenderNoticeId,
+        notes
+      );
       res.json({ success: true, bookmark: data[0] });
     } catch (error: any) {
       console.error("Error in updateBookmarkNotes:", error);
-      res.status(500).json({ error: error.message || "Failed to update bookmark notes" });
+      res
+        .status(500)
+        .json({ error: error.message || "Failed to update bookmark notes" });
     }
   };
 
@@ -84,15 +103,20 @@ export class BookmarkController {
 
       if (!userId || !tenderNoticeId) {
         return res.status(400).json({
-          error: "User ID and tender notice ID are required"
+          error: "User ID and tender notice ID are required",
         });
       }
 
-      const isBookmarked = await this.databaseService.isBookmarked(userId, tenderNoticeId);
+      const isBookmarked = await this.databaseService.isBookmarked(
+        userId,
+        tenderNoticeId
+      );
       res.json({ isBookmarked });
     } catch (error: any) {
       console.error("Error in checkBookmarkStatus:", error);
-      res.status(500).json({ error: error.message || "Failed to check bookmark status" });
+      res
+        .status(500)
+        .json({ error: error.message || "Failed to check bookmark status" });
     }
   };
 }

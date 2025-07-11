@@ -10,7 +10,7 @@ export class AuthController {
 
       if (!email || !password) {
         return res.status(400).json({
-          error: "Email and password are required"
+          error: "Email and password are required",
         });
       }
 
@@ -28,7 +28,7 @@ export class AuthController {
 
       if (!email || !password) {
         return res.status(400).json({
-          error: "Email and password are required"
+          error: "Email and password are required",
         });
       }
 

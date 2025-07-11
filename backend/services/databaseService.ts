@@ -20,7 +20,8 @@ export class DatabaseService {
         .eq("id", tenderId)
         .single();
 
-      if (error && error.code !== 'PGRST116') { // PGRST116 = no rows found
+      if (error && error.code !== "PGRST116") {
+        // PGRST116 = no rows found
         console.error("Error fetching tender AI summary:", error);
         throw error;
       }
@@ -36,9 +37,9 @@ export class DatabaseService {
     try {
       const { data, error } = await this.supabase
         .from("tender_ai_summaries")
-        .upsert({ 
-          id: tenderId, 
-          summary: summary 
+        .upsert({
+          id: tenderId,
+          summary: summary,
         })
         .select();
 
@@ -110,12 +111,16 @@ export class DatabaseService {
     return await this.supabase.from("tenders").delete().neq("title", "");
   }
 
-  async insertTenders(tenderData: Database["public"]["Tables"]["tenders"]["Insert"][]) {
+  async insertTenders(
+    tenderData: Database["public"]["Tables"]["tenders"]["Insert"][]
+  ) {
     return await this.supabase.from("tenders").insert(tenderData);
   }
 
   // New method: Upsert tenders to preserve bookmarks
-  async upsertTenders(tenderData: Database["public"]["Tables"]["tenders"]["Insert"][]) {
+  async upsertTenders(
+    tenderData: Database["public"]["Tables"]["tenders"]["Insert"][]
+  ) {
     try {
       // Use reference_number as the unique identifier for upserting
       // This preserves existing tender IDs and thus maintains bookmark relationships
@@ -123,7 +128,7 @@ export class DatabaseService {
         .from("tenders")
         .upsert(tenderData, {
           onConflict: "reference_number",
-          ignoreDuplicates: false
+          ignoreDuplicates: false,
         })
         .select();
 
@@ -146,7 +151,11 @@ export class DatabaseService {
       const { data, error } = await this.supabase
         .from("tenders")
         .delete()
-        .not("reference_number", "in", `(${currentReferenceNumbers.join(",")})`);
+        .not(
+          "reference_number",
+          "in",
+          `(${currentReferenceNumbers.join(",")})`
+        );
 
       if (error) {
         console.error("Error removing stale tenders:", error);
@@ -195,7 +204,9 @@ export class DatabaseService {
       .neq("referenceNumber-numeroReference", "");
   }
 
-  async insertFilteredTenderNotices(data: Database["public"]["Tables"]["filtered_open_tender_notices"]["Insert"][]) {
+  async insertFilteredTenderNotices(
+    data: Database["public"]["Tables"]["filtered_open_tender_notices"]["Insert"][]
+  ) {
     return await this.supabase
       .from("filtered_open_tender_notices")
       .insert(data);
@@ -295,7 +306,11 @@ export class DatabaseService {
   }
 
   // Profile methods
-  async createOrUpdateProfile(profileData: Database["public"]["Tables"]["profiles"]["Insert"] | Database["public"]["Tables"]["profiles"]["Update"]) {
+  async createOrUpdateProfile(
+    profileData:
+      | Database["public"]["Tables"]["profiles"]["Insert"]
+      | Database["public"]["Tables"]["profiles"]["Update"]
+  ) {
     try {
       const { data, error } = await this.supabase
         .from("profiles")
@@ -314,7 +329,9 @@ export class DatabaseService {
     }
   }
 
-  async getProfile(userId: string): Promise<Database["public"]["Tables"]["profiles"]["Row"] | null> {
+  async getProfile(
+    userId: string
+  ): Promise<Database["public"]["Tables"]["profiles"]["Row"] | null> {
     try {
       const { data, error } = await this.supabase
         .from("profiles")
@@ -322,7 +339,8 @@ export class DatabaseService {
         .eq("id", userId)
         .single();
 
-      if (error && error.code !== 'PGRST116') { // PGRST116 = no rows found
+      if (error && error.code !== "PGRST116") {
+        // PGRST116 = no rows found
         console.error("Error fetching profile:", error);
         throw error;
       }
@@ -337,19 +355,20 @@ export class DatabaseService {
   // Bookmark methods
   async createBookmark(userId: string, tenderNoticeId: string, notes?: string) {
     try {
-      const bookmarkData: Database["public"]["Tables"]["bookmarks"]["Insert"] = {
-        user_id: userId,
-        tender_notice_id: tenderNoticeId,
-        notes: notes || null,
-        status: "active",
-        created_at: new Date().toISOString(),
-        updated_at: new Date().toISOString(),
-      };
+      const bookmarkData: Database["public"]["Tables"]["bookmarks"]["Insert"] =
+        {
+          user_id: userId,
+          tender_notice_id: tenderNoticeId,
+          notes: notes || null,
+          status: "active",
+          created_at: new Date().toISOString(),
+          updated_at: new Date().toISOString(),
+        };
 
       const { data, error } = await this.supabase
         .from("bookmarks")
         .upsert(bookmarkData, {
-          onConflict: "user_id,tender_notice_id"
+          onConflict: "user_id,tender_notice_id",
         })
         .select();
 
@@ -386,14 +405,18 @@ export class DatabaseService {
     }
   }
 
-  async getUserBookmarks(userId: string): Promise<Database["public"]["Tables"]["bookmarks"]["Row"][]> {
+  async getUserBookmarks(
+    userId: string
+  ): Promise<Database["public"]["Tables"]["bookmarks"]["Row"][]> {
     try {
       const { data, error } = await this.supabase
         .from("bookmarks")
-        .select(`
+        .select(
+          `
           *,
           tender_notice:tenders(*)
-        `)
+        `
+        )
         .eq("user_id", userId)
         .eq("status", "active")
         .order("created_at", { ascending: false });
@@ -410,7 +433,11 @@ export class DatabaseService {
     }
   }
 
-  async updateBookmarkNotes(userId: string, tenderNoticeId: string, notes: string) {
+  async updateBookmarkNotes(
+    userId: string,
+    tenderNoticeId: string,
+    notes: string
+  ) {
     try {
       const { data, error } = await this.supabase
         .from("bookmarks")
@@ -444,7 +471,8 @@ export class DatabaseService {
         .eq("status", "active")
         .single();
 
-      if (error && error.code !== 'PGRST116') { // PGRST116 = no rows found
+      if (error && error.code !== "PGRST116") {
+        // PGRST116 = no rows found
         console.error("Error checking bookmark status:", error);
         return false;
       }

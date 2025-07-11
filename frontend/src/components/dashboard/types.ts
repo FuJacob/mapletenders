@@ -7,9 +7,16 @@ export type Tender = Database["public"]["Tables"]["tenders"]["Row"] & {
 
 // Minimal tender data for components and mock data
 export type TenderSummary = Pick<
-  Database["public"]["Tables"]["tenders"]["Row"], 
-  "id" | "title" | "contracting_entity_name" | "tender_closing_date" | "regions_of_delivery" | 
-  "notice_type" | "tender_status" | "publication_date" | "procurement_category"
+  Database["public"]["Tables"]["tenders"]["Row"],
+  | "id"
+  | "title"
+  | "contracting_entity_name"
+  | "tender_closing_date"
+  | "regions_of_delivery"
+  | "notice_type"
+  | "tender_status"
+  | "publication_date"
+  | "procurement_category"
 > & {
   relevanceScore?: number;
 };
@@ -18,13 +25,25 @@ export type TenderSummary = Pick<
 export type TenderDisplay = {
   id: string;
   title: NonNullable<Database["public"]["Tables"]["tenders"]["Row"]["title"]>;
-  organization: NonNullable<Database["public"]["Tables"]["tenders"]["Row"]["contracting_entity_name"]>;
+  organization: NonNullable<
+    Database["public"]["Tables"]["tenders"]["Row"]["contracting_entity_name"]
+  >;
   location: string; // Computed from multiple address fields
-  deadline: NonNullable<Database["public"]["Tables"]["tenders"]["Row"]["tender_closing_date"]>;
-  publishDate: NonNullable<Database["public"]["Tables"]["tenders"]["Row"]["publication_date"]>;
-  category: NonNullable<Database["public"]["Tables"]["tenders"]["Row"]["procurement_category"]>;
-  status: NonNullable<Database["public"]["Tables"]["tenders"]["Row"]["tender_status"]>;
-  noticeUrl: NonNullable<Database["public"]["Tables"]["tenders"]["Row"]["notice_url"]>;
+  deadline: NonNullable<
+    Database["public"]["Tables"]["tenders"]["Row"]["tender_closing_date"]
+  >;
+  publishDate: NonNullable<
+    Database["public"]["Tables"]["tenders"]["Row"]["publication_date"]
+  >;
+  category: NonNullable<
+    Database["public"]["Tables"]["tenders"]["Row"]["procurement_category"]
+  >;
+  status: NonNullable<
+    Database["public"]["Tables"]["tenders"]["Row"]["tender_status"]
+  >;
+  noticeUrl: NonNullable<
+    Database["public"]["Tables"]["tenders"]["Row"]["notice_url"]
+  >;
   description?: Database["public"]["Tables"]["tenders"]["Row"]["tender_description"];
   relevanceScore?: number;
 };
@@ -41,9 +60,7 @@ export interface Activity {
 }
 
 // Helper function to convert database tender to display format
-export const mapTenderToDisplay = (
-  tender: Tender
-): TenderDisplay => ({
+export const mapTenderToDisplay = (tender: Tender): TenderDisplay => ({
   id: tender.id || "",
   title: tender.title || "Untitled",
   organization: tender.contracting_entity_name || "Unknown Organization",

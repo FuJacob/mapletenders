@@ -3,7 +3,10 @@ import { handleApiError } from "./config";
 import type { Database } from "../../database.types";
 
 // Use database types as source of truth with proper optional handling
-export type ProfileData = Pick<Database["public"]["Tables"]["profiles"]["Row"], "id"> & {
+export type ProfileData = Pick<
+  Database["public"]["Tables"]["profiles"]["Row"],
+  "id"
+> & {
   // Convert null database fields to optional undefined fields for API
   company_name?: string;
   company_size?: string;
@@ -29,7 +32,9 @@ export interface ProfileResponse {
  * @param {ProfileData} profileData - Profile information
  * @returns {Promise<ProfileResponse>} Profile response
  */
-export const createOrUpdateProfile = async (profileData: ProfileData): Promise<ProfileResponse> => {
+export const createOrUpdateProfile = async (
+  profileData: ProfileData
+): Promise<ProfileResponse> => {
   try {
     const response = await axios.post("/profile", profileData);
     return { profile: response.data };

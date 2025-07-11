@@ -1,10 +1,11 @@
 import React, { useState, useEffect, useRef, useCallback } from "react";
-import {
-  PaperPlaneTilt,
-  Robot,
-} from "@phosphor-icons/react";
+import { PaperPlaneTilt, Robot } from "@phosphor-icons/react";
 import MessageBubble from "../common/MessageBubble";
-import { createChatSession, sendChatMessage, type ChatMessage } from "../../api";
+import {
+  createChatSession,
+  sendChatMessage,
+  type ChatMessage,
+} from "../../api";
 
 const BreezeChat: React.FC = () => {
   const [messages, setMessages] = useState<ChatMessage[]>([]);
@@ -29,14 +30,15 @@ const BreezeChat: React.FC = () => {
       try {
         const response = await createChatSession();
         setSessionId(response.sessionId);
-        
+
         // Add welcome message from API
         const welcomeMessage: ChatMessage = {
           role: "model",
-          message: "Hello! I'm here to help you with government tenders and procurement opportunities. I can answer questions about tender processes, requirements, deadlines, and help you understand specific opportunities. What would you like to know?",
+          message:
+            "Hello! I'm here to help you with government tenders and procurement opportunities. I can answer questions about tender processes, requirements, deadlines, and help you understand specific opportunities. What would you like to know?",
           timestamp: new Date(),
         };
-        
+
         setMessages([welcomeMessage]);
         setError(null);
       } catch (err) {
@@ -58,7 +60,7 @@ const BreezeChat: React.FC = () => {
     };
 
     // Add user message immediately
-    setMessages(prev => [...prev, userMessage]);
+    setMessages((prev) => [...prev, userMessage]);
     setInputMessage("");
     setIsTyping(true);
     setError(null);
@@ -66,7 +68,7 @@ const BreezeChat: React.FC = () => {
     try {
       // Send message to API
       const response = await sendChatMessage(sessionId, userMessage.message);
-      
+
       // Add bot response
       const botMessage: ChatMessage = {
         role: "model",
@@ -74,30 +76,34 @@ const BreezeChat: React.FC = () => {
         timestamp: new Date(),
       };
 
-      setMessages(prev => [...prev, botMessage]);
+      setMessages((prev) => [...prev, botMessage]);
     } catch (err) {
       console.error("Failed to send message:", err);
       setError("Failed to send message. Please try again.");
-      
+
       // Add error message to chat
       const errorMessage: ChatMessage = {
         role: "model",
-        message: "I apologize, but I'm having trouble processing your message right now. Please try again.",
+        message:
+          "I apologize, but I'm having trouble processing your message right now. Please try again.",
         timestamp: new Date(),
       };
-      
-      setMessages(prev => [...prev, errorMessage]);
+
+      setMessages((prev) => [...prev, errorMessage]);
     } finally {
       setIsTyping(false);
     }
   }, [inputMessage, sessionId, isTyping]);
 
-  const handleKeyDown = useCallback((e: React.KeyboardEvent) => {
-    if (e.key === "Enter" && !e.shiftKey) {
-      e.preventDefault();
-      handleSendMessage();
-    }
-  }, [handleSendMessage]);
+  const handleKeyDown = useCallback(
+    (e: React.KeyboardEvent) => {
+      if (e.key === "Enter" && !e.shiftKey) {
+        e.preventDefault();
+        handleSendMessage();
+      }
+    },
+    [handleSendMessage]
+  );
 
   return (
     <div className="bg-surface border border-border rounded-xl p-6 h-[1200px] flex flex-col">
@@ -155,7 +161,7 @@ const BreezeChat: React.FC = () => {
             </div>
           </div>
         )}
-        
+
         <div ref={messagesEndRef} />
       </div>
 

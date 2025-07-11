@@ -7,22 +7,28 @@ export class ProfileController {
 
   createOrUpdateProfile = async (req: Request, res: Response) => {
     try {
-      const profileData: Database["public"]["Tables"]["profiles"]["Insert"] | Database["public"]["Tables"]["profiles"]["Update"] = req.body;
+      const profileData:
+        | Database["public"]["Tables"]["profiles"]["Insert"]
+        | Database["public"]["Tables"]["profiles"]["Update"] = req.body;
 
       if (!profileData.id) {
         return res.status(400).json({
-          error: "User ID is required"
+          error: "User ID is required",
         });
       }
 
       // Add timestamp
       profileData.updated_at = new Date().toISOString();
 
-      const data = await this.databaseService.createOrUpdateProfile(profileData);
+      const data = await this.databaseService.createOrUpdateProfile(
+        profileData
+      );
       res.json(data);
     } catch (error: any) {
       console.error("Error in createOrUpdateProfile:", error);
-      res.status(500).json({ error: error.message || "Failed to save profile" });
+      res
+        .status(500)
+        .json({ error: error.message || "Failed to save profile" });
     }
   };
 
@@ -32,7 +38,7 @@ export class ProfileController {
 
       if (!userId) {
         return res.status(400).json({
-          error: "User ID is required"
+          error: "User ID is required",
         });
       }
 

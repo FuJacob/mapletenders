@@ -28,7 +28,9 @@ export interface SignInData {
  * @param {SignUpData} signUpData - Email and password
  * @returns {Promise<AuthResponse>} Authentication response
  */
-export const signUpUser = async (signUpData: SignUpData): Promise<AuthResponse> => {
+export const signUpUser = async (
+  signUpData: SignUpData
+): Promise<AuthResponse> => {
   try {
     const response = await axios.post("/auth/signup", signUpData);
     return response.data;
@@ -42,7 +44,9 @@ export const signUpUser = async (signUpData: SignUpData): Promise<AuthResponse> 
  * @param {SignInData} signInData - Email and password
  * @returns {Promise<AuthResponse>} Authentication response
  */
-export const signInUser = async (signInData: SignInData): Promise<AuthResponse> => {
+export const signInUser = async (
+  signInData: SignInData
+): Promise<AuthResponse> => {
   try {
     const response = await axios.post("/auth/signin", signInData);
     return response.data;
@@ -55,7 +59,7 @@ export const signInUser = async (signInData: SignInData): Promise<AuthResponse> 
  * Sign out the current user
  * @returns {Promise<{success: boolean}>} Sign out response
  */
-export const signOutUser = async (): Promise<{success: boolean}> => {
+export const signOutUser = async (): Promise<{ success: boolean }> => {
   try {
     const response = await axios.post("/auth/signout");
     return response.data;

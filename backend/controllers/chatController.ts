@@ -9,14 +9,16 @@ export class ChatController {
     try {
       const sessionId = uuidv4();
       await this.aiService.createChatSession(sessionId);
-      
+
       res.json({
         sessionId,
-        message: "Chat session created successfully"
+        message: "Chat session created successfully",
       });
     } catch (error: any) {
       console.error("Error creating chat session:", error);
-      res.status(500).json({ error: error.message || "Failed to create chat session" });
+      res
+        .status(500)
+        .json({ error: error.message || "Failed to create chat session" });
     }
   };
 
@@ -27,7 +29,7 @@ export class ChatController {
 
       if (!message) {
         return res.status(400).json({
-          error: "Message is required"
+          error: "Message is required",
         });
       }
 
@@ -35,7 +37,9 @@ export class ChatController {
       res.json(response);
     } catch (error: any) {
       console.error("Error sending chat message:", error);
-      res.status(500).json({ error: error.message || "Failed to send message" });
+      res
+        .status(500)
+        .json({ error: error.message || "Failed to send message" });
     }
   };
 
@@ -43,14 +47,16 @@ export class ChatController {
     try {
       const { sessionId } = req.params;
       const deleted = this.aiService.deleteChatSession(sessionId);
-      
+
       res.json({
         success: deleted,
-        message: deleted ? "Chat session deleted" : "Chat session not found"
+        message: deleted ? "Chat session deleted" : "Chat session not found",
       });
     } catch (error: any) {
       console.error("Error deleting chat session:", error);
-      res.status(500).json({ error: error.message || "Failed to delete chat session" });
+      res
+        .status(500)
+        .json({ error: error.message || "Failed to delete chat session" });
     }
   };
 }

@@ -20,8 +20,9 @@ interface TenderNoticeBodyProps {
 }
 
 export function TenderNoticeSummary({ tender }: TenderNoticeBodyProps) {
-  const [tenderSummary, setTenderSummary] =
-    useState<TenderSummaryData | null>(null);
+  const [tenderSummary, setTenderSummary] = useState<TenderSummaryData | null>(
+    null
+  );
   const [isLoading, setIsLoading] = useState(false);
   const [lastTenderId, setLastTenderId] = useState<string | null>(null);
   const abortControllerRef = useRef<AbortController | null>(null);
@@ -56,28 +57,31 @@ Trade Agreements: ${tender.trade_agreements || "Not specified"}
   const getTenderSummary = useCallback(async () => {
     // Check if this is a new tender or if we're already loading
     if (isLoading || tender.id === lastTenderId) return;
-    
+
     // Cancel any previous request
     if (abortControllerRef.current) {
       abortControllerRef.current.abort();
     }
-    
+
     // Create new abort controller for this request
     abortControllerRef.current = new AbortController();
-    
+
     // Reset state for new tender
     setTenderSummary(null);
     setIsLoading(true);
     setLastTenderId(tender.id);
-    
+
     try {
-      const response = await generateTenderSummary(tender.id, structuredTenderData);
-      
+      const response = await generateTenderSummary(
+        tender.id,
+        structuredTenderData
+      );
+
       // Check if request was aborted
       if (abortControllerRef.current?.signal.aborted) {
         return;
       }
-      
+
       console.log("Raw API response:", response);
 
       // The backend now returns a parsed summary directly
@@ -98,7 +102,7 @@ Trade Agreements: ${tender.trade_agreements || "Not specified"}
 
   useEffect(() => {
     getTenderSummary();
-    
+
     // Cleanup function to abort request if component unmounts
     return () => {
       if (abortControllerRef.current) {

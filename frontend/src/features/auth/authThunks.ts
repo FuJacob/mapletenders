@@ -1,4 +1,10 @@
-import { signInUser, signOutUser, getSession, createOrUpdateProfile, getProfile } from "../../api";
+import {
+  signInUser,
+  signOutUser,
+  getSession,
+  createOrUpdateProfile,
+  getProfile,
+} from "../../api";
 import {
   setUser,
   logout,
@@ -15,7 +21,9 @@ type ProfileUpdate = Database["public"]["Tables"]["profiles"]["Update"];
 type DatabaseProfile = Database["public"]["Tables"]["profiles"]["Row"];
 
 // Helper function to convert database profile to API format
-const convertDatabaseProfileToAPI = (dbProfile: Partial<DatabaseProfile>): ProfileData => {
+const convertDatabaseProfileToAPI = (
+  dbProfile: Partial<DatabaseProfile>
+): ProfileData => {
   return {
     id: dbProfile.id!,
     company_name: dbProfile.company_name ?? undefined,
@@ -31,7 +39,9 @@ const convertDatabaseProfileToAPI = (dbProfile: Partial<DatabaseProfile>): Profi
 };
 
 // Helper function to convert API profile to database format
-const convertAPIProfileToDatabase = (apiProfile: ProfileData): DatabaseProfile => {
+const convertAPIProfileToDatabase = (
+  apiProfile: ProfileData
+): DatabaseProfile => {
   return {
     id: apiProfile.id,
     company_name: apiProfile.company_name ?? null,
@@ -121,14 +131,16 @@ export const loadSession = () => async (dispatch: AppDispatch) => {
 
     if (user?.id) {
       const profileResponse = await getProfile(user.id);
-      
+
       if (profileResponse.error) {
         console.error("Error fetching profile:", profileResponse.error);
         dispatch(setAuthError("Failed to load user profile"));
       } else if (profileResponse.profile) {
         dispatch(setUser(convertAPIProfileToDatabase(profileResponse.profile)));
         dispatch(
-          setOnboardingCompleted(profileResponse.profile.onboarding_completed || false)
+          setOnboardingCompleted(
+            profileResponse.profile.onboarding_completed || false
+          )
         );
       }
     }
@@ -159,7 +171,7 @@ export const updateProfile =
         id: user.id,
         ...profileData,
       });
-      
+
       const updateResponse = await createOrUpdateProfile(cleanProfileData);
 
       if (updateResponse.error) {
@@ -175,7 +187,10 @@ export const updateProfile =
       }
       dispatch(setAuthLoading(false));
 
-      return { type: "auth/updateProfile/fulfilled", payload: updateResponse.profile };
+      return {
+        type: "auth/updateProfile/fulfilled",
+        payload: updateResponse.profile,
+      };
     } catch (error) {
       console.error("Unexpected error during profile update:", error);
       dispatch(setAuthError("An unexpected error occurred"));

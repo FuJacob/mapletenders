@@ -120,11 +120,17 @@ export default function TenderNotice() {
   }, [tender?.title]);
 
   // Calculate values before early returns to comply with rules of hooks
-  const closingDays = useMemo(() => getDaysUntilClosing(tender?.tender_closing_date || null), [tender?.tender_closing_date]);
-  const isUrgent = useMemo(() =>
-    closingDays.includes("today") ||
-    closingDays.includes("tomorrow") ||
-    (closingDays.includes("days") && parseInt(closingDays) <= 7), [closingDays]);
+  const closingDays = useMemo(
+    () => getDaysUntilClosing(tender?.tender_closing_date || null),
+    [tender?.tender_closing_date]
+  );
+  const isUrgent = useMemo(
+    () =>
+      closingDays.includes("today") ||
+      closingDays.includes("tomorrow") ||
+      (closingDays.includes("days") && parseInt(closingDays) <= 7),
+    [closingDays]
+  );
 
   if (loading) {
     return <LoadingSpinner message="Loading tender details..." />;

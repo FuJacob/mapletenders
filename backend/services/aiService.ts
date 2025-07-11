@@ -150,11 +150,19 @@ Focus on the most important information that drives business decisions.`,
       history: [
         {
           role: "user",
-          parts: [{ text: "Hello! I'm looking for help with government tenders and procurement opportunities." }],
+          parts: [
+            {
+              text: "Hello! I'm looking for help with government tenders and procurement opportunities.",
+            },
+          ],
         },
         {
           role: "model",
-          parts: [{ text: "Hello! I'm here to help you with government tenders and procurement opportunities. I can answer questions about tender processes, requirements, deadlines, and help you understand specific opportunities. What would you like to know?" }],
+          parts: [
+            {
+              text: "Hello! I'm here to help you with government tenders and procurement opportunities. I can answer questions about tender processes, requirements, deadlines, and help you understand specific opportunities. What would you like to know?",
+            },
+          ],
         },
       ],
     });
@@ -166,7 +174,7 @@ Focus on the most important information that drives business decisions.`,
   async sendChatMessage(sessionId: string, message: string) {
     try {
       let chat = this.chatSessions.get(sessionId);
-      
+
       if (!chat) {
         // Create new chat session if it doesn't exist
         chat = await this.createChatSession(sessionId);

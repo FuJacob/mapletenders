@@ -19,7 +19,11 @@
     "typescript": "^5.8.3"
   },
   "scripts": {
-    "start": "nodemon server.ts",
-    "dev": "nodemon --watch src --exec ts-node src/server.ts"
+    "dev": "nodemon server.ts",
+    "build": "tsc",
+    "start": "node dist/server.js",
+    "clean": "rm -rf dist",
+    "build:clean": "npm run clean && npm run build",
+    "type-check": "tsc --noEmit"
   }
 }
