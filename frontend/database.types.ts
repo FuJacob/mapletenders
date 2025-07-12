@@ -59,177 +59,6 @@ export type Database = {
           },
         ]
       }
-      filtered_open_tender_notices: {
-        Row: {
-          "amendmentDate-dateModification": string | null
-          "amendmentNumber-numeroModification": string | null
-          "attachment-piecesJointes-eng": string | null
-          "contactInfoAddressLine-contactInfoAdresseLigne-eng": string | null
-          "contactInfoCity-contacterInfoVille-eng": string | null
-          "contactInfoCountry-contactInfoPays-eng": string | null
-          "contactInfoEmail-informationsContactCourriel": string | null
-          contactInfoFax: string | null
-          "contactInfoName-informationsContactNom": string | null
-          "contactInfoPhone-contactInfoTelephone": string | null
-          contactInfoPostalcode: string | null
-          "contactInfoProvince-contacterInfoProvince-eng": string | null
-          "contractingEntityAddressCity-entiteContractanteAdresseVille-eng":
-            | string
-            | null
-          "contractingEntityAddressCountry-entiteContractanteAdressePays-e":
-            | string
-            | null
-          "contractingEntityAddressLine-ligneAdresseEntiteContractante-eng":
-            | string
-            | null
-          "contractingEntityAddressPostalCode-entiteContractanteAdresseCod":
-            | string
-            | null
-          "contractingEntityAddressProvince-entiteContractanteAdresseProvi":
-            | string
-            | null
-          "contractingEntityName-nomEntitContractante-eng": string | null
-          "endUserEntitiesAddress-adresseEntitesUtilisateurFinal-eng":
-            | string
-            | null
-          "endUserEntitiesName-nomEntitesUtilisateurFinal-eng": string | null
-          "expectedContractEndDate-dateFinContratPrevue": string | null
-          "expectedContractStartDate-dateDebutContratPrevue": string | null
-          "gsin-nibs": string | null
-          "gsinDescription-nibsDescription-eng": string | null
-          "limitedTenderingReason-raisonAppelOffresLimite-eng": string | null
-          "noticeType-avisType-eng": string | null
-          "noticeURL-URLavis-eng": string | null
-          "procurementCategory-categorieApprovisionnement": string | null
-          "procurementMethod-methodeApprovisionnement-eng": string | null
-          "publicationDate-datePublication": string | null
-          "referenceNumber-numeroReference": string | null
-          "regionsOfDelivery-regionsLivraison-eng": string | null
-          "regionsOfOpportunity-regionAppelOffres-eng": string | null
-          "selectionCriteria-criteresSelection-eng": string | null
-          "solicitationNumber-numeroSollicitation": string | null
-          "tenderClosingDate-appelOffresDateCloture": string | null
-          "tenderDescription-descriptionAppelOffres-eng": string | null
-          "tenderStatus-appelOffresStatut-eng": string | null
-          "title-titre-eng": string | null
-          "tradeAgreements-accordsCommerciaux-eng": string | null
-          unspsc: string | null
-          "unspscDescription-eng": string | null
-        }
-        Insert: {
-          "amendmentDate-dateModification"?: string | null
-          "amendmentNumber-numeroModification"?: string | null
-          "attachment-piecesJointes-eng"?: string | null
-          "contactInfoAddressLine-contactInfoAdresseLigne-eng"?: string | null
-          "contactInfoCity-contacterInfoVille-eng"?: string | null
-          "contactInfoCountry-contactInfoPays-eng"?: string | null
-          "contactInfoEmail-informationsContactCourriel"?: string | null
-          contactInfoFax?: string | null
-          "contactInfoName-informationsContactNom"?: string | null
-          "contactInfoPhone-contactInfoTelephone"?: string | null
-          contactInfoPostalcode?: string | null
-          "contactInfoProvince-contacterInfoProvince-eng"?: string | null
-          "contractingEntityAddressCity-entiteContractanteAdresseVille-eng"?:
-            | string
-            | null
-          "contractingEntityAddressCountry-entiteContractanteAdressePays-e"?:
-            | string
-            | null
-          "contractingEntityAddressLine-ligneAdresseEntiteContractante-eng"?:
-            | string
-            | null
-          "contractingEntityAddressPostalCode-entiteContractanteAdresseCod"?:
-            | string
-            | null
-          "contractingEntityAddressProvince-entiteContractanteAdresseProvi"?:
-            | string
-            | null
-          "contractingEntityName-nomEntitContractante-eng"?: string | null
-          "endUserEntitiesAddress-adresseEntitesUtilisateurFinal-eng"?:
-            | string
-            | null
-          "endUserEntitiesName-nomEntitesUtilisateurFinal-eng"?: string | null
-          "expectedContractEndDate-dateFinContratPrevue"?: string | null
-          "expectedContractStartDate-dateDebutContratPrevue"?: string | null
-          "gsin-nibs"?: string | null
-          "gsinDescription-nibsDescription-eng"?: string | null
-          "limitedTenderingReason-raisonAppelOffresLimite-eng"?: string | null
-          "noticeType-avisType-eng"?: string | null
-          "noticeURL-URLavis-eng"?: string | null
-          "procurementCategory-categorieApprovisionnement"?: string | null
-          "procurementMethod-methodeApprovisionnement-eng"?: string | null
-          "publicationDate-datePublication"?: string | null
-          "referenceNumber-numeroReference"?: string | null
-          "regionsOfDelivery-regionsLivraison-eng"?: string | null
-          "regionsOfOpportunity-regionAppelOffres-eng"?: string | null
-          "selectionCriteria-criteresSelection-eng"?: string | null
-          "solicitationNumber-numeroSollicitation"?: string | null
-          "tenderClosingDate-appelOffresDateCloture"?: string | null
-          "tenderDescription-descriptionAppelOffres-eng"?: string | null
-          "tenderStatus-appelOffresStatut-eng"?: string | null
-          "title-titre-eng"?: string | null
-          "tradeAgreements-accordsCommerciaux-eng"?: string | null
-          unspsc?: string | null
-          "unspscDescription-eng"?: string | null
-        }
-        Update: {
-          "amendmentDate-dateModification"?: string | null
-          "amendmentNumber-numeroModification"?: string | null
-          "attachment-piecesJointes-eng"?: string | null
-          "contactInfoAddressLine-contactInfoAdresseLigne-eng"?: string | null
-          "contactInfoCity-contacterInfoVille-eng"?: string | null
-          "contactInfoCountry-contactInfoPays-eng"?: string | null
-          "contactInfoEmail-informationsContactCourriel"?: string | null
-          contactInfoFax?: string | null
-          "contactInfoName-informationsContactNom"?: string | null
-          "contactInfoPhone-contactInfoTelephone"?: string | null
-          contactInfoPostalcode?: string | null
-          "contactInfoProvince-contacterInfoProvince-eng"?: string | null
-          "contractingEntityAddressCity-entiteContractanteAdresseVille-eng"?:
-            | string
-            | null
-          "contractingEntityAddressCountry-entiteContractanteAdressePays-e"?:
-            | string
-            | null
-          "contractingEntityAddressLine-ligneAdresseEntiteContractante-eng"?:
-            | string
-            | null
-          "contractingEntityAddressPostalCode-entiteContractanteAdresseCod"?:
-            | string
-            | null
-          "contractingEntityAddressProvince-entiteContractanteAdresseProvi"?:
-            | string
-            | null
-          "contractingEntityName-nomEntitContractante-eng"?: string | null
-          "endUserEntitiesAddress-adresseEntitesUtilisateurFinal-eng"?:
-            | string
-            | null
-          "endUserEntitiesName-nomEntitesUtilisateurFinal-eng"?: string | null
-          "expectedContractEndDate-dateFinContratPrevue"?: string | null
-          "expectedContractStartDate-dateDebutContratPrevue"?: string | null
-          "gsin-nibs"?: string | null
-          "gsinDescription-nibsDescription-eng"?: string | null
-          "limitedTenderingReason-raisonAppelOffresLimite-eng"?: string | null
-          "noticeType-avisType-eng"?: string | null
-          "noticeURL-URLavis-eng"?: string | null
-          "procurementCategory-categorieApprovisionnement"?: string | null
-          "procurementMethod-methodeApprovisionnement-eng"?: string | null
-          "publicationDate-datePublication"?: string | null
-          "referenceNumber-numeroReference"?: string | null
-          "regionsOfDelivery-regionsLivraison-eng"?: string | null
-          "regionsOfOpportunity-regionAppelOffres-eng"?: string | null
-          "selectionCriteria-criteresSelection-eng"?: string | null
-          "solicitationNumber-numeroSollicitation"?: string | null
-          "tenderClosingDate-appelOffresDateCloture"?: string | null
-          "tenderDescription-descriptionAppelOffres-eng"?: string | null
-          "tenderStatus-appelOffresStatut-eng"?: string | null
-          "title-titre-eng"?: string | null
-          "tradeAgreements-accordsCommerciaux-eng"?: string | null
-          unspsc?: string | null
-          "unspscDescription-eng"?: string | null
-        }
-        Relationships: []
-      }
       metadata: {
         Row: {
           key: string
@@ -242,186 +71,6 @@ export type Database = {
         Update: {
           key?: string
           value?: string
-        }
-        Relationships: []
-      }
-      open_tender_notices: {
-        Row: {
-          "amendmentDate-dateModification": string | null
-          "amendmentNumber-numeroModification": string | null
-          "attachment-piecesJointes-eng": string | null
-          "contactInfoAddressLine-contactInfoAdresseLigne-eng": string | null
-          "contactInfoCity-contacterInfoVille-eng": string | null
-          "contactInfoCountry-contactInfoPays-eng": string | null
-          "contactInfoEmail-informationsContactCourriel": string | null
-          contactInfoFax: string | null
-          "contactInfoName-informationsContactNom": string | null
-          "contactInfoPhone-contactInfoTelephone": string | null
-          contactInfoPostalcode: string | null
-          "contactInfoProvince-contacterInfoProvince-eng": string | null
-          "contractingEntityAddressCity-entiteContractanteAdresseVille-eng":
-            | string
-            | null
-          "contractingEntityAddressCountry-entiteContractanteAdressePays-e":
-            | string
-            | null
-          "contractingEntityAddressLine-ligneAdresseEntiteContractante-eng":
-            | string
-            | null
-          "contractingEntityAddressPostalCode-entiteContractanteAdresseCod":
-            | string
-            | null
-          "contractingEntityAddressProvince-entiteContractanteAdresseProvi":
-            | string
-            | null
-          "contractingEntityName-nomEntitContractante-eng": string | null
-          embedding: string | null
-          embedding_input: string | null
-          "endUserEntitiesAddress-adresseEntitesUtilisateurFinal-eng":
-            | string
-            | null
-          "endUserEntitiesName-nomEntitesUtilisateurFinal-eng": string | null
-          "expectedContractEndDate-dateFinContratPrevue": string | null
-          "expectedContractStartDate-dateDebutContratPrevue": string | null
-          "gsin-nibs": string | null
-          "gsinDescription-nibsDescription-eng": string | null
-          id: string
-          "limitedTenderingReason-raisonAppelOffresLimite-eng": string | null
-          "noticeType-avisType-eng": string | null
-          "noticeURL-URLavis-eng": string | null
-          "procurementCategory-categorieApprovisionnement": string | null
-          "procurementMethod-methodeApprovisionnement-eng": string | null
-          "publicationDate-datePublication": string | null
-          "referenceNumber-numeroReference": string | null
-          "regionsOfDelivery-regionsLivraison-eng": string | null
-          "regionsOfOpportunity-regionAppelOffres-eng": string | null
-          "selectionCriteria-criteresSelection-eng": string | null
-          "solicitationNumber-numeroSollicitation": string | null
-          "tenderClosingDate-appelOffresDateCloture": string | null
-          "tenderDescription-descriptionAppelOffres-eng": string | null
-          "tenderStatus-appelOffresStatut-eng": string | null
-          "title-titre-eng": string | null
-          "tradeAgreements-accordsCommerciaux-eng": string | null
-          unspsc: string | null
-          "unspscDescription-eng": string | null
-        }
-        Insert: {
-          "amendmentDate-dateModification"?: string | null
-          "amendmentNumber-numeroModification"?: string | null
-          "attachment-piecesJointes-eng"?: string | null
-          "contactInfoAddressLine-contactInfoAdresseLigne-eng"?: string | null
-          "contactInfoCity-contacterInfoVille-eng"?: string | null
-          "contactInfoCountry-contactInfoPays-eng"?: string | null
-          "contactInfoEmail-informationsContactCourriel"?: string | null
-          contactInfoFax?: string | null
-          "contactInfoName-informationsContactNom"?: string | null
-          "contactInfoPhone-contactInfoTelephone"?: string | null
-          contactInfoPostalcode?: string | null
-          "contactInfoProvince-contacterInfoProvince-eng"?: string | null
-          "contractingEntityAddressCity-entiteContractanteAdresseVille-eng"?:
-            | string
-            | null
-          "contractingEntityAddressCountry-entiteContractanteAdressePays-e"?:
-            | string
-            | null
-          "contractingEntityAddressLine-ligneAdresseEntiteContractante-eng"?:
-            | string
-            | null
-          "contractingEntityAddressPostalCode-entiteContractanteAdresseCod"?:
-            | string
-            | null
-          "contractingEntityAddressProvince-entiteContractanteAdresseProvi"?:
-            | string
-            | null
-          "contractingEntityName-nomEntitContractante-eng"?: string | null
-          embedding?: string | null
-          embedding_input?: string | null
-          "endUserEntitiesAddress-adresseEntitesUtilisateurFinal-eng"?:
-            | string
-            | null
-          "endUserEntitiesName-nomEntitesUtilisateurFinal-eng"?: string | null
-          "expectedContractEndDate-dateFinContratPrevue"?: string | null
-          "expectedContractStartDate-dateDebutContratPrevue"?: string | null
-          "gsin-nibs"?: string | null
-          "gsinDescription-nibsDescription-eng"?: string | null
-          id?: string
-          "limitedTenderingReason-raisonAppelOffresLimite-eng"?: string | null
-          "noticeType-avisType-eng"?: string | null
-          "noticeURL-URLavis-eng"?: string | null
-          "procurementCategory-categorieApprovisionnement"?: string | null
-          "procurementMethod-methodeApprovisionnement-eng"?: string | null
-          "publicationDate-datePublication"?: string | null
-          "referenceNumber-numeroReference"?: string | null
-          "regionsOfDelivery-regionsLivraison-eng"?: string | null
-          "regionsOfOpportunity-regionAppelOffres-eng"?: string | null
-          "selectionCriteria-criteresSelection-eng"?: string | null
-          "solicitationNumber-numeroSollicitation"?: string | null
-          "tenderClosingDate-appelOffresDateCloture"?: string | null
-          "tenderDescription-descriptionAppelOffres-eng"?: string | null
-          "tenderStatus-appelOffresStatut-eng"?: string | null
-          "title-titre-eng"?: string | null
-          "tradeAgreements-accordsCommerciaux-eng"?: string | null
-          unspsc?: string | null
-          "unspscDescription-eng"?: string | null
-        }
-        Update: {
-          "amendmentDate-dateModification"?: string | null
-          "amendmentNumber-numeroModification"?: string | null
-          "attachment-piecesJointes-eng"?: string | null
-          "contactInfoAddressLine-contactInfoAdresseLigne-eng"?: string | null
-          "contactInfoCity-contacterInfoVille-eng"?: string | null
-          "contactInfoCountry-contactInfoPays-eng"?: string | null
-          "contactInfoEmail-informationsContactCourriel"?: string | null
-          contactInfoFax?: string | null
-          "contactInfoName-informationsContactNom"?: string | null
-          "contactInfoPhone-contactInfoTelephone"?: string | null
-          contactInfoPostalcode?: string | null
-          "contactInfoProvince-contacterInfoProvince-eng"?: string | null
-          "contractingEntityAddressCity-entiteContractanteAdresseVille-eng"?:
-            | string
-            | null
-          "contractingEntityAddressCountry-entiteContractanteAdressePays-e"?:
-            | string
-            | null
-          "contractingEntityAddressLine-ligneAdresseEntiteContractante-eng"?:
-            | string
-            | null
-          "contractingEntityAddressPostalCode-entiteContractanteAdresseCod"?:
-            | string
-            | null
-          "contractingEntityAddressProvince-entiteContractanteAdresseProvi"?:
-            | string
-            | null
-          "contractingEntityName-nomEntitContractante-eng"?: string | null
-          embedding?: string | null
-          embedding_input?: string | null
-          "endUserEntitiesAddress-adresseEntitesUtilisateurFinal-eng"?:
-            | string
-            | null
-          "endUserEntitiesName-nomEntitesUtilisateurFinal-eng"?: string | null
-          "expectedContractEndDate-dateFinContratPrevue"?: string | null
-          "expectedContractStartDate-dateDebutContratPrevue"?: string | null
-          "gsin-nibs"?: string | null
-          "gsinDescription-nibsDescription-eng"?: string | null
-          id?: string
-          "limitedTenderingReason-raisonAppelOffresLimite-eng"?: string | null
-          "noticeType-avisType-eng"?: string | null
-          "noticeURL-URLavis-eng"?: string | null
-          "procurementCategory-categorieApprovisionnement"?: string | null
-          "procurementMethod-methodeApprovisionnement-eng"?: string | null
-          "publicationDate-datePublication"?: string | null
-          "referenceNumber-numeroReference"?: string | null
-          "regionsOfDelivery-regionsLivraison-eng"?: string | null
-          "regionsOfOpportunity-regionAppelOffres-eng"?: string | null
-          "selectionCriteria-criteresSelection-eng"?: string | null
-          "solicitationNumber-numeroSollicitation"?: string | null
-          "tenderClosingDate-appelOffresDateCloture"?: string | null
-          "tenderDescription-descriptionAppelOffres-eng"?: string | null
-          "tenderStatus-appelOffresStatut-eng"?: string | null
-          "title-titre-eng"?: string | null
-          "tradeAgreements-accordsCommerciaux-eng"?: string | null
-          unspsc?: string | null
-          "unspscDescription-eng"?: string | null
         }
         Relationships: []
       }
@@ -638,6 +287,7 @@ export type Database = {
           limited_tendering_reason: string | null
           notice_type: string | null
           notice_url: string | null
+          precomputed_summary: string | null
           procurement_category: string | null
           procurement_method: string | null
           publication_date: string | null
@@ -685,6 +335,7 @@ export type Database = {
           limited_tendering_reason?: string | null
           notice_type?: string | null
           notice_url?: string | null
+          precomputed_summary?: string | null
           procurement_category?: string | null
           procurement_method?: string | null
           publication_date?: string | null
@@ -732,6 +383,7 @@ export type Database = {
           limited_tendering_reason?: string | null
           notice_type?: string | null
           notice_url?: string | null
+          precomputed_summary?: string | null
           procurement_category?: string | null
           procurement_method?: string | null
           publication_date?: string | null
@@ -796,53 +448,12 @@ export type Database = {
       match_tenders_by_vector: {
         Args: {
           query_embedding: string
-          match_threshold: number
-          match_count: number
+          match_threshold?: number
+          match_count?: number
         }
         Returns: {
           id: string
-          title: string
-          reference_number: string
-          amendment_number: string
-          solicitation_number: string
-          publication_date: string
-          tender_closing_date: string
-          amendment_date: string
-          expected_contract_start_date: string
-          expected_contract_end_date: string
-          tender_status: string
-          gsin: string
-          gsin_description: string
-          unspsc: string
-          unspsc_description: string
-          procurement_category: string
-          notice_type: string
-          procurement_method: string
-          selection_criteria: string
-          limited_tendering_reason: string
-          trade_agreements: string
-          regions_of_opportunity: string
-          regions_of_delivery: string
-          contracting_entity_name: string
-          contracting_entity_address_line: string
-          contracting_entity_city: string
-          contracting_entity_province: string
-          contracting_entity_postal_code: string
-          contracting_entity_country: string
-          end_user_entities_name: string
-          end_user_entities_address: string
-          contact_name: string
-          contact_email: string
-          contact_phone: string
-          contact_fax: string
-          contact_address_line: string
-          contact_city: string
-          contact_province: string
-          contact_postal_code: string
-          contact_country: string
-          notice_url: string
-          attachments: string
-          tender_description: string
+          precomputed_summary: string
           similarity: number
         }[]
       }

@@ -10,7 +10,12 @@ export class DatabaseService {
       process.env.SUPABASE_SERVICE_KEY || ""
     );
   }
-
+  async updateTenderSummary(tenderId: string, precomputed_summary: string) {
+    return await this.supabase.from("tenders").upsert({
+      id: tenderId,
+      precomputed_summary,
+    });
+  }
   async getAllBookmarks() {
     return await this.supabase.from("bookmarks").select("*");
   }
@@ -201,25 +206,6 @@ export class DatabaseService {
       .in("referenceNumber-numeroReference", referenceNumbers);
   }
 
-  async clearFilteredTenderNotices() {
-    return await this.supabase
-      .from("filtered_open_tender_notices")
-      .delete()
-      .neq("referenceNumber-numeroReference", "");
-  }
-
-  async insertFilteredTenderNotices(
-    data: Database["public"]["Tables"]["filtered_open_tender_notices"]["Insert"][]
-  ) {
-    return await this.supabase
-      .from("filtered_open_tender_notices")
-      .insert(data);
-  }
-
-  async getFilteredTenderNotices() {
-    return await this.supabase.from("filtered_open_tender_notices").select("*");
-  }
-
   async insertRfpAnalysis(data: string) {
     // Generate a unique id for the analysis
     const id = Date.now(); // Simple timestamp-based ID
@@ -311,9 +297,13 @@ export class DatabaseService {
 
   async resetPasswordForEmail(email: string, redirectTo?: string) {
     try {
-      const { data, error } = await this.supabase.auth.resetPasswordForEmail(email, {
-        redirectTo: redirectTo || `${process.env.FRONTEND_URL}/update-password`,
-      });
+      const { data, error } = await this.supabase.auth.resetPasswordForEmail(
+        email,
+        {
+          redirectTo:
+            redirectTo || `${process.env.FRONTEND_URL}/update-password`,
+        }
+      );
 
       if (error) {
         console.error("Error sending password reset email:", error);
@@ -330,13 +320,17 @@ export class DatabaseService {
   async updateUserPassword(accessToken: string, password: string) {
     try {
       // Set the session with the access token first
-      const { data: sessionData, error: sessionError } = await this.supabase.auth.setSession({
-        access_token: accessToken,
-        refresh_token: "", // Will be handled by Supabase
-      });
+      const { data: sessionData, error: sessionError } =
+        await this.supabase.auth.setSession({
+          access_token: accessToken,
+          refresh_token: "", // Will be handled by Supabase
+        });
 
       if (sessionError) {
-        console.error("Error setting session for password update:", sessionError);
+        console.error(
+          "Error setting session for password update:",
+          sessionError
+        );
         throw sessionError;
       }
 
@@ -566,10 +560,12 @@ export class DatabaseService {
     try {
       const { data, error } = await this.supabase
         .from("subscriptions")
-        .select(`
+        .select(
+          `
           *,
           plan:plans(*)
-        `)
+        `
+        )
         .eq("user_id", userId)
         .single();
 
@@ -673,9 +669,7 @@ export class DatabaseService {
     }
   }
 
-  async createPlan(
-    planData: Database["public"]["Tables"]["plans"]["Insert"]
-  ) {
+  async createPlan(planData: Database["public"]["Tables"]["plans"]["Insert"]) {
     try {
       const { data, error } = await this.supabase
         .from("plans")

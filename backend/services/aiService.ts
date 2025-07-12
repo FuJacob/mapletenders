@@ -1,5 +1,12 @@
 import OpenAI from "openai";
 import { GoogleGenAI, Type } from "@google/genai";
+import { Database } from "../database.types";
+
+type Tender = Database["public"]["Tables"]["tenders"]["Row"];
+type TenderSummaries = {
+  id: string;
+  precomputed_summary: string | null;
+}[];
 
 export class AiService {
   private openai: OpenAI;
@@ -39,7 +46,45 @@ export class AiService {
     return completion.choices[0].message.content;
   }
 
+  async filterTendersBySummary(tenders: TenderSummaries, query: string) {
+    console.log("tenders", tenders);
+    console.log("query", query);
+    const tendersToAnalyze = tenders
+      .map((tender) => {
+        return `id: ${tender.id} + summary: ${tender.precomputed_summary}`;
+      })
+      .join("\n");
+
+    try {
+      const response = await this.genAI.models.generateContent({
+        model: "gemini-2.5-flash",
+        contents: `You are a helpful assistant tasked with filtering government tenders based on a user query.
+
+Given a list of tenders in the format:
+id: <ID> + summary: <SUMMARY>
+
+Return a JSON array of IDs that match the following query:
+"${query}"
+
+Tenders:
+${tendersToAnalyze}
+
+Return only a valid JSON array of IDs, like ["abc123", "def456"].`,
+        config: {
+          systemInstruction: `You are an expert in government tenders. Your task is to find which tenders match the given query based on their summaries. Return only a JSON array of IDs.`,
+          responseMimeType: "application/json",
+        },
+      });
+      console.log("response", response.text);
+      return JSON.parse(response.text || "[]");
+    } catch (error) {
+      console.error("Error generating tender summary with Gemini:", error);
+      throw new Error("Failed to generate tender summary");
+    }
+  }
   async filterTenders(prompt: string, tenderData: any[]) {
+    console.log("tenderData", tenderData);
+    console.log("prompt", prompt);
     const completion = await this.openai.chat.completions.create({
       model: process.env.GEMINI_AI_MODEL_ID || "",
       messages: [
@@ -67,6 +112,45 @@ The tender data to analyze is: `,
       response_format: { type: "json_object" },
     });
     return completion.choices[0].message.content || "{}";
+  }
+
+  async generatePrecomputedSummary(tender: Tender): Promise<string> {
+    try {
+      // Extract key information from tender
+      const keyInfo = {
+        title: tender.title,
+        description: tender.tender_description,
+        category: tender.procurement_category,
+        entity: tender.contracting_entity_name,
+        closing_date: tender.tender_closing_date,
+        regions: tender.regions_of_delivery,
+      };
+
+      const prompt = `Summarize this government tender in 3 sentences focusing on the MOST important information for businesses:
+
+Title: ${keyInfo.title}
+Description: ${keyInfo.description}
+Category: ${keyInfo.category}
+Entity: ${keyInfo.entity}
+Closing Date: ${keyInfo.closing_date}
+Regions: ${keyInfo.regions}
+
+Return ONLY the summary text, no JSON, no formatting. Focus on what they're buying, from which organization, and key constraints like deadline or location.`;
+
+      const response = await this.genAI.models.generateContent({
+        model: "gemini-2.5-flash",
+        contents: prompt,
+        config: {
+          systemInstruction:
+            "You are an expert at creating concise, business-focused summaries of government tenders. Your summaries help businesses quickly understand opportunities. Be direct and factual.",
+        },
+      });
+      console.log("Precomputed summary:", response.text);
+      return response.text?.trim() || "No summary available";
+    } catch (error) {
+      console.error("Error generating precomputed summary:", error);
+      return "Summary generation failed";
+    }
   }
 
   async generateTenderSummary(tenderId: string, tenderData: string) {

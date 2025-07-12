@@ -1,9 +1,12 @@
 import { Request, Response } from "express";
 import { TenderService } from "../services";
-import type { Database } from "../database.types";
+import { AiService } from "../services";
 
 export class TenderController {
-  constructor(private tenderService: TenderService) {}
+  constructor(
+    private tenderService: TenderService,
+    private aiService: AiService
+  ) {}
 
   getAllBookmarks = async (req: Request, res: Response) => {
     try {
@@ -54,27 +57,6 @@ export class TenderController {
     }
   };
 
-  filterOpenTenderNotices = async (req: Request, res: Response) => {
-    try {
-      const search = (req.query.search as string) || "";
-      const result = await this.tenderService.filterOpenTenderNotices(search);
-      res.json(result);
-    } catch (error: any) {
-      console.error("Error filtering open tender notices:", error);
-      res.status(500).json({ error: error.message });
-    }
-  };
-
-  getFilteredTenderNoticesFromDB = async (req: Request, res: Response) => {
-    try {
-      const result = await this.tenderService.getFilteredTenderNotices();
-      res.json(result);
-    } catch (error: any) {
-      console.error("Error fetching filtered notices:", error);
-      res.status(500).json({ error: error.message });
-    }
-  };
-
   getOpenTenderNoticesToDB = async (req: Request, res: Response) => {
     try {
       const result = await this.tenderService.importTendersFromCsv();
@@ -104,8 +86,25 @@ export class TenderController {
         return;
       }
 
-      const result = await this.tenderService.searchTendersByVector(q);
-      res.json(result);
+      const { tenders } = await this.tenderService.searchTendersByVector(q);
+      console.log("tenders", tenders);
+      const tenderSummaries = tenders.map((tender) => {
+        return {
+          id: tender.id,
+          precomputed_summary: tender.precomputed_summary,
+        };
+      });
+
+      try {
+        const filteredTenders = await this.aiService.filterTendersBySummary(
+          tenderSummaries,
+          q
+        );
+        res.json(filteredTenders);
+      } catch (error: any) {
+        console.error("Error in /filterByVector:", error);
+        res.status(500).json({ error: "Failed to filter by vector" });
+      }
     } catch (error: any) {
       console.error("Error in /filterByVector:", error);
       if (error.message.includes("ML service unavailable")) {

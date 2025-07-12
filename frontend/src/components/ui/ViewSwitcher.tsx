@@ -1,17 +1,17 @@
 import React from "react";
 import { MagnifyingGlass, Table } from "@phosphor-icons/react";
+import { useSearchParams } from "react-router-dom";
 
 interface ViewSwitcherProps {
-  currentView: "search" | "table";
-  onViewChange: (view: "search" | "table") => void;
+  currentView: string;
   className?: string;
 }
 
 const ViewSwitcher: React.FC<ViewSwitcherProps> = ({
   currentView,
-  onViewChange,
   className = "",
 }) => {
+  const [, setSearchParams] = useSearchParams();
   return (
     <div
       className={`flex gap-1 rounded-lg p-1 bg-background border border-border ${className}`}
@@ -22,7 +22,7 @@ const ViewSwitcher: React.FC<ViewSwitcherProps> = ({
             ? "bg-primary text-white"
             : "text-text-light hover:bg-border"
         }`}
-        onClick={() => onViewChange("search")}
+        onClick={() => setSearchParams({ view: "search" })}
       >
         <MagnifyingGlass className="w-4 h-4" />
         Search
@@ -33,7 +33,7 @@ const ViewSwitcher: React.FC<ViewSwitcherProps> = ({
             ? "bg-primary text-white"
             : "text-text-light hover:bg-border"
         }`}
-        onClick={() => onViewChange("table")}
+        onClick={() => setSearchParams({ view: "table" })}
       >
         <Table className="w-4 h-4" />
         Table

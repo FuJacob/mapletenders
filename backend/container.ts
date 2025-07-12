@@ -48,10 +48,12 @@ export const aiController = new AiController(
   databaseService,
   aiService
 );
-export const tenderController = new TenderController(tenderService);
+export const tenderController = new TenderController(tenderService, aiService);
 export const tenderNoticeController = new TenderNoticeController(tenderService);
 export const authController = new AuthController(databaseService);
 export const profileController = new ProfileController(databaseService);
 export const chatController = new ChatController(aiService);
 export const bookmarkController = new BookmarkController(databaseService);
-export const subscriptionController = new SubscriptionController(subscriptionService);
+export const subscriptionController = new SubscriptionController(
+  subscriptionService
+);

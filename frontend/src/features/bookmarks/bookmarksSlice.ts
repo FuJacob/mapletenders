@@ -1,4 +1,4 @@
-import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { createSlice, type PayloadAction } from "@reduxjs/toolkit";
 import type { BookmarkWithTender } from "../../api/bookmarks";
 
 interface BookmarksState {
@@ -35,9 +35,10 @@ const bookmarksSlice = createSlice({
     addBookmark: (state, action: PayloadAction<BookmarkWithTender>) => {
       // Check if bookmark already exists
       const existingIndex = state.bookmarks.findIndex(
-        (bookmark) => bookmark.tender_notice_id === action.payload.tender_notice_id
+        (bookmark) =>
+          bookmark.tender_notice_id === action.payload.tender_notice_id
       );
-      
+
       if (existingIndex === -1) {
         state.bookmarks.unshift(action.payload); // Add to beginning
       } else {

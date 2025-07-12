@@ -73,7 +73,45 @@ export class TenderService {
       throw new Error(`Failed to upsert tenders: ${error.message}`);
     }
 
-    // 6. Remove tenders that are no longer in the dataset
+    // 6. Generate precomputed summaries for first 10 tenders (rate limit protection)
+    console.log("Generating precomputed summaries for first 10 tenders...");
+    try {
+      for (let i = 0; i < finalData.length; i++) {
+        const tender = finalData[i];
+        console.log(
+          `Generating summary for tender ${i + 1}/${finalData.length}: ${
+            tender.id
+          }`
+        );
+
+        try {
+          const summary = await this.aiService.generatePrecomputedSummary(
+            tender
+          );
+
+          // Update the tender with the precomputed summary
+          await this.dbService.updateTenderSummary(tender.id!, summary);
+
+          console.log(`✓ Summary generated for ${tender.id}`);
+        } catch (summaryError: any) {
+          console.error(
+            `Failed to generate summary for ${tender.id}:`,
+            summaryError.message
+          );
+          // Continue with next tender even if one fails
+        }
+
+        // Small delay to avoid hitting rate limits too hard
+        await new Promise((resolve) => setTimeout(resolve, 100));
+      }
+
+      console.log("Precomputed summaries generation completed");
+    } catch (error: any) {
+      console.error("Error during summary generation:", error.message);
+      // Don't fail the entire import if summaries fail
+    }
+
+    // 7. Remove tenders that are no longer in the dataset
     const currentReferenceNumbers = finalData
       .map((tender) => tender.reference_number)
       .filter((ref) => ref !== null) as string[];
@@ -113,6 +151,7 @@ export class TenderService {
       }
 
       console.log(`Found ${tenders?.length || 0} matching tenders`);
+
       return { tenders: tenders || [] };
     } catch (mlError: any) {
       console.error("Error connecting to ML service:", mlError.message);
@@ -122,62 +161,6 @@ export class TenderService {
 
   async filterTendersWithAi(prompt: string, data: any[]) {
     return await this.aiService.filterTenders(prompt, data);
-  }
-
-  async filterOpenTenderNotices(search: string) {
-    // Clear existing filtered notices
-    const { error: deleteError } =
-      await this.dbService.clearFilteredTenderNotices();
-    if (!search) {
-      return [];
-    }
-
-    if (deleteError) {
-      console.error("Failed to delete existing filtered notices:", deleteError);
-    }
-
-    // Fetch tender notices for AI filtering
-    const { data, error } = await this.dbService.getTendersForAiFiltering();
-    if (error) {
-      throw new Error(`Failed to fetch tender notices: ${error.message}`);
-    }
-
-    // Filter tenders using AI
-    const aiFilterResult = await this.filterTendersWithAi(search, data);
-    const filteredIDs = JSON.parse(aiFilterResult).matches;
-
-    // Get full data for matched tenders
-    const { data: matchedData, error: matchError } =
-      await this.dbService.getTendersByReferenceNumbers(filteredIDs);
-    if (matchError) {
-      throw new Error(`Failed to fetch matched data: ${matchError.message}`);
-    }
-
-    // Insert filtered results
-    const { error: insertError } =
-      await this.dbService.insertFilteredTenderNotices(matchedData);
-    if (insertError) {
-      throw new Error(`Failed to insert filtered data: ${insertError.message}`);
-    }
-
-    // Return filtered results
-    const { data: fetchFilteredData, error: fetchFilteredDataError } =
-      await this.dbService.getFilteredTenderNotices();
-    if (fetchFilteredDataError) {
-      throw new Error(
-        `Failed to fetch filtered data: ${fetchFilteredDataError.message}`
-      );
-    }
-
-    return fetchFilteredData;
-  }
-
-  async getFilteredTenderNotices() {
-    const { data, error } = await this.dbService.getFilteredTenderNotices();
-    if (error) {
-      throw new Error(`Failed to fetch filtered notices: ${error.message}`);
-    }
-    return data;
   }
 
   /**

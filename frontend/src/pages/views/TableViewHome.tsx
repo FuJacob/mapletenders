@@ -20,7 +20,6 @@ export default function Home() {
       </div>
 
       <div className="p-6">
-        <QuickFilters />
         <TenderTable />
       </div>
     </div>

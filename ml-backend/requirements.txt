@@ -15,3 +15,8 @@ torch
 transformers
 scikit-learn
 numpy
+
+# NLP and PDF processing dependencies
+spacy
+spacy-layout
+python-multipart

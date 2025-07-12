@@ -31,25 +31,6 @@ router.get("/getOpenTenderNotices", (req, res) =>
 );
 
 /**
- * Filters open tender notices and saves to database
- * @route GET /filterOpenTenderNotices
- * @param {string} req.query.search - The filtering criteria
- * @returns {Object[]} Filtered tender notices
- */
-router.get("/filterOpenTenderNotices", (req, res) =>
-  tenderController.filterOpenTenderNotices(req, res)
-);
-
-/**
- * Fetches filtered tender notices from the database
- * @route GET /getFilteredTenderNoticesFromDB
- * @returns {Object[]} Array of filtered tender notices
- */
-router.get("/getFilteredTenderNoticesFromDB", (req, res) =>
-  tenderController.getFilteredTenderNoticesFromDB(req, res)
-);
-
-/**
  * Downloads and imports tender notices CSV into database
  * @route POST /getOpenTenderNoticesToDB
  * @returns {string} Success message

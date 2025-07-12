@@ -19,36 +19,7 @@ export const getOpenTenderNoticesFromDB = async (): Promise<Tender[]> => {
   }
 };
 
-/**
- * Get filtered tender notices from database
- * @returns {Promise<Tender[]>} Filtered tender notices
- */
-export const getFilteredTenderNoticesFromDB = async (): Promise<Tender[]> => {
-  try {
-    const response = await axios.get("/tenders/getFilteredTenderNoticesFromDB");
-    return response.data;
-  } catch (error) {
-    return handleApiError(error, "Fetch filtered tender notices");
-  }
-};
 
-/**
- * Filter open tender notices based on search criteria
- * @param {string} search - Filter criteria
- * @returns {Promise<Tender[]>} Filtered tender notices
- */
-export const filterOpenTenderNotices = async (
-  search: string
-): Promise<Tender[]> => {
-  try {
-    const response = await axios.get(
-      `/tenders/filterOpenTenderNotices?search=${search}`
-    );
-    return response.data;
-  } catch (error) {
-    return handleApiError(error, "Filter tender notices");
-  }
-};
 
 /**
  * Search tenders using vector similarity

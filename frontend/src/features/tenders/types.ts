@@ -8,8 +8,6 @@ export type TenderUpdate = Database["public"]["Tables"]["tenders"]["Update"];
 // For open tender notices (the main view table)
 export type OpenTenderNotice =
   Database["public"]["Tables"]["open_tender_notices"]["Row"];
-export type FilteredOpenTenderNotice =
-  Database["public"]["Tables"]["filtered_open_tender_notices"]["Row"];
 
 // Legacy interface - DEPRECATED: Use Tender type instead
 /** @deprecated Use Tender type instead */

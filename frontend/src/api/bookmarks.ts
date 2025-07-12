@@ -1,6 +1,6 @@
 import axios from "axios";
 import { handleApiError } from "./config";
-import type { Database } from "../database.types";
+import type { Database } from "../../database.types";
 
 type BookmarkRow = Database["public"]["Tables"]["bookmarks"]["Row"];
 type TenderNoticeRow = Database["public"]["Tables"]["tenders"]["Row"];
@@ -71,7 +71,9 @@ export const removeBookmark = async (
   tenderNoticeId: string
 ): Promise<{ success: boolean; removed: boolean; error?: string }> => {
   try {
-    const response = await axios.delete(`/bookmarks/${userId}/${tenderNoticeId}`);
+    const response = await axios.delete(
+      `/bookmarks/${userId}/${tenderNoticeId}`
+    );
     return response.data;
   } catch (error) {
     return handleApiError(error, "Remove bookmark");

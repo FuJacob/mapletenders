@@ -9,7 +9,7 @@ import {
   CalendarCheck,
   Play,
 } from "@phosphor-icons/react";
-import { filterOpenTenderNotices } from "../../api";
+
 import { LogoTitle } from "../ui/LogoTitle";
 
 // Static data moved outside component
@@ -47,9 +47,8 @@ export default function HeroSection() {
       setIsSearching(false);
       return;
     }
-    const response = await filterOpenTenderNotices(searchQuery);
-    console.log("SEARCHING" + searchQuery);
-    console.log("RESPONSE", response);
+    // TODO: Implement new search functionality
+    console.log("Searching for:", searchQuery);
     setTimeout(() => setIsSearching(false), 2000);
   }, [searchQuery]);
 

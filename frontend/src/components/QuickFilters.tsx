@@ -1,4 +1,3 @@
-import React, { useState } from "react";
 import {
   MagnifyingGlass,
   CalendarBlank,
@@ -9,11 +8,18 @@ import {
   Clock,
 } from "@phosphor-icons/react";
 import { FilterButton, FilterTag } from "./filters";
+import { useState } from "react";
 
-const QuickFilters: React.FC = () => {
+const QuickFilters = ({
+  globalFilter,
+  setGlobalFilter,
+}: {
+  globalFilter: string;
+  setGlobalFilter: (filter: string) => void;
+}) => {
+  // Mock filtered tags - in real implementation these would be managed by filter state
   const [searchQuery, setSearchQuery] = useState("");
 
-  // Mock filtered tags - in real implementation these would be managed by filter state
   const mockFilteredTags = [
     { id: 1, label: "Information Technology", type: "category" },
     { id: 2, label: "Ontario", type: "province" },
@@ -44,6 +50,11 @@ const QuickFilters: React.FC = () => {
             type="text"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
+            onKeyDown={(e) => {
+              if (e.key === "Enter") {
+                setGlobalFilter(searchQuery);
+              }
+            }}
             placeholder="Search tenders by title, description, or organization..."
             className="w-full pl-10 pr-4 py-3 border border-border rounded-lg focus:outline-none focus:border-primary bg-surface text-text placeholder-text-light"
           />

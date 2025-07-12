@@ -7,7 +7,7 @@ import { useDispatch } from "react-redux";
 import { signOut } from "../../features/auth/authThunks";
 import { User, Gear, SignOut, Bell, CaretDown } from "@phosphor-icons/react";
 import type { AppDispatch } from "../../app/configureStore";
-
+import { useSearchParams } from "react-router-dom";
 interface HeaderProps {
   transparent?: boolean;
   className?: string;
@@ -18,10 +18,11 @@ export default function Header({
 }: HeaderProps) {
   const navigate = useNavigate();
   const location = useLocation();
+  const [searchParams] = useSearchParams();
+  const view = searchParams.get("view");
   const dispatch = useDispatch<AppDispatch>();
   const { user } = useAuth();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [currentView, setCurrentView] = useState<"search" | "table">("search");
   const menuRef = useRef<HTMLDivElement>(null);
 
   // Check if we're on the home page to show view switcher
@@ -110,15 +111,7 @@ export default function Header({
       {/* View Switcher for Home Page */}
       {user && isHomePage && (
         <div className="absolute left-1/2 transform -translate-x-1/2">
-          <ViewSwitcher
-            currentView={currentView}
-            onViewChange={(view) => {
-              setCurrentView(view);
-              window.dispatchEvent(
-                new CustomEvent("viewChange", { detail: view })
-              );
-            }}
-          />
+          <ViewSwitcher currentView={view || "search"} />
         </div>
       )}
 

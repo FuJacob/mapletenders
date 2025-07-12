@@ -1,7 +1,5 @@
 import { Route, Routes } from "react-router-dom";
 import LandingPage from "./pages/LandingPage";
-import LeadGenChatV2 from "./pages/LeadGenChatV2";
-import Rfp from "./pages/Rfp";
 import SignIn from "./pages/SignIn";
 import SignUp from "./pages/SignUp";
 import ResetPassword from "./pages/ResetPassword";
@@ -26,6 +24,7 @@ import TableView from "./pages/TableView";
 import Test from "./pages/Test";
 import Layout from "./routes/Layout";
 import { refreshTenders } from "./api";
+import { loadTenders } from "./features/tenders/tendersThunk";
 
 export function App() {
   const dispatch = useAppDispatch();
@@ -34,6 +33,7 @@ export function App() {
   const initializeApp = useCallback(() => {
     refreshTenders();
     dispatch(loadSession());
+    dispatch(loadTenders());
   }, [dispatch]);
 
   useEffect(() => {
@@ -52,13 +52,15 @@ export function App() {
           <Route path="/pricing" element={<Pricing />} />
           <Route path="/about" element={<About />} />
           <Route path="/contact" element={<Contact />} />
-          <Route path="/subscription/success" element={<SubscriptionSuccess />} />
+          <Route
+            path="/subscription/success"
+            element={<SubscriptionSuccess />}
+          />
           <Route path="/subscription/cancel" element={<SubscriptionCancel />} />
         </Route>
         <Route element={<ProtectedRoutes />}>
           <Route element={<OnboardingRequiredRoutes />}>
             <Route path="/table-view" element={<TableView />} />
-            <Route path="/rfp" element={<Rfp />} />
             <Route path="/home" element={<Home />} />
             <Route path="/search" element={<SearchResults />} />
             <Route path="/profile" element={<Profile />} />
@@ -67,7 +69,6 @@ export function App() {
           <Route path="/onboarding" element={<Onboarding />} />
         </Route>
         <Route path="/test" element={<Test />} />
-        <Route path="/leadgenchatv2" element={<LeadGenChatV2 />} />
       </Route>
     </Routes>
   );

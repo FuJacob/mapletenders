@@ -1,21 +1,36 @@
 import { createSlice, type PayloadAction } from "@reduxjs/toolkit";
 
 import { type Tender } from "./types";
-const initialState: Tender[] = [];
+
+interface TendersState {
+  data: Tender[];
+  loading: boolean;
+}
+
+const initialState: TendersState = {
+  data: [],
+  loading: false,
+};
 
 const tendersSlice = createSlice({
   name: "tenders",
   initialState,
   reducers: {
-    setTenders: (_state, action: PayloadAction<Tender[]>) => {
-      return action.payload;
+    setTendersLoading: (state, action: PayloadAction<boolean>) => {
+      state.loading = action.payload;
     },
-    clearTenders: () => {
-      return [];
+    setTenders: (state, action: PayloadAction<Tender[]>) => {
+      state.data = action.payload;
+      state.loading = false;
+    },
+    clearTenders: (state) => {
+      state.data = [];
+      state.loading = false;
     },
   },
 });
 
-export const { setTenders, clearTenders } = tendersSlice.actions;
+export const { setTenders, setTendersLoading, clearTenders } =
+  tendersSlice.actions;
 
 export default tendersSlice.reducer;
