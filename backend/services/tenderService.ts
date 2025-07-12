@@ -14,6 +14,14 @@ export class TenderService {
     private aiService: AiService
   ) {}
 
+  async getAllBookmarks() {
+    const { data, error } = await this.dbService.getAllBookmarks();
+    if (error) {
+      throw new Error(`Failed to fetch tender notices: ${error.message}`);
+    }
+    return data;
+  }
+
   async downloadTendersCsv() {
     return await this.csvService.downloadTendersCsvStream();
   }

@@ -4,6 +4,8 @@ import LeadGenChatV2 from "./pages/LeadGenChatV2";
 import Rfp from "./pages/Rfp";
 import SignIn from "./pages/SignIn";
 import SignUp from "./pages/SignUp";
+import ResetPassword from "./pages/ResetPassword";
+import UpdatePassword from "./pages/UpdatePassword";
 import Onboarding from "./pages/Onboarding";
 import Profile from "./pages/Profile";
 import TenderNotice from "./pages/TenderNotice";
@@ -12,6 +14,8 @@ import About from "./pages/About";
 import Contact from "./pages/Contact";
 import Home from "./pages/Home";
 import SearchResults from "./pages/SearchResults";
+import SubscriptionSuccess from "./pages/SubscriptionSuccess";
+import SubscriptionCancel from "./pages/SubscriptionCancel";
 import GuestRoutes from "./routes/GuestRoutes";
 import ProtectedRoutes from "./routes/ProtectedRoutes";
 import OnboardingRequiredRoutes from "./routes/OnboardingRequiredRoutes";
@@ -43,9 +47,13 @@ export function App() {
           <Route path="/" element={<LandingPage />} />
           <Route path="/sign-in" element={<SignIn />} />
           <Route path="/sign-up" element={<SignUp />} />
+          <Route path="/reset-password" element={<ResetPassword />} />
+          <Route path="/update-password" element={<UpdatePassword />} />
           <Route path="/pricing" element={<Pricing />} />
           <Route path="/about" element={<About />} />
           <Route path="/contact" element={<Contact />} />
+          <Route path="/subscription/success" element={<SubscriptionSuccess />} />
+          <Route path="/subscription/cancel" element={<SubscriptionCancel />} />
         </Route>
         <Route element={<ProtectedRoutes />}>
           <Route element={<OnboardingRequiredRoutes />}>

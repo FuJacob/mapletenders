@@ -1,7 +1,9 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
-import { useAppSelector } from "../../app/hooks";
+import { useAppSelector, useAppDispatch } from "../../app/hooks";
 import { selectAuthUser } from "../../features/auth/authSelectors";
+import { selectBookmarkedTenders, selectBookmarksLoading } from "../../features/bookmarks/bookmarksSelectors";
+import { loadBookmarks } from "../../features/bookmarks/bookmarksThunks";
 import { useNavigate } from "react-router-dom";
 import {
   MagnifyingGlass,
@@ -17,15 +19,26 @@ import {
 import RecommendedTenders from "../../components/dashboard/RecommendedTenders";
 import RecentActivity from "../../components/dashboard/RecentActivity";
 import BreezeChat from "../../components/dashboard/BreezeChat";
+import BookmarkedTenders from "../../components/dashboard/BookmarkedTenders";
 
 export default function Home() {
   const navigate = useNavigate();
+  const dispatch = useAppDispatch();
 
   const user = useAppSelector(selectAuthUser);
+  const bookmarkedTenders = useAppSelector(selectBookmarkedTenders);
+  const bookmarksLoading = useAppSelector(selectBookmarksLoading);
   const [searchQuery, setSearchQuery] = useState("");
   const [mainViewMode, setMainViewMode] = useState<
-    "recommended" | "history" | "chat"
+    "recommended" | "history" | "chat" | "bookmarks"
   >("recommended");
+
+  // Load bookmarks when component mounts
+  useEffect(() => {
+    if (user?.id) {
+      dispatch(loadBookmarks(user.id));
+    }
+  }, [dispatch, user?.id]);
 
   // Mock data for demonstration - replace with real data later
   const mockStats = {
@@ -427,6 +440,17 @@ export default function Home() {
               Recommended for You
             </button>
             <button
+              onClick={() => setMainViewMode("bookmarks")}
+              className={`px-4 py-2 rounded-lg font-medium transition-colors flex items-center gap-2 ${
+                mainViewMode === "bookmarks"
+                  ? "bg-primary text-white"
+                  : "bg-surface border border-border text-text hover:bg-primary/5"
+              }`}
+            >
+              <Bookmark className="w-4 h-4" />
+              Bookmarks
+            </button>
+            <button
               onClick={() => setMainViewMode("chat")}
               className={`px-4 py-2 rounded-lg font-medium transition-colors flex items-center gap-2 ${
                 mainViewMode === "chat"
@@ -453,6 +477,11 @@ export default function Home() {
           {/* Dynamic Content Based on Toggle */}
           {mainViewMode === "recommended" ? (
             <RecommendedTenders tenders={mockRecommendedTenders} />
+          ) : mainViewMode === "bookmarks" ? (
+            <BookmarkedTenders 
+              tenders={bookmarkedTenders} 
+              loading={bookmarksLoading}
+            />
           ) : mainViewMode === "chat" ? (
             <BreezeChat />
           ) : (

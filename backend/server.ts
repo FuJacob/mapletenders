@@ -10,6 +10,7 @@ import authRoutes from "./routes/auth";
 import profileRoutes from "./routes/profile";
 import chatRoutes from "./routes/chat";
 import bookmarkRoutes from "./routes/bookmarks";
+import subscriptionRoutes from "./routes/subscriptions";
 
 const app = express();
 app.use(cors({ origin: "*" })); // Allow all origins
@@ -32,6 +33,7 @@ app.use("/auth", authRoutes);
 app.use("/profile", profileRoutes);
 app.use("/chat", chatRoutes);
 app.use("/bookmarks", bookmarkRoutes);
+app.use("/subscriptions", subscriptionRoutes);
 
 // Serve static files from the 'assets' folder
 app.use("/assets", express.static(path.join(__dirname, "assets")));

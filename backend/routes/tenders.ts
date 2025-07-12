@@ -8,6 +8,15 @@ const router = Router();
  * @route POST /refreshTenders
  * @returns {Object} Refresh operation result
  */
+router.get("/bookmarks", (req, res) =>
+  tenderController.getAllBookmarks(req, res)
+);
+
+/**
+ * Refresh tender data (rate limited to once per 24 hours)
+ * @route POST /refreshTenders
+ * @returns {Object} Refresh operation result
+ */
 router.post("/refreshTenders", (req, res) =>
   tenderController.refreshTenders(req, res)
 );

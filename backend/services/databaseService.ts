@@ -11,6 +11,10 @@ export class DatabaseService {
     );
   }
 
+  async getAllBookmarks() {
+    return await this.supabase.from("bookmarks").select("*");
+  }
+
   // AI Summary methods for tender_ai_summaries table
   async getTenderAiSummary(tenderId: string) {
     try {
@@ -305,6 +309,54 @@ export class DatabaseService {
     }
   }
 
+  async resetPasswordForEmail(email: string, redirectTo?: string) {
+    try {
+      const { data, error } = await this.supabase.auth.resetPasswordForEmail(email, {
+        redirectTo: redirectTo || `${process.env.FRONTEND_URL}/update-password`,
+      });
+
+      if (error) {
+        console.error("Error sending password reset email:", error);
+        throw error;
+      }
+
+      return data;
+    } catch (error) {
+      console.error("Failed to send password reset email:", error);
+      throw error;
+    }
+  }
+
+  async updateUserPassword(accessToken: string, password: string) {
+    try {
+      // Set the session with the access token first
+      const { data: sessionData, error: sessionError } = await this.supabase.auth.setSession({
+        access_token: accessToken,
+        refresh_token: "", // Will be handled by Supabase
+      });
+
+      if (sessionError) {
+        console.error("Error setting session for password update:", sessionError);
+        throw sessionError;
+      }
+
+      // Update the password
+      const { data, error } = await this.supabase.auth.updateUser({
+        password: password,
+      });
+
+      if (error) {
+        console.error("Error updating password:", error);
+        throw error;
+      }
+
+      return data;
+    } catch (error) {
+      console.error("Failed to update password:", error);
+      throw error;
+    }
+  }
+
   // Profile methods
   async createOrUpdateProfile(
     profileData:
@@ -481,6 +533,187 @@ export class DatabaseService {
     } catch (error) {
       console.error("Failed to check bookmark status:", error);
       return false;
+    }
+  }
+
+  // Subscription methods
+  async createSubscription(
+    subscriptionData: Database["public"]["Tables"]["subscriptions"]["Insert"]
+  ) {
+    try {
+      const { data, error } = await this.supabase
+        .from("subscriptions")
+        .upsert(subscriptionData, {
+          onConflict: "user_id",
+        })
+        .select();
+
+      if (error) {
+        console.error("Error creating subscription:", error);
+        throw error;
+      }
+
+      return data;
+    } catch (error) {
+      console.error("Failed to create subscription:", error);
+      throw error;
+    }
+  }
+
+  async getSubscriptionByUserId(
+    userId: string
+  ): Promise<Database["public"]["Tables"]["subscriptions"]["Row"] | null> {
+    try {
+      const { data, error } = await this.supabase
+        .from("subscriptions")
+        .select(`
+          *,
+          plan:plans(*)
+        `)
+        .eq("user_id", userId)
+        .single();
+
+      if (error && error.code !== "PGRST116") {
+        // PGRST116 = no rows found
+        console.error("Error fetching subscription:", error);
+        throw error;
+      }
+
+      return data;
+    } catch (error) {
+      console.error("Failed to fetch subscription:", error);
+      return null;
+    }
+  }
+
+  async updateSubscriptionByStripeId(
+    stripeSubscriptionId: string,
+    updateData: Database["public"]["Tables"]["subscriptions"]["Update"]
+  ) {
+    try {
+      const { data, error } = await this.supabase
+        .from("subscriptions")
+        .update(updateData)
+        .eq("stripe_subscription_id", stripeSubscriptionId)
+        .select();
+
+      if (error) {
+        console.error("Error updating subscription:", error);
+        throw error;
+      }
+
+      return data;
+    } catch (error) {
+      console.error("Failed to update subscription:", error);
+      throw error;
+    }
+  }
+
+  async getSubscriptionByStripeId(
+    stripeSubscriptionId: string
+  ): Promise<Database["public"]["Tables"]["subscriptions"]["Row"] | null> {
+    try {
+      const { data, error } = await this.supabase
+        .from("subscriptions")
+        .select("*")
+        .eq("stripe_subscription_id", stripeSubscriptionId)
+        .single();
+
+      if (error && error.code !== "PGRST116") {
+        console.error("Error fetching subscription by Stripe ID:", error);
+        throw error;
+      }
+
+      return data;
+    } catch (error) {
+      console.error("Failed to fetch subscription by Stripe ID:", error);
+      return null;
+    }
+  }
+
+  // Plan methods
+  async getPlan(
+    planId: string
+  ): Promise<Database["public"]["Tables"]["plans"]["Row"] | null> {
+    try {
+      const { data, error } = await this.supabase
+        .from("plans")
+        .select("*")
+        .eq("id", planId)
+        .single();
+
+      if (error && error.code !== "PGRST116") {
+        console.error("Error fetching plan:", error);
+        throw error;
+      }
+
+      return data;
+    } catch (error) {
+      console.error("Failed to fetch plan:", error);
+      return null;
+    }
+  }
+
+  async getAllPlans(): Promise<Database["public"]["Tables"]["plans"]["Row"][]> {
+    try {
+      const { data, error } = await this.supabase
+        .from("plans")
+        .select("*")
+        .order("price_monthly", { ascending: true });
+
+      if (error) {
+        console.error("Error fetching plans:", error);
+        throw error;
+      }
+
+      return data || [];
+    } catch (error) {
+      console.error("Failed to fetch plans:", error);
+      return [];
+    }
+  }
+
+  async createPlan(
+    planData: Database["public"]["Tables"]["plans"]["Insert"]
+  ) {
+    try {
+      const { data, error } = await this.supabase
+        .from("plans")
+        .insert(planData)
+        .select();
+
+      if (error) {
+        console.error("Error creating plan:", error);
+        throw error;
+      }
+
+      return data;
+    } catch (error) {
+      console.error("Failed to create plan:", error);
+      throw error;
+    }
+  }
+
+  async updatePlan(
+    planId: string,
+    updateData: Database["public"]["Tables"]["plans"]["Update"]
+  ) {
+    try {
+      const { data, error } = await this.supabase
+        .from("plans")
+        .update(updateData)
+        .eq("id", planId)
+        .select();
+
+      if (error) {
+        console.error("Error updating plan:", error);
+        throw error;
+      }
+
+      return data;
+    } catch (error) {
+      console.error("Failed to update plan:", error);
+      throw error;
     }
   }
 }

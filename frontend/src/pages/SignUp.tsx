@@ -25,6 +25,7 @@ import { LogoTitle } from "../components/ui/LogoTitle";
 
 export default function SignUp() {
   const dispatch = useAppDispatch();
+  dispatch(setAuthError(null));
   const [formData, setFormData] = useState({
     email: "",
     password: "",
@@ -183,7 +184,7 @@ export default function SignUp() {
       <div className="flex-1 flex items-center justify-center px-6 py-12">
         <div className="max-w-md w-full">
           {/* Header */}
-          <div className="text-center mb-8">
+          <div className="text-center mb-8 flex flex-col items-center">
             <Link
               to="/"
               className="inline-flex items-center gap-2 text-sm text-text-light hover:text-primary transition-colors mb-6"
@@ -191,7 +192,9 @@ export default function SignUp() {
               <ArrowLeft className="w-4 h-4" />
               Back to home
             </Link>
-            <LogoTitle size="text-3xl" />
+            <div className="mb-4">
+              <LogoTitle size="text-3xl" />
+            </div>{" "}
             <h1 className="text-2xl font-bold text-text mb-2">
               Start winning today
             </h1>

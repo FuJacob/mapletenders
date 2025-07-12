@@ -15,7 +15,7 @@ export default function LandingPage() {
   const [showBanner, setShowBanner] = useState(
     localStorage.getItem("maplebids:welcomeBannerClosed") !== "true"
   );
-
+  
   const handleCloseBanner = useCallback(() => {
     setShowBanner(false);
     localStorage.setItem("maplebids:welcomeBannerClosed", "true");

@@ -80,3 +80,40 @@ export const getSession = async (): Promise<AuthResponse> => {
     return handleApiError(error, "Get session");
   }
 };
+
+/**
+ * Send password reset email
+ * @param {string} email - User email
+ * @returns {Promise<{message?: string, error?: string}>} Reset response
+ */
+export const resetPassword = async (
+  email: string
+): Promise<{ message?: string; error?: string }> => {
+  try {
+    const response = await axios.post("/auth/reset-password", { email });
+    return response.data;
+  } catch (error) {
+    return handleApiError(error, "Reset password");
+  }
+};
+
+/**
+ * Update user password
+ * @param {string} password - New password
+ * @param {string} accessToken - Access token from reset link
+ * @returns {Promise<{message?: string, error?: string}>} Update response
+ */
+export const updatePassword = async (
+  password: string,
+  accessToken: string
+): Promise<{ message?: string; error?: string }> => {
+  try {
+    const response = await axios.post("/auth/update-password", {
+      password,
+      accessToken,
+    });
+    return response.data;
+  } catch (error) {
+    return handleApiError(error, "Update password");
+  }
+};

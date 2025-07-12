@@ -5,3 +5,4 @@ export { AiService } from "./aiService";
 export { DataTransformationService } from "./dataTransformationService";
 export { TenderService } from "./tenderService";
 export { RfpService } from "./rfpService";
+export { SubscriptionService } from "./subscriptionService";

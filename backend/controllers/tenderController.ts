@@ -5,6 +5,16 @@ import type { Database } from "../database.types";
 export class TenderController {
   constructor(private tenderService: TenderService) {}
 
+  getAllBookmarks = async (req: Request, res: Response) => {
+    try {
+      const result = await this.tenderService.getAllBookmarks();
+      res.json(result);
+    } catch (error: any) {
+      console.error("Error fetching bookmarks:", error);
+      res.status(500).json({ error: error.message });
+    }
+  };
+
   refreshTenders = async (req: Request, res: Response) => {
     try {
       console.log("Attempting to refresh tenders...");

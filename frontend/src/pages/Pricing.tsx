@@ -1,5 +1,9 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import { useAppSelector } from "../app/hooks";
+import { selectIsAuthenticated, selectAuthUser } from "../features/auth/authSelectors";
+import { createCheckoutSession } from "../api/subscriptions";
+import { getSession } from "../api/auth";
 import {
   Lightning,
   CheckCircle,
@@ -30,9 +34,12 @@ interface PricingTier {
 
 export default function Pricing() {
   const navigate = useNavigate();
+  const isAuthenticated = useAppSelector(selectIsAuthenticated);
+  const user = useAppSelector(selectAuthUser);
   const [billingCycle, setBillingCycle] = useState<"monthly" | "yearly">(
     "monthly"
   );
+  const [loading, setLoading] = useState<string | null>(null);
 
   const pricingTiers: PricingTier[] = [
     {
@@ -114,13 +121,53 @@ export default function Pricing() {
     },
   ];
 
-  const handlePlanSelect = (tier: PricingTier) => {
+  const handlePlanSelect = async (tier: PricingTier) => {
     if (tier.id === "enterprise") {
       // Navigate to contact form for enterprise
       navigate("/contact");
-    } else {
-      // For Starter and Professional, navigate to sign-up with plan info
+      return;
+    }
+
+    // Check if user is authenticated
+    if (!isAuthenticated || !user) {
+      // Redirect to signup/login with plan info
       navigate(`/sign-up?plan=${tier.id}&billing=${billingCycle}`);
+      return;
+    }
+
+    // User is authenticated, proceed with checkout
+    setLoading(tier.id);
+    try {
+      // Get user email from session
+      const session = await getSession();
+      const userEmail = session.user?.email || "";
+      
+      if (!userEmail) {
+        alert("Unable to retrieve your email. Please try signing in again.");
+        setLoading(null);
+        return;
+      }
+
+      const response = await createCheckoutSession(
+        tier.id,
+        billingCycle,
+        user.id,
+        userEmail,
+        user.company_name || ""
+      );
+
+      if (response.error) {
+        console.error("Checkout error:", response.error);
+        alert("Error creating checkout session. Please try again.");
+      } else if (response.url) {
+        // Redirect to Stripe checkout
+        window.location.href = response.url;
+      }
+    } catch (error) {
+      console.error("Error creating checkout session:", error);
+      alert("Error creating checkout session. Please try again.");
+    } finally {
+      setLoading(null);
     }
   };
 
@@ -289,13 +336,14 @@ export default function Pricing() {
                 {/* CTA Button */}
                 <button
                   onClick={() => handlePlanSelect(tier)}
-                  className={`w-full py-3 px-4 rounded-lg font-medium transition-colors ${
+                  disabled={loading === tier.id}
+                  className={`w-full py-3 px-4 rounded-lg font-medium transition-colors disabled:opacity-50 disabled:cursor-not-allowed ${
                     tier.popular
                       ? "bg-primary text-white hover:bg-primary-dark"
                       : "border border-border text-text hover:bg-surface hover:border-primary"
                   }`}
                 >
-                  {tier.cta}
+                  {loading === tier.id ? "Loading..." : tier.cta}
                 </button>
 
                 {tier.id !== "enterprise" && (
@@ -493,11 +541,18 @@ export default function Pricing() {
           </p>
           <div className="flex gap-4 justify-center">
             <button
-              onClick={() => navigate("/sign-up")}
+              onClick={() => {
+                if (!isAuthenticated) {
+                  navigate("/sign-up");
+                } else {
+                  // Scroll to pricing cards
+                  document.querySelector('.grid.md\\:grid-cols-3')?.scrollIntoView({ behavior: 'smooth' });
+                }
+              }}
               className="px-8 py-4 bg-primary text-white text-lg font-medium rounded-lg flex items-center gap-2 hover:bg-primary-dark transition-colors"
             >
               <Lightning className="w-5 h-5" />
-              Start Free Trial
+              {isAuthenticated ? "Choose Plan" : "Start Free Trial"}
             </button>
             <button
               onClick={() => navigate("/contact")}

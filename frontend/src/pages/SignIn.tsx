@@ -18,6 +18,7 @@ import { useAppDispatch } from "../app/hooks";
 import { useSearchParams } from "react-router-dom";
 import { selectAuthError } from "../features/auth/authSelectors";
 import { LogoTitle } from "../components/ui/LogoTitle";
+import { setAuthError } from "../features/auth/authSlice";
 
 export default function SignIn() {
   const [searchParams, setSearchParams] = useSearchParams();
@@ -32,7 +33,7 @@ export default function SignIn() {
   const [showPassword, setShowPassword] = useState(false);
   const isAuthLoading = useSelector(selectAuthLoading);
   const authError = useSelector(selectAuthError);
-
+  dispatch(setAuthError(null));
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setSearchParams({});
@@ -140,7 +141,7 @@ export default function SignIn() {
                 We'll remember you. You'll need to log out manually.
               </div>
               <Link
-                to="/forgot-password"
+                to="/reset-password"
                 className="text-sm text-primary hover:text-primary-dark"
               >
                 Forgot password?

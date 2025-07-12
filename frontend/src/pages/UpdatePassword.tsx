@@ -1,7 +1,7 @@
-import { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { useState, useEffect } from "react";
+import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import { Lightning, ArrowLeft } from "@phosphor-icons/react";
-import { supabase } from "../lib/supabase";
+import { updatePassword } from "../api/auth";
 import { LogoTitle } from "../components/ui/LogoTitle";
 
 export default function UpdatePassword() {
@@ -10,21 +10,43 @@ export default function UpdatePassword() {
   const [error, setError] = useState("");
   const [success, setSuccess] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [accessToken, setAccessToken] = useState("");
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+
+  useEffect(() => {
+    // Extract access token from URL parameters (Supabase redirects with these)
+    const token = searchParams.get("access_token") || window.location.hash.match(/access_token=([^&]+)/)?.[1];
+    if (token) {
+      setAccessToken(token);
+    } else {
+      setError("Invalid reset link. Please request a new password reset.");
+    }
+  }, [searchParams]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
+    
+    if (!accessToken) {
+      setError("Invalid reset link. Please request a new password reset.");
+      return;
+    }
+    
     if (password !== confirm) {
       setError("Passwords do not match");
       return;
     }
+    
     setLoading(true);
     try {
-      const { error } = await supabase.auth.updateUser({ password });
-      if (error) throw error;
-      setSuccess(true);
-      setTimeout(() => navigate("/sign-in"), 2000);
+      const response = await updatePassword(password, accessToken);
+      if (response.error) {
+        setError(response.error);
+      } else {
+        setSuccess(true);
+        setTimeout(() => navigate("/sign-in"), 2000);
+      }
     } catch (err: any) {
       setError(err.message || "Something went wrong");
     } finally {

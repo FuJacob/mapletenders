@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { Lightning, ArrowLeft } from "@phosphor-icons/react";
-import { supabase } from "../lib/supabase";
+import { resetPassword } from "../api/auth";
 import { LogoTitle } from "../components/ui/LogoTitle";
 
 export default function ResetPassword() {
@@ -15,13 +15,18 @@ export default function ResetPassword() {
     setLoading(true);
     setError("");
     try {
-      const { error } = await supabase.auth.resetPasswordForEmail(email, {
-        redirectTo: `${window.location.origin}/update-password`,
-      });
-      if (error) throw error;
-      setSent(true);
-    } catch (err: any) {
-      setError(err.message || "Something went wrong");
+      const response = await resetPassword(email);
+      if (response.error) {
+        setError(response.error);
+      } else {
+        setSent(true);
+      }
+    } catch (err: unknown) {
+      if (err instanceof Error) {
+        setError(err.message);
+      } else {
+        setError("Something went wrong");
+      }
     } finally {
       setLoading(false);
     }
@@ -42,7 +47,9 @@ export default function ResetPassword() {
             <div className="mb-4">
               <LogoTitle size="text-3xl" />
             </div>
-            <h1 className="text-2xl font-bold text-text mb-2">Reset your password</h1>
+            <h1 className="text-2xl font-bold text-text mb-2">
+              Reset your password
+            </h1>
             <p className="text-text-light">
               Enter your email and we'll send you a link to reset your password.
             </p>
@@ -59,14 +66,17 @@ export default function ResetPassword() {
                 </div>
               )}
               <div>
-                <label htmlFor="email" className="block text-sm font-medium text-text mb-2">
+                <label
+                  htmlFor="email"
+                  className="block text-sm font-medium text-text mb-2"
+                >
                   Email address
                 </label>
                 <input
                   id="email"
                   type="email"
                   value={email}
-                  onChange={e => setEmail(e.target.value)}
+                  onChange={(e) => setEmail(e.target.value)}
                   placeholder="your@company.com"
                   className="w-full px-4 py-3 border border-border rounded-lg focus:outline-none focus:border-primary bg-surface text-text placeholder-text-light"
                   required

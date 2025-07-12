@@ -59,4 +59,61 @@ export class AuthController {
       res.status(500).json({ error: error.message || "Failed to get session" });
     }
   };
+
+  resetPassword = async (req: Request, res: Response) => {
+    try {
+      const { email } = req.body;
+
+      if (!email) {
+        return res.status(400).json({
+          error: "Email is required",
+        });
+      }
+
+      const data = await this.databaseService.resetPasswordForEmail(
+        email,
+        `${process.env.FRONTEND_URL}/update-password`
+      );
+
+      res.json({
+        message: "Password reset email sent successfully",
+        data,
+      });
+    } catch (error: any) {
+      console.error("Error in resetPassword:", error);
+      res.status(400).json({ 
+        error: error.message || "Failed to send password reset email" 
+      });
+    }
+  };
+
+  updatePassword = async (req: Request, res: Response) => {
+    try {
+      const { password, accessToken } = req.body;
+
+      if (!password) {
+        return res.status(400).json({
+          error: "Password is required",
+        });
+      }
+
+      if (!accessToken) {
+        return res.status(400).json({
+          error: "Access token is required",
+        });
+      }
+
+      const data = await this.databaseService.updateUserPassword(accessToken, password);
+
+      res.json({
+        message: "Password updated successfully",
+        data,
+      });
+    } catch (error: any) {
+      console.error("Error in updatePassword:", error);
+      res.status(400).json({ 
+        error: error.message || "Failed to update password" 
+      });
+    }
+  };
 }

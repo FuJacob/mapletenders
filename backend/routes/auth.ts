@@ -43,4 +43,25 @@ router.get("/session", (req, res) => {
   authController.getSession(req, res);
 });
 
+/**
+ * Send password reset email
+ * @route POST /auth/reset-password
+ * @param {string} req.body.email - User email
+ * @returns {Object} Success message
+ */
+router.post("/reset-password", (req, res) => {
+  authController.resetPassword(req, res);
+});
+
+/**
+ * Update user password
+ * @route POST /auth/update-password
+ * @param {string} req.body.password - New password
+ * @param {string} req.body.accessToken - Access token from reset link
+ * @returns {Object} Success message
+ */
+router.post("/update-password", (req, res) => {
+  authController.updatePassword(req, res);
+});
+
 export default router;
