@@ -30,6 +30,10 @@ router.get("/getOpenTenderNotices", (req, res) =>
   tenderController.getOpenTenderNotices(req, res)
 );
 
+router.post("/getTendersFromBookmarkIds", (req, res) =>
+  tenderController.getTendersFromBookmarkIds(req, res)
+);
+
 /**
  * Downloads and imports tender notices CSV into database
  * @route POST /getOpenTenderNoticesToDB

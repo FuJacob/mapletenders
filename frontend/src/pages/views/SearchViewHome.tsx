@@ -2,7 +2,10 @@ import { useState, useEffect } from "react";
 
 import { useAppSelector, useAppDispatch } from "../../app/hooks";
 import { selectAuthUser } from "../../features/auth/authSelectors";
-import { selectBookmarkedTenders, selectBookmarksLoading } from "../../features/bookmarks/bookmarksSelectors";
+import {
+  selectBookmarkedTenders,
+  selectBookmarksLoading,
+} from "../../features/bookmarks/bookmarksSelectors";
 import { loadBookmarks } from "../../features/bookmarks/bookmarksThunks";
 import { useNavigate } from "react-router-dom";
 import {
@@ -478,8 +481,8 @@ export default function Home() {
           {mainViewMode === "recommended" ? (
             <RecommendedTenders tenders={mockRecommendedTenders} />
           ) : mainViewMode === "bookmarks" ? (
-            <BookmarkedTenders 
-              tenders={bookmarkedTenders} 
+            <BookmarkedTenders
+              bookmarks={bookmarkedTenders}
               loading={bookmarksLoading}
             />
           ) : mainViewMode === "chat" ? (

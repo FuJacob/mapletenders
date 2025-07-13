@@ -1,17 +1,33 @@
 import { Link } from "react-router-dom";
 import { Bookmark } from "@phosphor-icons/react";
 import TenderCard from "./TenderCard.tsx";
-import type { TenderSummary } from "./types.tsx";
-
+import { type Database } from "../../../database.types";
+import { useEffect, useState } from "react";
+import type { Tender } from "../../features/tenders/types";
+type Bookmark = Database["public"]["Tables"]["bookmarks"]["Row"];
+import { getTendersFromBookmarkIds } from "../../api/tenders";
 interface BookmarkedTendersProps {
-  tenders: TenderSummary[];
+  bookmarks: Bookmark[];
   loading?: boolean;
 }
 
 export default function BookmarkedTenders({
-  tenders,
+  bookmarks,
   loading = false,
 }: BookmarkedTendersProps) {
+  const [tenders, setTenders] = useState<Tender[]>([]);
+
+  useEffect(() => {
+    const fetchTenders = async () => {
+      const tenders = await getTendersFromBookmarkIds(
+        bookmarks
+          .map((bookmark) => bookmark.tender_notice_id)
+          .filter(Boolean) as string[]
+      );
+      setTenders(tenders);
+    };
+    fetchTenders();
+  }, [bookmarks]);
   return (
     <div className="bg-surface border border-border rounded-xl p-6 h-[1200px] flex flex-col">
       <div className="flex items-center justify-between mb-6">

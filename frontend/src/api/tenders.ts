@@ -21,14 +21,27 @@ export const getOpenTenderNoticesFromDB = async (): Promise<Tender[]> => {
   }
 };
 
-
+export const getTendersFromBookmarkIds = async (
+  bookmarkIds: string[]
+): Promise<Tender[]> => {
+  try {
+    const response = await axios.post("/tenders/getTendersFromBookmarkIds", {
+      bookmarkIds,
+    });
+    return response.data;
+  } catch (error) {
+    return handleApiError(error, "Fetch tenders from bookmark ids");
+  }
+};
 
 /**
  * Search tenders using AI-powered Elasticsearch with vector similarity
  * @param {SearchTendersRequest} searchParams - The search parameters
  * @returns {Promise<SearchTendersResponse>} Search results with metadata
  */
-export const searchTenders = async (searchParams: SearchTendersRequest): Promise<SearchTendersResponse> => {
+export const searchTenders = async (
+  searchParams: SearchTendersRequest
+): Promise<SearchTendersResponse> => {
   try {
     const response = await axios.post("/tenders/searchTenders", searchParams);
     return response.data;
@@ -36,7 +49,6 @@ export const searchTenders = async (searchParams: SearchTendersRequest): Promise
     return handleApiError(error, "Search tenders");
   }
 };
-
 
 /**
  * Get individual tender notice details

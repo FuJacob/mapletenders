@@ -31,8 +31,7 @@ export const selectBookmarksByStatus = createSelector(
 
 export const selectBookmarkedTenders = createSelector(
   [selectBookmarks],
-  (bookmarks: Bookmark[]) =>
-    bookmarks.map((bookmark: Bookmark) => bookmark.tender_notice_id)
+  (bookmarks: Bookmark[]) => bookmarks.map((bookmark: Bookmark) => bookmark)
 );
 
 export const selectIsBookmarked = (tenderNoticeId: string) =>

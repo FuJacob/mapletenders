@@ -10,6 +10,14 @@ export class DatabaseService {
       process.env.SUPABASE_SERVICE_KEY || ""
     );
   }
+
+  async getTendersFromBookmarkIds(bookmarkIds: string[]) {
+    return await this.supabase
+      .from("tenders")
+      .select("*")
+      .in("id", bookmarkIds);
+  }
+
   async updateTenderSummary(tenderId: string, precomputed_summary: string) {
     return await this.supabase.from("tenders").upsert({
       id: tenderId,

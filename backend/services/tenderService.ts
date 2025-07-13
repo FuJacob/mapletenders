@@ -14,6 +14,17 @@ export class TenderService {
     private aiService: AiService
   ) {}
 
+  async getTendersFromBookmarkIds(bookmarkIds: string[]) {
+    const { data, error } = await this.dbService.getTendersFromBookmarkIds(
+      bookmarkIds
+    );
+    if (error) {
+      throw new Error(
+        `Failed to fetch tenders from bookmark ids: ${error.message}`
+      );
+    }
+    return data;
+  }
   async getAllBookmarks() {
     const { data, error } = await this.dbService.getAllBookmarks();
     if (error) {
@@ -127,15 +138,18 @@ export class TenderService {
       const syncResult = await this.mlService.syncTendersToElasticsearch();
       console.log("✅ Elasticsearch sync completed:", syncResult);
     } catch (error: any) {
-      console.error("⚠️ Elasticsearch sync failed (non-blocking):", error.message);
+      console.error(
+        "⚠️ Elasticsearch sync failed (non-blocking):",
+        error.message
+      );
       // Don't fail the import if Elasticsearch sync fails
       // This allows the system to continue working even if search is temporarily unavailable
     }
 
-    return { 
-      message: "Data imported successfully!", 
+    return {
+      message: "Data imported successfully!",
       count: finalData.length,
-      elasticsearch_synced: true
+      elasticsearch_synced: true,
     };
   }
 
