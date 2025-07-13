@@ -82,7 +82,9 @@ export default function TenderNotice() {
       }
 
       try {
+        console.log("Fetching tender:", tenderId);
         const data = await getTenderNotice(tenderId);
+        console.log(data);
         if (error) {
           console.error("Error fetching tender:", error);
           setError("Failed to load tender details");

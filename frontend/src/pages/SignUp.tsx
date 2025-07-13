@@ -6,11 +6,9 @@ import {
   Lightning,
   CheckCircle,
   ArrowLeft,
-  Crown,
-  Shield,
-  Users,
+  Target,
   TrendUp,
-  Clock,
+  Shield,
 } from "@phosphor-icons/react";
 import { signUpUser } from "../api";
 import { useAppDispatch } from "../app/hooks";
@@ -88,92 +86,84 @@ export default function SignUp() {
     agreedToTerms;
 
   return (
-    <div className="min-h-screen bg-background flex">
-      {/* Left Side - Motivation & Benefits */}
+    <div className="min-h-screen bg-bg flex">
+      {/* Left Side - Benefits */}
       <div className="hidden lg:flex flex-1 bg-surface items-center justify-center px-12">
         <div className="max-w-lg">
           <div className="text-center mb-8">
-            <div className="inline-flex items-center gap-2 px-4 py-2 bg-primary/10 text-primary rounded-full text-sm font-medium mb-4">
-              <Crown className="w-4 h-4" />
+            <div className="inline-flex items-center gap-2 px-4 py-2 bg-secondary text-primary rounded-full text-sm font-medium mb-6">
+              <span className="w-2 h-2 bg-primary rounded-full"></span>
               Start Your 14-Day Free Trial
             </div>
-            <h2 className="text-4xl font-bold text-text mb-4">
+            <h2 className="text-3xl font-semibold text-text mb-4">
               Win more government contracts
             </h2>
-            <p className="text-lg text-text-light">
-              Join 5,000+ businesses already using AI to discover and win
-              government tenders.
+            <p className="text-lg text-text-muted">
+              Join 2,847+ Canadian contractors already using AI to discover and win government tenders.
             </p>
           </div>
 
           {/* Key Benefits */}
           <div className="space-y-6 mb-8">
             <div className="flex items-start gap-4">
-              <div className="flex-shrink-0 w-12 h-12 bg-success/10 rounded-xl flex items-center justify-center">
+              <div className="flex-shrink-0 w-12 h-12 bg-success/10 rounded-lg flex items-center justify-center">
                 <Lightning className="w-6 h-6 text-success" />
               </div>
               <div>
-                <div className="font-semibold text-text text-lg mb-2">
+                <div className="font-semibold text-text mb-1">
                   Find opportunities 10x faster
                 </div>
-                <div className="text-text-light">
-                  Stop spending hours on manual searches. Our AI understands
-                  your business and finds relevant tenders instantly.
+                <div className="text-text-muted">
+                  Our AI understands your business and finds relevant Canadian government contracts instantly.
                 </div>
               </div>
             </div>
 
             <div className="flex items-start gap-4">
-              <div className="flex-shrink-0 w-12 h-12 bg-primary/10 rounded-xl flex items-center justify-center">
+              <div className="flex-shrink-0 w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center">
                 <TrendUp className="w-6 h-6 text-primary" />
               </div>
               <div>
-                <div className="font-semibold text-text text-lg mb-2">
-                  Increase win rate by 300%
+                <div className="font-semibold text-text mb-1">
+                  95% time saved on search
                 </div>
-                <div className="text-text-light">
-                  AI-powered win probability analysis helps you focus on
-                  contracts you can actually win.
+                <div className="text-text-muted">
+                  AI-powered matching helps you focus on contracts you can actually win.
                 </div>
               </div>
             </div>
 
             <div className="flex items-start gap-4">
-              <div className="flex-shrink-0 w-12 h-12 bg-accent/10 rounded-xl flex items-center justify-center">
-                <Shield className="w-6 h-6 text-accent" />
+              <div className="flex-shrink-0 w-12 h-12 bg-secondary/50 rounded-lg flex items-center justify-center">
+                <Target className="w-6 h-6 text-primary" />
               </div>
               <div>
-                <div className="font-semibold text-text text-lg mb-2">
-                  Never miss a deadline
+                <div className="font-semibold text-text mb-1">
+                  Never miss deadlines
                 </div>
-                <div className="text-text-light">
-                  Smart alerts and real-time monitoring ensure you're always
-                  first to know about new opportunities.
+                <div className="text-text-muted">
+                  Smart alerts ensure you're always first to know about new opportunities.
                 </div>
               </div>
             </div>
           </div>
 
           {/* Social Proof */}
-          <div className="bg-background rounded-xl p-6 border border-border">
-            <div className="flex items-center gap-3 mb-4">
+          <div className="bg-bg rounded-lg p-6 border border-border">
+            <div className="flex items-center gap-3 mb-3">
               <div className="flex -space-x-2">
                 <div className="w-8 h-8 bg-primary rounded-full border-2 border-white"></div>
                 <div className="w-8 h-8 bg-success rounded-full border-2 border-white"></div>
-                <div className="w-8 h-8 bg-accent rounded-full border-2 border-white"></div>
+                <div className="w-8 h-8 bg-secondary rounded-full border-2 border-white"></div>
               </div>
-              <div className="text-sm text-text-light">
-                <span className="font-semibold text-text">
-                  5,000+ businesses
-                </span>{" "}
-                already winning with MapleBids
+              <div className="text-sm text-text-muted">
+                <span className="font-semibold text-text">2,847+ contractors</span> already winning with MapleTenders
               </div>
             </div>
-            <div className="text-sm text-text-light italic">
-              "We closed $2.3M in contracts in our first 6 months. Best
-              investment we've made."
+            <div className="text-sm text-text-muted italic">
+              "We found $2.3M in contracts in our first 6 months. Best investment we've made."
             </div>
-            <div className="text-xs text-text-light mt-2">
+            <div className="text-xs text-text-muted mt-2">
               — Sarah Chen, TechFlow Solutions
             </div>
           </div>
@@ -184,56 +174,52 @@ export default function SignUp() {
       <div className="flex-1 flex items-center justify-center px-6 py-12">
         <div className="max-w-md w-full">
           {/* Header */}
-          <div className="text-center mb-8 flex flex-col items-center">
+          <div className="text-center mb-8">
             <Link
               to="/"
-              className="inline-flex items-center gap-2 text-sm text-text-light hover:text-primary transition-colors mb-6"
+              className="inline-flex items-center gap-2 text-sm text-text-muted hover:text-primary transition-colors mb-6"
             >
               <ArrowLeft className="w-4 h-4" />
               Back to home
             </Link>
             <div className="mb-4">
-              <LogoTitle size="text-3xl" />
-            </div>{" "}
-            <h1 className="text-2xl font-bold text-text mb-2">
+              <LogoTitle size="text-2xl" />
+            </div>
+            <h1 className="text-2xl font-semibold text-text mb-2">
               Start winning today
             </h1>
-            <p className="text-text-light">
-              Create your account and discover contracts worth millions
+            <p className="text-text-muted">
+              Create your account and discover government contracts
             </p>
           </div>
 
           {/* Trust Indicators */}
-          <div className="flex items-center justify-center gap-6 mb-8 text-xs text-text-light">
-            <span className="flex items-center gap-1">
+          <div className="flex items-center justify-center gap-6 mb-8 text-sm text-text-muted">
+            <span className="flex items-center gap-2">
               <CheckCircle className="w-4 h-4 text-success" />
-              14-day free trial
+              Free 14-day trial
             </span>
-            <span className="flex items-center gap-1">
+            <span className="flex items-center gap-2">
               <CheckCircle className="w-4 h-4 text-success" />
               No credit card required
-            </span>
-            <span className="flex items-center gap-1">
-              <CheckCircle className="w-4 h-4 text-success" />
-              Cancel anytime
             </span>
           </div>
 
           {/* Error Message */}
           {authError && (
-            <div className="mb-4 p-3 bg-red-100 border border-red-300 text-red-700 rounded-lg">
+            <div className="mb-6 p-4 bg-error/10 border border-error/20 rounded-lg text-error">
               {authError}
             </div>
           )}
 
           {/* Form */}
-          <form onSubmit={handleSubmit} className="space-y-4">
+          <form onSubmit={handleSubmit} className="space-y-5">
             <div>
               <label
                 htmlFor="email"
                 className="block text-sm font-medium text-text mb-2"
               >
-                Email
+                Email address
               </label>
               <input
                 id="email"
@@ -242,7 +228,7 @@ export default function SignUp() {
                 value={formData.email}
                 onChange={handleInputChange}
                 placeholder="you@company.com"
-                className="w-full px-4 py-3 border border-border rounded-lg focus:outline-none focus:border-primary bg-surface text-text placeholder-text-light"
+                className="w-full px-4 py-3 border border-border rounded-lg focus:outline-none focus:border-primary bg-surface text-text placeholder-text-muted"
                 required
               />
             </div>
@@ -262,13 +248,13 @@ export default function SignUp() {
                   value={formData.password}
                   onChange={handleInputChange}
                   placeholder="Create a strong password"
-                  className="w-full px-4 py-3 border border-border rounded-lg focus:outline-none focus:border-primary bg-surface text-text placeholder-text-light pr-12"
+                  className="w-full px-4 py-3 border border-border rounded-lg focus:outline-none focus:border-primary bg-surface text-text placeholder-text-muted pr-12"
                   required
                 />
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-3 top-1/2 transform -translate-y-1/2 text-text-light hover:text-text"
+                  className="absolute right-3 top-1/2 transform -translate-y-1/2 text-text-muted hover:text-text"
                 >
                   {showPassword ? (
                     <EyeSlash className="w-5 h-5" />
@@ -294,9 +280,9 @@ export default function SignUp() {
                   value={formData.confirmPassword}
                   onChange={handleInputChange}
                   placeholder="Confirm your password"
-                  className={`w-full px-4 py-3 border rounded-lg focus:outline-none bg-surface text-text placeholder-text-light pr-12 ${
+                  className={`w-full px-4 py-3 border rounded-lg focus:outline-none bg-surface text-text placeholder-text-muted pr-12 ${
                     formData.confirmPassword && !isPasswordMatch
-                      ? "border-red-500 focus:border-red-500"
+                      ? "border-error focus:border-error"
                       : "border-border focus:border-primary"
                   }`}
                   required
@@ -304,7 +290,7 @@ export default function SignUp() {
                 <button
                   type="button"
                   onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                  className="absolute right-3 top-1/2 transform -translate-y-1/2 text-text-light hover:text-text"
+                  className="absolute right-3 top-1/2 transform -translate-y-1/2 text-text-muted hover:text-text"
                 >
                   {showConfirmPassword ? (
                     <EyeSlash className="w-5 h-5" />
@@ -314,7 +300,7 @@ export default function SignUp() {
                 </button>
               </div>
               {formData.confirmPassword && !isPasswordMatch && (
-                <p className="text-red-500 text-xs mt-1">
+                <p className="text-error text-sm mt-1">
                   Passwords don't match
                 </p>
               )}
@@ -328,18 +314,18 @@ export default function SignUp() {
                 onChange={(e) => setAgreedToTerms(e.target.checked)}
                 className="w-4 h-4 text-primary border-border rounded focus:ring-primary mt-0.5"
               />
-              <label htmlFor="terms" className="text-sm text-text-light">
+              <label htmlFor="terms" className="text-sm text-text-muted">
                 I agree to the{" "}
                 <Link
                   to="/terms"
-                  className="text-primary hover:text-primary-dark"
+                  className="text-primary hover:opacity-80"
                 >
                   Terms of Service
                 </Link>{" "}
                 and{" "}
                 <Link
                   to="/privacy"
-                  className="text-primary hover:text-primary-dark"
+                  className="text-primary hover:opacity-80"
                 >
                   Privacy Policy
                 </Link>
@@ -349,7 +335,7 @@ export default function SignUp() {
             <button
               type="submit"
               disabled={!isFormValid || isAuthLoading}
-              className="w-full px-4 py-3 bg-primary text-white rounded-lg font-medium hover:bg-primary-dark transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 mt-6"
+              className="w-full px-4 py-3 bg-primary text-white rounded-lg font-medium hover:opacity-90 transition-opacity disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 mt-6"
             >
               {isAuthLoading ? (
                 <>
@@ -357,41 +343,42 @@ export default function SignUp() {
                   Creating your account...
                 </>
               ) : (
-                <>
-                  <Lightning className="w-4 h-4" />
-                  Start my free trial
-                </>
+                "Start my free trial"
               )}
             </button>
           </form>
 
           {/* Footer */}
           <div className="mt-8 text-center">
-            <p className="text-sm text-text-light">
+            <p className="text-sm text-text-muted">
               Already have an account?{" "}
               <Link
                 to="/sign-in"
-                className="text-primary hover:text-primary-dark font-medium"
+                className="text-primary hover:opacity-80 font-medium"
               >
                 Sign in
               </Link>
             </p>
           </div>
 
-          {/* Additional Trust Signals */}
+          {/* Trust Signals */}
           <div className="mt-8 pt-6 border-t border-border">
-            <div className="flex items-center justify-center gap-6 text-xs text-text-light">
-              <span className="flex items-center gap-1">
-                <Shield className="w-3 h-3" />
-                SOC 2 Compliant
+            <div className="grid grid-cols-2 gap-4 text-sm text-text-muted">
+              <span className="flex items-center gap-2">
+                <Shield className="w-4 h-4 text-success" />
+                Enterprise Security
               </span>
-              <span className="flex items-center gap-1">
-                <Users className="w-3 h-3" />
-                5,000+ Users
-              </span>
-              <span className="flex items-center gap-1">
-                <Clock className="w-3 h-3" />
+              <span className="flex items-center gap-2">
+                <CheckCircle className="w-4 h-4 text-success" />
                 99.9% Uptime
+              </span>
+              <span className="flex items-center gap-2">
+                <CheckCircle className="w-4 h-4 text-success" />
+                2,847+ Users
+              </span>
+              <span className="flex items-center gap-2">
+                <CheckCircle className="w-4 h-4 text-success" />
+                $3.2B Tracked
               </span>
             </div>
           </div>

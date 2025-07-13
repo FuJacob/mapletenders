@@ -5,13 +5,11 @@ import {
   removeBookmark as removeBookmarkAPI,
   updateBookmarkNotes as updateBookmarkNotesAPI,
   type CreateBookmarkRequest,
-  type UpdateBookmarkNotesRequest,
 } from "../../api/bookmarks";
 import {
   setBookmarksLoading,
   setBookmarksError,
   setBookmarks,
-  addBookmark,
   removeBookmark,
   updateBookmarkNotes,
 } from "./bookmarksSlice";

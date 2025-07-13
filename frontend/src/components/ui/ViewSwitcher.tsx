@@ -1,6 +1,6 @@
 import React from "react";
-import { MagnifyingGlass, Table } from "@phosphor-icons/react";
-import { useSearchParams } from "react-router-dom";
+import { MagnifyingGlass, Table, FileText } from "@phosphor-icons/react";
+import { useSearchParams, useNavigate } from "react-router-dom";
 
 interface ViewSwitcherProps {
   currentView: string;
@@ -12,6 +12,15 @@ const ViewSwitcher: React.FC<ViewSwitcherProps> = ({
   className = "",
 }) => {
   const [, setSearchParams] = useSearchParams();
+  const navigate = useNavigate();
+
+  const handleViewChange = (view: string) => {
+    if (view === "rfp") {
+      navigate("/rfp-analysis");
+    } else {
+      navigate(`/home?view=${view}`);
+    }
+  };
   return (
     <div
       className={`flex gap-1 rounded-lg p-1 bg-background border border-border ${className}`}
@@ -22,7 +31,7 @@ const ViewSwitcher: React.FC<ViewSwitcherProps> = ({
             ? "bg-primary text-white"
             : "text-text-light hover:bg-border"
         }`}
-        onClick={() => setSearchParams({ view: "search" })}
+        onClick={() => handleViewChange("search")}
       >
         <MagnifyingGlass className="w-4 h-4" />
         Search
@@ -33,10 +42,21 @@ const ViewSwitcher: React.FC<ViewSwitcherProps> = ({
             ? "bg-primary text-white"
             : "text-text-light hover:bg-border"
         }`}
-        onClick={() => setSearchParams({ view: "table" })}
+        onClick={() => handleViewChange("table")}
       >
         <Table className="w-4 h-4" />
         Table
+      </button>
+      <button
+        className={`px-3 py-2 rounded-md transition-all duration-200 flex items-center gap-2 text-sm ${
+          currentView === "rfp"
+            ? "bg-primary text-white"
+            : "text-text-light hover:bg-border"
+        }`}
+        onClick={() => handleViewChange("rfp")}
+      >
+        <FileText className="w-4 h-4" />
+        RFP Analysis
       </button>
     </div>
   );

@@ -221,7 +221,7 @@ Focus on the most important information that drives business decisions.`,
         },
       });
 
-      return { tenderId, summary: response.text };
+      return { summary: response.text };
     } catch (error) {
       console.error("Error generating tender summary with Gemini:", error);
       throw new Error("Failed to generate tender summary");

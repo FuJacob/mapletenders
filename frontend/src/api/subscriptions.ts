@@ -1,6 +1,18 @@
 import axios from "axios";
 import { handleApiError } from "./config";
 
+export interface PlanFeatures {
+  [key: string]: boolean | string | number;
+}
+
+export interface PlanLimits {
+  [key: string]: number | string;
+}
+
+export interface UsageLimits {
+  [key: string]: number | string;
+}
+
 export interface Plan {
   id: string;
   name: string;
@@ -9,8 +21,8 @@ export interface Plan {
   stripe_product_id: string | null;
   stripe_price_id_monthly: string | null;
   stripe_price_id_yearly: string | null;
-  features: any;
-  limits: any;
+  features: PlanFeatures;
+  limits: PlanLimits;
   created_at: string | null;
   updated_at: string | null;
 }
@@ -26,7 +38,7 @@ export interface Subscription {
   current_period_end: string | null;
   billing_cycle: string;
   trial_end: string | null;
-  usage_limits: any | null;
+  usage_limits: UsageLimits | null;
   created_at: string | null;
   updated_at: string | null;
   plan?: Plan;

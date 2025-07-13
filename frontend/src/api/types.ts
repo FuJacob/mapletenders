@@ -49,6 +49,36 @@ export interface RefreshTendersResponse {
   updatedCount: number;
 }
 
+export interface SearchTendersRequest {
+  q: string;
+  regions?: string[];
+  procurement_method?: string;
+  procurement_category?: string[];
+  notice_type?: string[];
+  tender_status?: string[];
+  contracting_entity_name?: string[];
+  closing_date_after?: string;
+  closing_date_before?: string;
+  publication_date_after?: string;
+  publication_date_before?: string;
+  limit?: number;
+}
+
+export interface TenderSearchResult extends Tender {
+  search_score?: number;
+  match_explanation?: string;
+}
+
+export interface SearchTendersResponse {
+  results: TenderSearchResult[];
+  total_results: number;
+  query: string;
+  search_metadata?: {
+    elasticsearch_took_ms?: number;
+    max_score?: number;
+  };
+}
+
 export interface ImportTendersResponse {
   success: boolean;
   message: string;

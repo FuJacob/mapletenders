@@ -12,6 +12,7 @@ import About from "./pages/About";
 import Contact from "./pages/Contact";
 import Home from "./pages/Home";
 import SearchResults from "./pages/SearchResults";
+import RfpAnalysis from "./pages/RfpAnalysis";
 import SubscriptionSuccess from "./pages/SubscriptionSuccess";
 import SubscriptionCancel from "./pages/SubscriptionCancel";
 import GuestRoutes from "./routes/GuestRoutes";
@@ -63,6 +64,7 @@ export function App() {
             <Route path="/table-view" element={<TableView />} />
             <Route path="/home" element={<Home />} />
             <Route path="/search" element={<SearchResults />} />
+            <Route path="/rfp-analysis" element={<RfpAnalysis />} />
             <Route path="/profile" element={<Profile />} />
             <Route path="/tender-notice/:tenderId" element={<TenderNotice />} />
           </Route>

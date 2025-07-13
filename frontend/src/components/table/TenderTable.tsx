@@ -33,16 +33,30 @@ interface TenderTableProps {
 
 export default function TenderTable({ isLoading = false }: TenderTableProps) {
   const [globalFilter, setGlobalFilter] = useState("");
+  const [filteredTenders, setFilteredTenders] = useState<Tender[]>([]);
+
   const globalTenderFilter = useCallback(
     (row: Row<Tender>, _columnId: string, filterValue: string) => {
-      const title = row.original.title;
+      const tender = row.original;
       return (
-        title?.toString().toLowerCase().includes(filterValue.toLowerCase()) ||
+        tender.title
+          ?.toString()
+          .toLowerCase()
+          .includes(filterValue.toLowerCase()) ||
+        tender.tender_description
+          ?.toString()
+          .toLowerCase()
+          .includes(filterValue.toLowerCase()) ||
+        tender.contracting_entity_name
+          ?.toString()
+          .toLowerCase()
+          .includes(filterValue.toLowerCase()) ||
         false
       );
     },
     []
   );
+
   const [pagination, setPagination] = useState({
     pageIndex: 0,
     pageSize: 50,
@@ -50,8 +64,18 @@ export default function TenderTable({ isLoading = false }: TenderTableProps) {
   const [columnResizeMode] = useState<ColumnResizeMode>("onChange");
   const tenders = useAppSelector(selectTenders);
 
-  // Memoize table data to prevent unnecessary re-renders
-  const tableData = useMemo(() => tenders || [], [tenders]);
+  // Handle filtered data from QuickFilters
+  const handleFilteredDataChange = useCallback((filtered: Tender[]) => {
+    setFilteredTenders(filtered);
+    setPagination((prev) => ({ ...prev, pageIndex: 0 })); // Reset to first page when filters change
+  }, []);
+
+  // Use filtered data if available, otherwise use all tenders
+  const tableData = useMemo(() => {
+    const dataToUse =
+      filteredTenders.length > 0 ? filteredTenders : tenders || [];
+    return dataToUse;
+  }, [filteredTenders, tenders]);
 
   // Memoize pagination change handler
   const onPaginationChange = useCallback(
@@ -191,8 +215,9 @@ export default function TenderTable({ isLoading = false }: TenderTableProps) {
   return (
     <>
       <QuickFilters
-        globalFilter={globalFilter}
         setGlobalFilter={setGlobalFilter}
+        tenders={tenders || []}
+        onFilteredDataChange={handleFilteredDataChange}
       />
       <TenderTableInner />
     </>

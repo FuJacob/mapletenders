@@ -1,64 +1,41 @@
-import { Fire, Brain } from "@phosphor-icons/react";
+import { Clock, Target } from "@phosphor-icons/react";
 
 export default function ProblemSolutionSection() {
   return (
-    <section className="min-h-2/3 flex flex-col justify-center py-32 px-6 max-w-7xl mx-auto">
-      {/* Top Row: BAD image + Problem Statement */}
-      <div className="flex flex-col md:flex-row gap-12 mb-24 items-center">
-        <div className="flex-1 h-80 bg-gradient-to-br from-red-100 to-red-200 rounded-3xl flex items-center justify-center border-2 border-red-300">
-          <div className="text-red-700 text-xl font-medium text-center">
-            <div className="text-2xl font-bold mb-2">
-              Before: Business Operations Chaos
+    <section className="py-20 px-6 bg-surface">
+      <div className="max-w-6xl mx-auto">
+        <div className="grid md:grid-cols-2 gap-16 items-center">
+          <div>
+            <div className="flex items-center gap-4 mb-6">
+              <Clock className="w-8 h-8 text-primary" />
+              <span className="text-sm font-medium text-primary uppercase tracking-wide">The Problem</span>
             </div>
-            <div className="text-lg">
-              Frustrated teams, stacks of papers, confusion
-            </div>
-          </div>
-        </div>
-        <div className="flex-1 text-right">
-          <div className="flex items-center justify-end gap-8">
-            <h2 className="text-5xl font-extrabold text-text leading-tight mb-2">
-              The Existing Process{" "}
-              <span className="text-3xl font-semibold text-primary mb-2">
-                is broken
-              </span>
+            <h2 className="text-3xl font-semibold text-text mb-6">
+              Finding relevant contracts takes too long
             </h2>
-            <Fire size={120} className="text-red-500" weight="fill" />
+            <p className="text-text-muted leading-relaxed mb-6">
+              Canadian contractors waste hours manually searching through thousands of irrelevant government tenders. By the time you find a good match, the deadline has passed.
+            </p>
+            <div className="bg-secondary p-4 rounded-lg">
+              <div className="text-2xl font-bold text-text mb-1">60%</div>
+              <div className="text-sm text-text-muted">of procurement time wasted on search</div>
+            </div>
           </div>
-          <p className="text-xl text-text-light max-w-xl">
-            Businesses waste 60% of their procurement team's time searching
-            through irrelevant tenders
-          </p>
-        </div>
-      </div>
 
-      {/* Bottom Row: Solution Statement + GOOD image */}
-      <div className="flex flex-col md:flex-row gap-12 items-center">
-        <div className="flex-1 text-left">
-          <div className="flex items-center gap-8">
-            <Brain size={120} className="text-primary" weight="fill" />
-            <div>
-              <h3 className="text-5xl font-extrabold text-text leading-tight mb-2">
-                MapleTenders transforms
-              </h3>
-              <div className="text-3xl font-semibold text-primary mb-2">
-                business operations with AI
-              </div>
-              <p className="text-xl text-text-light max-w-xl">
-                Our enterprise-grade AI understands your business capabilities
-                and delivers precision-matched opportunities to accelerate
-                growth
-              </p>
+          <div>
+            <div className="flex items-center gap-4 mb-6">
+              <Target className="w-8 h-8 text-success" />
+              <span className="text-sm font-medium text-success uppercase tracking-wide">Our Solution</span>
             </div>
-          </div>
-        </div>
-        <div className="flex-1 h-80 bg-gradient-to-br from-green-100 to-green-200 rounded-3xl flex items-center justify-center border-2 border-green-300">
-          <div className="text-green-700 text-xl font-medium text-center">
-            <div className="text-2xl font-bold mb-2">
-              After: Streamlined Operations
-            </div>
-            <div className="text-lg">
-              Productive teams, clear insights, efficiency
+            <h2 className="text-3xl font-semibold text-text mb-6">
+              AI finds perfect matches in seconds
+            </h2>
+            <p className="text-text-muted leading-relaxed mb-6">
+              MapleTenders AI understands your business capabilities and automatically surfaces the most relevant Canadian government contracts. Spend your time bidding, not searching.
+            </p>
+            <div className="bg-surface border border-success/20 p-4 rounded-lg">
+              <div className="text-2xl font-bold text-success mb-1">95%</div>
+              <div className="text-sm text-text-muted">time saved on contract discovery</div>
             </div>
           </div>
         </div>

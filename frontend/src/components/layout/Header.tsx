@@ -25,8 +25,9 @@ export default function Header({
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
 
-  // Check if we're on the home page to show view switcher
+  // Check if we're on the home page or RFP analysis page to show view switcher
   const isHomePage = location.pathname === "/home";
+  const isRfpPage = location.pathname === "/rfp-analysis";
 
   // Memoize click outside handler
   const handleClickOutside = useCallback((event: MouseEvent) => {
@@ -108,10 +109,10 @@ export default function Header({
         )}
       </nav>
 
-      {/* View Switcher for Home Page */}
-      {user && isHomePage && (
+      {/* View Switcher for Home Page and RFP Analysis */}
+      {user && (isHomePage || isRfpPage) && (
         <div className="absolute left-1/2 transform -translate-x-1/2">
-          <ViewSwitcher currentView={view || "search"} />
+          <ViewSwitcher currentView={isRfpPage ? "rfp" : (view || "search")} />
         </div>
       )}
 

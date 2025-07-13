@@ -121,7 +121,22 @@ export class TenderService {
       await this.dbService.removeStaleTemders(currentReferenceNumbers);
     }
 
-    return { message: "Data imported successfully!", count: finalData.length };
+    // 8. Sync to Elasticsearch for AI-powered search
+    console.log("🔄 Syncing tenders to Elasticsearch...");
+    try {
+      const syncResult = await this.mlService.syncTendersToElasticsearch();
+      console.log("✅ Elasticsearch sync completed:", syncResult);
+    } catch (error: any) {
+      console.error("⚠️ Elasticsearch sync failed (non-blocking):", error.message);
+      // Don't fail the import if Elasticsearch sync fails
+      // This allows the system to continue working even if search is temporarily unavailable
+    }
+
+    return { 
+      message: "Data imported successfully!", 
+      count: finalData.length,
+      elasticsearch_synced: true
+    };
   }
 
   async searchTendersByVector(query: string) {

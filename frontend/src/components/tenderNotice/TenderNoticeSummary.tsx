@@ -1,5 +1,5 @@
 import { Sparkle } from "@phosphor-icons/react";
-import { useEffect, useState, useMemo, useRef, useCallback } from "react";
+import { useEffect, useState, useMemo, useCallback } from "react";
 import { generateTenderSummary, type TenderSummaryData } from "../../api";
 
 interface TenderNoticeBodyProps {
@@ -25,7 +25,6 @@ export function TenderNoticeSummary({ tender }: TenderNoticeBodyProps) {
   );
   const [isLoading, setIsLoading] = useState(false);
   const [lastTenderId, setLastTenderId] = useState<string | null>(null);
-  const abortControllerRef = useRef<AbortController | null>(null);
 
   // Memoize the structured data to prevent unnecessary recreations
   const structuredTenderData = useMemo(() => {
@@ -53,18 +52,12 @@ Trade Agreements: ${tender.trade_agreements || "Not specified"}
     tender.selection_criteria,
     tender.trade_agreements,
   ]);
-
+  useEffect(() => {
+    console.log("Tender summary:", tenderSummary);
+  }, [tenderSummary]);
   const getTenderSummary = useCallback(async () => {
     // Check if this is a new tender or if we're already loading
     if (isLoading || tender.id === lastTenderId) return;
-
-    // Cancel any previous request
-    if (abortControllerRef.current) {
-      abortControllerRef.current.abort();
-    }
-
-    // Create new abort controller for this request
-    abortControllerRef.current = new AbortController();
 
     // Reset state for new tender
     setTenderSummary(null);
@@ -76,23 +69,8 @@ Trade Agreements: ${tender.trade_agreements || "Not specified"}
         tender.id,
         structuredTenderData
       );
-
-      // Check if request was aborted
-      if (abortControllerRef.current?.signal.aborted) {
-        return;
-      }
-
-      console.log("Raw API response:", response);
-
-      // The backend now returns a parsed summary directly
-      const parsedSummary = response.summary;
-      console.log("Parsed summary:", parsedSummary);
-      setTenderSummary(parsedSummary);
+      setTenderSummary(response.summary);
     } catch (error) {
-      // Don't log error if request was aborted
-      if (abortControllerRef.current?.signal.aborted) {
-        return;
-      }
       console.error("Error generating tender summary:", error);
       setTenderSummary(null);
     } finally {
@@ -102,13 +80,6 @@ Trade Agreements: ${tender.trade_agreements || "Not specified"}
 
   useEffect(() => {
     getTenderSummary();
-
-    // Cleanup function to abort request if component unmounts
-    return () => {
-      if (abortControllerRef.current) {
-        abortControllerRef.current.abort();
-      }
-    };
   }, [getTenderSummary]);
 
   return (
@@ -118,7 +89,9 @@ Trade Agreements: ${tender.trade_agreements || "Not specified"}
         Tender Notice Summary by BreezeAI
       </h2>
       <div className="text-white">
-        {tenderSummary ? (
+        {tenderSummary &&
+        typeof tenderSummary === "object" &&
+        Object.keys(tenderSummary).length > 0 ? (
           <div className="space-y-4">
             {/* Executive Summary */}
             <p className="text-base leading-relaxed">

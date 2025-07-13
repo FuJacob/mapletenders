@@ -49,13 +49,37 @@ router.get("/getOpenTenderNoticesFromDB", (req, res) =>
 );
 
 /**
- * Search tenders using vector similarity
- * @route POST /filterByVector
- * @param {string} req.body.query - The search query
- * @returns {Object[]} Array of matching tender notices
+ * Search tenders using AI-powered Elasticsearch with vector similarity
+ * @route POST /searchTenders
+ * @param {string} req.body.q - The search query (required)
+ * @param {string[]} req.body.regions - Optional array of regions to filter by
+ * @param {string} req.body.procurement_method - Optional procurement method filter
+ * @param {string} req.body.closing_date_after - Optional date filter (YYYY-MM-DD format)
+ * @param {number} req.body.limit - Optional limit for results (default: 20)
+ * @returns {SearchTendersResponse} Object containing results array, total_results, query, and search_metadata
+ * @description Each result includes search_score (relevance ranking) and match_explanation (why it matched)
  */
-router.post("/filterByVector", (req, res) =>
-  tenderController.filterByVector(req, res)
+router.post("/searchTenders", (req, res) =>
+  tenderController.searchTenders(req, res)
+);
+
+/**
+ * Manually sync all tenders to Elasticsearch
+ * @route POST /syncToElasticsearch
+ * @returns {Object} Sync operation result
+ */
+router.post("/syncToElasticsearch", (req, res) =>
+  tenderController.syncToElasticsearch(req, res)
+);
+
+/**
+ * Manually sync a single tender to Elasticsearch
+ * @route POST /syncTender/:tenderId
+ * @param {string} tenderId - The ID of the tender to sync
+ * @returns {Object} Sync operation result
+ */
+router.post("/syncTender/:tenderId", (req, res) =>
+  tenderController.syncSingleTenderToElasticsearch(req, res)
 );
 
 export default router;

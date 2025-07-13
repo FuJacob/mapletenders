@@ -6,6 +6,7 @@ export class TenderNoticeController {
 
   getTenderNoticeById = async (req: Request, res: Response) => {
     try {
+      console.log("Fetching tender notice:", req.params);
       const { id } = req.params;
       const result = await this.tenderService.getTenderById(id);
       res.json(result);

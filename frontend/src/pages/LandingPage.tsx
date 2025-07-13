@@ -4,7 +4,6 @@ import {
   HeroSection,
   TrustStatsSection,
   ProblemSolutionSection,
-  BuiltForSection,
   KeyFeaturesSection,
   TestimonialsSection,
   FAQSection,
@@ -22,13 +21,12 @@ export default function LandingPage() {
   }, []);
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-bg">
       {showBanner && <WelcomeBanner closeBanner={handleCloseBanner} />}
       <HeroSection />
       <TrustStatsSection />
-      <ProblemSolutionSection />
-      <BuiltForSection />
       <KeyFeaturesSection />
+      <ProblemSolutionSection />
       <TestimonialsSection />
       <FAQSection />
       <FinalCTASection />

@@ -60,10 +60,11 @@ export class AiController {
       );
       if (existingSummary) {
         console.log(`Using cached summary for tender ${tenderId}`);
+        console.log("Existing summary:", existingSummary);
         return res.json({ summary: existingSummary });
       }
 
-      // Generate new summary
+      // Generate new summaryw
       console.log(`Generating new summary for tender ${tenderId}`);
       const result = await this.aiService.generateTenderSummary(
         tenderId,

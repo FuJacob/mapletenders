@@ -4,6 +4,8 @@ import {
   type Tender,
   type RefreshTendersResponse,
   type ImportTendersResponse,
+  type SearchTendersRequest,
+  type SearchTendersResponse,
 } from "./types";
 
 /**
@@ -22,18 +24,19 @@ export const getOpenTenderNoticesFromDB = async (): Promise<Tender[]> => {
 
 
 /**
- * Search tenders using vector similarity
- * @param {string} q - The search query
- * @returns {Promise<Tender[]>} Array of matching tender notices
+ * Search tenders using AI-powered Elasticsearch with vector similarity
+ * @param {SearchTendersRequest} searchParams - The search parameters
+ * @returns {Promise<SearchTendersResponse>} Search results with metadata
  */
-export const filterByVector = async (q: string): Promise<Tender[]> => {
+export const searchTenders = async (searchParams: SearchTendersRequest): Promise<SearchTendersResponse> => {
   try {
-    const response = await axios.post("/tenders/filterByVector", { q });
+    const response = await axios.post("/tenders/searchTenders", searchParams);
     return response.data;
   } catch (error) {
-    return handleApiError(error, "Filter by vector search");
+    return handleApiError(error, "Search tenders");
   }
 };
+
 
 /**
  * Get individual tender notice details
