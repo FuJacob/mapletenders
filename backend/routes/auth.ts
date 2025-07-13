@@ -39,8 +39,8 @@ router.post("/signout", (req, res) => {
  * @route GET /auth/session
  * @returns {Object} Session data
  */
-router.get("/session", (req, res) => {
-  authController.getSession(req, res);
+router.get("/user", (req, res) => {
+  authController.getUser(req, res);
 });
 
 /**

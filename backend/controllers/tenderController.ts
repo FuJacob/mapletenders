@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { TenderService, MlService } from "../services";
+import { TenderService, MlService, DatabaseService } from "../services";
 import {
   SearchTendersRequest,
   SearchTendersResponse,
@@ -9,7 +9,8 @@ import {
 export class TenderController {
   constructor(
     private tenderService: TenderService,
-    private mlService: MlService
+    private mlService: MlService,
+    private databaseService: DatabaseService
   ) {}
 
   getTendersFromBookmarkIds = async (req: Request, res: Response) => {
@@ -87,8 +88,19 @@ export class TenderController {
     try {
       const result = await this.tenderService.getAllTenders();
       res.json(result);
+      console.log("Tenders fetched from DB:", result);
     } catch (error: any) {
       console.error("Error fetching tender notices:", error);
+      res.status(500).json({ error: error.message });
+    }
+  };
+
+  getTenderById = async (req: Request, res: Response) => {
+    try {
+      const result = await this.databaseService.getTenderById(req.params.id);
+      res.json(result);
+    } catch (error: any) {
+      console.error("Error fetching tender by id:", error);
       res.status(500).json({ error: error.message });
     }
   };

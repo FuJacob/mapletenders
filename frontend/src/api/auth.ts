@@ -1,16 +1,10 @@
 import axios from "axios";
 import { handleApiError } from "./config";
+import type { User, Session } from "@supabase/supabase-js";
 
 export interface AuthResponse {
-  user?: {
-    id: string;
-    email: string;
-  };
-  session?: {
-    access_token: string;
-    refresh_token: string;
-  };
-  error?: string;
+  user: User;
+  session: Session;
 }
 
 export interface SignUpData {
@@ -72,12 +66,12 @@ export const signOutUser = async (): Promise<{ success: boolean }> => {
  * Get current session
  * @returns {Promise<AuthResponse>} Session data
  */
-export const getSession = async (): Promise<AuthResponse> => {
+export const getUser = async (): Promise<AuthResponse> => {
   try {
-    const response = await axios.get("/auth/session");
+    const response = await axios.get("/auth/user");
     return response.data;
   } catch (error) {
-    return handleApiError(error, "Get session");
+    return handleApiError(error, "Get user");
   }
 };
 
@@ -98,7 +92,7 @@ export const resetPassword = async (
 };
 
 /**
- * Update user password
+ * Update user pa,sword
  * @param {string} password - New password
  * @param {string} accessToken - Access token from reset link
  * @returns {Promise<{message?: string, error?: string}>} Update response

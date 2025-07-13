@@ -23,6 +23,10 @@ const tendersSlice = createSlice({
       state.data = action.payload;
       state.loading = false;
     },
+    setTender: (state, action: PayloadAction<Tender>) => {
+      state.data = [...state.data, action.payload];
+      state.loading = false;
+    },
     clearTenders: (state) => {
       state.data = [];
       state.loading = false;
@@ -30,7 +34,7 @@ const tendersSlice = createSlice({
   },
 });
 
-export const { setTenders, setTendersLoading, clearTenders } =
+export const { setTenders, setTendersLoading, clearTenders, setTender } =
   tendersSlice.actions;
 
 export default tendersSlice.reducer;

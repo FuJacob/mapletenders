@@ -1,12 +1,13 @@
 import {
   signInUser,
   signOutUser,
-  getSession,
+  getUser,
   createOrUpdateProfile,
   getProfile,
 } from "../../api";
 import {
   setUser,
+  setProfile,
   logout,
   setAuthLoading,
   setAuthError,
@@ -62,13 +63,6 @@ export const signIn =
 
     try {
       const response = await signInUser({ email, password });
-
-      if (response.error) {
-        dispatch(setAuthError(response.error));
-        dispatch(setAuthLoading(false));
-        return;
-      }
-
       // Get or create user profile
       const user = response.user;
       if (!user?.id) {
@@ -97,10 +91,11 @@ export const signIn =
         }
         profile = createResponse.profile;
       }
-
-      // Set user and onboarding status
+      console.log("APSIDPASDPSAOPDPOASDOPAOPSDOPASD", user);
+      // Set both Supabase user and profile data
+      dispatch(setUser(user)); // Store Supabase user info
       if (profile) {
-        dispatch(setUser(convertAPIProfileToDatabase(profile)));
+        dispatch(setProfile(convertAPIProfileToDatabase(profile)));
         dispatch(setOnboardingCompleted(profile.onboarding_completed || false));
       }
       dispatch(setAuthLoading(false));
@@ -126,17 +121,22 @@ export const loadSession = () => async (dispatch: AppDispatch) => {
   dispatch(setAuthLoading(true));
 
   try {
-    const response = await getSession();
+    const response = await getUser();
     const user = response.user; // Fix: access user directly from response
 
     if (user?.id) {
+      // Store Supabase user info
+      dispatch(setUser(user));
+      console.log("user", user);
       const profileResponse = await getProfile(user.id);
 
       if (profileResponse.error) {
         console.error("Error fetching profile:", profileResponse.error);
         dispatch(setAuthError("Failed to load user profile"));
       } else if (profileResponse.profile) {
-        dispatch(setUser(convertAPIProfileToDatabase(profileResponse.profile)));
+        dispatch(
+          setProfile(convertAPIProfileToDatabase(profileResponse.profile))
+        );
         dispatch(
           setOnboardingCompleted(
             profileResponse.profile.onboarding_completed || false
@@ -157,7 +157,7 @@ export const updateProfile =
     dispatch(setAuthError(null));
 
     try {
-      const response = await getSession();
+      const response = await getUser();
       const user = response.user;
 
       if (!user?.id) {
@@ -183,7 +183,9 @@ export const updateProfile =
 
       // Update Redux state with the new profile data
       if (updateResponse.profile) {
-        dispatch(setUser(convertAPIProfileToDatabase(updateResponse.profile)));
+        dispatch(
+          setProfile(convertAPIProfileToDatabase(updateResponse.profile))
+        );
       }
       dispatch(setAuthLoading(false));
 

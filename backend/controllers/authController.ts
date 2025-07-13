@@ -50,12 +50,12 @@ export class AuthController {
     }
   };
 
-  getSession = async (req: Request, res: Response) => {
+  getUser = async (req: Request, res: Response) => {
     try {
-      const session = await this.databaseService.getSession();
-      res.json(session);
+      const user = await this.databaseService.getUser();
+      res.json(user);
     } catch (error: any) {
-      console.error("Error in getSession:", error);
+      console.error("Error in getUser:", error);
       res.status(500).json({ error: error.message || "Failed to get session" });
     }
   };
@@ -81,8 +81,8 @@ export class AuthController {
       });
     } catch (error: any) {
       console.error("Error in resetPassword:", error);
-      res.status(400).json({ 
-        error: error.message || "Failed to send password reset email" 
+      res.status(400).json({
+        error: error.message || "Failed to send password reset email",
       });
     }
   };
@@ -103,7 +103,10 @@ export class AuthController {
         });
       }
 
-      const data = await this.databaseService.updateUserPassword(accessToken, password);
+      const data = await this.databaseService.updateUserPassword(
+        accessToken,
+        password
+      );
 
       res.json({
         message: "Password updated successfully",
@@ -111,8 +114,8 @@ export class AuthController {
       });
     } catch (error: any) {
       console.error("Error in updatePassword:", error);
-      res.status(400).json({ 
-        error: error.message || "Failed to update password" 
+      res.status(400).json({
+        error: error.message || "Failed to update password",
       });
     }
   };

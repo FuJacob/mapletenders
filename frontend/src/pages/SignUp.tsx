@@ -99,7 +99,8 @@ export default function SignUp() {
               Win more government contracts
             </h2>
             <p className="text-lg text-text-muted">
-              Join 2,847+ Canadian contractors already using AI to discover and win government tenders.
+              Join 2,847+ Canadian contractors already using AI to discover and
+              win government tenders.
             </p>
           </div>
 
@@ -114,7 +115,8 @@ export default function SignUp() {
                   Find opportunities 10x faster
                 </div>
                 <div className="text-text-muted">
-                  Our AI understands your business and finds relevant Canadian government contracts instantly.
+                  Our AI understands your business and finds relevant Canadian
+                  government contracts instantly.
                 </div>
               </div>
             </div>
@@ -128,7 +130,8 @@ export default function SignUp() {
                   95% time saved on search
                 </div>
                 <div className="text-text-muted">
-                  AI-powered matching helps you focus on contracts you can actually win.
+                  AI-powered matching helps you focus on contracts you can
+                  actually win.
                 </div>
               </div>
             </div>
@@ -142,7 +145,8 @@ export default function SignUp() {
                   Never miss deadlines
                 </div>
                 <div className="text-text-muted">
-                  Smart alerts ensure you're always first to know about new opportunities.
+                  Smart alerts ensure you're always first to know about new
+                  opportunities.
                 </div>
               </div>
             </div>
@@ -157,11 +161,15 @@ export default function SignUp() {
                 <div className="w-8 h-8 bg-secondary rounded-full border-2 border-white"></div>
               </div>
               <div className="text-sm text-text-muted">
-                <span className="font-semibold text-text">2,847+ contractors</span> already winning with MapleTenders
+                <span className="font-semibold text-text">
+                  2,847+ contractors
+                </span>{" "}
+                already winning with MapleTenders
               </div>
             </div>
             <div className="text-sm text-text-muted italic">
-              "We found $2.3M in contracts in our first 6 months. Best investment we've made."
+              "We found $2.3M in contracts in our first 6 months. Best
+              investment we've made."
             </div>
             <div className="text-xs text-text-muted mt-2">
               — Sarah Chen, TechFlow Solutions
@@ -300,9 +308,7 @@ export default function SignUp() {
                 </button>
               </div>
               {formData.confirmPassword && !isPasswordMatch && (
-                <p className="text-error text-sm mt-1">
-                  Passwords don't match
-                </p>
+                <p className="text-error text-sm mt-1">Passwords don't match</p>
               )}
             </div>
 
@@ -316,17 +322,11 @@ export default function SignUp() {
               />
               <label htmlFor="terms" className="text-sm text-text-muted">
                 I agree to the{" "}
-                <Link
-                  to="/terms"
-                  className="text-primary hover:opacity-80"
-                >
+                <Link to="/terms" className="text-primary hover:opacity-80">
                   Terms of Service
                 </Link>{" "}
                 and{" "}
-                <Link
-                  to="/privacy"
-                  className="text-primary hover:opacity-80"
-                >
+                <Link to="/privacy" className="text-primary hover:opacity-80">
                   Privacy Policy
                 </Link>
               </label>

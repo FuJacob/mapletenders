@@ -28,6 +28,8 @@ export default function Header({
   // Check if we're on the home page or RFP analysis page to show view switcher
   const isHomePage = location.pathname === "/home";
   const isRfpPage = location.pathname === "/rfp-analysis";
+  const isSearchPage = location.pathname === "/search";
+  const isTenderNoticePage = location.pathname.startsWith("/tender-notice");
 
   // Memoize click outside handler
   const handleClickOutside = useCallback((event: MouseEvent) => {
@@ -110,9 +112,13 @@ export default function Header({
       </nav>
 
       {/* View Switcher for Home Page and RFP Analysis */}
-      {user && (isHomePage || isRfpPage) && (
+      {user && (isHomePage || isRfpPage || isTenderNoticePage) && (
         <div className="absolute left-1/2 transform -translate-x-1/2">
-          <ViewSwitcher currentView={isRfpPage ? "rfp" : (view || "search")} />
+          <ViewSwitcher
+            currentView={
+              isRfpPage ? "rfp" : view || (isSearchPage ? "search" : null)
+            }
+          />
         </div>
       )}
 
@@ -121,6 +127,17 @@ export default function Header({
         {user ? (
           // Logged in user menu
           <>
+            <Link
+              to="/pricing"
+              className={`text-sm font-medium transition-colors ${
+                location.pathname === "/pricing"
+                  ? "text-primary"
+                  : "text-text hover:text-primary"
+              }`}
+            >
+              Pricing
+            </Link>
+
             <button className="p-2 text-text-light hover:text-primary transition-colors relative">
               <Bell className="w-5 h-5" />
               <span className="absolute -top-1 -right-1 w-3 h-3 bg-primary rounded-full"></span>

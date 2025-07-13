@@ -34,7 +34,7 @@ export default function SignIn() {
   const isAuthLoading = useSelector(selectAuthLoading);
   const authError = useSelector(selectAuthError);
   dispatch(setAuthError(null));
-  
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setSearchParams({});
@@ -65,7 +65,9 @@ export default function SignIn() {
             <div className="mb-4">
               <LogoTitle size="text-2xl" />
             </div>
-            <h1 className="text-2xl font-semibold text-text mb-2">Welcome back</h1>
+            <h1 className="text-2xl font-semibold text-text mb-2">
+              Welcome back
+            </h1>
             <p className="text-text-muted">
               Sign in to continue finding government contracts
             </p>
@@ -76,10 +78,13 @@ export default function SignIn() {
             <div className="mb-6 p-4 bg-secondary border border-success/20 rounded-lg text-text">
               <div className="flex items-center gap-2">
                 <CheckCircle className="w-5 h-5 text-success" />
-                <span className="font-medium">Account created successfully!</span>
+                <span className="font-medium">
+                  Account created successfully!
+                </span>
               </div>
               <p className="text-sm text-text-muted mt-1">
-                Please check your inbox and click the confirmation link to activate your account.
+                Please check your inbox and click the confirmation link to
+                activate your account.
               </p>
             </div>
           )}
@@ -143,9 +148,7 @@ export default function SignIn() {
             </div>
 
             <div className="flex items-center justify-between">
-              <div className="text-sm text-text-muted">
-                Stay signed in
-              </div>
+              <div className="text-sm text-text-muted">Stay signed in</div>
               <Link
                 to="/reset-password"
                 className="text-sm text-primary hover:opacity-80"
@@ -192,7 +195,8 @@ export default function SignIn() {
             Your next contract is waiting
           </h2>
           <p className="text-lg text-text-muted mb-8">
-            Join Canadian contractors already winning government tenders with AI-powered discovery.
+            Join Canadian contractors already winning government tenders with
+            AI-powered discovery.
           </p>
 
           {/* Success Stories */}
@@ -206,7 +210,8 @@ export default function SignIn() {
                   $1.2M in contracts found
                 </div>
                 <div className="text-sm text-text-muted">
-                  "MapleTenders helped us discover opportunities we never would have found manually."
+                  "MapleTenders helped us discover opportunities we never would
+                  have found manually."
                 </div>
               </div>
             </div>
@@ -220,7 +225,8 @@ export default function SignIn() {
                   95% time saved on search
                 </div>
                 <div className="text-sm text-text-muted">
-                  "The AI matches help us focus on contracts we can actually win."
+                  "The AI matches help us focus on contracts we can actually
+                  win."
                 </div>
               </div>
             </div>
@@ -234,7 +240,8 @@ export default function SignIn() {
                   Never miss deadlines
                 </div>
                 <div className="text-sm text-text-muted">
-                  "Smart alerts ensure we're always first to know about new opportunities."
+                  "Smart alerts ensure we're always first to know about new
+                  opportunities."
                 </div>
               </div>
             </div>

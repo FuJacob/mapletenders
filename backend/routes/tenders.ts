@@ -30,6 +30,10 @@ router.get("/getOpenTenderNotices", (req, res) =>
   tenderController.getOpenTenderNotices(req, res)
 );
 
+router.get("/getTenderById/:id", (req, res) =>
+  tenderController.getTenderById(req, res)
+);
+
 router.post("/getTendersFromBookmarkIds", (req, res) =>
   tenderController.getTendersFromBookmarkIds(req, res)
 );

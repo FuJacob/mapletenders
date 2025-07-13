@@ -287,10 +287,10 @@ export class DatabaseService {
     }
   }
 
-  async getSession() {
+  async getUser() {
     try {
-      const { data, error } = await this.supabase.auth.getSession();
-
+      const { data, error } = await this.supabase.auth.getUser();
+      console.log("data", data);
       if (error) {
         console.error("Error getting session:", error);
         throw error;

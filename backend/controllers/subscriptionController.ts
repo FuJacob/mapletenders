@@ -23,16 +23,21 @@ export class SubscriptionController {
       }
 
       // Create or get Stripe customer
-      const customer = await this.subscriptionService.createCustomer(email, name, userId);
+      const customer = await this.subscriptionService.createCustomer(
+        email,
+        name,
+        userId
+      );
 
       // Get the correct price ID based on billing cycle
-      const priceId = billingCycle === "yearly" 
-        ? plan.stripe_price_id_yearly 
-        : plan.stripe_price_id_monthly;
+      const priceId =
+        billingCycle === "yearly"
+          ? plan.stripe_price_id_yearly
+          : plan.stripe_price_id_monthly;
 
       if (!priceId) {
-        return res.status(400).json({ 
-          error: `Price ID not configured for ${billingCycle} billing` 
+        return res.status(400).json({
+          error: `Price ID not configured for ${billingCycle} billing`,
         });
       }
 
@@ -49,8 +54,8 @@ export class SubscriptionController {
       res.json({ sessionId: session.id, url: session.url });
     } catch (error: any) {
       console.error("Error creating checkout session:", error);
-      res.status(500).json({ 
-        error: error.message || "Failed to create checkout session" 
+      res.status(500).json({
+        error: error.message || "Failed to create checkout session",
       });
     }
   };
@@ -64,8 +69,10 @@ export class SubscriptionController {
         return res.status(400).json({ error: "userId is required" });
       }
 
-      const subscription = await this.subscriptionService.getUserSubscription(userId);
-      
+      const subscription = await this.subscriptionService.getUserSubscription(
+        userId
+      );
+
       if (!subscription) {
         return res.status(404).json({ error: "Subscription not found" });
       }
@@ -73,8 +80,8 @@ export class SubscriptionController {
       res.json(subscription);
     } catch (error: any) {
       console.error("Error getting user subscription:", error);
-      res.status(500).json({ 
-        error: error.message || "Failed to get subscription" 
+      res.status(500).json({
+        error: error.message || "Failed to get subscription",
       });
     }
   };
@@ -88,24 +95,27 @@ export class SubscriptionController {
         return res.status(400).json({ error: "userId is required" });
       }
 
-      const subscription = await this.subscriptionService.getUserSubscription(userId);
-      
+      const subscription = await this.subscriptionService.getUserSubscription(
+        userId
+      );
+
       if (!subscription || !subscription.stripe_subscription_id) {
         return res.status(404).json({ error: "Active subscription not found" });
       }
 
-      const canceledSubscription = await this.subscriptionService.cancelSubscription(
-        subscription.stripe_subscription_id
-      );
+      const canceledSubscription =
+        await this.subscriptionService.cancelSubscription(
+          subscription.stripe_subscription_id
+        );
 
-      res.json({ 
+      res.json({
         message: "Subscription canceled successfully",
-        subscription: canceledSubscription 
+        subscription: canceledSubscription,
       });
     } catch (error: any) {
       console.error("Error canceling subscription:", error);
-      res.status(500).json({ 
-        error: error.message || "Failed to cancel subscription" 
+      res.status(500).json({
+        error: error.message || "Failed to cancel subscription",
       });
     }
   };
@@ -119,8 +129,10 @@ export class SubscriptionController {
         return res.status(400).json({ error: "userId is required" });
       }
 
-      const subscription = await this.subscriptionService.getUserSubscription(userId);
-      
+      const subscription = await this.subscriptionService.getUserSubscription(
+        userId
+      );
+
       if (!subscription || !subscription.stripe_customer_id) {
         return res.status(404).json({ error: "Customer not found" });
       }
@@ -133,8 +145,8 @@ export class SubscriptionController {
       res.json({ url: session.url });
     } catch (error: any) {
       console.error("Error creating billing portal session:", error);
-      res.status(500).json({ 
-        error: error.message || "Failed to create billing portal session" 
+      res.status(500).json({
+        error: error.message || "Failed to create billing portal session",
       });
     }
   };
@@ -146,8 +158,8 @@ export class SubscriptionController {
       res.json(plans);
     } catch (error: any) {
       console.error("Error getting plans:", error);
-      res.status(500).json({ 
-        error: error.message || "Failed to get plans" 
+      res.status(500).json({
+        error: error.message || "Failed to get plans",
       });
     }
   };
@@ -161,25 +173,28 @@ export class SubscriptionController {
         return res.status(400).json({ error: "userId is required" });
       }
 
-      const hasActiveSubscription = await this.subscriptionService.hasActiveSubscription(userId);
-      const subscription = await this.subscriptionService.getUserSubscription(userId);
+      const hasActiveSubscription =
+        await this.subscriptionService.hasActiveSubscription(userId);
+      const subscription = await this.subscriptionService.getUserSubscription(
+        userId
+      );
 
-      res.json({ 
+      res.json({
         hasActiveSubscription,
-        subscription: subscription || null
+        subscription: subscription || null,
       });
     } catch (error: any) {
       console.error("Error checking subscription status:", error);
-      res.status(500).json({ 
-        error: error.message || "Failed to check subscription status" 
+      res.status(500).json({
+        error: error.message || "Failed to check subscription status",
       });
     }
   };
 
   // Stripe webhook handler
   handleWebhook = async (req: Request, res: Response) => {
-    const signature = req.headers['stripe-signature'] as string;
-    
+    const signature = req.headers["stripe-signature"] as string;
+
     if (!signature) {
       return res.status(400).json({ error: "Missing stripe-signature header" });
     }
@@ -194,26 +209,26 @@ export class SubscriptionController {
 
       // Handle different event types
       switch (event.type) {
-        case 'customer.subscription.created':
-        case 'customer.subscription.updated':
+        case "customer.subscription.created":
+        case "customer.subscription.updated":
           await this.subscriptionService.handleSubscriptionUpdated(
             event.data.object as Stripe.Subscription
           );
           break;
 
-        case 'customer.subscription.deleted':
+        case "customer.subscription.deleted":
           await this.subscriptionService.handleSubscriptionDeleted(
             event.data.object as Stripe.Subscription
           );
           break;
 
-        case 'invoice.payment_succeeded':
+        case "invoice.payment_succeeded":
           await this.subscriptionService.handleInvoicePaymentSucceeded(
             event.data.object as Stripe.Invoice
           );
           break;
 
-        case 'invoice.payment_failed':
+        case "invoice.payment_failed":
           await this.subscriptionService.handleInvoicePaymentFailed(
             event.data.object as Stripe.Invoice
           );
@@ -226,8 +241,8 @@ export class SubscriptionController {
       res.json({ received: true });
     } catch (error: any) {
       console.error("Webhook error:", error);
-      res.status(400).json({ 
-        error: error.message || "Webhook processing failed" 
+      res.status(400).json({
+        error: error.message || "Webhook processing failed",
       });
     }
   };

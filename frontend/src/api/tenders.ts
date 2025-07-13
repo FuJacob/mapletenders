@@ -21,6 +21,15 @@ export const getOpenTenderNoticesFromDB = async (): Promise<Tender[]> => {
   }
 };
 
+export const getTenderById = async (id: string): Promise<Tender> => {
+  try {
+    const response = await axios.get(`/tenders/getTenderById/${id}`);
+    return response.data;
+  } catch (error) {
+    return handleApiError(error, "Fetch tender by id");
+  }
+};
+
 export const getTendersFromBookmarkIds = async (
   bookmarkIds: string[]
 ): Promise<Tender[]> => {

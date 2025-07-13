@@ -2,12 +2,16 @@ import TableViewHome from "./views/TableViewHome";
 import SearchViewHome from "./views/SearchViewHome";
 import { useSearchParams, useNavigate } from "react-router-dom";
 import { useEffect } from "react";
-
+import { useAppDispatch } from "../app/hooks";
+import { loadTenders } from "../features/tenders/tendersThunk";
 export default function Home() {
+  const dispatch = useAppDispatch();
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
   const view = searchParams.get("view") || "search";
-
+  useEffect(() => {
+    dispatch(loadTenders());
+  }, [dispatch]);
   // Redirect to RFP analysis page if RFP view is selected
   useEffect(() => {
     if (view === "rfp") {

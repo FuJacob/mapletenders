@@ -3,7 +3,7 @@ import { MagnifyingGlass, Table, FileText } from "@phosphor-icons/react";
 import { useNavigate } from "react-router-dom";
 
 interface ViewSwitcherProps {
-  currentView: string;
+  currentView: string | null;
   className?: string;
 }
 

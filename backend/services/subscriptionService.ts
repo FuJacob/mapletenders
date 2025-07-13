@@ -3,8 +3,10 @@ import { DatabaseService } from "./databaseService";
 import type { Database } from "../database.types";
 
 type SubscriptionRow = Database["public"]["Tables"]["subscriptions"]["Row"];
-type SubscriptionInsert = Database["public"]["Tables"]["subscriptions"]["Insert"];
-type SubscriptionUpdate = Database["public"]["Tables"]["subscriptions"]["Update"];
+type SubscriptionInsert =
+  Database["public"]["Tables"]["subscriptions"]["Insert"];
+type SubscriptionUpdate =
+  Database["public"]["Tables"]["subscriptions"]["Update"];
 type PlanRow = Database["public"]["Tables"]["plans"]["Row"];
 
 export class SubscriptionService {
@@ -17,7 +19,11 @@ export class SubscriptionService {
   }
 
   // Create Stripe customer
-  async createCustomer(email: string, name?: string, userId?: string): Promise<Stripe.Customer> {
+  async createCustomer(
+    email: string,
+    name?: string,
+    userId?: string
+  ): Promise<Stripe.Customer> {
     try {
       const customer = await this.stripe.customers.create({
         email,
@@ -57,7 +63,12 @@ export class SubscriptionService {
       });
 
       // Save subscription to database
-      await this.saveSubscriptionToDatabase(subscription, userId, planId, billingCycle);
+      await this.saveSubscriptionToDatabase(
+        subscription,
+        userId,
+        planId,
+        billingCycle
+      );
 
       return subscription;
     } catch (error) {
@@ -80,10 +91,16 @@ export class SubscriptionService {
         stripe_customer_id: stripeSubscription.customer as string,
         stripe_subscription_id: stripeSubscription.id,
         status: stripeSubscription.status,
-        current_period_start: new Date((stripeSubscription as any).current_period_start * 1000).toISOString(),
-        current_period_end: new Date((stripeSubscription as any).current_period_end * 1000).toISOString(),
+        current_period_start: new Date(
+          (stripeSubscription as any).current_period_start * 1000
+        ).toISOString(),
+        current_period_end: new Date(
+          (stripeSubscription as any).current_period_end * 1000
+        ).toISOString(),
         billing_cycle: billingCycle,
-        trial_end: stripeSubscription.trial_end ? new Date(stripeSubscription.trial_end * 1000).toISOString() : null,
+        trial_end: stripeSubscription.trial_end
+          ? new Date(stripeSubscription.trial_end * 1000).toISOString()
+          : null,
         created_at: new Date().toISOString(),
         updated_at: new Date().toISOString(),
       };
@@ -109,13 +126,20 @@ export class SubscriptionService {
       };
 
       if (currentPeriodStart) {
-        updateData.current_period_start = new Date(currentPeriodStart * 1000).toISOString();
+        updateData.current_period_start = new Date(
+          currentPeriodStart * 1000
+        ).toISOString();
       }
       if (currentPeriodEnd) {
-        updateData.current_period_end = new Date(currentPeriodEnd * 1000).toISOString();
+        updateData.current_period_end = new Date(
+          currentPeriodEnd * 1000
+        ).toISOString();
       }
 
-      await this.databaseService.updateSubscriptionByStripeId(stripeSubscriptionId, updateData);
+      await this.databaseService.updateSubscriptionByStripeId(
+        stripeSubscriptionId,
+        updateData
+      );
     } catch (error) {
       console.error("Error updating subscription status:", error);
       throw error;
@@ -123,13 +147,17 @@ export class SubscriptionService {
   }
 
   // Cancel subscription
-  async cancelSubscription(subscriptionId: string): Promise<Stripe.Subscription> {
+  async cancelSubscription(
+    subscriptionId: string
+  ): Promise<Stripe.Subscription> {
     try {
-      const subscription = await this.stripe.subscriptions.cancel(subscriptionId);
-      
+      const subscription = await this.stripe.subscriptions.cancel(
+        subscriptionId
+      );
+
       // Update database
       await this.updateSubscriptionStatus(subscriptionId, "canceled");
-      
+
       return subscription;
     } catch (error) {
       console.error("Error canceling subscription:", error);
@@ -147,6 +175,19 @@ export class SubscriptionService {
     cancelUrl: string
   ): Promise<Stripe.Checkout.Session> {
     try {
+      // Only apply trial period for non-starter plans
+      const subscriptionData: any = {
+        metadata: {
+          user_id: userId,
+          plan_id: planId,
+        },
+      };
+
+      // Add trial period only for professional and enterprise plans
+      if (planId !== "starter") {
+        subscriptionData.trial_period_days = 14;
+      }
+
       const session = await this.stripe.checkout.sessions.create({
         customer: customerId,
         payment_method_types: ["card"],
@@ -159,13 +200,7 @@ export class SubscriptionService {
         mode: "subscription",
         success_url: successUrl,
         cancel_url: cancelUrl,
-        subscription_data: {
-          trial_period_days: 14,
-          metadata: {
-            user_id: userId,
-            plan_id: planId,
-          },
-        },
+        subscription_data: subscriptionData,
       });
 
       return session;
@@ -219,7 +254,10 @@ export class SubscriptionService {
   }
 
   // Create billing portal session
-  async createBillingPortalSession(customerId: string, returnUrl: string): Promise<Stripe.BillingPortal.Session> {
+  async createBillingPortalSession(
+    customerId: string,
+    returnUrl: string
+  ): Promise<Stripe.BillingPortal.Session> {
     try {
       const session = await this.stripe.billingPortal.sessions.create({
         customer: customerId,
@@ -236,11 +274,17 @@ export class SubscriptionService {
   // Verify webhook signature
   verifyWebhookSignature(payload: string, signature: string): Stripe.Event {
     const endpointSecret = process.env.STRIPE_WEBHOOK_SECRET || "";
-    return this.stripe.webhooks.constructEvent(payload, signature, endpointSecret);
+    return this.stripe.webhooks.constructEvent(
+      payload,
+      signature,
+      endpointSecret
+    );
   }
 
   // Handle subscription updated webhook
-  async handleSubscriptionUpdated(subscription: Stripe.Subscription): Promise<void> {
+  async handleSubscriptionUpdated(
+    subscription: Stripe.Subscription
+  ): Promise<void> {
     try {
       await this.updateSubscriptionStatus(
         subscription.id,
@@ -255,7 +299,9 @@ export class SubscriptionService {
   }
 
   // Handle subscription deleted webhook
-  async handleSubscriptionDeleted(subscription: Stripe.Subscription): Promise<void> {
+  async handleSubscriptionDeleted(
+    subscription: Stripe.Subscription
+  ): Promise<void> {
     try {
       await this.updateSubscriptionStatus(subscription.id, "canceled");
     } catch (error) {
@@ -268,7 +314,9 @@ export class SubscriptionService {
   async handleInvoicePaymentSucceeded(invoice: Stripe.Invoice): Promise<void> {
     try {
       if ((invoice as any).subscription) {
-        const stripeSubscription = await this.stripe.subscriptions.retrieve((invoice as any).subscription as string);
+        const stripeSubscription = await this.stripe.subscriptions.retrieve(
+          (invoice as any).subscription as string
+        );
         await this.handleSubscriptionUpdated(stripeSubscription);
       }
     } catch (error) {
@@ -282,7 +330,9 @@ export class SubscriptionService {
     try {
       if ((invoice as any).subscription) {
         // Could send notification to user about failed payment
-        console.log(`Payment failed for subscription: ${(invoice as any).subscription}`);
+        console.log(
+          `Payment failed for subscription: ${(invoice as any).subscription}`
+        );
       }
     } catch (error) {
       console.error("Error handling invoice payment failed webhook:", error);

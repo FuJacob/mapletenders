@@ -32,9 +32,9 @@ export function App() {
 
   // Memoize initialization logic
   const initializeApp = useCallback(() => {
+    dispatch(loadTenders());
     refreshTenders();
     dispatch(loadSession());
-    dispatch(loadTenders());
   }, [dispatch]);
 
   useEffect(() => {
@@ -43,6 +43,7 @@ export function App() {
 
   return (
     <Routes>
+      <Route path="/pricing" element={<Pricing />} />
       <Route element={<Layout />}>
         <Route element={<GuestRoutes />}>
           <Route path="/" element={<LandingPage />} />
@@ -50,7 +51,6 @@ export function App() {
           <Route path="/sign-up" element={<SignUp />} />
           <Route path="/reset-password" element={<ResetPassword />} />
           <Route path="/update-password" element={<UpdatePassword />} />
-          <Route path="/pricing" element={<Pricing />} />
           <Route path="/about" element={<About />} />
           <Route path="/contact" element={<Contact />} />
           <Route

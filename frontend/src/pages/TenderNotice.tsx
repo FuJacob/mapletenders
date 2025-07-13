@@ -10,6 +10,9 @@ import {
   TenderNoticeSummary,
 } from "../components/tenderNotice";
 import { type Tender as TenderData } from "../features/tenders/types";
+import { useAppDispatch } from "../app/hooks";
+import { getTenderById } from "../api";
+import { setTender } from "../features/tenders/tendersSlice";
 
 // Pure utility functions moved outside component
 const formatDate = (dateString: string | null): string => {
@@ -68,11 +71,11 @@ const getDaysUntilClosing = (closingDate: string | null): string => {
 export default function TenderNotice() {
   const { tenderId } = useParams<{ tenderId: string }>();
   const navigate = useNavigate();
-  const [tender, setTender] = useState<TenderData | null>(null);
+  const [selectedTender, setSelectedTender] = useState<TenderData | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [isBookmarked, setIsBookmarked] = useState(false);
-
+  const dispatch = useAppDispatch();
   useEffect(() => {
     const fetchTender = async () => {
       if (!tenderId) {
@@ -84,12 +87,19 @@ export default function TenderNotice() {
       try {
         console.log("Fetching tender:", tenderId);
         const data = await getTenderNotice(tenderId);
+        if (data === null) {
+          const data = await getTenderById(tenderId);
+          if (data) {
+            dispatch(setTender(data));
+            setSelectedTender(data);
+          }
+        }
         console.log(data);
         if (error) {
           console.error("Error fetching tender:", error);
           setError("Failed to load tender details");
         } else if (data) {
-          setTender(data);
+          setSelectedTender(data);
         } else {
           setError("Tender not found");
         }
@@ -102,7 +112,7 @@ export default function TenderNotice() {
     };
 
     fetchTender();
-  }, [tenderId, error]);
+  }, [tenderId, error, dispatch]);
 
   const handleBookmark = useCallback(() => {
     setIsBookmarked(!isBookmarked);
@@ -112,19 +122,19 @@ export default function TenderNotice() {
   const handleShare = useCallback(() => {
     if (navigator.share) {
       navigator.share({
-        title: tender?.title || "Government Tender",
+        title: selectedTender?.title || "Government Tender",
         url: window.location.href,
       });
     } else {
       navigator.clipboard.writeText(window.location.href);
       // TODO: Show toast notification
     }
-  }, [tender?.title]);
+  }, [selectedTender?.title]);
 
   // Calculate values before early returns to comply with rules of hooks
   const closingDays = useMemo(
-    () => getDaysUntilClosing(tender?.tender_closing_date || null),
-    [tender?.tender_closing_date]
+    () => getDaysUntilClosing(selectedTender?.tender_closing_date || null),
+    [selectedTender?.tender_closing_date]
   );
   const isUrgent = useMemo(
     () =>
@@ -160,7 +170,7 @@ export default function TenderNotice() {
     );
   }
 
-  if (!tender) {
+  if (!selectedTender) {
     return (
       <div className="min-h-screen bg-background">
         <div className="max-w-4xl mx-auto p-8">
@@ -188,7 +198,7 @@ export default function TenderNotice() {
     <div className="min-h-screen bg-background">
       <div className="max-w-6xl mx-auto p-6">
         <TenderNoticeHeader
-          tender={tender}
+          tender={selectedTender}
           isBookmarked={isBookmarked}
           isUrgent={isUrgent}
           closingDays={closingDays}
@@ -202,14 +212,14 @@ export default function TenderNotice() {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           {/* Main Content */}
           <div className="lg:col-span-2">
-            <TenderNoticeSummary tender={tender} />
-            <TenderNoticeBody tender={tender} />
+            <TenderNoticeSummary tender={selectedTender} />
+            <TenderNoticeBody tender={selectedTender} />
           </div>
 
           {/* Sidebar */}
           <div>
             <TenderNoticeSidebar
-              tender={tender}
+              tender={selectedTender}
               isBookmarked={isBookmarked}
               isUrgent={isUrgent}
               onBookmark={handleBookmark}
