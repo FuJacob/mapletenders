@@ -1,6 +1,6 @@
 import React from "react";
 import { MagnifyingGlass, Table, FileText } from "@phosphor-icons/react";
-import { useSearchParams, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 
 interface ViewSwitcherProps {
   currentView: string;
@@ -11,7 +11,6 @@ const ViewSwitcher: React.FC<ViewSwitcherProps> = ({
   currentView,
   className = "",
 }) => {
-  const [, setSearchParams] = useSearchParams();
   const navigate = useNavigate();
 
   const handleViewChange = (view: string) => {
