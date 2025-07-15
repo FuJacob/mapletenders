@@ -9,7 +9,11 @@
     "express": "^5.1.0",
     "openai": "^5.8.2",
     "papaparse": "^5.5.3",
-    "stripe": "^18.3.0"
+    "puppeteer": "^24.12.1",
+    "puppeteer-extra": "^3.3.6",
+    "puppeteer-extra-plugin-stealth": "^2.11.2",
+    "stripe": "^18.3.0",
+    "xlsx": "^0.18.5"
   },
   "devDependencies": {
     "@types/cors": "^2.8.19",

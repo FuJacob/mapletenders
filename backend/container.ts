@@ -10,6 +10,7 @@ import {
   TenderService,
   RfpService,
   SubscriptionService,
+  ScrapingService,
 } from "./services";
 
 import {
@@ -21,6 +22,7 @@ import {
   ChatController,
   BookmarkController,
   SubscriptionController,
+  ScrapingController,
 } from "./controllers";
 
 // Initialize services
@@ -40,6 +42,7 @@ const tenderService = new TenderService(
 
 const rfpService = new RfpService(databaseService, aiService);
 const subscriptionService = new SubscriptionService(databaseService);
+const scrapingService = new ScrapingService(databaseService, csvService, mlService, dataTransformationService, aiService);
 
 // Initialize controllers
 export const aiController = new AiController(
@@ -61,3 +64,4 @@ export const bookmarkController = new BookmarkController(databaseService);
 export const subscriptionController = new SubscriptionController(
   subscriptionService
 );
+export const scrapingController = new ScrapingController(scrapingService);

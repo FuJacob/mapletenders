@@ -6,3 +6,4 @@ export { ProfileController } from "./profileController";
 export { ChatController } from "./chatController";
 export { BookmarkController } from "./bookmarkController";
 export { SubscriptionController } from "./subscriptionController";
+export { ScrapingController } from "./scrapingController";

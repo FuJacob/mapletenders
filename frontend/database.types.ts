@@ -296,6 +296,7 @@ export type Database = {
           regions_of_opportunity: string | null
           selection_criteria: string | null
           solicitation_number: string | null
+          source: string | null
           tender_closing_date: string | null
           tender_description: string | null
           tender_status: string | null
@@ -344,6 +345,7 @@ export type Database = {
           regions_of_opportunity?: string | null
           selection_criteria?: string | null
           solicitation_number?: string | null
+          source?: string | null
           tender_closing_date?: string | null
           tender_description?: string | null
           tender_status?: string | null
@@ -392,6 +394,7 @@ export type Database = {
           regions_of_opportunity?: string | null
           selection_criteria?: string | null
           solicitation_number?: string | null
+          source?: string | null
           tender_closing_date?: string | null
           tender_description?: string | null
           tender_status?: string | null

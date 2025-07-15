@@ -11,6 +11,7 @@ import profileRoutes from "./routes/profile";
 import chatRoutes from "./routes/chat";
 import bookmarkRoutes from "./routes/bookmarks";
 import subscriptionRoutes from "./routes/subscriptions";
+import scrapingRoutes from "./routes/scraping";
 
 const app = express();
 app.use(cors({ origin: "*" })); // Allow all origins
@@ -34,6 +35,7 @@ app.use("/profile", profileRoutes);
 app.use("/chat", chatRoutes);
 app.use("/bookmarks", bookmarkRoutes);
 app.use("/subscriptions", subscriptionRoutes);
+app.use("/scraping", scrapingRoutes);
 
 // Serve static files from the 'assets' folder
 app.use("/assets", express.static(path.join(__dirname, "assets")));
