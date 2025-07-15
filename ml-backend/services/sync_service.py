@@ -26,8 +26,8 @@ class SyncService:
             # Create index
             search_service.create_tenders_index()
             
-            # Get all tenders from Supabase
-            response = self.supabase.table('tenders').select('*').execute()
+            # Get all tenders from Supabase (using new schema)
+            response = self.supabase.table('tenders_new').select('*').execute()
             tenders = response.data
             
             print(f"📊 Found {len(tenders)} tenders")
@@ -68,8 +68,8 @@ class SyncService:
         """Sync a single tender by ID"""
         
         try:
-            # Get tender from Supabase
-            response = self.supabase.table('tenders').select('*').eq('id', tender_id).execute()
+            # Get tender from Supabase (using new schema)
+            response = self.supabase.table('tenders_new').select('*').eq('id', tender_id).execute()
             
             if not response.data:
                 return {
@@ -99,8 +99,8 @@ class SyncService:
         """Get current sync status and statistics"""
         
         try:
-            # Get tender count from Supabase
-            supabase_response = self.supabase.table('tenders').select('id', count='exact').execute()
+            # Get tender count from Supabase (using new schema)
+            supabase_response = self.supabase.table('tenders_new').select('id', count='exact').execute()
             supabase_count = supabase_response.count
             
             # Get tender count from Elasticsearch

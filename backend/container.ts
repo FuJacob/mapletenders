@@ -6,7 +6,6 @@ import {
   CsvService,
   MlService,
   AiService,
-  DataTransformationService,
   TenderService,
   RfpService,
   SubscriptionService,
@@ -30,19 +29,17 @@ const databaseService = new DatabaseService();
 const csvService = new CsvService();
 const mlService = new MlService();
 const aiService = new AiService();
-const dataTransformationService = new DataTransformationService();
 
 const tenderService = new TenderService(
   databaseService,
   csvService,
   mlService,
-  dataTransformationService,
   aiService
 );
 
 const rfpService = new RfpService(databaseService, aiService);
 const subscriptionService = new SubscriptionService(databaseService);
-const scrapingService = new ScrapingService(databaseService, csvService, mlService, dataTransformationService, aiService);
+const scrapingService = new ScrapingService(databaseService, csvService, mlService, aiService);
 
 // Initialize controllers
 export const aiController = new AiController(

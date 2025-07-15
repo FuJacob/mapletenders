@@ -18,10 +18,10 @@ interface TenderCardProps {
 function TenderCard({ tender, onBookmark, onViewDetails }: TenderCardProps) {
   // Memoize formatted date to prevent recalculation
   const formattedDate = useMemo(() => {
-    return tender.tender_closing_date
-      ? new Date(tender.tender_closing_date).toLocaleDateString()
+    return tender.closing_date
+      ? new Date(tender.closing_date).toLocaleDateString()
       : "TBD";
-  }, [tender.tender_closing_date]);
+  }, [tender.closing_date]);
 
   // Memoize click handlers
   const handleBookmark = useCallback(() => {
@@ -40,7 +40,9 @@ function TenderCard({ tender, onBookmark, onViewDetails }: TenderCardProps) {
             <ArrowSquareOut className="w-4 h-4 text-text-light" />
           </h3>
           <p className="text-sm text-text-light mb-2">
-            {tender.contracting_entity_name}
+            {typeof tender.contracting_entity === 'object' && tender.contracting_entity !== null 
+              ? (tender.contracting_entity as any)?.name || "Unknown Organization"
+              : "Unknown Organization"}
           </p>
           <div className="flex items-center gap-4 text-sm text-text-light">
             <span className="flex items-center gap-1">
@@ -49,7 +51,7 @@ function TenderCard({ tender, onBookmark, onViewDetails }: TenderCardProps) {
             </span>
             <span className="flex items-center gap-1">
               <MapPin className="w-4 h-4" />
-              {tender.regions_of_delivery}
+              {tender.delivery_location}
             </span>
             <span className="flex items-center gap-1">
               <Calendar className="w-4 h-4" />
@@ -73,10 +75,10 @@ function TenderCard({ tender, onBookmark, onViewDetails }: TenderCardProps) {
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2">
           <span className="bg-border text-text-light px-2 py-1 rounded text-xs">
-            {tender.notice_type || "RFP"}
+            {tender.procurement_type || "RFP"}
           </span>
           <span className="bg-success/10 text-success px-2 py-1 rounded text-xs">
-            {tender.tender_status || "Open"}
+            {tender.status || "Open"}
           </span>
         </div>
         <button

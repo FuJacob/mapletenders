@@ -13,16 +13,15 @@ export class DatabaseService {
 
   async getTendersFromBookmarkIds(bookmarkIds: string[]) {
     return await this.supabase
-      .from("tenders")
+      .from("tenders_new")
       .select("*")
       .in("id", bookmarkIds);
   }
 
-  async updateTenderSummary(tenderId: string, precomputed_summary: string) {
-    return await this.supabase.from("tenders").upsert({
-      id: tenderId,
-      precomputed_summary,
-    });
+  async updateTenderSummary(tenderId: string, summary: string) {
+    return await this.supabase.from("tenders_new").update({
+      summary,
+    }).eq("id", tenderId);
   }
   async getAllBookmarks() {
     return await this.supabase.from("bookmarks").select("*");
@@ -125,26 +124,26 @@ export class DatabaseService {
   }
 
   async clearTenders() {
-    return await this.supabase.from("tenders").delete().neq("title", "");
+    return await this.supabase.from("tenders_new").delete().neq("title", "");
   }
 
   async insertTenders(
-    tenderData: Database["public"]["Tables"]["tenders"]["Insert"][]
+    tenderData: Database["public"]["Tables"]["tenders_new"]["Insert"][]
   ) {
-    return await this.supabase.from("tenders").insert(tenderData);
+    return await this.supabase.from("tenders_new").insert(tenderData);
   }
 
   // New method: Upsert tenders to preserve bookmarks
   async upsertTenders(
-    tenderData: Database["public"]["Tables"]["tenders"]["Insert"][]
+    tenderData: Database["public"]["Tables"]["tenders_new"]["Insert"][]
   ) {
     try {
-      // Use reference_number as the unique identifier for upserting
+      // Use id as the unique identifier for upserting
       // This preserves existing tender IDs and thus maintains bookmark relationships
       const { data, error } = await this.supabase
-        .from("tenders")
+        .from("tenders_new")
         .upsert(tenderData, {
-          onConflict: "reference_number",
+          onConflict: "id",
           ignoreDuplicates: false,
         })
         .select();
@@ -166,10 +165,10 @@ export class DatabaseService {
     try {
       // Delete tenders whose reference numbers are not in the current dataset
       const { data, error } = await this.supabase
-        .from("tenders")
+        .from("tenders_new")
         .delete()
         .not(
-          "reference_number",
+          "source_reference",
           "in",
           `(${currentReferenceNumbers.join(",")})`
         );
@@ -188,30 +187,30 @@ export class DatabaseService {
 
   async getTenderById(id: string) {
     return await this.supabase
-      .from("tenders")
+      .from("tenders_new")
       .select("*")
       .eq("id", id)
       .single();
   }
 
   async getAllTenders() {
-    return await this.supabase.from("tenders").select("*");
+    return await this.supabase.from("tenders_new").select("*");
   }
 
   async getTendersForAiFiltering(limit: number = 5) {
     return await this.supabase
-      .from("tenders")
+      .from("tenders_new")
       .select(
-        "referenceNumber-numeroReference, tenderDescription-descriptionAppelOffres-eng"
+        "source_reference, description"
       )
       .limit(limit);
   }
 
   async getTendersByReferenceNumbers(referenceNumbers: string[]) {
     return await this.supabase
-      .from("tenders")
+      .from("tenders_new")
       .select("*")
-      .in("referenceNumber-numeroReference", referenceNumbers);
+      .in("source_reference", referenceNumbers);
   }
 
   async insertRfpAnalysis(data: string) {
@@ -468,7 +467,7 @@ export class DatabaseService {
         .select(
           `
           *,
-          tender_notice:tenders(*)
+          tender_notice:tenders_new(*)
         `
         )
         .eq("user_id", userId)

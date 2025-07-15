@@ -47,7 +47,7 @@ export type Database = {
             foreignKeyName: "bookmarks_tender_notice_id_fkey"
             columns: ["tender_notice_id"]
             isOneToOne: false
-            referencedRelation: "tenders"
+            referencedRelation: "tenders_new"
             referencedColumns: ["id"]
           },
           {
@@ -250,7 +250,7 @@ export type Database = {
             foreignKeyName: "tender_ai_summaries_id_fkey"
             columns: ["id"]
             isOneToOne: true
-            referencedRelation: "tenders"
+            referencedRelation: "tenders_new"
             referencedColumns: ["id"]
           },
         ]
@@ -402,6 +402,144 @@ export type Database = {
           trade_agreements?: string | null
           unspsc?: string | null
           unspsc_description?: string | null
+        }
+        Relationships: []
+      }
+      tenders_new: {
+        Row: {
+          accessibility_requirements: string | null
+          addenda_count: number | null
+          amendment_date: string | null
+          bid_deposit_amount: number | null
+          bid_deposit_required: boolean | null
+          category_primary: string | null
+          category_secondary: string | null
+          classification_codes: Json | null
+          closing_date: string | null
+          contract_end_date: string | null
+          contract_start_date: string | null
+          contracting_entity: Json | null
+          created_at: string | null
+          currency: string | null
+          delivery_location: string | null
+          description: string | null
+          documents: Json | null
+          embedding: string | null
+          embedding_input: string | null
+          end_user_entity: Json | null
+          estimated_value_max: number | null
+          estimated_value_min: number | null
+          id: string
+          jurisdiction: string | null
+          last_scraped_at: string | null
+          plan_takers_count: number | null
+          primary_contact: Json | null
+          procurement_method: string | null
+          procurement_type: string | null
+          published_date: string | null
+          regions: Json | null
+          requirements: Json | null
+          selection_criteria: string | null
+          source: string
+          source_reference: string | null
+          source_url: string | null
+          status: string | null
+          submission_method: string | null
+          submissions_count: number | null
+          summary: string | null
+          title: string | null
+          trade_agreements: Json | null
+          updated_at: string | null
+        }
+        Insert: {
+          accessibility_requirements?: string | null
+          addenda_count?: number | null
+          amendment_date?: string | null
+          bid_deposit_amount?: number | null
+          bid_deposit_required?: boolean | null
+          category_primary?: string | null
+          category_secondary?: string | null
+          classification_codes?: Json | null
+          closing_date?: string | null
+          contract_end_date?: string | null
+          contract_start_date?: string | null
+          contracting_entity?: Json | null
+          created_at?: string | null
+          currency?: string | null
+          delivery_location?: string | null
+          description?: string | null
+          documents?: Json | null
+          embedding?: string | null
+          embedding_input?: string | null
+          end_user_entity?: Json | null
+          estimated_value_max?: number | null
+          estimated_value_min?: number | null
+          id: string
+          jurisdiction?: string | null
+          last_scraped_at?: string | null
+          plan_takers_count?: number | null
+          primary_contact?: Json | null
+          procurement_method?: string | null
+          procurement_type?: string | null
+          published_date?: string | null
+          regions?: Json | null
+          requirements?: Json | null
+          selection_criteria?: string | null
+          source: string
+          source_reference?: string | null
+          source_url?: string | null
+          status?: string | null
+          submission_method?: string | null
+          submissions_count?: number | null
+          summary?: string | null
+          title?: string | null
+          trade_agreements?: Json | null
+          updated_at?: string | null
+        }
+        Update: {
+          accessibility_requirements?: string | null
+          addenda_count?: number | null
+          amendment_date?: string | null
+          bid_deposit_amount?: number | null
+          bid_deposit_required?: boolean | null
+          category_primary?: string | null
+          category_secondary?: string | null
+          classification_codes?: Json | null
+          closing_date?: string | null
+          contract_end_date?: string | null
+          contract_start_date?: string | null
+          contracting_entity?: Json | null
+          created_at?: string | null
+          currency?: string | null
+          delivery_location?: string | null
+          description?: string | null
+          documents?: Json | null
+          embedding?: string | null
+          embedding_input?: string | null
+          end_user_entity?: Json | null
+          estimated_value_max?: number | null
+          estimated_value_min?: number | null
+          id?: string
+          jurisdiction?: string | null
+          last_scraped_at?: string | null
+          plan_takers_count?: number | null
+          primary_contact?: Json | null
+          procurement_method?: string | null
+          procurement_type?: string | null
+          published_date?: string | null
+          regions?: Json | null
+          requirements?: Json | null
+          selection_criteria?: string | null
+          source?: string
+          source_reference?: string | null
+          source_url?: string | null
+          status?: string | null
+          submission_method?: string | null
+          submissions_count?: number | null
+          summary?: string | null
+          title?: string | null
+          trade_agreements?: Json | null
+          updated_at?: string | null
         }
         Relationships: []
       }

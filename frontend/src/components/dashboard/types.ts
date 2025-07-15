@@ -1,22 +1,23 @@
 import type { Database } from "../../../database.types";
 
-// Use database types as source of truth
-export type Tender = Database["public"]["Tables"]["tenders"]["Row"] & {
+// Use new centralized schema as source of truth
+export type Tender = Database["public"]["Tables"]["tenders_new"]["Row"] & {
   relevanceScore?: number; // Custom field for dashboard
 };
 
 // Minimal tender data for components and mock data
 export type TenderSummary = Pick<
-  Database["public"]["Tables"]["tenders"]["Row"],
+  Database["public"]["Tables"]["tenders_new"]["Row"],
   | "id"
   | "title"
-  | "contracting_entity_name"
-  | "tender_closing_date"
-  | "regions_of_delivery"
-  | "notice_type"
-  | "tender_status"
-  | "publication_date"
-  | "procurement_category"
+  | "closing_date"
+  | "delivery_location"
+  | "procurement_type"
+  | "status"
+  | "published_date"
+  | "category_primary"
+  | "source_url"
+  | "contracting_entity"
 > & {
   relevanceScore?: number;
 };
@@ -24,27 +25,25 @@ export type TenderSummary = Pick<
 // Display interface using utility types to transform database fields to friendly names
 export type TenderDisplay = {
   id: string;
-  title: NonNullable<Database["public"]["Tables"]["tenders"]["Row"]["title"]>;
-  organization: NonNullable<
-    Database["public"]["Tables"]["tenders"]["Row"]["contracting_entity_name"]
-  >;
-  location: string; // Computed from multiple address fields
+  title: NonNullable<Database["public"]["Tables"]["tenders_new"]["Row"]["title"]>;
+  organization: string; // Extracted from contracting_entity JSON
+  location: string; // From delivery_location
   deadline: NonNullable<
-    Database["public"]["Tables"]["tenders"]["Row"]["tender_closing_date"]
+    Database["public"]["Tables"]["tenders_new"]["Row"]["closing_date"]
   >;
   publishDate: NonNullable<
-    Database["public"]["Tables"]["tenders"]["Row"]["publication_date"]
+    Database["public"]["Tables"]["tenders_new"]["Row"]["published_date"]
   >;
   category: NonNullable<
-    Database["public"]["Tables"]["tenders"]["Row"]["procurement_category"]
+    Database["public"]["Tables"]["tenders_new"]["Row"]["category_primary"]
   >;
   status: NonNullable<
-    Database["public"]["Tables"]["tenders"]["Row"]["tender_status"]
+    Database["public"]["Tables"]["tenders_new"]["Row"]["status"]
   >;
   noticeUrl: NonNullable<
-    Database["public"]["Tables"]["tenders"]["Row"]["notice_url"]
+    Database["public"]["Tables"]["tenders_new"]["Row"]["source_url"]
   >;
-  description?: Database["public"]["Tables"]["tenders"]["Row"]["tender_description"];
+  description?: Database["public"]["Tables"]["tenders_new"]["Row"]["description"];
   relevanceScore?: number;
 };
 
@@ -63,13 +62,15 @@ export interface Activity {
 export const mapTenderToDisplay = (tender: Tender): TenderDisplay => ({
   id: tender.id || "",
   title: tender.title || "Untitled",
-  organization: tender.contracting_entity_name || "Unknown Organization",
-  location: tender.regions_of_delivery || "Location TBD",
-  deadline: tender.tender_closing_date || "",
-  publishDate: tender.publication_date || "",
-  category: tender.procurement_category || "General",
-  status: tender.tender_status || "Unknown",
-  noticeUrl: tender.notice_url || "",
-  description: tender.tender_description || undefined,
+  organization: typeof tender.contracting_entity === 'object' && tender.contracting_entity !== null 
+    ? (tender.contracting_entity as any)?.name || "Unknown Organization"
+    : "Unknown Organization",
+  location: tender.delivery_location || "Location TBD",
+  deadline: tender.closing_date || "",
+  publishDate: tender.published_date || "",
+  category: tender.category_primary || "General",
+  status: tender.status || "Unknown",
+  noticeUrl: tender.source_url || "",
+  description: tender.description || undefined,
   relevanceScore: tender.relevanceScore || 0,
 });

@@ -1,9 +1,9 @@
 import type { Database } from "../../../database.types";
 
-// Use database types as source of truth
-export type Tender = Database["public"]["Tables"]["tenders"]["Row"];
-export type TenderInsert = Database["public"]["Tables"]["tenders"]["Insert"];
-export type TenderUpdate = Database["public"]["Tables"]["tenders"]["Update"];
+// Use new centralized schema as the primary types
+export type Tender = Database["public"]["Tables"]["tenders_new"]["Row"];
+export type TenderInsert = Database["public"]["Tables"]["tenders_new"]["Insert"];
+export type TenderUpdate = Database["public"]["Tables"]["tenders_new"]["Update"];
 
 // Legacy interface - DEPRECATED: Use Tender type instead
 /** @deprecated Use Tender type instead */

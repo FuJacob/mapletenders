@@ -14,64 +14,82 @@ class SearchService:
         self.es = Elasticsearch(['http://localhost:9200'])
         
     def create_tenders_index(self):
-        """Create the search index matching actual tender schema"""
+        """Create the search index matching new centralized tender schema"""
         mapping = {
             "mappings": {
                 "properties": {
                     # Core identifiers
                     "id": {"type": "keyword"},
-                    "reference_number": {"type": "keyword"},
-                    "solicitation_number": {"type": "keyword"},
+                    "source": {"type": "keyword"},
+                    "source_reference": {"type": "keyword"},
+                    "source_url": {"type": "keyword"},
                     
                     # Main content fields
                     "title": {"type": "text", "analyzer": "english"},
-                    "tender_description": {"type": "text", "analyzer": "english"},
-                    "precomputed_summary": {"type": "text"},
+                    "description": {"type": "text", "analyzer": "english"},
+                    "summary": {"type": "text"},
                     
                     # Dates
-                    "publication_date": {"type": "date"},
-                    "tender_closing_date": {"type": "date"},
-                    "expected_contract_start_date": {"type": "date"},
-                    "expected_contract_end_date": {"type": "date"},
+                    "published_date": {"type": "date"},
+                    "closing_date": {"type": "date"},
+                    "contract_start_date": {"type": "date"},
+                    "contract_end_date": {"type": "date"},
                     "amendment_date": {"type": "date"},
+                    "last_scraped_at": {"type": "date"},
                     
                     # Status and classification
-                    "tender_status": {"type": "keyword"},
-                    "notice_type": {"type": "keyword"},
+                    "status": {"type": "keyword"},
+                    "procurement_type": {"type": "keyword"},
                     "procurement_method": {"type": "keyword"},
-                    "procurement_category": {"type": "keyword"},
+                    "category_primary": {"type": "keyword"},
+                    "category_secondary": {"type": "keyword"},
+                    "jurisdiction": {"type": "keyword"},
                     
                     # Geographic information
-                    "regions_of_delivery": {"type": "keyword"},
-                    "regions_of_opportunity": {"type": "keyword"},
-                    "contracting_entity_province": {"type": "keyword"},
-                    "contracting_entity_city": {"type": "keyword"},
-                    "contracting_entity_country": {"type": "keyword"},
+                    "delivery_location": {"type": "keyword"},
+                    "regions": {"type": "keyword"},
                     
-                    # Organization details
-                    "contracting_entity_name": {"type": "text"},
-                    "end_user_entities_name": {"type": "text"},
+                    # Financial information
+                    "estimated_value_min": {"type": "float"},
+                    "estimated_value_max": {"type": "float"},
+                    "currency": {"type": "keyword"},
+                    "bid_deposit_required": {"type": "boolean"},
+                    "bid_deposit_amount": {"type": "float"},
                     
-                    # Contact information
-                    "contact_name": {"type": "text"},
-                    "contact_email": {"type": "keyword"},
-                    "contact_phone": {"type": "keyword"},
-                    "contact_province": {"type": "keyword"},
-                    "contact_city": {"type": "keyword"},
+                    # Organization details (JSON objects)
+                    "contracting_entity": {"type": "object"},
+                    "contracting_entity.name": {"type": "text"},
+                    "contracting_entity.city": {"type": "keyword"},
+                    "contracting_entity.province": {"type": "keyword"},
+                    "contracting_entity.country": {"type": "keyword"},
                     
-                    # Classification codes
-                    "gsin": {"type": "keyword"},
-                    "gsin_description": {"type": "text"},
-                    "unspsc": {"type": "keyword"},
-                    "unspsc_description": {"type": "text"},
+                    "end_user_entity": {"type": "object"},
+                    "end_user_entity.name": {"type": "text"},
                     
-                    # Additional details
-                    "trade_agreements": {"type": "text"},
+                    "primary_contact": {"type": "object"},
+                    "primary_contact.name": {"type": "text"},
+                    "primary_contact.email": {"type": "keyword"},
+                    "primary_contact.phone": {"type": "keyword"},
+                    
+                    # Classification codes (JSON object)
+                    "classification_codes": {"type": "object"},
+                    "classification_codes.gsin": {"type": "keyword"},
+                    "classification_codes.gsin_description": {"type": "text"},
+                    "classification_codes.unspsc": {"type": "keyword"},
+                    "classification_codes.unspsc_description": {"type": "text"},
+                    
+                    # Requirements and criteria
+                    "requirements": {"type": "object"},
                     "selection_criteria": {"type": "text"},
-                    "limited_tendering_reason": {"type": "text"},
-                    "amendment_number": {"type": "keyword"},
-                    "attachments": {"type": "text"},
-                    "notice_url": {"type": "keyword"},
+                    "submission_method": {"type": "keyword"},
+                    
+                    # Documents and additional info
+                    "documents": {"type": "object"},
+                    "addenda_count": {"type": "integer"},
+                    "plan_takers_count": {"type": "integer"},
+                    "submissions_count": {"type": "integer"},
+                    "trade_agreements": {"type": "keyword"},
+                    "accessibility_requirements": {"type": "text"},
                     
                     # AI-generated embedding
                     "embedding": {
@@ -87,78 +105,89 @@ class SearchService:
         print("✅ Tenders index created with full schema")
 
     def index_tender(self, tender_data: Dict[str, Any]):
-        """Add one tender to search index"""
+        """Add one tender to search index using new schema"""
         # Sanitize empty string date fields
         date_fields = [
-            "publication_date",
-            "tender_closing_date",
-            "expected_contract_start_date",
-            "expected_contract_end_date",
-            "amendment_date"
+            "published_date",
+            "closing_date",
+            "contract_start_date",
+            "contract_end_date",
+            "amendment_date",
+            "last_scraped_at"
         ]
         for field in date_fields:
             if tender_data.get(field) == "":
                 tender_data[field] = None
 
         # Use precomputed embedding directly
-        embedding = tender_data["embedding"]
+        embedding = tender_data.get("embedding")
         
-        # Build document with all available fields
+        # Extract nested object data safely
+        contracting_entity = tender_data.get("contracting_entity") or {}
+        end_user_entity = tender_data.get("end_user_entity") or {}
+        primary_contact = tender_data.get("primary_contact") or {}
+        classification_codes = tender_data.get("classification_codes") or {}
+        
+        # Build document with all available fields from new schema
         doc = {
             # Core identifiers
             "id": tender_data.get("id"),
-            "reference_number": tender_data.get("reference_number"),
-            "solicitation_number": tender_data.get("solicitation_number"),
+            "source": tender_data.get("source"),
+            "source_reference": tender_data.get("source_reference"),
+            "source_url": tender_data.get("source_url"),
             
             # Main content
             "title": tender_data.get("title", ""),
-            "tender_description": tender_data.get("tender_description", ""),
-            "precomputed_summary": tender_data.get("precomputed_summary"),
+            "description": tender_data.get("description", ""),
+            "summary": tender_data.get("summary"),
             
             # Dates
-            "publication_date": tender_data.get("publication_date"),
-            "tender_closing_date": tender_data.get("tender_closing_date"),
-            "expected_contract_start_date": tender_data.get("expected_contract_start_date"),
-            "expected_contract_end_date": tender_data.get("expected_contract_end_date"),
+            "published_date": tender_data.get("published_date"),
+            "closing_date": tender_data.get("closing_date"),
+            "contract_start_date": tender_data.get("contract_start_date"),
+            "contract_end_date": tender_data.get("contract_end_date"),
             "amendment_date": tender_data.get("amendment_date"),
+            "last_scraped_at": tender_data.get("last_scraped_at"),
             
             # Status and classification
-            "tender_status": tender_data.get("tender_status"),
-            "notice_type": tender_data.get("notice_type"),
+            "status": tender_data.get("status"),
+            "procurement_type": tender_data.get("procurement_type"),
             "procurement_method": tender_data.get("procurement_method"),
-            "procurement_category": tender_data.get("procurement_category"),
+            "category_primary": tender_data.get("category_primary"),
+            "category_secondary": tender_data.get("category_secondary"),
+            "jurisdiction": tender_data.get("jurisdiction"),
             
             # Geographic information
-            "regions_of_delivery": tender_data.get("regions_of_delivery"),
-            "regions_of_opportunity": tender_data.get("regions_of_opportunity"),
-            "contracting_entity_province": tender_data.get("contracting_entity_province"),
-            "contracting_entity_city": tender_data.get("contracting_entity_city"),
-            "contracting_entity_country": tender_data.get("contracting_entity_country"),
+            "delivery_location": tender_data.get("delivery_location"),
+            "regions": tender_data.get("regions"),
+            
+            # Financial information
+            "estimated_value_min": tender_data.get("estimated_value_min"),
+            "estimated_value_max": tender_data.get("estimated_value_max"),
+            "currency": tender_data.get("currency"),
+            "bid_deposit_required": tender_data.get("bid_deposit_required"),
+            "bid_deposit_amount": tender_data.get("bid_deposit_amount"),
             
             # Organization details
-            "contracting_entity_name": tender_data.get("contracting_entity_name"),
-            "end_user_entities_name": tender_data.get("end_user_entities_name"),
-            
-            # Contact information
-            "contact_name": tender_data.get("contact_name"),
-            "contact_email": tender_data.get("contact_email"),
-            "contact_phone": tender_data.get("contact_phone"),
-            "contact_province": tender_data.get("contact_province"),
-            "contact_city": tender_data.get("contact_city"),
+            "contracting_entity": contracting_entity,
+            "end_user_entity": end_user_entity,
+            "primary_contact": primary_contact,
             
             # Classification codes
-            "gsin": tender_data.get("gsin"),
-            "gsin_description": tender_data.get("gsin_description"),
-            "unspsc": tender_data.get("unspsc"),
-            "unspsc_description": tender_data.get("unspsc_description"),
+            "classification_codes": classification_codes,
             
-            # Additional details
-            "trade_agreements": tender_data.get("trade_agreements"),
+            # Requirements and criteria
+            "requirements": tender_data.get("requirements"),
             "selection_criteria": tender_data.get("selection_criteria"),
-            "limited_tendering_reason": tender_data.get("limited_tendering_reason"),
-            "amendment_number": tender_data.get("amendment_number"),
-            "attachments": tender_data.get("attachments"),
-            "notice_url": tender_data.get("notice_url"),
+            "submission_method": tender_data.get("submission_method"),
+            
+            # Documents and additional info
+            "documents": tender_data.get("documents"),
+            "addenda_count": tender_data.get("addenda_count"),
+            "plan_takers_count": tender_data.get("plan_takers_count"),
+            "submissions_count": tender_data.get("submissions_count"),
+            "trade_agreements": tender_data.get("trade_agreements"),
+            "accessibility_requirements": tender_data.get("accessibility_requirements"),
             
             # Embedding
             "embedding": embedding,
@@ -168,20 +197,23 @@ class SearchService:
         self.es.index(index="tenders", id=tender_data["id"], body=doc)
 
     def _generate_embedding(self, tender_data: Dict[str, Any]) -> List[float]:
-        """Generate embedding from tender content"""
+        """Generate embedding from tender content using new schema"""
         # Combine multiple fields for rich embedding
         content_parts = []
         
         if tender_data.get('title'):
             content_parts.append(tender_data['title'])
-        if tender_data.get('tender_description'):
-            content_parts.append(tender_data['tender_description'])
-        if tender_data.get('gsin_description'):
-            content_parts.append(tender_data['gsin_description'])
-        if tender_data.get('unspsc_description'):
-            content_parts.append(tender_data['unspsc_description'])
-        if tender_data.get('precomputed_summary'):
-            content_parts.append(tender_data['precomputed_summary'])
+        if tender_data.get('description'):
+            content_parts.append(tender_data['description'])
+        if tender_data.get('summary'):
+            content_parts.append(tender_data['summary'])
+            
+        # Extract from nested classification codes
+        classification_codes = tender_data.get('classification_codes') or {}
+        if classification_codes.get('gsin_description'):
+            content_parts.append(classification_codes['gsin_description'])
+        if classification_codes.get('unspsc_description'):
+            content_parts.append(classification_codes['unspsc_description'])
             
         text_content = " ".join(content_parts)
         return self.model.encode(text_content).tolist()
@@ -219,17 +251,17 @@ class SearchService:
                                 "boost": 0.6
                             }
                         },
-                        # Multi-field text search
+                        # Multi-field text search using new schema
                         {
                             "multi_match": {
                                 "query": query,
                                 "fields": [
                                     "title^3",
-                                    "tender_description^2", 
-                                    "precomputed_summary^2",
-                                    "gsin_description^1.5",
-                                    "unspsc_description^1.5",
-                                    "contracting_entity_name^1",
+                                    "description^2", 
+                                    "summary^2",
+                                    "classification_codes.gsin_description^1.5",
+                                    "classification_codes.unspsc_description^1.5",
+                                    "contracting_entity.name^1",
                                     "selection_criteria^1"
                                 ],
                                 "type": "best_fields",
@@ -241,21 +273,21 @@ class SearchService:
             },
             "sort": [
                 {"_score": {"order": "desc"}},
-                {"tender_closing_date": {"order": "asc", "missing": "_last"}}
+                {"closing_date": {"order": "asc", "missing": "_last"}}
             ]
         }
         
         # Add filters
         filters = []
         
-        # Regional filtering
+        # Regional filtering using new schema
         if regions:
             region_filters = []
             for region in regions:
                 region_filters.extend([
-                    {"term": {"regions_of_delivery": region}},
-                    {"term": {"regions_of_opportunity": region}},
-                    {"term": {"contracting_entity_province": region}}
+                    {"term": {"delivery_location": region}},
+                    {"terms": {"regions": [region]}},
+                    {"term": {"contracting_entity.province": region}}
                 ])
             if region_filters:
                 filters.append({"bool": {"should": region_filters}})
@@ -264,32 +296,32 @@ class SearchService:
         if procurement_method:
             filters.append({"term": {"procurement_method": procurement_method}})
         
-        # Procurement category filtering
+        # Procurement category filtering using new schema
         if procurement_category:
-            filters.append({"terms": {"procurement_category": procurement_category}})
+            filters.append({"terms": {"category_primary": procurement_category}})
         
-        # Notice type filtering
+        # Notice type filtering (now procurement_type)
         if notice_type:
-            filters.append({"terms": {"notice_type": notice_type}})
+            filters.append({"terms": {"procurement_type": notice_type}})
         
-        # Tender status filtering
+        # Tender status filtering using new schema
         if tender_status:
-            filters.append({"terms": {"tender_status": tender_status}})
+            filters.append({"terms": {"status": tender_status}})
         else:
             # Only show open tenders by default if no status specified
             filters.append({
                 "bool": {
                     "should": [
-                        {"term": {"tender_status": "Active"}},
-                        {"term": {"tender_status": "Open"}},
-                        {"bool": {"must_not": {"exists": {"field": "tender_status"}}}}
+                        {"term": {"status": "active"}},
+                        {"term": {"status": "open"}},
+                        {"bool": {"must_not": {"exists": {"field": "status"}}}}
                     ]
                 }
             })
         
-        # Contracting entity filtering
+        # Contracting entity filtering using new schema
         if contracting_entity_name:
-            filters.append({"terms": {"contracting_entity_name": contracting_entity_name}})
+            filters.append({"terms": {"contracting_entity.name": contracting_entity_name}})
         
         # Closing date filtering
         if closing_date_after or closing_date_before:
