@@ -25,7 +25,7 @@ import { updateProfile } from "../features/auth/authThunks";
 import LoadingSpinner from "../components/common/LoadingSpinner";
 
 export default function Profile() {
-  const { user } = useAuth();
+  const { user, profile } = useAuth();
   const dispatch = useAppDispatch();
 
   const [isEditing, setIsEditing] = useState(false);
@@ -33,31 +33,31 @@ export default function Profile() {
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
 
-  // Form data initialized with user data
+  // Form data initialized with profile data
   const [formData, setFormData] = useState({
-    company_name: user?.company_name || "",
-    company_size: user?.company_size || "",
-    industry: user?.industry || "",
-    primary_services: user?.primary_services || [],
-    service_regions: user?.service_regions || [],
-    government_experience: user?.government_experience || "",
-    typical_contract_size: user?.typical_contract_size || "",
+    company_name: profile?.company_name || "",
+    company_size: profile?.company_size || "",
+    industry: profile?.industry || "",
+    primary_services: profile?.primary_services || [],
+    service_regions: profile?.service_regions || [],
+    government_experience: profile?.government_experience || "",
+    typical_contract_size: profile?.typical_contract_size || "",
   });
 
-  // Reset form data when user changes
+  // Reset form data when profile changes
   useEffect(() => {
-    if (user) {
+    if (profile) {
       setFormData({
-        company_name: user.company_name || "",
-        company_size: user.company_size || "",
-        industry: user.industry || "",
-        primary_services: user.primary_services || [],
-        service_regions: user.service_regions || [],
-        government_experience: user.government_experience || "",
-        typical_contract_size: user.typical_contract_size || "",
+        company_name: profile.company_name || "",
+        company_size: profile.company_size || "",
+        industry: profile.industry || "",
+        primary_services: profile.primary_services || [],
+        service_regions: profile.service_regions || [],
+        government_experience: profile.government_experience || "",
+        typical_contract_size: profile.typical_contract_size || "",
       });
     }
-  }, [user]);
+  }, [profile]);
 
   const companySizes = [
     {
@@ -259,16 +259,16 @@ export default function Profile() {
   };
 
   const handleCancel = () => {
-    // Reset form data to current user data
-    if (user) {
+    // Reset form data to current profile data
+    if (profile) {
       setFormData({
-        company_name: user.company_name || "",
-        company_size: user.company_size || "",
-        industry: user.industry || "",
-        primary_services: user.primary_services || [],
-        service_regions: user.service_regions || [],
-        government_experience: user.government_experience || "",
-        typical_contract_size: user.typical_contract_size || "",
+        company_name: profile.company_name || "",
+        company_size: profile.company_size || "",
+        industry: profile.industry || "",
+        primary_services: profile.primary_services || [],
+        service_regions: profile.service_regions || [],
+        government_experience: profile.government_experience || "",
+        typical_contract_size: profile.typical_contract_size || "",
       });
     }
     setIsEditing(false);
@@ -307,15 +307,15 @@ export default function Profile() {
         <div className="flex items-center justify-between mb-8">
           <div className="flex items-center gap-4">
             <div className="w-16 h-16 bg-primary text-white rounded-full flex items-center justify-center text-2xl font-bold">
-              {user.company_name?.charAt(0)?.toUpperCase() || "U"}
+              {profile?.company_name?.charAt(0)?.toUpperCase() || "U"}
             </div>
             <div>
               <h1 className="text-3xl font-bold text-text">
-                {user.company_name || "Your Company"}
+                {profile?.company_name || "Your Company"}
               </h1>
               <p className="text-text-light">
-                {user.industry
-                  ? getIndustryDisplay(user.industry)
+                {profile?.industry
+                  ? getIndustryDisplay(profile.industry)
                   : "Company Profile"}
               </p>
             </div>
@@ -375,7 +375,7 @@ export default function Profile() {
                   />
                 ) : (
                   <p className="text-text-light">
-                    {user.company_name || "Not set"}
+                    {profile?.company_name || "Not set"}
                   </p>
                 )}
               </div>
@@ -404,8 +404,8 @@ export default function Profile() {
                   </select>
                 ) : (
                   <p className="text-text-light">
-                    {user.company_size
-                      ? getCompanySizeDisplay(user.company_size)
+                    {profile?.company_size
+                      ? getCompanySizeDisplay(profile.company_size)
                       : "Not set"}
                   </p>
                 )}
@@ -435,8 +435,8 @@ export default function Profile() {
                   </select>
                 ) : (
                   <p className="text-text-light">
-                    {user.industry
-                      ? getIndustryDisplay(user.industry)
+                    {profile?.industry
+                      ? getIndustryDisplay(profile.industry)
                       : "Not set"}
                   </p>
                 )}
@@ -475,8 +475,8 @@ export default function Profile() {
                 </div>
               ) : (
                 <div className="flex flex-wrap gap-2">
-                  {user.primary_services && user.primary_services.length > 0 ? (
-                    user.primary_services.map((service: string) => (
+                  {profile?.primary_services && profile.primary_services.length > 0 ? (
+                    profile.primary_services.map((service: string) => (
                       <span
                         key={service}
                         className="px-3 py-1 bg-primary/10 text-primary rounded-full text-sm"
@@ -515,8 +515,8 @@ export default function Profile() {
                 </div>
               ) : (
                 <div className="flex flex-wrap gap-2">
-                  {user.service_regions && user.service_regions.length > 0 ? (
-                    user.service_regions.map((region: string) => (
+                  {profile?.service_regions && profile.service_regions.length > 0 ? (
+                    profile.service_regions.map((region: string) => (
                       <span
                         key={region}
                         className="px-3 py-1 bg-accent/10 text-accent rounded-full text-sm"
@@ -564,8 +564,8 @@ export default function Profile() {
                   </select>
                 ) : (
                   <p className="text-text-light">
-                    {user.government_experience
-                      ? getExperienceDisplay(user.government_experience)
+                    {profile?.government_experience
+                      ? getExperienceDisplay(profile.government_experience)
                       : "Not set"}
                   </p>
                 )}
@@ -595,8 +595,8 @@ export default function Profile() {
                   </select>
                 ) : (
                   <p className="text-text-light">
-                    {user.typical_contract_size
-                      ? getContractSizeDisplay(user.typical_contract_size)
+                    {profile?.typical_contract_size
+                      ? getContractSizeDisplay(profile.typical_contract_size)
                       : "Not set"}
                   </p>
                 )}

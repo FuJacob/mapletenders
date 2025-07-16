@@ -26,6 +26,21 @@ function parseMississaugaDate(dateStr: string): string | null {
 }
 
 /**
+ * Parse Canadian date string format and return ISO string or null
+ */
+function parseCanadianDate(dateString: string): string | null {
+  if (!dateString || dateString.trim() === "") return null;
+  
+  try {
+    const date = new Date(dateString);
+    if (isNaN(date.getTime())) return null;
+    return date.toISOString();
+  } catch {
+    return null;
+  }
+}
+
+/**
  * Clean HTML tags from description
  */
 function cleanHtmlDescription(html: string): string | null {
@@ -60,14 +75,12 @@ function mapMississaugaTender(row: any) {
     closing_date: parseMississaugaDate(row.DateClosing),
     amendment_date: null,
     contract_start_date: null,
-    contract_end_date: null,
     
     status: row.Status?.toLowerCase(),
     procurement_type: "rfp", // Mississauga appears to be primarily RFPs
     procurement_method: "open",
     
     category_primary: row.Scope,
-    category_secondary: null,
     classification_codes: null,
     
     jurisdiction: "municipal-mississauga",
@@ -75,10 +88,7 @@ function mapMississaugaTender(row: any) {
     delivery_location: "Mississauga, ON",
     
     estimated_value_min: null,
-    estimated_value_max: null,
     currency: "CAD",
-    bid_deposit_required: null,
-    bid_deposit_amount: null,
     
     requirements: null,
     selection_criteria: null,
@@ -100,13 +110,11 @@ function mapMississaugaTender(row: any) {
       documents_count: row.Documents || 0,
       addenda_count: row.Addendums || 0
     } : null,
-    addenda_count: row.Addendums || 0,
     
     plan_takers_count: row.PlanTakers,
     submissions_count: row.Submitted,
     
     trade_agreements: null,
-    accessibility_requirements: null,
     
     embedding: null, // Will be generated
     embedding_input: null,
@@ -135,14 +143,12 @@ function mapOntarioTender(row: any) {
     closing_date: row["Listing Expiry Date (dd/mm/yyyy hh:mm)"],
     amendment_date: null,
     contract_start_date: row["Estimated Contract Start Date (dd/mm/yyyy)"],
-    contract_end_date: null,
     
     status: "open", // Ontario data doesn't specify status, assume open
     procurement_type: row["Project Type"]?.toLowerCase().includes("rfp") ? "rfp" : "tender",
     procurement_method: row["Procurement Route"]?.toLowerCase(),
     
     category_primary: row["Work Category"],
-    category_secondary: null,
     classification_codes: row["Project Categories"] ? { unspsc: row["Project Categories"] } : null,
     
     jurisdiction: "provincial-on",
@@ -150,10 +156,7 @@ function mapOntarioTender(row: any) {
     delivery_location: "Ontario, CA",
     
     estimated_value_min: row["Estimated Value of Contract"] ? parseFloat(row["Estimated Value of Contract"]) : null,
-    estimated_value_max: null,
     currency: "CAD",
-    bid_deposit_required: null,
-    bid_deposit_amount: null,
     
     requirements: null,
     selection_criteria: null,
@@ -176,13 +179,11 @@ function mapOntarioTender(row: any) {
     documents: row["Number of Attachments"] ? {
       attachments_count: parseInt(row["Number of Attachments"]) || 0
     } : null,
-    addenda_count: 0,
     
     plan_takers_count: null,
     submissions_count: null,
     
     trade_agreements: null,
-    accessibility_requirements: null,
     
     embedding: null, // Will be generated
     embedding_input: null,
@@ -209,14 +210,12 @@ function mapTorontoTender(row: any) {
     closing_date: row.Closing_Date_Formatted,
     amendment_date: row.__ModifiedOn,
     contract_start_date: null,
-    contract_end_date: null,
     
     status: row.Status?.toLowerCase(),
     procurement_type: row.Solicitation_Form_Type?.toLowerCase().includes("rfp") ? "rfp" : "tender",
     procurement_method: row.Limited_Suppliers === "Yes" ? "limited" : "open",
     
     category_primary: row.High_Level_Category,
-    category_secondary: null,
     classification_codes: null,
     
     jurisdiction: "municipal-toronto",
@@ -226,10 +225,7 @@ function mapTorontoTender(row: any) {
       : "Toronto, ON",
     
     estimated_value_min: null,
-    estimated_value_max: null,
     currency: "CAD",
-    bid_deposit_required: null,
-    bid_deposit_amount: null,
     
     requirements: row.Specific_Conditions ? { conditions: row.Specific_Conditions } : null,
     selection_criteria: row.Specific_Conditions,
@@ -256,7 +252,6 @@ function mapTorontoTender(row: any) {
     documents: row.uploadedFilesStaff && row.uploadedFilesStaff.length ? {
       files: row.uploadedFilesStaff
     } : null,
-    addenda_count: 0,
     
     plan_takers_count: null,
     submissions_count: null,
@@ -264,7 +259,6 @@ function mapTorontoTender(row: any) {
     trade_agreements: Array.isArray(row.Applicable_Trade_Agreement) 
       ? row.Applicable_Trade_Agreement 
       : null,
-    accessibility_requirements: null,
     
     embedding: null, // Will be generated
     embedding_input: null,
@@ -287,18 +281,16 @@ function mapCanadianTender(row: any): any {
     description: row["tenderDescription-descriptionAppelOffres-eng"],
     summary: null, // Will be generated by AI
     
-    published_date: row["publicationDate-datePublication"],
-    closing_date: row["tenderClosingDate-dateFermetureSoumission"],
-    amendment_date: row["amendmentDate-dateModification"],
-    contract_start_date: row["expectedContractStartDate-dateDebutPrevueContrat"],
-    contract_end_date: row["expectedContractEndDate-dateFinPrevueContrat"],
+    published_date: parseCanadianDate(row["publicationDate-datePublication"]),
+    closing_date: parseCanadianDate(row["tenderClosingDate-dateFermetureSoumission"]),
+    amendment_date: parseCanadianDate(row["amendmentDate-dateModification"]),
+    contract_start_date: parseCanadianDate(row["expectedContractStartDate-dateDebutPrevueContrat"]),
     
     status: row["tenderStatus-statutSollicitation"]?.toLowerCase(),
     procurement_type: row["noticeType-typeAvis"]?.toLowerCase().includes("rfp") ? "rfp" : "tender",
     procurement_method: row["procurementMethod-methodeDapprovisionnement"]?.toLowerCase(),
     
     category_primary: row["procurementCategory-categorieDapprovisionnement"],
-    category_secondary: null,
     classification_codes: {
       gsin: row["gsin-nisp"],
       gsin_description: row["gsinDescription-descriptionNisp"],
@@ -313,10 +305,7 @@ function mapCanadianTender(row: any): any {
     delivery_location: row["regionsOfDelivery-regionsLivraison"],
     
     estimated_value_min: null,
-    estimated_value_max: null,
     currency: "CAD",
-    bid_deposit_required: null,
-    bid_deposit_amount: null,
     
     requirements: row["selectionCriteria-criteresSelection"] ? {
       selection_criteria: row["selectionCriteria-criteresSelection"],
@@ -353,7 +342,6 @@ function mapCanadianTender(row: any): any {
     documents: row["attachment-piecesJointes-eng"] ? {
       attachments: row["attachment-piecesJointes-eng"]
     } : null,
-    addenda_count: 0,
     
     plan_takers_count: null,
     submissions_count: null,
@@ -361,7 +349,6 @@ function mapCanadianTender(row: any): any {
     trade_agreements: row["tradeAgreements-accordsCommerciaux"] 
       ? [row["tradeAgreements-accordsCommerciaux"]]
       : null,
-    accessibility_requirements: null,
     
     embedding: null, // Will be generated
     embedding_input: null,

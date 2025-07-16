@@ -5,7 +5,7 @@ import { useAuth } from "../../hooks/auth";
 import { useState, useEffect, useRef, useCallback } from "react";
 import { useDispatch } from "react-redux";
 import { signOut } from "../../features/auth/authThunks";
-import { User, Gear, SignOut, Bell, CaretDown } from "@phosphor-icons/react";
+import { User, Gear, SignOut, Bell, CaretDown, CreditCard } from "@phosphor-icons/react";
 import type { AppDispatch } from "../../app/configureStore";
 import { useSearchParams } from "react-router-dom";
 interface HeaderProps {
@@ -21,7 +21,7 @@ export default function Header({
   const [searchParams] = useSearchParams();
   const view = searchParams.get("view");
   const dispatch = useDispatch<AppDispatch>();
-  const { user } = useAuth();
+  const { user, profile, isAuthenticated } = useAuth();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
 
@@ -30,6 +30,7 @@ export default function Header({
   const isRfpPage = location.pathname === "/rfp-analysis";
   const isSearchPage = location.pathname === "/search";
   const isTenderNoticePage = location.pathname.startsWith("/tender-notice");
+  const isPlansPage = location.pathname === "/plans";
 
   // Memoize click outside handler
   const handleClickOutside = useCallback((event: MouseEvent) => {
@@ -57,14 +58,14 @@ export default function Header({
     >
       {/* Left Section - Logo */}
       <div className="flex-shrink-0">
-        <Link to={user ? "/home" : "/"}>
+        <Link to={isAuthenticated ? "/home" : "/"}>
           <LogoTitle />
         </Link>
       </div>
 
       {/* Center Section - Navigation */}
       <nav className="hidden md:flex items-center gap-8">
-        {!user && (
+        {!isAuthenticated && (
           // Guest navigation
           <>
             <Link
@@ -112,32 +113,26 @@ export default function Header({
       </nav>
 
       {/* View Switcher for Home Page and RFP Analysis */}
-      {user && (isHomePage || isRfpPage || isTenderNoticePage) && (
-        <div className="absolute left-1/2 transform -translate-x-1/2">
-          <ViewSwitcher
-            currentView={
-              isRfpPage ? "rfp" : view || (isSearchPage ? "search" : null)
-            }
-          />
-        </div>
-      )}
+      {isAuthenticated &&
+        (isHomePage || isRfpPage || isTenderNoticePage || isPlansPage) && (
+          <div className="absolute left-1/2 transform -translate-x-1/2">
+            <ViewSwitcher
+              currentView={
+                isRfpPage
+                  ? "rfp"
+                  : isPlansPage
+                  ? "plans"
+                  : view || (isSearchPage ? "search" : null)
+              }
+            />
+          </div>
+        )}
 
       {/* Right Section - User Menu / Auth Buttons */}
       <div className="flex items-center gap-4">
-        {user ? (
+        {isAuthenticated ? (
           // Logged in user menu
           <>
-            <Link
-              to="/pricing"
-              className={`text-sm font-medium transition-colors ${
-                location.pathname === "/pricing"
-                  ? "text-primary"
-                  : "text-text hover:text-primary"
-              }`}
-            >
-              Pricing
-            </Link>
-
             <button className="p-2 text-text-light hover:text-primary transition-colors relative">
               <Bell className="w-5 h-5" />
               <span className="absolute -top-1 -right-1 w-3 h-3 bg-primary rounded-full"></span>
@@ -149,10 +144,10 @@ export default function Header({
                 className="flex items-center gap-2 p-2 rounded-lg hover:bg-border transition-colors"
               >
                 <div className="w-8 h-8 bg-primary text-white rounded-full flex items-center justify-center text-sm font-medium">
-                  {user.company_name?.charAt(0)?.toUpperCase() || "U"}
+                  {profile?.company_name?.charAt(0)?.toUpperCase() || user?.email?.charAt(0)?.toUpperCase() || "U"}
                 </div>
                 <span className="text-sm text-text hidden sm:block">
-                  {user.company_name || "User"}
+                  {profile?.company_name || user?.email || "User"}
                 </span>
                 <CaretDown className="w-4 h-4 text-text-light" />
               </button>
@@ -161,10 +156,10 @@ export default function Header({
                 <div className="absolute right-0 mt-2 w-48 bg-surface border border-border rounded-lg shadow-lg z-50">
                   <div className="p-3 border-b border-border">
                     <p className="text-sm font-medium text-text">
-                      {user.company_name || "Your Company"}
+                      {profile?.company_name || "Your Company"}
                     </p>
-                    {user.industry && (
-                      <p className="text-xs text-text-light">{user.industry}</p>
+                    {profile?.industry && (
+                      <p className="text-xs text-text-light">{profile.industry}</p>
                     )}
                   </div>
                   <div className="py-1">
@@ -177,6 +172,16 @@ export default function Header({
                     >
                       <User className="w-4 h-4" />
                       Profile
+                    </button>
+                    <button
+                      onClick={() => {
+                        setIsMenuOpen(false);
+                        navigate("/plans");
+                      }}
+                      className="w-full flex items-center gap-3 px-3 py-2 text-sm text-text hover:bg-border transition-colors text-left"
+                    >
+                      <CreditCard className="w-4 h-4" />
+                      Plans & Billing
                     </button>
                     <button
                       onClick={() => {

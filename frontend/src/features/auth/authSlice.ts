@@ -2,19 +2,22 @@ import { createSlice, type PayloadAction } from "@reduxjs/toolkit";
 import { type Database } from "../../../database.types";
 import type { User } from "@supabase/supabase-js";
 
+type Profile = Database["public"]["Tables"]["profiles"]["Row"];
+
+interface CombinedUser {
+  user: User;
+  profile: Profile | null;
+}
+
 interface AuthState {
-  user: User | null; // Supabase user info
-  profile: Profile | null; // Company profile data
+  user: CombinedUser | null;
   loading: boolean;
   error: string | null;
   onboarding_completed: boolean;
 }
 
-type Profile = Database["public"]["Tables"]["profiles"]["Row"];
-
 const initialState: AuthState = {
   user: null,
-  profile: null,
   loading: false,
   error: null,
   onboarding_completed: false,
@@ -24,15 +27,18 @@ const authSlice = createSlice({
   name: "auth",
   initialState,
   reducers: {
-    setProfile: (state, action: PayloadAction<Profile | null>) => {
-      state.profile = action.payload;
-    },
-    setUser: (state, action: PayloadAction<User | null>) => {
+    setUser: (state, action: PayloadAction<CombinedUser | null>) => {
       state.user = action.payload;
+      state.onboarding_completed = action.payload?.profile?.onboarding_completed || false;
+    },
+    setProfile: (state, action: PayloadAction<Profile | null>) => {
+      if (state.user) {
+        state.user.profile = action.payload;
+        state.onboarding_completed = action.payload?.onboarding_completed || false;
+      }
     },
     logout: (state) => {
       state.user = null;
-      state.profile = null;
       state.onboarding_completed = false;
     },
     setAuthLoading: (state, action: PayloadAction<boolean>) => {
@@ -43,6 +49,9 @@ const authSlice = createSlice({
     },
     setOnboardingCompleted: (state, action: PayloadAction<boolean>) => {
       state.onboarding_completed = action.payload;
+      if (state.user?.profile) {
+        state.user.profile.onboarding_completed = action.payload;
+      }
     },
   },
 });
@@ -55,4 +64,6 @@ export const {
   setAuthError,
   setOnboardingCompleted,
 } = authSlice.actions;
+
+export type { CombinedUser, Profile };
 export default authSlice.reducer;

@@ -9,23 +9,21 @@ import {
 import { createCheckoutSession } from "../api/subscriptions";
 
 // Components
-import PricingHero from "../components/pricing/PricingHero";
 import LoadingState from "../components/pricing/LoadingState";
 import ErrorState from "../components/pricing/ErrorState";
 import PricingCard from "../components/pricing/PricingCard";
 import FeatureComparison from "../components/pricing/FeatureComparison";
 import FAQ from "../components/pricing/FAQ";
-import CTASection from "../components/pricing/CTASection";
 
 // Hooks and types
 import { usePricingData } from "../components/pricing/usePricingData";
 import type { PricingTier } from "../components/pricing/types";
 
-export default function Pricing() {
+export default function Plans() {
   const navigate = useNavigate();
   const isAuthenticated = useAppSelector(selectIsAuthenticated);
-  const user = useAppSelector(selectAuthUser); // Supabase user info
-  const profile = useAppSelector(selectAuthProfile); // Company profile data
+  const user = useAppSelector(selectAuthUser);
+  const profile = useAppSelector(selectAuthProfile);
   const [billingCycle, setBillingCycle] = useState<"monthly" | "yearly">(
     "monthly"
   );
@@ -34,22 +32,18 @@ export default function Pricing() {
   const { pricingTiers, plansLoading, plansError } =
     usePricingData(billingCycle);
 
+  // Redirect if not authenticated
+  if (!isAuthenticated) {
+    navigate("/pricing");
+    return null;
+  }
+
   const handlePlanSelect = async (tier: PricingTier) => {
+    if (!user) return;
 
-
-    // Check if user is authenticated
-    if (!isAuthenticated || !user) {
-      // Redirect to signup/login with plan info
-      navigate(`/sign-up?plan=${tier.id}&billing=${billingCycle}`);
-      return;
-    }
-
-    // User is authenticated, proceed with checkout
     setLoading(tier.id);
     try {
-      // Use user data from Redux (no need to fetch again)
       const userEmail = user?.email || "";
-      console.log("user", user);
 
       if (!userEmail) {
         alert("Unable to retrieve your email. Please try signing in again.");
@@ -81,13 +75,44 @@ export default function Pricing() {
   };
 
   return (
-    <div className="bg-background py-8">
-      <div className="max-w-6xl mx-auto">
-        {/* Hero Section */}
-        <PricingHero
-          billingCycle={billingCycle}
-          onBillingCycleChange={setBillingCycle}
-        />
+    <div className="min-h-screen bg-background py-8">
+      <div className="max-w-6xl mx-auto px-6">
+        {/* Header Section */}
+        <div className="text-center mb-12">
+          <h1 className="text-4xl font-bold text-text mb-4">
+            Choose Your Plan
+          </h1>
+          <p className="text-xl text-text-light mb-8">
+            Upgrade your procurement intelligence with MapleTenders
+          </p>
+          
+          {/* Billing Toggle */}
+          <div className="flex items-center justify-center gap-4 mb-8">
+            <span className={`text-sm font-medium ${billingCycle === 'monthly' ? 'text-primary' : 'text-text-light'}`}>
+              Monthly
+            </span>
+            <button
+              onClick={() => setBillingCycle(billingCycle === 'monthly' ? 'yearly' : 'monthly')}
+              className={`relative w-14 h-7 rounded-full transition-colors ${
+                billingCycle === 'yearly' ? 'bg-primary' : 'bg-border'
+              }`}
+            >
+              <div
+                className={`absolute w-5 h-5 bg-white rounded-full top-1 transition-transform ${
+                  billingCycle === 'yearly' ? 'translate-x-8' : 'translate-x-1'
+                }`}
+              />
+            </button>
+            <span className={`text-sm font-medium ${billingCycle === 'yearly' ? 'text-primary' : 'text-text-light'}`}>
+              Yearly
+            </span>
+            {billingCycle === 'yearly' && (
+              <span className="bg-primary text-white text-xs px-2 py-1 rounded-full ml-2">
+                Save 20%
+              </span>
+            )}
+          </div>
+        </div>
 
         {/* Loading State */}
         {plansLoading && <LoadingState />}
@@ -97,20 +122,18 @@ export default function Pricing() {
 
         {/* Pricing Cards */}
         {!plansLoading && !plansError && (
-          <section className="pb-16 px-6">
-            <div className="max-w-4xl mx-auto">
-              <div className="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto">
-                {pricingTiers.map((tier) => (
-                  <PricingCard
-                    key={tier.id}
-                    tier={tier}
-                    loading={loading}
-                    onPlanSelect={handlePlanSelect}
-                  />
-                ))}
-              </div>
+          <div className="mb-16">
+            <div className="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto">
+              {pricingTiers.map((tier) => (
+                <PricingCard
+                  key={tier.id}
+                  tier={tier}
+                  loading={loading}
+                  onPlanSelect={handlePlanSelect}
+                />
+              ))}
             </div>
-          </section>
+          </div>
         )}
 
         {/* Feature Comparison */}
@@ -118,9 +141,6 @@ export default function Pricing() {
 
         {/* FAQ Section */}
         <FAQ />
-
-        {/* CTA Section */}
-        <CTASection isAuthenticated={isAuthenticated} />
       </div>
     </div>
   );

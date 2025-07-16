@@ -91,13 +91,11 @@ export const signIn =
         }
         profile = createResponse.profile;
       }
-      console.log("APSIDPASDPSAOPDPOASDOPAOPSDOPASD", user);
-      // Set both Supabase user and profile data
-      dispatch(setUser(user)); // Store Supabase user info
-      if (profile) {
-        dispatch(setProfile(convertAPIProfileToDatabase(profile)));
-        dispatch(setOnboardingCompleted(profile.onboarding_completed || false));
-      }
+      // Set combined user and profile data
+      dispatch(setUser({
+        user,
+        profile: profile ? convertAPIProfileToDatabase(profile) : null
+      }));
       dispatch(setAuthLoading(false));
     } catch (error) {
       console.error("Sign in error:", error);
@@ -125,23 +123,21 @@ export const loadSession = () => async (dispatch: AppDispatch) => {
     const user = response.user; // Fix: access user directly from response
 
     if (user?.id) {
-      // Store Supabase user info
-      dispatch(setUser(user));
       console.log("user", user);
       const profileResponse = await getProfile(user.id);
 
       if (profileResponse.error) {
         console.error("Error fetching profile:", profileResponse.error);
         dispatch(setAuthError("Failed to load user profile"));
-      } else if (profileResponse.profile) {
-        dispatch(
-          setProfile(convertAPIProfileToDatabase(profileResponse.profile))
-        );
-        dispatch(
-          setOnboardingCompleted(
-            profileResponse.profile.onboarding_completed || false
-          )
-        );
+        dispatch(setUser({
+          user,
+          profile: null
+        }));
+      } else {
+        dispatch(setUser({
+          user,
+          profile: profileResponse.profile ? convertAPIProfileToDatabase(profileResponse.profile) : null
+        }));
       }
     }
   } catch (error) {

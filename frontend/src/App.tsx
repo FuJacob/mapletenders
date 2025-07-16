@@ -15,6 +15,7 @@ import SearchResults from "./pages/SearchResults";
 import RfpAnalysis from "./pages/RfpAnalysis";
 import SubscriptionSuccess from "./pages/SubscriptionSuccess";
 import SubscriptionCancel from "./pages/SubscriptionCancel";
+import Plans from "./pages/Plans";
 import GuestRoutes from "./routes/GuestRoutes";
 import ProtectedRoutes from "./routes/ProtectedRoutes";
 import OnboardingRequiredRoutes from "./routes/OnboardingRequiredRoutes";
@@ -43,7 +44,6 @@ export function App() {
 
   return (
     <Routes>
-      <Route path="/pricing" element={<Pricing />} />
       <Route element={<Layout />}>
         <Route element={<GuestRoutes />}>
           <Route path="/" element={<LandingPage />} />
@@ -53,6 +53,7 @@ export function App() {
           <Route path="/update-password" element={<UpdatePassword />} />
           <Route path="/about" element={<About />} />
           <Route path="/contact" element={<Contact />} />
+          <Route path="/pricing" element={<Pricing />} />
           <Route
             path="/subscription/success"
             element={<SubscriptionSuccess />}
@@ -66,6 +67,7 @@ export function App() {
             <Route path="/search" element={<SearchResults />} />
             <Route path="/rfp-analysis" element={<RfpAnalysis />} />
             <Route path="/profile" element={<Profile />} />
+            <Route path="/plans" element={<Plans />} />
             <Route path="/tender-notice/:tenderId" element={<TenderNotice />} />
           </Route>
           <Route path="/onboarding" element={<Onboarding />} />

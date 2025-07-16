@@ -47,7 +47,7 @@ export type Database = {
             foreignKeyName: "bookmarks_tender_notice_id_fkey"
             columns: ["tender_notice_id"]
             isOneToOne: false
-            referencedRelation: "tenders_new"
+            referencedRelation: "tenders"
             referencedColumns: ["id"]
           },
           {
@@ -250,7 +250,7 @@ export type Database = {
             foreignKeyName: "tender_ai_summaries_id_fkey"
             columns: ["id"]
             isOneToOne: true
-            referencedRelation: "tenders_new"
+            referencedRelation: "tenders"
             referencedColumns: ["id"]
           },
         ]
@@ -407,16 +407,10 @@ export type Database = {
       }
       tenders_new: {
         Row: {
-          accessibility_requirements: string | null
-          addenda_count: number | null
           amendment_date: string | null
-          bid_deposit_amount: number | null
-          bid_deposit_required: boolean | null
           category_primary: string | null
-          category_secondary: string | null
           classification_codes: Json | null
           closing_date: string | null
-          contract_end_date: string | null
           contract_start_date: string | null
           contracting_entity: Json | null
           created_at: string | null
@@ -427,7 +421,6 @@ export type Database = {
           embedding: string | null
           embedding_input: string | null
           end_user_entity: Json | null
-          estimated_value_max: number | null
           estimated_value_min: number | null
           id: string
           jurisdiction: string | null
@@ -452,16 +445,10 @@ export type Database = {
           updated_at: string | null
         }
         Insert: {
-          accessibility_requirements?: string | null
-          addenda_count?: number | null
           amendment_date?: string | null
-          bid_deposit_amount?: number | null
-          bid_deposit_required?: boolean | null
           category_primary?: string | null
-          category_secondary?: string | null
           classification_codes?: Json | null
           closing_date?: string | null
-          contract_end_date?: string | null
           contract_start_date?: string | null
           contracting_entity?: Json | null
           created_at?: string | null
@@ -472,7 +459,6 @@ export type Database = {
           embedding?: string | null
           embedding_input?: string | null
           end_user_entity?: Json | null
-          estimated_value_max?: number | null
           estimated_value_min?: number | null
           id: string
           jurisdiction?: string | null
@@ -497,16 +483,10 @@ export type Database = {
           updated_at?: string | null
         }
         Update: {
-          accessibility_requirements?: string | null
-          addenda_count?: number | null
           amendment_date?: string | null
-          bid_deposit_amount?: number | null
-          bid_deposit_required?: boolean | null
           category_primary?: string | null
-          category_secondary?: string | null
           classification_codes?: Json | null
           closing_date?: string | null
-          contract_end_date?: string | null
           contract_start_date?: string | null
           contracting_entity?: Json | null
           created_at?: string | null
@@ -517,7 +497,6 @@ export type Database = {
           embedding?: string | null
           embedding_input?: string | null
           end_user_entity?: Json | null
-          estimated_value_max?: number | null
           estimated_value_min?: number | null
           id?: string
           jurisdiction?: string | null

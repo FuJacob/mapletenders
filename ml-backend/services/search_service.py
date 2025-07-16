@@ -33,7 +33,6 @@ class SearchService:
                     "published_date": {"type": "date"},
                     "closing_date": {"type": "date"},
                     "contract_start_date": {"type": "date"},
-                    "contract_end_date": {"type": "date"},
                     "amendment_date": {"type": "date"},
                     "last_scraped_at": {"type": "date"},
                     
@@ -42,7 +41,6 @@ class SearchService:
                     "procurement_type": {"type": "keyword"},
                     "procurement_method": {"type": "keyword"},
                     "category_primary": {"type": "keyword"},
-                    "category_secondary": {"type": "keyword"},
                     "jurisdiction": {"type": "keyword"},
                     
                     # Geographic information
@@ -51,10 +49,7 @@ class SearchService:
                     
                     # Financial information
                     "estimated_value_min": {"type": "float"},
-                    "estimated_value_max": {"type": "float"},
                     "currency": {"type": "keyword"},
-                    "bid_deposit_required": {"type": "boolean"},
-                    "bid_deposit_amount": {"type": "float"},
                     
                     # Organization details (JSON objects)
                     "contracting_entity": {"type": "object"},
@@ -85,11 +80,9 @@ class SearchService:
                     
                     # Documents and additional info
                     "documents": {"type": "object"},
-                    "addenda_count": {"type": "integer"},
                     "plan_takers_count": {"type": "integer"},
                     "submissions_count": {"type": "integer"},
                     "trade_agreements": {"type": "keyword"},
-                    "accessibility_requirements": {"type": "text"},
                     
                     # AI-generated embedding
                     "embedding": {
@@ -111,7 +104,6 @@ class SearchService:
             "published_date",
             "closing_date",
             "contract_start_date",
-            "contract_end_date",
             "amendment_date",
             "last_scraped_at"
         ]
@@ -145,7 +137,6 @@ class SearchService:
             "published_date": tender_data.get("published_date"),
             "closing_date": tender_data.get("closing_date"),
             "contract_start_date": tender_data.get("contract_start_date"),
-            "contract_end_date": tender_data.get("contract_end_date"),
             "amendment_date": tender_data.get("amendment_date"),
             "last_scraped_at": tender_data.get("last_scraped_at"),
             
@@ -154,7 +145,6 @@ class SearchService:
             "procurement_type": tender_data.get("procurement_type"),
             "procurement_method": tender_data.get("procurement_method"),
             "category_primary": tender_data.get("category_primary"),
-            "category_secondary": tender_data.get("category_secondary"),
             "jurisdiction": tender_data.get("jurisdiction"),
             
             # Geographic information
@@ -163,10 +153,7 @@ class SearchService:
             
             # Financial information
             "estimated_value_min": tender_data.get("estimated_value_min"),
-            "estimated_value_max": tender_data.get("estimated_value_max"),
             "currency": tender_data.get("currency"),
-            "bid_deposit_required": tender_data.get("bid_deposit_required"),
-            "bid_deposit_amount": tender_data.get("bid_deposit_amount"),
             
             # Organization details
             "contracting_entity": contracting_entity,
@@ -183,11 +170,9 @@ class SearchService:
             
             # Documents and additional info
             "documents": tender_data.get("documents"),
-            "addenda_count": tender_data.get("addenda_count"),
             "plan_takers_count": tender_data.get("plan_takers_count"),
             "submissions_count": tender_data.get("submissions_count"),
             "trade_agreements": tender_data.get("trade_agreements"),
-            "accessibility_requirements": tender_data.get("accessibility_requirements"),
             
             # Embedding
             "embedding": embedding,
@@ -332,7 +317,7 @@ class SearchService:
                 date_range["lte"] = closing_date_before
             filters.append({
                 "range": {
-                    "tender_closing_date": date_range
+                    "closing_date": date_range
                 }
             })
         
@@ -345,7 +330,7 @@ class SearchService:
                 date_range["lte"] = publication_date_before
             filters.append({
                 "range": {
-                    "publication_date": date_range
+                    "published_date": date_range
                 }
             })
         
@@ -374,12 +359,13 @@ class SearchService:
             explanation_parts.append("title match")
             
         # Check description match
-        if query.lower() in hit['_source'].get('tender_description', '').lower():
+        if query.lower() in hit['_source'].get('description', '').lower():
             explanation_parts.append("description match")
             
         # Check category codes
-        if (hit['_source'].get('gsin_description') and 
-            any(word in hit['_source']['gsin_description'].lower() 
+        classification_codes = hit['_source'].get('classification_codes', {})
+        if (classification_codes.get('gsin_description') and 
+            any(word in classification_codes['gsin_description'].lower() 
                 for word in query.lower().split())):
             explanation_parts.append("category match")
             

@@ -1,7 +1,6 @@
 import React from "react";
-import { MagnifyingGlass, Table, FileText } from "@phosphor-icons/react";
-import { useNavigate } from "react-router-dom";
-
+import { MagnifyingGlass, Table, FileText, MoneyWavyIcon, CreditCardIcon } from "@phosphor-icons/react";
+import { useNavigate, Link } from "react-router-dom";
 interface ViewSwitcherProps {
   currentView: string | null;
   className?: string;
@@ -14,7 +13,9 @@ const ViewSwitcher: React.FC<ViewSwitcherProps> = ({
   const navigate = useNavigate();
 
   const handleViewChange = (view: string) => {
-    if (view === "rfp") {
+    if (view === "plans") {
+      navigate("/plans");
+    } else if (view === "rfp") {
       navigate("/rfp-analysis");
     } else {
       navigate(`/home?view=${view}`);
@@ -57,6 +58,19 @@ const ViewSwitcher: React.FC<ViewSwitcherProps> = ({
         <FileText className="w-4 h-4" />
         RFP Analysis
       </button>
+
+      <Link
+        to={"/plans"}
+        className={`px-3 py-2 rounded-md transition-all duration-200 flex items-center gap-2 text-sm ${
+          currentView === "plans"
+            ? "bg-primary text-white"
+            : "text-text-light hover:bg-border"
+        }`}
+        onClick={() => handleViewChange("plans")}
+      >
+        <CreditCardIcon className="w-4 h-4" />
+        Plans
+      </Link>
     </div>
   );
 };

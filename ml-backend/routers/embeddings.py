@@ -47,15 +47,24 @@ async def generate_embedding(data: List[Dict[str, Any]]):
     texts = []
     print("Generating embeddings for tenders...", len(data))
     for tender in data:
-        # Use the actual CSV column names from your Node.js server
+        # Use the new centralized schema column names
         title = tender.get("title", "")
-        description = tender.get("tender_description", "")
-        category = tender.get("procurement_category", "")
+        description = tender.get("description", "")
+        category = tender.get("category_primary", "")
         procurement_method = tender.get("procurement_method", "")
         selection_criteria = tender.get("selection_criteria", "")
         trade_agreements = tender.get("trade_agreements", "")
-        regions_of_delivery = tender.get("regions_of_delivery", "")
-        end_user_entities_name = tender.get("end_user_entities_name", "")
+        delivery_location = tender.get("delivery_location", "")
+        
+        # Extract from nested objects
+        contracting_entity = tender.get("contracting_entity", {})
+        contracting_entity_name = contracting_entity.get("name", "") if contracting_entity else ""
+        
+        end_user_entity = tender.get("end_user_entity", {})
+        end_user_name = end_user_entity.get("name", "") if end_user_entity else ""
+        
+        classification_codes = tender.get("classification_codes", {})
+        gsin_description = classification_codes.get("gsin_description", "") if classification_codes else ""
     
         combined_text = f"""
 Title: {title}
@@ -64,8 +73,10 @@ Category: {category}
 Procurement Method: {procurement_method}
 Selection Criteria: {selection_criteria}
 Trade Agreements: {trade_agreements}
-Region of Delivery: {regions_of_delivery}
-End User: {end_user_entities_name}
+Delivery Location: {delivery_location}
+Contracting Entity: {contracting_entity_name}
+End User: {end_user_name}
+Classification: {gsin_description}
 """
         texts.append(combined_text.strip())
         print(f"Processed tender: {title}")
