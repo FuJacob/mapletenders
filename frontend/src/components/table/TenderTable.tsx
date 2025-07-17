@@ -43,7 +43,7 @@ export default function TenderTable({ isLoading = false }: TenderTableProps) {
           ?.toString()
           .toLowerCase()
           .includes(filterValue.toLowerCase()) ||
-        tender.tender_description
+        tender.description
           ?.toString()
           .toLowerCase()
           .includes(filterValue.toLowerCase()) ||

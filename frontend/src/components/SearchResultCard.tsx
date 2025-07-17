@@ -5,7 +5,6 @@ import {
   Calendar,
   Clock,
   MapPin,
-  Sparkle,
   ArrowSquareOut,
   ChartBar,
 } from "@phosphor-icons/react";
@@ -63,9 +62,9 @@ export function SearchResultCard({ result }: SearchResultCardProps) {
               <ChartBar className="w-3 h-3 inline mr-1" />
               {matchScore.toFixed(0)}% match
             </span>
-            {result.notice_type && (
+            {result.procurement_type && (
               <span className="text-xs bg-surface-muted text-text px-3 py-1 rounded-full font-medium">
-                {result.notice_type}
+                {result.procurement_type}
               </span>
             )}
             {result.procurement_method && (
@@ -104,6 +103,8 @@ export function SearchResultCard({ result }: SearchResultCardProps) {
       </div>
 
       {/* AI Match Explanation */}
+      {/* Assuming match_explanation is not present in DB, comment out */}
+      {/*
       {result.match_explanation && (
         <div className="bg-secondary border border-primary/20 rounded-xl p-4 mb-4">
           <div className="flex items-center gap-2 mb-2">
@@ -115,17 +116,18 @@ export function SearchResultCard({ result }: SearchResultCardProps) {
           <p className="text-sm text-text-muted">{result.match_explanation}</p>
         </div>
       )}
+      */}
 
       {/* Description */}
-      {result.tender_description && (
+      {result.description && (
         <p className="text-text-muted mb-4 line-clamp-3">
-          {result.tender_description}
+          {result.description}
         </p>
       )}
 
       {/* Category Tags */}
       <div className="flex items-center gap-2 mb-4">
-        {[result.procurement_category, result.gsin_description]
+        {[result.category_primary, result.gsin]
           .filter(Boolean)
           .slice(0, 3)
           .map((tag, index) => (

@@ -63,8 +63,8 @@ export default function SignUp() {
         password: formData.password,
       });
       console.log("SignUp response:", response);
-      if (response.error) {
-        setAuthError(response.error);
+      if (response.session == null) {
+        setAuthError("An unexpected error occurred");
       } else {
         navigate("/sign-in?confirm-email=true");
       }
