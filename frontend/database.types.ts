@@ -47,7 +47,7 @@ export type Database = {
             foreignKeyName: "bookmarks_tender_notice_id_fkey"
             columns: ["tender_notice_id"]
             isOneToOne: false
-            referencedRelation: "tenders"
+            referencedRelation: "tenders_old"
             referencedColumns: ["id"]
           },
           {
@@ -238,7 +238,7 @@ export type Database = {
           summary: Json
         }
         Insert: {
-          id?: string
+          id: string
           summary: Json
         }
         Update: {
@@ -250,12 +250,120 @@ export type Database = {
             foreignKeyName: "tender_ai_summaries_id_fkey"
             columns: ["id"]
             isOneToOne: true
-            referencedRelation: "tenders"
+            referencedRelation: "tenders_new"
             referencedColumns: ["id"]
           },
         ]
       }
-      tenders: {
+      tenders_new: {
+        Row: {
+          category_primary: string | null
+          closing_date: string | null
+          contact_email: string | null
+          contact_name: string | null
+          contact_phone: string | null
+          contract_start_date: string | null
+          contracting_entity_city: string | null
+          contracting_entity_country: string | null
+          contracting_entity_name: string | null
+          contracting_entity_province: string | null
+          created_at: string | null
+          currency: string | null
+          delivery_location: string | null
+          description: string | null
+          embedding: string | null
+          embedding_input: string | null
+          estimated_value_min: number | null
+          gsin: string | null
+          id: string
+          last_scraped_at: string | null
+          plan_takers_count: number | null
+          procurement_method: string | null
+          procurement_type: string | null
+          published_date: string | null
+          source: string
+          source_reference: string | null
+          source_url: string | null
+          status: string | null
+          submissions_count: number | null
+          summary: string | null
+          title: string
+          unspsc: string | null
+          updated_at: string | null
+        }
+        Insert: {
+          category_primary?: string | null
+          closing_date?: string | null
+          contact_email?: string | null
+          contact_name?: string | null
+          contact_phone?: string | null
+          contract_start_date?: string | null
+          contracting_entity_city?: string | null
+          contracting_entity_country?: string | null
+          contracting_entity_name?: string | null
+          contracting_entity_province?: string | null
+          created_at?: string | null
+          currency?: string | null
+          delivery_location?: string | null
+          description?: string | null
+          embedding?: string | null
+          embedding_input?: string | null
+          estimated_value_min?: number | null
+          gsin?: string | null
+          id: string
+          last_scraped_at?: string | null
+          plan_takers_count?: number | null
+          procurement_method?: string | null
+          procurement_type?: string | null
+          published_date?: string | null
+          source: string
+          source_reference?: string | null
+          source_url?: string | null
+          status?: string | null
+          submissions_count?: number | null
+          summary?: string | null
+          title: string
+          unspsc?: string | null
+          updated_at?: string | null
+        }
+        Update: {
+          category_primary?: string | null
+          closing_date?: string | null
+          contact_email?: string | null
+          contact_name?: string | null
+          contact_phone?: string | null
+          contract_start_date?: string | null
+          contracting_entity_city?: string | null
+          contracting_entity_country?: string | null
+          contracting_entity_name?: string | null
+          contracting_entity_province?: string | null
+          created_at?: string | null
+          currency?: string | null
+          delivery_location?: string | null
+          description?: string | null
+          embedding?: string | null
+          embedding_input?: string | null
+          estimated_value_min?: number | null
+          gsin?: string | null
+          id?: string
+          last_scraped_at?: string | null
+          plan_takers_count?: number | null
+          procurement_method?: string | null
+          procurement_type?: string | null
+          published_date?: string | null
+          source?: string
+          source_reference?: string | null
+          source_url?: string | null
+          status?: string | null
+          submissions_count?: number | null
+          summary?: string | null
+          title?: string
+          unspsc?: string | null
+          updated_at?: string | null
+        }
+        Relationships: []
+      }
+      tenders_old: {
         Row: {
           amendment_date: string | null
           amendment_number: string | null
@@ -402,111 +510,6 @@ export type Database = {
           trade_agreements?: string | null
           unspsc?: string | null
           unspsc_description?: string | null
-        }
-        Relationships: []
-      }
-      tenders_new: {
-        Row: {
-          category_primary: string | null
-          closing_date: string | null
-          contact_email: string | null
-          contact_name: string | null
-          contact_phone: string | null
-          contract_start_date: string | null
-          contracting_entity_city: string | null
-          contracting_entity_country: string | null
-          contracting_entity_name: string | null
-          contracting_entity_province: string | null
-          created_at: string | null
-          currency: string | null
-          delivery_location: string | null
-          description: string | null
-          embedding: string | null
-          estimated_value_min: number | null
-          gsin: string | null
-          id: string
-          last_scraped_at: string | null
-          plan_takers_count: number | null
-          procurement_method: string | null
-          procurement_type: string | null
-          published_date: string | null
-          source: string
-          source_reference: string | null
-          source_url: string | null
-          status: string | null
-          submissions_count: number | null
-          summary: string | null
-          title: string
-          unspsc: string | null
-          updated_at: string | null
-        }
-        Insert: {
-          category_primary?: string | null
-          closing_date?: string | null
-          contact_email?: string | null
-          contact_name?: string | null
-          contact_phone?: string | null
-          contract_start_date?: string | null
-          contracting_entity_city?: string | null
-          contracting_entity_country?: string | null
-          contracting_entity_name?: string | null
-          contracting_entity_province?: string | null
-          created_at?: string | null
-          currency?: string | null
-          delivery_location?: string | null
-          description?: string | null
-          embedding?: string | null
-          estimated_value_min?: number | null
-          gsin?: string | null
-          id: string
-          last_scraped_at?: string | null
-          plan_takers_count?: number | null
-          procurement_method?: string | null
-          procurement_type?: string | null
-          published_date?: string | null
-          source: string
-          source_reference?: string | null
-          source_url?: string | null
-          status?: string | null
-          submissions_count?: number | null
-          summary?: string | null
-          title: string
-          unspsc?: string | null
-          updated_at?: string | null
-        }
-        Update: {
-          category_primary?: string | null
-          closing_date?: string | null
-          contact_email?: string | null
-          contact_name?: string | null
-          contact_phone?: string | null
-          contract_start_date?: string | null
-          contracting_entity_city?: string | null
-          contracting_entity_country?: string | null
-          contracting_entity_name?: string | null
-          contracting_entity_province?: string | null
-          created_at?: string | null
-          currency?: string | null
-          delivery_location?: string | null
-          description?: string | null
-          embedding?: string | null
-          estimated_value_min?: number | null
-          gsin?: string | null
-          id?: string
-          last_scraped_at?: string | null
-          plan_takers_count?: number | null
-          procurement_method?: string | null
-          procurement_type?: string | null
-          published_date?: string | null
-          source?: string
-          source_reference?: string | null
-          source_url?: string | null
-          status?: string | null
-          submissions_count?: number | null
-          summary?: string | null
-          title?: string
-          unspsc?: string | null
-          updated_at?: string | null
         }
         Relationships: []
       }

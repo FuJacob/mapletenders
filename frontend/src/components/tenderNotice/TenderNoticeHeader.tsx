@@ -165,19 +165,9 @@ export function TenderNoticeHeader({
 
         {/* Reference Numbers */}
         <div className="flex flex-wrap gap-4 text-sm text-text-light">
-          {tender.reference_number && (
+          {tender.source_reference && (
             <span>
-              Reference: <strong>{tender.reference_number}</strong>
-            </span>
-          )}
-          {tender.solicitation_number && (
-            <span>
-              Solicitation: <strong>{tender.solicitation_number}</strong>
-            </span>
-          )}
-          {tender.amendment_number && (
-            <span>
-              Amendment: <strong>{tender.amendment_number}</strong>
+              Reference: <strong>{tender.source_reference}</strong>
             </span>
           )}
         </div>

@@ -6,7 +6,6 @@ import {
   Building,
   Globe,
   Bookmark,
-  Download,
 } from "@phosphor-icons/react";
 
 interface TenderNoticeSidebarProps {
@@ -119,27 +118,6 @@ export function TenderNoticeSidebar({
               </a>
             </div>
           )}
-          {tender.contact_fax && (
-            <div>
-              <label className="text-sm font-medium text-text">Fax</label>
-              <p className="text-text-light">{tender.contact_fax}</p>
-            </div>
-          )}
-          {(tender.contact_address_line || tender.contact_city) && (
-            <div>
-              <label className="text-sm font-medium text-text">Address</label>
-              <p className="text-text-light">
-                {[
-                  tender.contact_address_line,
-                  tender.contact_city,
-                  tender.contact_province,
-                  tender.contact_postal_code,
-                ]
-                  .filter(Boolean)
-                  .join(", ")}
-              </p>
-            </div>
-          )}
         </div>
       </div>
 
@@ -158,17 +136,16 @@ export function TenderNoticeSidebar({
               {tender.contracting_entity_name || "Not specified"}
             </p>
           </div>
-          {(tender.contracting_entity_address_line ||
-            tender.contracting_entity_city) && (
+          {(tender.contracting_entity_city ||
+            tender.contracting_entity_province ||
+            tender.contracting_entity_country) && (
             <div>
-              <label className="text-sm font-medium text-text">Address</label>
+              <label className="text-sm font-medium text-text">Location</label>
               <p className="text-text-light">
                 {[
-                  tender.contracting_entity_address_line,
                   tender.contracting_entity_city,
                   tender.contracting_entity_province,
                   tender.contracting_entity_country,
-                  tender.contracting_entity_postal_code,
                 ]
                   .filter(Boolean)
                   .join(", ")}
@@ -178,28 +155,11 @@ export function TenderNoticeSidebar({
         </div>
       </div>
 
-      {/* End User Entities */}
-      {tender.end_user_entities_name && (
-        <div className="bg-surface border border-border rounded-xl p-6">
-          <h3 className="text-lg font-semibold text-text mb-4">
-            End User Entities
-          </h3>
-          <div className="space-y-2">
-            <p className="text-text-light">{tender.end_user_entities_name}</p>
-            {tender.end_user_entities_address && (
-              <p className="text-sm text-text-light">
-                {tender.end_user_entities_address}
-              </p>
-            )}
-          </div>
-        </div>
-      )}
-
       {/* Actions */}
       <div className="bg-surface border border-border rounded-xl p-6">
         <h3 className="text-lg font-semibold text-text mb-4">Actions</h3>
         <div className="space-y-3">
-          {tender.notice_url && (
+          {tender.source_url && (
             <a
               href={tender.source_url}
               target="_blank"
@@ -209,12 +169,6 @@ export function TenderNoticeSidebar({
               <Globe className="w-4 h-4" />
               View Official Notice
             </a>
-          )}
-          {tender.attachments && (
-            <button className="w-full bg-secondary text-white py-2 px-4 rounded-lg hover:bg-secondary-dark transition-colors flex items-center justify-center gap-2">
-              <Download className="w-4 h-4" />
-              Download Attachments
-            </button>
           )}
           <button
             onClick={onBookmark}
