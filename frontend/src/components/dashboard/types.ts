@@ -1,6 +1,6 @@
 import type { Database } from "../../../database.types";
 
-// Use new centralized schema as source of truth
+// Use the new simplified schema with flattened columns
 export type Tender = Database["public"]["Tables"]["tenders_new"]["Row"] & {
   relevanceScore?: number; // Custom field for dashboard
 };
@@ -17,7 +17,7 @@ export type TenderSummary = Pick<
   | "published_date"
   | "category_primary"
   | "source_url"
-  | "contracting_entity"
+  | "contracting_entity_name"
 > & {
   relevanceScore?: number;
 };
@@ -25,8 +25,10 @@ export type TenderSummary = Pick<
 // Display interface using utility types to transform database fields to friendly names
 export type TenderDisplay = {
   id: string;
-  title: NonNullable<Database["public"]["Tables"]["tenders_new"]["Row"]["title"]>;
-  organization: string; // Extracted from contracting_entity JSON
+  title: NonNullable<
+    Database["public"]["Tables"]["tenders_new"]["Row"]["title"]
+  >;
+  organization: string; // From contracting_entity_name
   location: string; // From delivery_location
   deadline: NonNullable<
     Database["public"]["Tables"]["tenders_new"]["Row"]["closing_date"]
@@ -62,9 +64,7 @@ export interface Activity {
 export const mapTenderToDisplay = (tender: Tender): TenderDisplay => ({
   id: tender.id || "",
   title: tender.title || "Untitled",
-  organization: typeof tender.contracting_entity === 'object' && tender.contracting_entity !== null 
-    ? (tender.contracting_entity as any)?.name || "Unknown Organization"
-    : "Unknown Organization",
+  organization: tender.contracting_entity_name || "Unknown Organization",
   location: tender.delivery_location || "Location TBD",
   deadline: tender.closing_date || "",
   publishDate: tender.published_date || "",

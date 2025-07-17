@@ -11,7 +11,6 @@ import {
   logout,
   setAuthLoading,
   setAuthError,
-  setOnboardingCompleted,
 } from "./authSlice";
 import { type AppDispatch } from "../../app/configureStore";
 import type { Database } from "../../../database.types";

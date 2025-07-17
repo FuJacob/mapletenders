@@ -407,117 +407,105 @@ export type Database = {
       }
       tenders_new: {
         Row: {
-          amendment_date: string | null
           category_primary: string | null
-          classification_codes: Json | null
           closing_date: string | null
+          contact_email: string | null
+          contact_name: string | null
+          contact_phone: string | null
           contract_start_date: string | null
-          contracting_entity: Json | null
+          contracting_entity_city: string | null
+          contracting_entity_country: string | null
+          contracting_entity_name: string | null
+          contracting_entity_province: string | null
           created_at: string | null
           currency: string | null
           delivery_location: string | null
           description: string | null
-          documents: Json | null
           embedding: string | null
-          embedding_input: string | null
-          end_user_entity: Json | null
           estimated_value_min: number | null
+          gsin: string | null
           id: string
-          jurisdiction: string | null
           last_scraped_at: string | null
           plan_takers_count: number | null
-          primary_contact: Json | null
           procurement_method: string | null
           procurement_type: string | null
           published_date: string | null
-          regions: Json | null
-          requirements: Json | null
-          selection_criteria: string | null
           source: string
           source_reference: string | null
           source_url: string | null
           status: string | null
-          submission_method: string | null
           submissions_count: number | null
           summary: string | null
-          title: string | null
-          trade_agreements: Json | null
+          title: string
+          unspsc: string | null
           updated_at: string | null
         }
         Insert: {
-          amendment_date?: string | null
           category_primary?: string | null
-          classification_codes?: Json | null
           closing_date?: string | null
+          contact_email?: string | null
+          contact_name?: string | null
+          contact_phone?: string | null
           contract_start_date?: string | null
-          contracting_entity?: Json | null
+          contracting_entity_city?: string | null
+          contracting_entity_country?: string | null
+          contracting_entity_name?: string | null
+          contracting_entity_province?: string | null
           created_at?: string | null
           currency?: string | null
           delivery_location?: string | null
           description?: string | null
-          documents?: Json | null
           embedding?: string | null
-          embedding_input?: string | null
-          end_user_entity?: Json | null
           estimated_value_min?: number | null
+          gsin?: string | null
           id: string
-          jurisdiction?: string | null
           last_scraped_at?: string | null
           plan_takers_count?: number | null
-          primary_contact?: Json | null
           procurement_method?: string | null
           procurement_type?: string | null
           published_date?: string | null
-          regions?: Json | null
-          requirements?: Json | null
-          selection_criteria?: string | null
           source: string
           source_reference?: string | null
           source_url?: string | null
           status?: string | null
-          submission_method?: string | null
           submissions_count?: number | null
           summary?: string | null
-          title?: string | null
-          trade_agreements?: Json | null
+          title: string
+          unspsc?: string | null
           updated_at?: string | null
         }
         Update: {
-          amendment_date?: string | null
           category_primary?: string | null
-          classification_codes?: Json | null
           closing_date?: string | null
+          contact_email?: string | null
+          contact_name?: string | null
+          contact_phone?: string | null
           contract_start_date?: string | null
-          contracting_entity?: Json | null
+          contracting_entity_city?: string | null
+          contracting_entity_country?: string | null
+          contracting_entity_name?: string | null
+          contracting_entity_province?: string | null
           created_at?: string | null
           currency?: string | null
           delivery_location?: string | null
           description?: string | null
-          documents?: Json | null
           embedding?: string | null
-          embedding_input?: string | null
-          end_user_entity?: Json | null
           estimated_value_min?: number | null
+          gsin?: string | null
           id?: string
-          jurisdiction?: string | null
           last_scraped_at?: string | null
           plan_takers_count?: number | null
-          primary_contact?: Json | null
           procurement_method?: string | null
           procurement_type?: string | null
           published_date?: string | null
-          regions?: Json | null
-          requirements?: Json | null
-          selection_criteria?: string | null
           source?: string
           source_reference?: string | null
           source_url?: string | null
           status?: string | null
-          submission_method?: string | null
           submissions_count?: number | null
           summary?: string | null
-          title?: string | null
-          trade_agreements?: Json | null
+          title?: string
+          unspsc?: string | null
           updated_at?: string | null
         }
         Relationships: []

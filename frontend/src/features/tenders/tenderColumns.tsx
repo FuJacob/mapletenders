@@ -7,7 +7,7 @@ import {
   Clock,
   LinkIcon,
 } from "@phosphor-icons/react";
-import { convertTenderCategory, formatTenderLocation } from "../../utils";
+import { convertTenderCategory } from "../../utils";
 const columnHelper = createColumnHelper<Tender>();
 
 export const tenderColumns = [
@@ -17,7 +17,7 @@ export const tenderColumns = [
       const row = info.row.original;
       const title = info.getValue();
       const organization = row.contracting_entity_name || "-";
-      const location = formatTenderLocation(row.regions_of_delivery) || "-";
+      const location = row.delivery_location || "-";
 
       return (
         <a
@@ -43,7 +43,7 @@ export const tenderColumns = [
     size: 450,
     minSize: 350,
   }),
-  columnHelper.accessor("procurement_category", {
+  columnHelper.accessor("category_primary", {
     header: "Category",
     cell: (info) => {
       const raw = info.getValue();
@@ -63,12 +63,12 @@ export const tenderColumns = [
     },
     size: 150,
   }),
-  columnHelper.accessor("publication_date", {
+  columnHelper.accessor("published_date", {
     header: "Dates",
     cell: (info) => {
       const row = info.row.original;
-      const pubDate = row.publication_date;
-      const closeDate = row.tender_closing_date;
+      const pubDate = row.published_date;
+      const closeDate = row.closing_date;
 
       return (
         <div className="space-y-1 py-1">
@@ -88,7 +88,7 @@ export const tenderColumns = [
     size: 150,
     minSize: 120,
   }),
-  columnHelper.accessor("notice_url", {
+  columnHelper.accessor("source_url", {
     header: "External Notice Link",
     cell: (info) => (
       <a

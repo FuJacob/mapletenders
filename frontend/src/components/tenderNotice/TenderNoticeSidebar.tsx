@@ -11,29 +11,17 @@ import {
 
 interface TenderNoticeSidebarProps {
   tender: {
-    publication_date: string | null;
-    tender_closing_date: string | null;
-    expected_contract_start_date: string | null;
-    expected_contract_end_date: string | null;
-    amendment_date: string | null;
+    published_date: string | null;
+    closing_date: string | null;
+    contract_start_date: string | null;
     contact_name: string | null;
     contact_email: string | null;
     contact_phone: string | null;
-    contact_fax: string | null;
-    contact_address_line: string | null;
-    contact_city: string | null;
-    contact_province: string | null;
-    contact_postal_code: string | null;
     contracting_entity_name: string | null;
-    contracting_entity_address_line: string | null;
     contracting_entity_city: string | null;
     contracting_entity_province: string | null;
     contracting_entity_country: string | null;
-    contracting_entity_postal_code: string | null;
-    end_user_entities_name: string | null;
-    end_user_entities_address: string | null;
-    notice_url: string | null;
-    attachments: string | null;
+    source_url: string | null;
   };
   isBookmarked: boolean;
   isUrgent: boolean;
@@ -64,7 +52,7 @@ export function TenderNoticeSidebar({
               Publication Date
             </label>
             <p className="text-text-light">
-              {formatDate(tender.publication_date)}
+              {formatDate(tender.published_date)}
             </p>
           </div>
           <div>
@@ -76,36 +64,16 @@ export function TenderNoticeSidebar({
                 isUrgent ? "text-red-600 font-medium" : "text-text-light"
               }
             >
-              {formatDateTime(tender.tender_closing_date)}
+              {formatDateTime(tender.closing_date)}
             </p>
           </div>
-          {tender.expected_contract_start_date && (
+          {tender.contract_start_date && (
             <div>
               <label className="text-sm font-medium text-text">
                 Expected Start Date
               </label>
               <p className="text-text-light">
-                {formatDate(tender.expected_contract_start_date)}
-              </p>
-            </div>
-          )}
-          {tender.expected_contract_end_date && (
-            <div>
-              <label className="text-sm font-medium text-text">
-                Expected End Date
-              </label>
-              <p className="text-text-light">
-                {formatDate(tender.expected_contract_end_date)}
-              </p>
-            </div>
-          )}
-          {tender.amendment_date && (
-            <div>
-              <label className="text-sm font-medium text-text">
-                Amendment Date
-              </label>
-              <p className="text-text-light">
-                {formatDate(tender.amendment_date)}
+                {formatDate(tender.contract_start_date)}
               </p>
             </div>
           )}
@@ -233,7 +201,7 @@ export function TenderNoticeSidebar({
         <div className="space-y-3">
           {tender.notice_url && (
             <a
-              href={tender.notice_url}
+              href={tender.source_url}
               target="_blank"
               rel="noopener noreferrer"
               className="w-full bg-primary text-white py-2 px-4 rounded-lg hover:bg-primary-dark transition-colors flex items-center justify-center gap-2"

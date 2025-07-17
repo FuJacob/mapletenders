@@ -77,13 +77,15 @@ export class SubscriptionMiddleware {
         });
       }
 
-      const hasActiveSubscription = await this.subscriptionService.hasActiveSubscription(userId);
+      const hasActiveSubscription =
+        await this.subscriptionService.hasActiveSubscription(userId);
 
       if (!hasActiveSubscription) {
         return res.status(403).json({
           error: "Active subscription required",
           code: "SUBSCRIPTION_REQUIRED",
-          message: "This feature requires an active subscription. Please upgrade your plan.",
+          message:
+            "This feature requires an active subscription. Please upgrade your plan.",
         });
       }
 
@@ -99,7 +101,11 @@ export class SubscriptionMiddleware {
 
   // Check specific feature access
   requireFeature = (feature: string) => {
-    return async (req: AuthenticatedRequest, res: Response, next: NextFunction) => {
+    return async (
+      req: AuthenticatedRequest,
+      res: Response,
+      next: NextFunction
+    ) => {
       try {
         const userId = req.user?.id || req.body.userId || req.params.userId;
 
@@ -110,13 +116,16 @@ export class SubscriptionMiddleware {
           });
         }
 
-        const subscription = await this.subscriptionService.getUserSubscription(userId);
+        const subscription = await this.subscriptionService.getUserSubscription(
+          userId
+        );
 
         if (!subscription) {
           return res.status(403).json({
             error: "Subscription required",
             code: "SUBSCRIPTION_REQUIRED",
-            message: "This feature requires a subscription. Please choose a plan.",
+            message:
+              "This feature requires a subscription. Please choose a plan.",
           });
         }
 
@@ -125,12 +134,15 @@ export class SubscriptionMiddleware {
           return res.status(403).json({
             error: "Active subscription required",
             code: "SUBSCRIPTION_INACTIVE",
-            message: "Your subscription is not active. Please update your payment method.",
+            message:
+              "Your subscription is not active. Please update your payment method.",
           });
         }
 
         // Get plan limits based on plan name
-        const planLimits = this.getPlanLimits(subscription.plan_id);
+        const planLimits = subscription.plan_id
+          ? this.getPlanLimits(subscription.plan_id)
+          : null;
 
         if (!planLimits) {
           return res.status(500).json({
@@ -166,7 +178,11 @@ export class SubscriptionMiddleware {
 
   // Check usage limits (searches, exports, etc.)
   checkUsageLimit = (limitType: string) => {
-    return async (req: AuthenticatedRequest, res: Response, next: NextFunction) => {
+    return async (
+      req: AuthenticatedRequest,
+      res: Response,
+      next: NextFunction
+    ) => {
       try {
         const userId = req.user?.id || req.body.userId || req.params.userId;
 
@@ -177,7 +193,9 @@ export class SubscriptionMiddleware {
           });
         }
 
-        const subscription = await this.subscriptionService.getUserSubscription(userId);
+        const subscription = await this.subscriptionService.getUserSubscription(
+          userId
+        );
 
         if (!subscription) {
           return res.status(403).json({
@@ -186,7 +204,9 @@ export class SubscriptionMiddleware {
           });
         }
 
-        const planLimits = this.getPlanLimits(subscription.plan_id);
+        const planLimits = subscription.plan_id
+          ? this.getPlanLimits(subscription.plan_id)
+          : null;
         const limit = planLimits?.[limitType as keyof typeof planLimits];
 
         // If limit is -1, it's unlimited
@@ -225,7 +245,11 @@ export class SubscriptionMiddleware {
   }
 
   // Get user's plan information
-  getUserPlanInfo = async (req: AuthenticatedRequest, res: Response, next: NextFunction) => {
+  getUserPlanInfo = async (
+    req: AuthenticatedRequest,
+    res: Response,
+    next: NextFunction
+  ) => {
     try {
       const userId = req.user?.id || req.body.userId || req.params.userId;
 
@@ -236,14 +260,21 @@ export class SubscriptionMiddleware {
         });
       }
 
-      const subscription = await this.subscriptionService.getUserSubscription(userId);
-      const planLimits = subscription ? this.getPlanLimits(subscription.plan_id) : null;
+      const subscription = await this.subscriptionService.getUserSubscription(
+        userId
+      );
+      const planLimits =
+        subscription && subscription.plan_id
+          ? this.getPlanLimits(subscription.plan_id)
+          : null;
 
       // Add plan info to request
       req.body._planInfo = {
         subscription,
         limits: planLimits,
-        hasActiveSubscription: subscription ? ["active", "trialing"].includes(subscription.status) : false,
+        hasActiveSubscription: subscription
+          ? ["active", "trialing"].includes(subscription.status)
+          : false,
       };
 
       next();
@@ -261,7 +292,8 @@ export class SubscriptionMiddleware {
 export const subscriptionMiddleware = new SubscriptionMiddleware();
 
 // Export specific middleware functions for easy use
-export const requireActiveSubscription = subscriptionMiddleware.requireActiveSubscription;
+export const requireActiveSubscription =
+  subscriptionMiddleware.requireActiveSubscription;
 export const requireFeature = subscriptionMiddleware.requireFeature;
 export const checkUsageLimit = subscriptionMiddleware.checkUsageLimit;
 export const getUserPlanInfo = subscriptionMiddleware.getUserPlanInfo;

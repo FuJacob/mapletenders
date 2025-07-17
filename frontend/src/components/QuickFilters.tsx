@@ -142,19 +142,18 @@ const QuickFilters = ({
       filtered = filtered.filter((tender) => {
         switch (filter.type) {
           case "category":
-            return tender.procurement_category?.includes(filter.label);
+            return tender.category_primary?.includes(filter.label);
           case "region":
             return (
               tender.contracting_entity_province === filter.label ||
-              tender.regions_of_delivery?.includes(filter.label) ||
-              tender.regions_of_opportunity?.includes(filter.label)
+              tender.delivery_location?.includes(filter.label)
             );
           case "organization":
             return tender.contracting_entity_name === filter.label;
           case "notice_type":
-            return tender.notice_type === filter.label;
+            return tender.procurement_type === filter.label;
           case "status":
-            return tender.tender_status === filter.label;
+            return tender.status === filter.label;
           default:
             return true;
         }

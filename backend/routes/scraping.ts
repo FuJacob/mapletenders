@@ -91,4 +91,20 @@ router.get("/mississauga/scrape", (req, res) =>
   scrapingController.scrapeMississaugaTenders(req, res)
 );
 
+/**
+ * Test playground - get available scraping sources
+ * @route GET /scraping/test/sources
+ */
+router.get("/test/sources", (req, res) =>
+  scrapingController.getTestSources(req, res)
+);
+
+/**
+ * Test playground - scrape data from a specific source
+ * @route GET /scraping/test/:source
+ */
+router.get("/test/:source", (req, res) =>
+  scrapingController.testScrapeSource(req, res)
+);
+
 export default router;

@@ -5,17 +5,12 @@ import { generateTenderSummary, type TenderSummaryData } from "../../api";
 interface TenderNoticeBodyProps {
   tender: {
     id: string;
-    tender_description: string | null;
+    description: string | null;
     procurement_method: string | null;
-    procurement_category: string | null;
+    category_primary: string | null;
     gsin: string | null;
-    gsin_description: string | null;
     unspsc: string | null;
-    unspsc_description: string | null;
-    regions_of_delivery: string | null;
-    regions_of_opportunity: string | null;
-    selection_criteria: string | null;
-    trade_agreements: string | null;
+    delivery_location: string | null;
   };
 }
 
@@ -29,28 +24,20 @@ export function TenderNoticeSummary({ tender }: TenderNoticeBodyProps) {
   // Memoize the structured data to prevent unnecessary recreations
   const structuredTenderData = useMemo(() => {
     return `
-Title: ${tender.tender_description || "Not specified"}
+Description: ${tender.description || "Not specified"}
 Procurement Method: ${tender.procurement_method || "Not specified"}
-Category: ${tender.procurement_category || "Not specified"}
-GSIN: ${tender.gsin || "Not specified"} - ${tender.gsin_description || ""}
-UNSPSC: ${tender.unspsc || "Not specified"} - ${tender.unspsc_description || ""}
-Delivery Regions: ${tender.regions_of_delivery || "Not specified"}
-Opportunity Regions: ${tender.regions_of_opportunity || "Not specified"}
-Selection Criteria: ${tender.selection_criteria || "Not specified"}
-Trade Agreements: ${tender.trade_agreements || "Not specified"}
+Category: ${tender.category_primary || "Not specified"}
+GSIN: ${tender.gsin || "Not specified"}
+UNSPSC: ${tender.unspsc || "Not specified"}
+Delivery Location: ${tender.delivery_location || "Not specified"}
     `.trim();
   }, [
-    tender.tender_description,
+    tender.description,
     tender.procurement_method,
-    tender.procurement_category,
+    tender.category_primary,
     tender.gsin,
-    tender.gsin_description,
     tender.unspsc,
-    tender.unspsc_description,
-    tender.regions_of_delivery,
-    tender.regions_of_opportunity,
-    tender.selection_criteria,
-    tender.trade_agreements,
+    tender.delivery_location,
   ]);
   useEffect(() => {
     console.log("Tender summary:", tenderSummary);

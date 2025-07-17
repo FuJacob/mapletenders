@@ -40,9 +40,7 @@ function TenderCard({ tender, onBookmark, onViewDetails }: TenderCardProps) {
             <ArrowSquareOut className="w-4 h-4 text-text-light" />
           </h3>
           <p className="text-sm text-text-light mb-2">
-            {typeof tender.contracting_entity === 'object' && tender.contracting_entity !== null 
-              ? (tender.contracting_entity as any)?.name || "Unknown Organization"
-              : "Unknown Organization"}
+            {tender.contracting_entity_name || "Unknown Organization"}
           </p>
           <div className="flex items-center gap-4 text-sm text-text-light">
             <span className="flex items-center gap-1">

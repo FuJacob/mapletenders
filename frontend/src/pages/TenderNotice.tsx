@@ -133,8 +133,8 @@ export default function TenderNotice() {
 
   // Calculate values before early returns to comply with rules of hooks
   const closingDays = useMemo(
-    () => getDaysUntilClosing(selectedTender?.tender_closing_date || null),
-    [selectedTender?.tender_closing_date]
+    () => getDaysUntilClosing(selectedTender?.closing_date || null),
+    [selectedTender?.closing_date]
   );
   const isUrgent = useMemo(
     () =>

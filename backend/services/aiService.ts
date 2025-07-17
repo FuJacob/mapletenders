@@ -2,10 +2,10 @@ import OpenAI from "openai";
 import { GoogleGenAI, Type } from "@google/genai";
 import { Database } from "../database.types";
 
-type Tender = Database["public"]["Tables"]["tenders"]["Row"];
+type Tender = Database["public"]["Tables"]["tenders_new"]["Row"];
 type TenderSummaries = {
   id: string;
-  precomputed_summary: string | null;
+  summary: string | null;
 }[];
 
 export class AiService {
@@ -51,7 +51,7 @@ export class AiService {
     console.log("query", query);
     const tendersToAnalyze = tenders
       .map((tender) => {
-        return `id: ${tender.id} + summary: ${tender.precomputed_summary}`;
+        return `id: ${tender.id} + summary: ${tender.summary}`;
       })
       .join("\n");
 
@@ -116,14 +116,14 @@ The tender data to analyze is: `,
 
   async generatePrecomputedSummary(tender: Tender): Promise<string> {
     try {
-      // Extract key information from tender
+      // Extract key information from tender (updated for tenders_new schema)
       const keyInfo = {
         title: tender.title,
-        description: tender.tender_description,
-        category: tender.procurement_category,
+        description: tender.description,
+        category: tender.category_primary,
         entity: tender.contracting_entity_name,
-        closing_date: tender.tender_closing_date,
-        regions: tender.regions_of_delivery,
+        closing_date: tender.closing_date,
+        regions: tender.delivery_location,
       };
 
       const prompt = `Summarize this government tender in 3 sentences focusing on the MOST important information for businesses:

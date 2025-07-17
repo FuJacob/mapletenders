@@ -1,5 +1,5 @@
 import React from "react";
-import { MagnifyingGlass, Table, FileText, MoneyWavyIcon, CreditCardIcon } from "@phosphor-icons/react";
+import { MagnifyingGlass, Table, FileText, CreditCardIcon } from "@phosphor-icons/react";
 import { useNavigate, Link } from "react-router-dom";
 interface ViewSwitcherProps {
   currentView: string | null;

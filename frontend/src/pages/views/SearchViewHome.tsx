@@ -1,7 +1,6 @@
 import { useState, useEffect } from "react";
 
 import { useAppSelector, useAppDispatch } from "../../app/hooks";
-import { selectAuthUser } from "../../features/auth/authSelectors";
 import {
   selectBookmarkedTenders,
   selectBookmarksLoading,
@@ -23,12 +22,12 @@ import RecommendedTenders from "../../components/dashboard/RecommendedTenders";
 import RecentActivity from "../../components/dashboard/RecentActivity";
 import BreezeChat from "../../components/dashboard/BreezeChat";
 import BookmarkedTenders from "../../components/dashboard/BookmarkedTenders";
+import { useAuth } from "../../hooks/auth";
 
 export default function Home() {
   const navigate = useNavigate();
   const dispatch = useAppDispatch();
-
-  const user = useAppSelector(selectAuthUser);
+  const { profile } = useAuth();
   const bookmarkedTenders = useAppSelector(selectBookmarkedTenders);
   const bookmarksLoading = useAppSelector(selectBookmarksLoading);
   const [searchQuery, setSearchQuery] = useState("");
@@ -38,10 +37,10 @@ export default function Home() {
 
   // Load bookmarks when component mounts
   useEffect(() => {
-    if (user?.id) {
-      dispatch(loadBookmarks(user.id));
+    if (profile?.id) {
+      dispatch(loadBookmarks(profile.id));
     }
-  }, [dispatch, user?.id]);
+  }, [dispatch, profile?.id]);
 
   // Mock data for demonstration - replace with real data later
   const mockStats = {
@@ -61,121 +60,131 @@ export default function Home() {
       id: "1",
       title: "Software Development Services for Digital Transformation",
       contracting_entity_name: "Government of Ontario",
-      tender_closing_date: "2025-07-25",
-      regions_of_delivery: "Toronto, ON",
+      closing_date: "2025-07-25",
+      delivery_location: "Toronto, ON",
       relevanceScore: 95,
-      notice_type: "RFP",
-      tender_status: "Open",
-      publication_date: "2025-06-25",
-      procurement_category: "Information Technology",
+      procurement_type: "rfp",
+      status: "open",
+      published_date: "2025-06-25",
+      category_primary: "Information Technology",
+      source_url: "#",
     },
     {
       id: "2",
       title: "IT Infrastructure Consulting Services",
       contracting_entity_name: "City of Vancouver",
-      tender_closing_date: "2025-07-30",
-      regions_of_delivery: "Vancouver, BC",
+      closing_date: "2025-07-30",
+      delivery_location: "Vancouver, BC",
       relevanceScore: 88,
-      notice_type: "RFQ",
-      tender_status: "Open",
-      publication_date: "2025-06-30",
-      procurement_category: "Consulting Services",
+      procurement_type: "rfq",
+      status: "open",
+      published_date: "2025-06-30",
+      category_primary: "Consulting Services",
+      source_url: "#",
     },
     {
       id: "3",
       title: "Cybersecurity Assessment and Implementation",
       contracting_entity_name: "Government of Canada",
-      tender_closing_date: "2025-08-05",
-      regions_of_delivery: "Ottawa, ON",
+      closing_date: "2025-08-05",
+      delivery_location: "Ottawa, ON",
       relevanceScore: 92,
-      notice_type: "RFP",
-      tender_status: "Open",
-      publication_date: "2025-07-05",
-      procurement_category: "Security Services",
+      procurement_type: "rfp",
+      status: "open",
+      published_date: "2025-07-05",
+      category_primary: "Security Services",
+      source_url: "#",
     },
     {
       id: "4",
       title: "Cloud Migration and DevOps Services",
       contracting_entity_name: "City of Calgary",
-      tender_closing_date: "2025-08-15",
-      regions_of_delivery: "Calgary, AB",
+      closing_date: "2025-08-15",
+      delivery_location: "Calgary, AB",
       relevanceScore: 89,
-      notice_type: "RFP",
-      tender_status: "Open",
-      publication_date: "2025-07-15",
-      procurement_category: "Information Technology",
+      procurement_type: "rfp",
+      status: "open",
+      published_date: "2025-07-15",
+      category_primary: "Information Technology",
+      source_url: "#",
     },
     {
       id: "5",
       title: "Database Modernization Project",
       contracting_entity_name: "Province of British Columbia",
-      tender_closing_date: "2025-08-20",
-      regions_of_delivery: "Victoria, BC",
+      closing_date: "2025-08-20",
+      delivery_location: "Victoria, BC",
       relevanceScore: 91,
-      notice_type: "RFQ",
-      tender_status: "Open",
-      publication_date: "2025-07-20",
-      procurement_category: "Data Management",
+      procurement_type: "rfq",
+      status: "open",
+      published_date: "2025-07-20",
+      category_primary: "Data Management",
+      source_url: "#",
     },
     {
       id: "6",
       title: "Mobile Application Development",
       contracting_entity_name: "City of Montreal",
-      tender_closing_date: "2025-09-01",
-      regions_of_delivery: "Montreal, QC",
+      closing_date: "2025-09-01",
+      delivery_location: "Montreal, QC",
       relevanceScore: 86,
-      notice_type: "RFP",
-      tender_status: "Open",
-      publication_date: "2025-08-01",
-      procurement_category: "Software Development",
+      procurement_type: "rfp",
+      status: "open",
+      published_date: "2025-08-01",
+      category_primary: "Software Development",
+      source_url: "#",
     },
     {
       id: "7",
       title: "Data Analytics Platform Implementation",
       contracting_entity_name: "Government of Alberta",
-      tender_closing_date: "2025-09-10",
-      regions_of_delivery: "Edmonton, AB",
+      closing_date: "2025-09-10",
+      delivery_location: "Edmonton, AB",
       relevanceScore: 94,
-      notice_type: "RFP",
-      tender_status: "Open",
-      publication_date: "2025-08-10",
-      procurement_category: "Analytics Services",
+      procurement_type: "rfp",
+      status: "open",
+      published_date: "2025-08-10",
+      category_primary: "Analytics Services",
+      source_url: "#",
     },
     {
       id: "8",
       title: "Enterprise Software Licensing",
       contracting_entity_name: "City of Winnipeg",
-      tender_closing_date: "2025-09-15",
-      regions_of_delivery: "Winnipeg, MB",
+      closing_date: "2025-09-15",
+      delivery_location: "Winnipeg, MB",
       relevanceScore: 82,
-      notice_type: "RFQ",
-      tender_status: "Open",
-      publication_date: "2025-08-15",
-      procurement_category: "Software Licensing",
+      procurement_type: "rfq",
+      status: "open",
+      published_date: "2025-08-15",
+      category_primary: "Software Licensing",
+      source_url: "#",
     },
     {
       id: "9",
       title: "Network Security Upgrade",
       contracting_entity_name: "Province of Nova Scotia",
-      tender_closing_date: "2025-09-20",
-      regions_of_delivery: "Halifax, NS",
+      closing_date: "2025-09-20",
+      delivery_location: "Halifax, NS",
       relevanceScore: 90,
-      notice_type: "RFP",
-      tender_status: "Open",
-      publication_date: "2025-08-20",
-      procurement_category: "Network Security",
+      procurement_type: "rfp",
+      status: "open",
+      published_date: "2025-08-20",
+      category_primary: "Network Security",
+      source_url: "#",
     },
     {
       id: "10",
       title: "Digital Workflow Automation",
       contracting_entity_name: "City of Quebec",
-      tender_closing_date: "2025-09-25",
-      regions_of_delivery: "Quebec City, QC",
+      closing_date: "2025-09-25",
+      delivery_location: "Quebec City, QC",
       relevanceScore: 87,
-      notice_type: "RFP",
-      tender_status: "Open",
-      publication_date: "2025-08-25",
-      procurement_category: "Process Automation",
+      procurement_type: "rfp",
+      status: "open",
+      published_date: "2025-08-25",
+      category_primary: "Process Automation",
+      source_url: "#",
     },
   ];
 
@@ -348,7 +357,7 @@ export default function Home() {
       {/* Welcome Section */}
       <div className="mb-8 text-center">
         <h1 className="text-5xl font-bold text-text mb-4">
-          Welcome back {user?.company_name}!
+          Welcome back {profile?.company_name || "User"}!
         </h1>
         <p className="text-2xl text-text-light">
           Discover and search through thousands of government contract

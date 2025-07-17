@@ -14,17 +14,15 @@ interface TenderNoticeHeaderProps {
   tender: {
     id: string;
     title: string | null;
-    tender_status: string | null;
-    notice_type: string | null;
+    status: string | null;
+    procurement_type: string | null;
     contracting_entity_name: string | null;
     contracting_entity_city: string | null;
     contracting_entity_province: string | null;
-    publication_date: string | null;
-    tender_closing_date: string | null;
-    reference_number: string | null;
-    solicitation_number: string | null;
-    amendment_number: string | null;
-    notice_url: string | null;
+    published_date: string | null;
+    closing_date: string | null;
+    source_reference: string | null;
+    source_url: string | null;
   };
   isBookmarked: boolean;
   isUrgent: boolean;
@@ -78,14 +76,14 @@ export function TenderNoticeHeader({
               <div className="flex items-center gap-2">
                 <span
                   className={`px-3 py-1 rounded-full text-sm font-medium border ${getStatusColor(
-                    tender.tender_status
+                    tender.status
                   )}`}
                 >
-                  {tender.tender_status || "Status Unknown"}
+                  {tender.status || "Status Unknown"}
                 </span>
-                {tender.notice_type && (
+                {tender.procurement_type && (
                   <span className="px-3 py-1 bg-blue-100 text-blue-800 rounded-full text-sm font-medium">
-                    {tender.notice_type}
+                    {tender.procurement_type}
                   </span>
                 )}
               </div>
@@ -109,7 +107,7 @@ export function TenderNoticeHeader({
               </div>
               <div className="flex items-center gap-2 text-text-light">
                 <Calendar className="w-4 h-4" />
-                <span>Published: {formatDate(tender.publication_date)}</span>
+                <span>Published: {formatDate(tender.published_date)}</span>
               </div>
               <div
                 className={`flex items-center gap-2 ${
@@ -118,7 +116,7 @@ export function TenderNoticeHeader({
               >
                 <Clock className="w-4 h-4" />
                 <span>
-                  Closes: {formatDateTime(tender.tender_closing_date)}
+                  Closes: {formatDateTime(tender.closing_date)}
                 </span>
                 {closingDays && (
                   <span
@@ -152,9 +150,9 @@ export function TenderNoticeHeader({
             >
               <Share className="w-5 h-5" />
             </button>
-            {tender.notice_url && (
+            {tender.source_url && (
               <a
-                href={tender.notice_url}
+                href={tender.source_url}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="p-2 text-text-light hover:text-primary hover:bg-border rounded-lg transition-colors"

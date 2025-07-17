@@ -99,7 +99,7 @@ export function SearchResultCard({ result }: SearchResultCardProps) {
         </div>
         <div className="flex items-center gap-2">
           <Clock className="w-4 h-4" />
-          <span>Closes: {formatDate(result.tender_closing_date)}</span>
+          <span>Closes: {formatDate(result.closing_date)}</span>
         </div>
       </div>
 
@@ -142,11 +142,11 @@ export function SearchResultCard({ result }: SearchResultCardProps) {
       <div className="flex items-center justify-between pt-4 border-t border-border">
         <div className="flex items-center gap-2 text-sm text-text-muted">
           <Calendar className="w-4 h-4" />
-          <span>Deadline: {formatDate(result.tender_closing_date)}</span>
+          <span>Deadline: {formatDate(result.closing_date)}</span>
         </div>
 
         <div className="text-sm text-text-muted">
-          ID: {result.reference_number || result.id}
+          ID: {result.source_reference || result.id}
         </div>
       </div>
     </div>
