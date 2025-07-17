@@ -159,6 +159,7 @@ Return ONLY the summary text, no JSON, no formatting. Focus on what they're buyi
         model: "gemini-2.5-flash",
         contents: `Analyze this government tender data and provide a concise, actionable summary: ${tenderData}`,
         config: {
+          maxOutputTokens: 300,
           systemInstruction: `You are BreezeAI, an expert AI assistant specialized in analyzing government procurement tenders. Create a concise, business-focused summary that helps companies quickly understand if this opportunity is worth pursuing.
 
 Focus on the most important information that drives business decisions.`,

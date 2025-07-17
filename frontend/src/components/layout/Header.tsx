@@ -5,7 +5,14 @@ import { useAuth } from "../../hooks/auth";
 import { useState, useEffect, useRef, useCallback } from "react";
 import { useDispatch } from "react-redux";
 import { signOut } from "../../features/auth/authThunks";
-import { User, Gear, SignOut, Bell, CaretDown, CreditCard } from "@phosphor-icons/react";
+import {
+  User,
+  Gear,
+  SignOut,
+  Bell,
+  CaretDown,
+  CreditCard,
+} from "@phosphor-icons/react";
 import type { AppDispatch } from "../../app/configureStore";
 import { useSearchParams } from "react-router-dom";
 interface HeaderProps {
@@ -26,12 +33,10 @@ export default function Header({
   const menuRef = useRef<HTMLDivElement>(null);
 
   // Check if we're on the home page or RFP analysis page to show view switcher
-  const isHomePage = location.pathname === "/home";
   const isRfpPage = location.pathname === "/rfp-analysis";
   const isSearchPage = location.pathname === "/search";
-  const isTenderNoticePage = location.pathname.startsWith("/tender-notice");
   const isPlansPage = location.pathname === "/plans";
-
+  const isCalendarPage = location.pathname === "/calendar";
   // Memoize click outside handler
   const handleClickOutside = useCallback((event: MouseEvent) => {
     if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
@@ -113,8 +118,8 @@ export default function Header({
       </nav>
 
       {/* View Switcher for Home Page and RFP Analysis */}
-      {isAuthenticated &&
-        (isHomePage || isRfpPage || isTenderNoticePage || isPlansPage) && (
+      {isAuthenticated && (
+        <>
           <div className="absolute left-1/2 transform -translate-x-1/2">
             <ViewSwitcher
               currentView={
@@ -122,17 +127,15 @@ export default function Header({
                   ? "rfp"
                   : isPlansPage
                   ? "plans"
+                  : isCalendarPage
+                  ? "calendar"
                   : view || (isSearchPage ? "search" : null)
               }
             />
           </div>
-        )}
 
-      {/* Right Section - User Menu / Auth Buttons */}
-      <div className="flex items-center gap-4">
-        {isAuthenticated ? (
-          // Logged in user menu
-          <>
+          {/* Right Section - User Menu / Auth Buttons */}
+          <div className="flex items-center gap-4">
             <button className="p-2 text-text-light hover:text-primary transition-colors relative">
               <Bell className="w-5 h-5" />
               <span className="absolute -top-1 -right-1 w-3 h-3 bg-primary rounded-full"></span>
@@ -144,7 +147,9 @@ export default function Header({
                 className="flex items-center gap-2 p-2 rounded-lg hover:bg-border transition-colors"
               >
                 <div className="w-8 h-8 bg-primary text-white rounded-full flex items-center justify-center text-sm font-medium">
-                  {profile?.company_name?.charAt(0)?.toUpperCase() || user?.email?.charAt(0)?.toUpperCase() || "U"}
+                  {profile?.company_name?.charAt(0)?.toUpperCase() ||
+                    user?.email?.charAt(0)?.toUpperCase() ||
+                    "U"}
                 </div>
                 <span className="text-sm text-text hidden sm:block">
                   {profile?.company_name || user?.email || "User"}
@@ -159,7 +164,9 @@ export default function Header({
                       {profile?.company_name || "Your Company"}
                     </p>
                     {profile?.industry && (
-                      <p className="text-xs text-text-light">{profile.industry}</p>
+                      <p className="text-xs text-text-light">
+                        {profile.industry}
+                      </p>
                     )}
                   </div>
                   <div className="py-1">
@@ -208,25 +215,27 @@ export default function Header({
                 </div>
               )}
             </div>
-          </>
-        ) : (
-          // Guest buttons - Enhanced styling
-          <>
-            <button
-              onClick={() => navigate("/sign-in")}
-              className="px-4 py-2 text-sm text-text hover:text-primary transition-colors font-medium"
-            >
-              Sign In
-            </button>
-            <button
-              onClick={() => navigate("/sign-up")}
-              className="px-6 py-2 bg-primary text-white rounded-lg text-sm font-medium hover:bg-primary-dark transition-colors shadow-sm"
-            >
-              Start Free Trial
-            </button>
-          </>
-        )}
-      </div>
+          </div>
+        </>
+      )}
+
+      {!isAuthenticated && (
+        // Guest buttons - Enhanced styling
+        <>
+          <button
+            onClick={() => navigate("/sign-in")}
+            className="px-4 py-2 text-sm text-text hover:text-primary transition-colors font-medium"
+          >
+            Sign In
+          </button>
+          <button
+            onClick={() => navigate("/sign-up")}
+            className="px-6 py-2 bg-primary text-white rounded-lg text-sm font-medium hover:bg-primary-dark transition-colors shadow-sm"
+          >
+            Start Free Trial
+          </button>
+        </>
+      )}
     </header>
   );
 }

@@ -27,6 +27,7 @@ import Test from "./pages/Test";
 import Layout from "./routes/Layout";
 import { refreshTenders } from "./api";
 import { loadTenders } from "./features/tenders/tendersThunk";
+import CalendarPage from "./pages/CalendarPage";
 
 export function App() {
   const dispatch = useAppDispatch();
@@ -66,6 +67,7 @@ export function App() {
             <Route path="/home" element={<Home />} />
             <Route path="/search" element={<SearchResults />} />
             <Route path="/rfp-analysis" element={<RfpAnalysis />} />
+            <Route path="/calendar" element={<CalendarPage />} />
             <Route path="/profile" element={<Profile />} />
             <Route path="/plans" element={<Plans />} />
             <Route path="/tender-notice/:tenderId" element={<TenderNotice />} />
