@@ -3,7 +3,7 @@ import { handleApiError } from "./config";
 import type { Database } from "../../database.types";
 
 type BookmarkRow = Database["public"]["Tables"]["bookmarks"]["Row"];
-type TenderNoticeRow = Database["public"]["Tables"]["tenders_new"]["Row"];
+type TenderNoticeRow = Database["public"]["Tables"]["tenders"]["Row"];
 
 export interface BookmarkWithTender extends BookmarkRow {
   tender_notice: TenderNoticeRow;

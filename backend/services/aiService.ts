@@ -2,7 +2,7 @@ import OpenAI from "openai";
 import { GoogleGenAI, Type } from "@google/genai";
 import { Database } from "../database.types";
 
-type Tender = Database["public"]["Tables"]["tenders_new"]["Row"];
+type Tender = Database["public"]["Tables"]["tenders"]["Row"];
 type TenderSummaries = {
   id: string;
   summary: string | null;
@@ -116,7 +116,7 @@ The tender data to analyze is: `,
 
   async generatePrecomputedSummary(tender: Tender): Promise<string> {
     try {
-      // Extract key information from tender (updated for tenders_new schema)
+      // Extract key information from tender (updated for tenders schema)
       const keyInfo = {
         title: tender.title,
         description: tender.description,

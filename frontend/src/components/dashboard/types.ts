@@ -1,13 +1,13 @@
 import type { Database } from "../../../database.types";
 
 // Use the new simplified schema with flattened columns
-export type Tender = Database["public"]["Tables"]["tenders_new"]["Row"] & {
+export type Tender = Database["public"]["Tables"]["tenders"]["Row"] & {
   relevanceScore?: number; // Custom field for dashboard
 };
 
 // Minimal tender data for components and mock data
 export type TenderSummary = Pick<
-  Database["public"]["Tables"]["tenders_new"]["Row"],
+  Database["public"]["Tables"]["tenders"]["Row"],
   | "id"
   | "title"
   | "closing_date"
@@ -25,27 +25,23 @@ export type TenderSummary = Pick<
 // Display interface using utility types to transform database fields to friendly names
 export type TenderDisplay = {
   id: string;
-  title: NonNullable<
-    Database["public"]["Tables"]["tenders_new"]["Row"]["title"]
-  >;
+  title: NonNullable<Database["public"]["Tables"]["tenders"]["Row"]["title"]>;
   organization: string; // From contracting_entity_name
   location: string; // From delivery_location
   deadline: NonNullable<
-    Database["public"]["Tables"]["tenders_new"]["Row"]["closing_date"]
+    Database["public"]["Tables"]["tenders"]["Row"]["closing_date"]
   >;
   publishDate: NonNullable<
-    Database["public"]["Tables"]["tenders_new"]["Row"]["published_date"]
+    Database["public"]["Tables"]["tenders"]["Row"]["published_date"]
   >;
   category: NonNullable<
-    Database["public"]["Tables"]["tenders_new"]["Row"]["category_primary"]
+    Database["public"]["Tables"]["tenders"]["Row"]["category_primary"]
   >;
-  status: NonNullable<
-    Database["public"]["Tables"]["tenders_new"]["Row"]["status"]
-  >;
+  status: NonNullable<Database["public"]["Tables"]["tenders"]["Row"]["status"]>;
   noticeUrl: NonNullable<
-    Database["public"]["Tables"]["tenders_new"]["Row"]["source_url"]
+    Database["public"]["Tables"]["tenders"]["Row"]["source_url"]
   >;
-  description?: Database["public"]["Tables"]["tenders_new"]["Row"]["description"];
+  description?: Database["public"]["Tables"]["tenders"]["Row"]["description"];
   relevanceScore?: number;
 };
 
