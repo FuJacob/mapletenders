@@ -55,7 +55,7 @@ export interface SearchTendersRequest {
   procurement_method?: string;
   procurement_category?: string[];
   notice_type?: string[];
-  tender_status?: string[];
+  status?: string[];
   contracting_entity_name?: string[];
   closing_date_after?: string;
   closing_date_before?: string;

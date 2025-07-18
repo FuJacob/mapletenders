@@ -8,7 +8,9 @@ import {
   Warning,
   CheckCircle,
   Clock,
+  FileText,
 } from "@phosphor-icons/react";
+import { PageHeader } from "../components/ui";
 
 interface UploadedFile {
   file: File;
@@ -174,14 +176,13 @@ export default function RfpAnalysis() {
   };
 
   return (
-    <div className="max-w-7xl mx-auto px-6 py-8">
-      {/* Header */}
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold text-text mb-4">RFP Document Analysis</h1>
-        <p className="text-lg text-text-muted">
-          Upload RFP documents to get AI-powered analysis and insights to help you craft winning proposals.
-        </p>
-      </div>
+    <div className="min-h-screen bg-background py-8">
+      <div className="max-w-7xl mx-auto px-6">
+        <PageHeader
+          icon={<FileText className="w-10 h-10 text-primary" />}
+          title="RFP Analysis"
+          description="Upload RFP documents to get AI-powered analysis and insights to help you craft winning proposals"
+        />
 
       {/* Upload Section */}
       <div className="mb-8">
@@ -412,6 +413,7 @@ export default function RfpAnalysis() {
           </p>
         </div>
       )}
+      </div>
     </div>
   );
 }

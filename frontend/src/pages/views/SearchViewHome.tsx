@@ -1,5 +1,5 @@
-import { useState, useEffect } from "react";
 
+import { useState, useEffect } from "react";
 import { useAppSelector, useAppDispatch } from "../../app/hooks";
 import {
   selectBookmarkedTenders,
@@ -52,7 +52,7 @@ export default function Home() {
 
   const handleSubmitSearch = () => {
     console.log("Searching for:", searchQuery);
-    navigate(`/search?q=${encodeURIComponent(searchQuery)}`);
+    navigate(`/search-results?q=${encodeURIComponent(searchQuery)}`);
   };
 
   const mockRecommendedTenders = [
@@ -354,65 +354,55 @@ export default function Home() {
 
   return (
     <div className="max-w-7xl mx-auto">
-      {/* Welcome Section */}
-      <div className="mb-8 text-center">
-        <h1 className="text-5xl font-bold text-text mb-4">
-          Welcome back {profile?.company_name || "User"}!
-        </h1>
-        <p className="text-2xl text-text-light">
-          Discover and search through thousands of government contract
-          opportunities
-        </p>
-      </div>
-
-      {/* Search Section */}
-      <div className="bg-surface max-w-5xl mx-auto border border-border rounded-xl p-6 text-center mb-8">
-        <h2 className="text-3xl font-semibold text-text mb-4 p-4 text-center">
-          What contracts are you here to win today?
-        </h2>
-        <div className="relative mb-4">
-          <input
-            type="text"
-            value={searchQuery}
-            onKeyDown={(e) => {
-              if (e.key === "Enter") handleSubmitSearch();
-            }}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            placeholder="Try: 'IT services contracts in Toronto under $100K'"
-            className="w-full p-6 text-lg border-2 border-border rounded-2xl pr-16 focus:outline-none focus:border-primary bg-surface text-text placeholder-text-light"
-          />
-
-          <button
-            className="absolute right-4 top-1/2 transform -translate-y-1/2 px-6 py-3 bg-primary text-white rounded-xl font-medium hover:bg-primary-dark transition-colors flex items-center gap-2"
-            disabled={false}
-            onClick={handleSubmitSearch}
-          >
-            <MagnifyingGlass className="w-4 h-4" />
-            Search
-          </button>
-        </div>
-        <div>
-          <p className="text-sm text-text-light mb-2 text-center">
-            Try these examples:
-          </p>
-          <div className="flex flex-wrap justify-center gap-3">
-            {exampleSearches.map((example, index) => (
-              <button
-                key={index}
-                onClick={() => setSearchQuery(example)}
-                className="text-sm bg-surface border border-border text-text-light px-4 py-2 rounded-xl hover:bg-primary hover:text-white hover:border-primary transition-all duration-200 shadow-sm hover:shadow-md"
-              >
-                {example}
-              </button>
-            ))}
-          </div>
-        </div>
-      </div>
-
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
         {/* Main Content */}
         <div className="lg:col-span-2 space-y-8">
           {/* Toggle Buttons */}
+
+          {/* Search Section */}
+          <div className="bg-surface max-w-5xl border border-border rounded-xl p-6 text-center mb-8">
+            <h2 className="text-3xl font-semibold text-text mb-4 p-4 text-center">
+              What contracts are you here to win today?
+            </h2>
+            <div className="relative mb-4">
+              <input
+                type="text"
+                value={searchQuery}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter") handleSubmitSearch();
+                }}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                placeholder="Try: 'IT services contracts in Toronto under $100K'"
+                className="w-full p-6 text-lg border-2 border-border rounded-2xl pr-16 focus:outline-none focus:border-primary bg-surface text-text placeholder-text-light"
+              />
+
+              <button
+                className="absolute right-4 top-1/2 transform -translate-y-1/2 px-6 py-3 bg-primary text-white rounded-xl font-medium hover:bg-primary-dark transition-colors flex items-center gap-2"
+                disabled={false}
+                onClick={handleSubmitSearch}
+              >
+                <MagnifyingGlass className="w-4 h-4" />
+                Search
+              </button>
+            </div>
+            <div>
+              <p className="text-sm text-text-light mb-2 text-center">
+                Try these examples:
+              </p>
+              <div className="flex flex-wrap justify-center gap-3">
+                {exampleSearches.map((example, index) => (
+                  <button
+                    key={index}
+                    onClick={() => setSearchQuery(example)}
+                    className="text-sm bg-surface border border-border text-text-light px-4 py-2 rounded-xl hover:bg-primary hover:text-white hover:border-primary transition-all duration-200 shadow-sm hover:shadow-md"
+                  >
+                    {example}
+                  </button>
+                ))}
+              </div>
+            </div>
+          </div>
+
           <div className="flex items-center gap-2">
             <button
               onClick={() => setMainViewMode("recommended")}

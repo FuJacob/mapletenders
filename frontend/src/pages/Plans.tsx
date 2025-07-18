@@ -7,6 +7,8 @@ import {
   selectAuthProfile,
 } from "../features/auth/authSelectors";
 import { createCheckoutSession } from "../api/subscriptions";
+import { CreditCard } from "@phosphor-icons/react";
+import { PageHeader } from "../components/ui";
 
 // Components
 import LoadingState from "../components/pricing/LoadingState";
@@ -77,14 +79,13 @@ export default function Plans() {
   return (
     <div className="min-h-screen bg-background py-8">
       <div className="max-w-6xl mx-auto px-6">
-        {/* Header Section */}
+        <PageHeader
+          icon={<CreditCard className="w-10 h-10 text-primary" />}
+          title="Plans & Billing"
+          description="Upgrade your procurement intelligence with MapleTenders"
+        />
+        
         <div className="text-center mb-12">
-          <h1 className="text-4xl font-bold text-text mb-4">
-            Choose Your Plan
-          </h1>
-          <p className="text-xl text-text-light mb-8">
-            Upgrade your procurement intelligence with MapleTenders
-          </p>
           
           {/* Billing Toggle */}
           <div className="flex items-center justify-center gap-4 mb-8">

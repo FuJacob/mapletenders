@@ -14,7 +14,6 @@ import {
   CreditCard,
 } from "@phosphor-icons/react";
 import type { AppDispatch } from "../../app/configureStore";
-import { useSearchParams } from "react-router-dom";
 interface HeaderProps {
   transparent?: boolean;
   className?: string;
@@ -25,18 +24,20 @@ export default function Header({
 }: HeaderProps) {
   const navigate = useNavigate();
   const location = useLocation();
-  const [searchParams] = useSearchParams();
-  const view = searchParams.get("view");
   const dispatch = useDispatch<AppDispatch>();
   const { user, profile, isAuthenticated } = useAuth();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
 
-  // Check if we're on the home page or RFP analysis page to show view switcher
-  const isRfpPage = location.pathname === "/rfp-analysis";
-  const isSearchPage = location.pathname === "/search";
-  const isPlansPage = location.pathname === "/plans";
-  const isCalendarPage = location.pathname === "/calendar";
+  // Check if we should show the view switcher (only on main app pages)
+  const showViewSwitcher = [
+    "/search",
+    "/table", 
+    "/rfp-analysis",
+    "/calendar",
+    "/bookmarks",
+    "/plans"
+  ].includes(location.pathname);
   // Memoize click outside handler
   const handleClickOutside = useCallback((event: MouseEvent) => {
     if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
@@ -117,21 +118,11 @@ export default function Header({
         )}
       </nav>
 
-      {/* View Switcher for Home Page and RFP Analysis */}
-      {isAuthenticated && (
+      {/* View Switcher for Main App Pages */}
+      {isAuthenticated && showViewSwitcher && (
         <>
           <div className="absolute left-1/2 transform -translate-x-1/2">
-            <ViewSwitcher
-              currentView={
-                isRfpPage
-                  ? "rfp"
-                  : isPlansPage
-                  ? "plans"
-                  : isCalendarPage
-                  ? "calendar"
-                  : view || (isSearchPage ? "search" : null)
-              }
-            />
+            <ViewSwitcher />
           </div>
 
           {/* Right Section - User Menu / Auth Buttons */}

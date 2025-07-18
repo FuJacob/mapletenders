@@ -3,65 +3,100 @@ from supabase import create_client, Client
 from .search_service import search_service
 from dotenv import load_dotenv
 from typing import List, Dict, Any
+import logging
+from datetime import datetime
 
 load_dotenv()
 
+# Configure logging
+logger = logging.getLogger(__name__)
+
 class SyncService:
     def __init__(self):
+        logger.info("🔄 Initializing SyncService")
+        
         # Supabase connection
         supabase_url = os.getenv('SUPABASE_URL')
         supabase_key = os.getenv('SUPABASE_SERVICE_KEY')
         
         if not supabase_url or not supabase_key:
+            logger.error("❌ Missing environment variables: SUPABASE_URL and SUPABASE_SERVICE_KEY must be set")
             raise ValueError("SUPABASE_URL and SUPABASE_SERVICE_KEY must be set in environment variables")
-            
+        
+        logger.info(f"🔗 Connecting to Supabase: {supabase_url}")
         self.supabase: Client = create_client(supabase_url, supabase_key)
+        logger.info("✅ Supabase connection established")
 
     def sync_all_tenders(self) -> Dict[str, Any]:
         """Sync all tenders from Supabase to Elasticsearch"""
-        
-        print("🚀 Starting tender sync...")
+        sync_start_time = datetime.now()
+        logger.info("🚀 SYNC OPERATION STARTED - All tenders from Supabase to Elasticsearch")
         
         try:
             # Create index
+            logger.info("🏗️ Creating/updating Elasticsearch index...")
             search_service.create_tenders_index()
             
             # Get all tenders from Supabase (using new schema)
+            logger.info("📋 Fetching tenders from Supabase database...")
+            fetch_start = datetime.now()
             response = self.supabase.table('tenders').select('*').execute()
             tenders = response.data
+            fetch_time = (datetime.now() - fetch_start).total_seconds() * 1000
             
-            print(f"📊 Found {len(tenders)} tenders")
+            logger.info(f"📊 Found {len(tenders)} tenders in database (fetched in {fetch_time:.1f}ms)")
+            
+            if not tenders:
+                logger.warning("⚠️ No tenders found in database - nothing to sync")
+                return {
+                    "status": "success",
+                    "total_tenders": 0,
+                    "indexed": 0,
+                    "failed": 0
+                }
             
             indexed_count = 0
             failed_count = 0
+            failed_tenders = []
             
             # Index each tender
+            logger.info("🔄 Starting to index tenders...")
             for i, tender in enumerate(tenders):
                 try:
                     search_service.index_tender(tender)
                     indexed_count += 1
                     
                     if (i + 1) % 10 == 0:
-                        print(f"✅ Indexed {i+1}/{len(tenders)}")
+                        logger.info(f"✅ Progress: {i+1}/{len(tenders)} indexed")
                         
                 except Exception as e:
                     failed_count += 1
-                    print(f"❌ Error indexing tender {tender.get('id')}: {e}")
+                    tender_id = tender.get('id', 'unknown')
+                    failed_tenders.append(tender_id)
+                    logger.error(f"❌ Error indexing tender {tender_id}: {e}")
+                    
+            sync_time = (datetime.now() - sync_start_time).total_seconds()
+            logger.info(f"🎉 SYNC COMPLETED in {sync_time:.1f}s")
+            logger.info(f"📊 Results: {indexed_count} successful, {failed_count} failed")
             
-            print("🎉 Sync complete!")
+            if failed_tenders:
+                logger.warning(f"⚠️ Failed tender IDs: {failed_tenders[:10]}{'...' if len(failed_tenders) > 10 else ''}")
             
             return {
                 "status": "success",
                 "total_tenders": len(tenders),
                 "indexed": indexed_count,
-                "failed": failed_count
+                "failed": failed_count,
+                "sync_time_seconds": sync_time
             }
             
         except Exception as e:
-            print(f"💥 Sync failed: {e}")
+            sync_time = (datetime.now() - sync_start_time).total_seconds()
+            logger.error(f"💥 SYNC FAILED after {sync_time:.1f}s: {e}")
             return {
                 "status": "error",
-                "error": str(e)
+                "error": str(e),
+                "sync_time_seconds": sync_time
             }
 
     def sync_single_tender(self, tender_id: str) -> Dict[str, Any]:

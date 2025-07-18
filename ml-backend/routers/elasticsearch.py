@@ -3,8 +3,13 @@ from pydantic import BaseModel
 from typing import Optional, List
 from services.search_service import search_service
 from services.sync_service import sync_service
+import logging
+from datetime import datetime
 
 router = APIRouter(prefix="/elasticsearch", tags=["elasticsearch"])
+
+# Configure logging
+logger = logging.getLogger(__name__)
 
 class SearchRequest(BaseModel):
     query: str
@@ -12,7 +17,7 @@ class SearchRequest(BaseModel):
     procurement_method: Optional[str] = None
     procurement_category: Optional[List[str]] = None
     notice_type: Optional[List[str]] = None
-    tender_status: Optional[List[str]] = None
+    status: Optional[List[str]] = None
     contracting_entity_name: Optional[List[str]] = None
     closing_date_after: Optional[str] = None
     closing_date_before: Optional[str] = None
@@ -20,60 +25,43 @@ class SearchRequest(BaseModel):
     publication_date_before: Optional[str] = None
     limit: Optional[int] = 20
 
-class TenderResult(BaseModel):
-    # Core identifiers
+class SearchResult(BaseModel):
+    # Only return minimal data from Elasticsearch
     id: str
-    reference_number: Optional[str] = None
-    solicitation_number: Optional[str] = None
-    
-    # Main content
-    title: Optional[str] = None
-    tender_description: Optional[str] = None
-    precomputed_summary: Optional[str] = None
-    
-    # Dates
-    publication_date: Optional[str] = None
-    tender_closing_date: Optional[str] = None
-    expected_contract_start_date: Optional[str] = None
-    expected_contract_end_date: Optional[str] = None
-    
-    # Status and classification
-    tender_status: Optional[str] = None
-    notice_type: Optional[str] = None
-    procurement_method: Optional[str] = None
-    procurement_category: Optional[str] = None
-    
-    # Geographic information
-    regions_of_delivery: Optional[str] = None
-    regions_of_opportunity: Optional[str] = None
-    contracting_entity_province: Optional[str] = None
-    contracting_entity_city: Optional[str] = None
-    contracting_entity_name: Optional[str] = None
-    
-    # Classification codes
-    gsin: Optional[str] = None
-    gsin_description: Optional[str] = None
-    unspsc: Optional[str] = None
-    unspsc_description: Optional[str] = None
-    
-    # Search metadata
-    search_score: Optional[float] = None
-    match_explanation: Optional[str] = None
-    notice_url: Optional[str] = None
+    search_score: float
+    match_explanation: str
 
-@router.post("/search", response_model=List[TenderResult])
+@router.post("/search", response_model=List[SearchResult])
 def search_tenders_endpoint(request: SearchRequest):
     """Search tenders with natural language using AI embeddings"""
+    request_start_time = datetime.now()
+    logger.info("🌐 API SEARCH REQUEST RECEIVED")
+    logger.info(f"📝 Request: query='{request.query}', limit={request.limit}")
+    logger.info(f"🔧 Filters: regions={request.regions}, method={request.procurement_method}")
+    
     try:
         results = search_service.search_tenders(
             query=request.query,
             regions=request.regions,
             procurement_method=request.procurement_method,
+            procurement_category=request.procurement_category,
+            notice_type=request.notice_type,
+            status=request.status,
+            contracting_entity_name=request.contracting_entity_name,
             closing_date_after=request.closing_date_after,
+            closing_date_before=request.closing_date_before,
+            publication_date_after=request.publication_date_after,
+            publication_date_before=request.publication_date_before,
             limit=request.limit
         )
+        
+        request_time = (datetime.now() - request_start_time).total_seconds() * 1000
+        logger.info(f"✅ API SEARCH COMPLETED: {len(results)} results in {request_time:.1f}ms")
         return results
+        
     except Exception as e:
+        request_time = (datetime.now() - request_start_time).total_seconds() * 1000
+        logger.error(f"❌ API SEARCH FAILED after {request_time:.1f}ms: {e}")
         raise HTTPException(status_code=500, detail=str(e))
 
 @router.post("/sync")

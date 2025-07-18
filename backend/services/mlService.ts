@@ -7,7 +7,7 @@ interface ElasticsearchSearchParams {
   procurement_method?: string;
   procurement_category?: string[];
   notice_type?: string[];
-  tender_status?: string[];
+  status?: string[];
   contracting_entity_name?: string[];
   closing_date_after?: string;
   closing_date_before?: string;
@@ -41,25 +41,32 @@ export class MlService {
     return response.data;
   }
 
-  async searchTendersWithElasticsearch(params: ElasticsearchSearchParams): Promise<TenderSearchResult[]> {
+  async searchTendersWithElasticsearch(
+    params: ElasticsearchSearchParams
+  ): Promise<TenderSearchResult[]> {
     try {
       const response = await axios.post(
         `${this.baseUrl}/elasticsearch/search`,
         params,
         {
           headers: {
-            'Content-Type': 'application/json',
+            "Content-Type": "application/json",
           },
           timeout: 30000, // 30 second timeout
         }
       );
+      console.log("TEST", response.data);
 
       return response.data;
     } catch (error: any) {
-      if (error.code === 'ECONNREFUSED') {
-        throw new Error('ML service unavailable: Elasticsearch backend is not running');
+      if (error.code === "ECONNREFUSED") {
+        throw new Error(
+          "ML service unavailable: Elasticsearch backend is not running"
+        );
       } else if (error.response) {
-        throw new Error(`Elasticsearch search failed: ${error.response.status} - ${error.response.data}`);
+        throw new Error(
+          `Elasticsearch search failed: ${error.response.status} - ${error.response.data}`
+        );
       } else {
         throw new Error(`ML service error: ${error.message}`);
       }
@@ -74,7 +81,7 @@ export class MlService {
         {},
         {
           headers: {
-            'Content-Type': 'application/json',
+            "Content-Type": "application/json",
           },
           timeout: 300000, // 5 minutes for bulk sync
         }
@@ -84,10 +91,14 @@ export class MlService {
       return response.data;
     } catch (error: any) {
       console.error("❌ Elasticsearch sync failed:", error.message);
-      if (error.code === 'ECONNREFUSED') {
-        throw new Error('ML service unavailable: Elasticsearch backend is not running');
+      if (error.code === "ECONNREFUSED") {
+        throw new Error(
+          "ML service unavailable: Elasticsearch backend is not running"
+        );
       } else if (error.response) {
-        throw new Error(`Elasticsearch sync failed: ${error.response.status} - ${error.response.data}`);
+        throw new Error(
+          `Elasticsearch sync failed: ${error.response.status} - ${error.response.data}`
+        );
       } else {
         throw new Error(`ML service error: ${error.message}`);
       }
@@ -102,20 +113,27 @@ export class MlService {
         {},
         {
           headers: {
-            'Content-Type': 'application/json',
+            "Content-Type": "application/json",
           },
           timeout: 30000, // 30 seconds for single tender
         }
       );
 
-      console.log(`✅ Tender ${tenderId} synced to Elasticsearch:`, response.data);
+      console.log(
+        `✅ Tender ${tenderId} synced to Elasticsearch:`,
+        response.data
+      );
       return response.data;
     } catch (error: any) {
       console.error(`❌ Failed to sync tender ${tenderId}:`, error.message);
-      if (error.code === 'ECONNREFUSED') {
-        throw new Error('ML service unavailable: Elasticsearch backend is not running');
+      if (error.code === "ECONNREFUSED") {
+        throw new Error(
+          "ML service unavailable: Elasticsearch backend is not running"
+        );
       } else if (error.response) {
-        throw new Error(`Elasticsearch sync failed: ${error.response.status} - ${error.response.data}`);
+        throw new Error(
+          `Elasticsearch sync failed: ${error.response.status} - ${error.response.data}`
+        );
       } else {
         throw new Error(`ML service error: ${error.message}`);
       }

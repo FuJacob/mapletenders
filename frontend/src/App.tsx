@@ -28,6 +28,9 @@ import Layout from "./routes/Layout";
 import { refreshTenders } from "./api";
 import { loadTenders } from "./features/tenders/tendersThunk";
 import CalendarPage from "./pages/CalendarPage";
+import BookmarksPage from "./pages/BookmarksPage";
+import SearchPage from "./pages/SearchPage";
+import TablePage from "./pages/TablePage";
 
 export function App() {
   const dispatch = useAppDispatch();
@@ -65,12 +68,15 @@ export function App() {
           <Route element={<OnboardingRequiredRoutes />}>
             <Route path="/table-view" element={<TableView />} />
             <Route path="/home" element={<Home />} />
-            <Route path="/search" element={<SearchResults />} />
+            <Route path="/search" element={<SearchPage />} />
+            <Route path="/table" element={<TablePage />} />
             <Route path="/rfp-analysis" element={<RfpAnalysis />} />
             <Route path="/calendar" element={<CalendarPage />} />
+            <Route path="/bookmarks" element={<BookmarksPage />} />
             <Route path="/profile" element={<Profile />} />
             <Route path="/plans" element={<Plans />} />
             <Route path="/tender-notice/:tenderId" element={<TenderNotice />} />
+            <Route path="/search-results" element={<SearchResults />} />
           </Route>
           <Route path="/onboarding" element={<Onboarding />} />
         </Route>

@@ -6,9 +6,12 @@ import {
   Funnel,
   ArrowLeft,
   Star,
+  ChartBar,
+  Clock,
+  Sparkle,
 } from "@phosphor-icons/react";
 import { searchTenders } from "../api";
-import { LogoTitle } from "../components/ui/LogoTitle";
+import { PageHeader } from "../components/ui";
 import { SearchResultCard } from "../components/SearchResultCard";
 import type { TenderSearchResult, SearchTendersResponse } from "../api/types";
 
@@ -29,7 +32,7 @@ export default function SearchResults() {
   const [selectedProcurementCategories, setSelectedProcurementCategories] =
     useState<string[]>([]);
   const [selectedNoticeTypes, setSelectedNoticeTypes] = useState<string[]>([]);
-  const [selectedTenderStatus, setSelectedTenderStatus] = useState<string[]>(
+  const [selectedStatus, setSelectedStatus] = useState<string[]>(
     []
   );
   const [selectedContractingEntities, setSelectedContractingEntities] =
@@ -79,8 +82,8 @@ export default function SearchResults() {
             : undefined,
         notice_type:
           selectedNoticeTypes.length > 0 ? selectedNoticeTypes : undefined,
-        tender_status:
-          selectedTenderStatus.length > 0 ? selectedTenderStatus : undefined,
+        status:
+          selectedStatus.length > 0 ? selectedStatus : undefined,
         contracting_entity_name:
           selectedContractingEntities.length > 0
             ? selectedContractingEntities
@@ -124,7 +127,7 @@ export default function SearchResults() {
     setSelectedProcurementMethod("");
     setSelectedProcurementCategories([]);
     setSelectedNoticeTypes([]);
-    setSelectedTenderStatus([]);
+    setSelectedStatus([]);
     setSelectedContractingEntities([]);
     setClosingDateAfter("");
     setClosingDateBefore("");
@@ -152,24 +155,65 @@ export default function SearchResults() {
     "Standing Offer",
   ];
 
-
   return (
-    <div className="min-h-screen bg-bg">
-      {/* Header */}
-      <div className="bg-surface border-b border-border sticky top-0 z-10">
-        <div className="mx-auto p-6">
-          <div className="flex items-center gap-4 mb-6">
-            <Link
-              to="/"
-              className="p-2 text-text-muted hover:text-text hover:bg-surface-muted rounded-lg transition-colors"
-            >
-              <ArrowLeft className="w-5 h-5" />
-            </Link>
-            <LogoTitle size="text-2xl" />
-          </div>
+    <div className="min-h-screen bg-background py-8">
+      <div className="max-w-7xl mx-auto px-6">
+        {/* Back Button */}
+        <div className="mb-6">
+          <Link
+            to="/"
+            className="inline-flex items-center gap-2 text-text-muted hover:text-text transition-colors"
+          >
+            <ArrowLeft className="w-5 h-5" />
+            <span>Back to Search</span>
+          </Link>
+        </div>
 
-          {/* Search Bar */}
-          <div className="relative max-w-4xl">
+        <PageHeader
+          icon={<MagnifyingGlass className="w-10 h-10 text-primary" />}
+          title={`Search Results for "${firstQuery}"`}
+          description={`Found ${
+            searchResponse?.total_results || 0
+          } relevant government contracts matching your search`}
+        />
+
+        {/* Search Performance Stats */}
+        {searchResponse?.search_metadata && (
+          <div className="mb-8 bg-surface border border-border rounded-xl p-6">
+            <div className="flex items-center gap-6 text-sm">
+              <div className="flex items-center gap-2">
+                <ChartBar className="w-4 h-4 text-primary" />
+                <span className="text-text-muted">Search Quality:</span>
+                <span className="font-semibold text-text">
+                  {searchResponse.search_metadata.max_score
+                    ? `${(
+                        searchResponse.search_metadata.max_score * 10
+                      ).toFixed(1)}% relevance`
+                    : "High"}
+                </span>
+              </div>
+              <div className="flex items-center gap-2">
+                <Clock className="w-4 h-4 text-primary" />
+                <span className="text-text-muted">Response Time:</span>
+                <span className="font-semibold text-text">
+                  {searchResponse.search_metadata.elasticsearch_took_ms
+                    ? `${searchResponse.search_metadata.elasticsearch_took_ms}ms`
+                    : "Fast"}
+                </span>
+              </div>
+              <div className="flex items-center gap-2">
+                <Sparkle className="w-4 h-4 text-primary" />
+                <span className="text-text-muted">
+                  Powered by AI search with semantic understanding
+                </span>
+              </div>
+            </div>
+          </div>
+        )}
+
+        {/* New Search Bar */}
+        <div className="mb-8 bg-surface border border-border rounded-xl p-6">
+          <div className="relative max-w-4xl mx-auto">
             <MagnifyingGlass className="absolute left-4 top-1/2 transform -translate-y-1/2 h-5 w-5 text-text-muted" />
             <input
               type="text"
@@ -177,7 +221,7 @@ export default function SearchResults() {
               onChange={(e) => setQuery(e.target.value)}
               onKeyDown={handleKeyDown}
               className="w-full pl-12 pr-24 py-4 border border-border rounded-xl focus:border-primary focus:ring-0 focus:outline-none bg-surface text-lg font-medium placeholder:text-text-muted"
-              placeholder="Search for government contracts..."
+              placeholder="Refine your search or try a new query..."
             />
             <button
               onClick={handleNewSearch}
@@ -187,17 +231,14 @@ export default function SearchResults() {
             </button>
           </div>
         </div>
-      </div>
-
-      <div className="mx-auto p-6">
-        <div className="flex gap-8">
+        <div className="grid grid-cols-1 lg:grid-cols-4 gap-8">
           {/* Filters Sidebar */}
           <div
             className={`${
               showFilters ? "block" : "hidden"
-            } lg:block w-80 flex-shrink-0`}
+            } lg:block lg:col-span-1`}
           >
-            <div className="bg-surface border border-border rounded-xl p-6 sticky top-32">
+            <div className="bg-surface border border-border rounded-xl p-6 sticky top-8">
               <div className="flex items-center justify-between mb-6">
                 <h3 className="text-lg font-semibold text-text">Filters</h3>
                 <button
@@ -287,26 +328,24 @@ export default function SearchResults() {
           </div>
 
           {/* Results Section */}
-          <div className="flex-1">
+          <div className="lg:col-span-3">
             {/* Results Header */}
             <div className="flex items-center justify-between mb-8">
               <div>
-                <h1 className="text-3xl font-bold text-text mb-2">
-                  Search Results for "{firstQuery}"
-                </h1>
-                <div className="flex items-center gap-4 text-text-muted">
-                  <span>
-                    Found {searchResponse?.total_results || 0} relevant
-                    contracts
-                  </span>
+                <h2 className="text-2xl font-bold text-text mb-2">
+                  {searchResults.length} Contract
+                  {searchResults.length !== 1 ? "s" : ""} Found
+                </h2>
+                <div className="flex items-center gap-4 text-sm text-text-muted">
+                  <span>Sorted by relevance</span>
                   {searchResponse?.search_metadata?.max_score && (
                     <span className="flex items-center gap-1">
                       <Star className="w-4 h-4" />
-                      Max relevance:{" "}
+                      Top match:{" "}
                       {(searchResponse.search_metadata.max_score * 10).toFixed(
                         1
                       )}
-                      %
+                      % relevant
                     </span>
                   )}
                 </div>

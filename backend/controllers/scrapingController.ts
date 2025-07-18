@@ -13,8 +13,6 @@ export class ScrapingController {
       console.log("Starting Canadian tender import...");
 
       const result = await this.scrapingService.importCanadianTenders();
-
-      console.log("Canadian tenders imported successfully:", result);
       res.json(result);
     } catch (error: any) {
       console.error("Error importing Canadian tenders:", error);

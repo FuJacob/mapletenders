@@ -83,8 +83,6 @@ Return only a valid JSON array of IDs, like ["abc123", "def456"].`,
     }
   }
   async filterTenders(prompt: string, tenderData: any[]) {
-    console.log("tenderData", tenderData);
-    console.log("prompt", prompt);
     const completion = await this.openai.chat.completions.create({
       model: process.env.GEMINI_AI_MODEL_ID || "",
       messages: [

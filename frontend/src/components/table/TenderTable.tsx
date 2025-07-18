@@ -6,8 +6,8 @@ import {
   type ColumnResizeMode,
   type Updater,
   type PaginationState,
-  getFilteredRowModel,
   type Row,
+  getFilteredRowModel,
 } from "@tanstack/react-table";
 import { useAppSelector } from "../../app/hooks";
 import { tenderColumns } from "../../features/tenders/tenderColumns.tsx";
@@ -21,7 +21,6 @@ import {
   TableEmptyState,
   TableLoadingState,
 } from "./";
-
 import { useState, useMemo, useCallback } from "react";
 import TablePaginationControls from "./TablePaginationControls";
 import "./tableStyles.css";
@@ -30,6 +29,7 @@ import type { Tender } from "../../api/types.ts";
 interface TenderTableProps {
   isLoading?: boolean;
 }
+const NUMBER_OF_TENDERS_PER_PAGE = 8;
 
 export default function TenderTable({ isLoading = false }: TenderTableProps) {
   const [globalFilter, setGlobalFilter] = useState("");
@@ -59,7 +59,7 @@ export default function TenderTable({ isLoading = false }: TenderTableProps) {
 
   const [pagination, setPagination] = useState({
     pageIndex: 0,
-    pageSize: 50,
+    pageSize: NUMBER_OF_TENDERS_PER_PAGE,
   });
   const [columnResizeMode] = useState<ColumnResizeMode>("onChange");
   const tenders = useAppSelector(selectTenders);
@@ -166,7 +166,7 @@ export default function TenderTable({ isLoading = false }: TenderTableProps) {
               ))}
             </TableHeader>
             <TableBody>
-              {table.getFilteredRowModel().rows.map((row) => (
+              {table.getRowModel().rows.map((row) => (
                 <TableRow key={row.id} className="hover:bg-gray-50">
                   {row.getVisibleCells().map((cell) => {
                     const column = cell.column.columnDef;

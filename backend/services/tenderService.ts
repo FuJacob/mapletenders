@@ -114,6 +114,14 @@ export class TenderService {
     return data;
   }
 
+  async getTendersByIds(ids: string[]) {
+    const { data, error } = await this.dbService.getTendersByIds(ids);
+    if (error) {
+      throw new Error(`Failed to fetch tenders by IDs: ${error.message}`);
+    }
+    return data;
+  }
+
   async importTendersFromCsv() {
     // 1. Download CSV data (no longer clearing first to preserve bookmarks)
     const csvResponse = await this.csvService.downloadTendersCsvData();

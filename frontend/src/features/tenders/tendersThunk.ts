@@ -15,9 +15,7 @@ export const loadTenders =
     try {
       dispatch(setTendersLoading(true));
       const data = await getOpenTenderNoticesFromDB();
-      console.log("Parsed tender data:", data);
       dispatch(setTenders(data));
-      console.log("Tenders loaded successfully:", data);
     } catch (error) {
       console.error("Error fetching tenders:", error);
       dispatch(setTendersLoading(false));

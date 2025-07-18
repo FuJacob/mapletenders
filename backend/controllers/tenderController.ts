@@ -42,7 +42,6 @@ export class TenderController {
       // Let the service handle all the business logic including rate limiting
       const result = await this.tenderService.refreshTendersIfNeeded();
 
-      console.log("Tenders refreshed successfully:", result);
       res.json(result);
     } catch (error: any) {
       console.error("Error refreshing tenders:", error);
@@ -88,7 +87,6 @@ export class TenderController {
     try {
       const result = await this.tenderService.getAllTenders();
       res.json(result);
-      console.log("Tenders fetched from DB:", result);
     } catch (error: any) {
       console.error("Error fetching tender notices:", error);
       res.status(500).json({ error: error.message });
@@ -106,6 +104,14 @@ export class TenderController {
   };
 
   searchTenders = async (req: Request, res: Response) => {
+    const requestStartTime = Date.now();
+    const requestId = Math.random().toString(36).substr(2, 9);
+    
+    console.log(`🔍 [${requestId}] SEARCH REQUEST RECEIVED`);
+    console.log(`📝 [${requestId}] Request body:`, JSON.stringify(req.body, null, 2));
+    console.log(`🌐 [${requestId}] User Agent: ${req.get('User-Agent')}`);
+    console.log(`📍 [${requestId}] IP: ${req.ip}`);
+    
     try {
       const searchRequest: SearchTendersRequest = req.body || {};
       const {
@@ -114,7 +120,7 @@ export class TenderController {
         procurement_method,
         procurement_category,
         notice_type,
-        tender_status,
+        status,
         contracting_entity_name,
         closing_date_after,
         closing_date_before,
@@ -123,7 +129,23 @@ export class TenderController {
         limit,
       } = searchRequest;
 
+      console.log(`📋 [${requestId}] Parsed request parameters:`, {
+        query: q,
+        regions,
+        procurement_method,
+        procurement_category,
+        notice_type,
+        status,
+        contracting_entity_name,
+        closing_date_after,
+        closing_date_before,
+        publication_date_after,
+        publication_date_before,
+        limit
+      });
+
       if (!q) {
+        console.log(`❌ [${requestId}] Search rejected: Missing query parameter`);
         res.status(400).json({ error: "Query is required" });
         return;
       }
@@ -135,42 +157,70 @@ export class TenderController {
         procurement_method: procurement_method || undefined,
         procurement_category: procurement_category || undefined,
         notice_type: notice_type || undefined,
-        tender_status: tender_status || undefined,
+        status: status || undefined,
         contracting_entity_name: contracting_entity_name || undefined,
-        closing_date_after:
-          closing_date_after || new Date().toISOString().split("T")[0], // Default to today for active tenders
+        closing_date_after: closing_date_after || undefined, // Don't default to today - let users see all results
         closing_date_before: closing_date_before || undefined,
         publication_date_after: publication_date_after || undefined,
         publication_date_before: publication_date_before || undefined,
         limit: limit || 20,
       };
 
-      console.log("Elasticsearch search params:", searchParams);
+      console.log(`🔧 [${requestId}] Final Elasticsearch search params:`, searchParams);
 
-      // Use ML service layer for Elasticsearch search
-      const searchResults: TenderSearchResult[] =
+      // Use ML service layer for Elasticsearch search (returns minimal data)
+      const elasticsearchResults: any[] =
         await this.mlService.searchTendersWithElasticsearch(searchParams);
-
+      
       console.log(
-        `Found ${searchResults.length} tenders matching query: "${q}"`
+        `Found ${elasticsearchResults.length} tenders matching query: "${q}"`
       );
 
+      // Extract IDs and search metadata
+      const tenderIds = elasticsearchResults.map(result => result.id);
+      const searchMetadata = elasticsearchResults.reduce((acc, result) => {
+        acc[result.id] = {
+          search_score: result.search_score,
+          match_explanation: result.match_explanation
+        };
+        return acc;
+      }, {} as Record<string, any>);
+
+      // Fetch full tender data from database
+      const fullTenderData: TenderSearchResult[] = [];
+      
+      if (tenderIds.length > 0) {
+        const tenders = await this.tenderService.getTendersByIds(tenderIds);
+        
+        // Combine database data with search metadata, preserving search order
+        for (const result of elasticsearchResults) {
+          const tender = tenders.find(t => t.id === result.id);
+          if (tender) {
+            fullTenderData.push({
+              ...tender,
+              search_score: result.search_score,
+              match_explanation: result.match_explanation
+            } as TenderSearchResult);
+          }
+        }
+      }
+
       // Log search score and match explanation details
-      if (searchResults.length > 0) {
+      if (fullTenderData.length > 0) {
         console.log("Top result details:");
-        console.log(`- Search Score: ${searchResults[0].search_score}`);
+        console.log(`- Search Score: ${fullTenderData[0].search_score}`);
         console.log(
-          `- Match Explanation: ${searchResults[0].match_explanation}`
+          `- Match Explanation: ${fullTenderData[0].match_explanation}`
         );
       }
 
       const response: SearchTendersResponse = {
-        results: searchResults,
-        total_results: searchResults.length,
+        results: fullTenderData,
+        total_results: fullTenderData.length,
         query: q,
         search_metadata: {
           max_score:
-            searchResults.length > 0 ? searchResults[0].search_score : 0,
+            fullTenderData.length > 0 ? fullTenderData[0].search_score : 0,
         },
       };
 

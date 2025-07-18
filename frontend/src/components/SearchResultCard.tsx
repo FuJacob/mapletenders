@@ -103,20 +103,19 @@ export function SearchResultCard({ result }: SearchResultCardProps) {
       </div>
 
       {/* AI Match Explanation */}
-      {/* Assuming match_explanation is not present in DB, comment out */}
-      {/*
       {result.match_explanation && (
-        <div className="bg-secondary border border-primary/20 rounded-xl p-4 mb-4">
+        <div className="bg-primary/5 border border-primary/20 rounded-xl p-4 mb-4">
           <div className="flex items-center gap-2 mb-2">
-            <Sparkle className="w-4 h-4 text-primary" />
+            <div className="p-1 bg-primary/10 rounded">
+              <ArrowSquareOut className="w-3 h-3 text-primary" />
+            </div>
             <span className="text-sm font-medium text-text">
-              AI Analysis: Why this matches your search
+              Why this matches your search
             </span>
           </div>
-          <p className="text-sm text-text-muted">{result.match_explanation}</p>
+          <p className="text-sm text-text-muted capitalize">{result.match_explanation}</p>
         </div>
       )}
-      */}
 
       {/* Description */}
       {result.description && (

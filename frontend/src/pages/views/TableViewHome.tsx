@@ -2,7 +2,6 @@ import { TenderTable } from "../../components";
 import { useAppSelector } from "../../app/hooks";
 import { useAuth } from "../../hooks/auth";
 import { selectTenders } from "../../features/tenders/tendersSelectors";
-
 export default function Home() {
   const { profile } = useAuth();
   const tenders = useAppSelector(selectTenders);

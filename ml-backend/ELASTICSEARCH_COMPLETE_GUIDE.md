@@ -245,35 +245,58 @@ class SearchService:
 - Creates the Elasticsearch index with proper field mappings
 - Defines how each tender field should be stored and searched
 - Sets up the vector field for AI embeddings
+- **IMPORTANT**: Field names now match the actual database schema exactly
 
 ```python
 mapping = {
     "properties": {
-        "title": {"type": "text", "analyzer": "standard"},
-        "tender_description": {"type": "text", "analyzer": "standard"},
-        "tender_closing_date": {"type": "date"},
+        # Core content fields - matching database schema
+        "title": {"type": "text", "analyzer": "english"},
+        "description": {"type": "text", "analyzer": "english"},  # NOT tender_description
+        "summary": {"type": "text"},  # NOT precomputed_summary
+        
+        # Date fields - matching database schema
+        "closing_date": {"type": "date"},  # NOT tender_closing_date
+        "published_date": {"type": "date"},
+        "contract_start_date": {"type": "date"},
+        
+        # Status fields - matching database schema
+        "status": {"type": "keyword"},  # NOT tender_status
+        "procurement_type": {"type": "keyword"},  # NOT notice_type
+        "procurement_method": {"type": "keyword"},
+        "category_primary": {"type": "keyword"},
+        
+        # Geographic - matching database schema
+        "delivery_location": {"type": "keyword"},  # NOT regions_of_delivery
+        
+        # AI embedding
         "embedding": {"type": "dense_vector", "dims": 384}
-        # ... 40+ more fields matching your database
+        # ... all other fields matching database exactly
     }
 }
 ```
 
 **`index_tender(tender_data)`**
 - Takes a tender from Supabase and adds it to Elasticsearch
-- Generates AI embedding if one doesn't exist
-- Maps all 47 database fields to the search index
+- Uses precomputed embeddings from the database
+- Maps all database fields to the search index using exact field names
 
 ```python
 def index_tender(self, tender_data):
-    # Generate AI embedding from multiple fields
-    embedding = self._generate_embedding(tender_data)
+    # Use precomputed embedding directly from database
+    embedding = tender_data.get("embedding")
     
-    # Map all database fields to search document
+    # Map all database fields to search document - EXACT field name matching
     doc = {
         "id": tender_data.get("id"),
         "title": tender_data.get("title", ""),
-        "tender_description": tender_data.get("tender_description", ""),
-        # ... all other fields
+        "description": tender_data.get("description", ""),  # database field name
+        "summary": tender_data.get("summary"),  # database field name
+        "closing_date": tender_data.get("closing_date"),  # database field name
+        "status": tender_data.get("status"),  # database field name
+        "procurement_type": tender_data.get("procurement_type"),  # database field name
+        "delivery_location": tender_data.get("delivery_location"),  # database field name
+        # ... all other fields using exact database field names
         "embedding": embedding
     }
     
@@ -284,7 +307,7 @@ def index_tender(self, tender_data):
 **`search_tenders(query, filters)`**
 - The main search method that contractors use
 - Combines vector search + text search
-- Applies geographic and date filters
+- Applies geographic and date filters using correct database field names
 - Returns ranked results with explanations
 
 ```python
@@ -299,16 +322,25 @@ def search_tenders(self, query, regions=None, closing_date_after=None):
                 "should": [
                     # AI vector search (60% weight)
                     {"script_score": {...}},
-                    # Text search across multiple fields (40% weight)  
-                    {"multi_match": {...}}
+                    # Text search across multiple fields (40% weight) - using database field names
+                    {
+                        "multi_match": {
+                            "query": query,
+                            "fields": [
+                                "title^3",
+                                "description^2",  # database field name
+                                "summary^2"       # database field name
+                            ]
+                        }
+                    }
                 ],
                 "filter": [
-                    # Only active tenders
-                    {"term": {"tender_status": "Active"}},
-                    # Geographic filters
-                    {"terms": {"regions_of_opportunity": regions}},
-                    # Date filters
-                    {"range": {"tender_closing_date": {"gte": closing_date_after}}}
+                    # Only open tenders - using database field name
+                    {"term": {"status": "Open"}},
+                    # Geographic filters - using database field name
+                    {"terms": {"delivery_location": regions}},
+                    # Date filters - using database field name
+                    {"range": {"closing_date": {"gte": closing_date_after}}}
                 ]
             }
         }
@@ -316,9 +348,10 @@ def search_tenders(self, query, regions=None, closing_date_after=None):
 ```
 
 **`_generate_embedding(tender_data)`**
-- Creates AI embedding by combining multiple text fields
-- Uses title + description + category descriptions + summary
+- Creates AI embedding by combining multiple text fields using database field names
+- Uses title + description + summary (exact database field names)
 - Returns 384-dimensional vector representing the tender's meaning
+- **NOTE**: In practice, embeddings are now precomputed and stored in the database
 
 ### 2. SyncService (`services/sync_service.py`)
 
@@ -386,6 +419,7 @@ def search_tenders_endpoint(request: SearchRequest):
             closing_date_after=request.closing_date_after,
             limit=request.limit
         )
+        
         return results
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
@@ -742,7 +776,7 @@ curl http://localhost:9200/_cluster/health
 
 **2. Search Returns No Results**
 ```bash
-# Check if index exists
+# Check if index exists and field mapping is correct
 curl http://localhost:9200/tenders/_mapping
 
 # Check document count
@@ -750,7 +784,20 @@ curl http://localhost:9200/tenders/_count
 
 # Check if sync worked
 curl http://localhost:8000/elasticsearch/status
+
+# CRITICAL: Verify field names match database schema
+curl -s "http://localhost:9200/tenders/_search?size=1" | jq '.hits.hits[0]._source' | head -10
+
+# Test direct Elasticsearch search
+curl -X POST "http://localhost:9200/tenders/_search" -H 'Content-Type: application/json' -d '{"query": {"multi_match": {"query": "construction", "fields": ["title", "description"]}}}'
 ```
+
+**IMPORTANT**: The most common cause of search failures is field name mismatches between:
+- Database schema (source of truth)
+- Elasticsearch index mapping  
+- Search service field references
+
+Always ensure these three use identical field names.
 
 **3. Slow Search Performance**
 ```bash
@@ -852,6 +899,65 @@ curl -X POST "localhost:9200/tenders/_analyze" -H 'Content-Type: application/jso
   "text": "software development services"
 }'
 ```
+
+---
+
+## Database Field Mapping Reference
+
+**CRITICAL**: Use these exact field names across all components (database, Elasticsearch, search service):
+
+### Core Content Fields
+- `title` - Tender title
+- `description` - Main tender description (NOT `tender_description`)
+- `summary` - AI-generated summary (NOT `precomputed_summary`)
+
+### Date Fields  
+- `published_date` - When tender was published
+- `closing_date` - Tender submission deadline (NOT `tender_closing_date`)
+- `contract_start_date` - Expected contract start
+- `created_at` - Database record creation
+- `updated_at` - Database record last update
+- `last_scraped_at` - When data was last scraped
+
+### Status & Classification
+- `status` - Tender status (NOT `tender_status`)
+- `procurement_type` - Type of procurement notice (NOT `notice_type`)
+- `procurement_method` - How procurement is conducted
+- `category_primary` - Primary category classification
+
+### Geographic
+- `delivery_location` - Where work will be performed (NOT `regions_of_delivery`)
+
+### Organization
+- `contracting_entity_name` - Organization issuing tender
+- `contracting_entity_city` - Organization city
+- `contracting_entity_province` - Organization province
+- `contracting_entity_country` - Organization country
+
+### Contact
+- `contact_name` - Contact person name
+- `contact_email` - Contact email
+- `contact_phone` - Contact phone
+
+### Financial
+- `estimated_value_min` - Minimum estimated value
+- `currency` - Currency used
+
+### Identifiers
+- `id` - Unique tender ID
+- `source` - Data source
+- `source_reference` - External reference number
+- `source_url` - Original tender URL
+
+### Classification Codes
+- `gsin` - Government Standard Identification Number
+- `unspsc` - United Nations Standard Products and Services Code
+
+### Additional Metadata
+- `plan_takers_count` - Number of plan takers
+- `submissions_count` - Number of submissions
+- `embedding` - AI vector embedding (384 dimensions)
+- `embedding_input` - Text used to generate embedding
 
 ---
 
