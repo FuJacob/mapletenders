@@ -21,14 +21,6 @@ router.post("/refreshTenders", (req, res) =>
   tenderController.refreshTenders(req, res)
 );
 
-/**
- * Downloads open tender notices as CSV
- * @route GET /getOpenTenderNotices
- * @returns {File} CSV file containing tender notices
- */
-router.get("/getOpenTenderNotices", (req, res) =>
-  tenderController.getOpenTenderNotices(req, res)
-);
 
 router.get("/getTenderById/:id", (req, res) =>
   tenderController.getTenderById(req, res)
@@ -38,23 +30,7 @@ router.post("/getTendersFromBookmarkIds", (req, res) =>
   tenderController.getTendersFromBookmarkIds(req, res)
 );
 
-/**
- * Downloads and imports tender notices CSV into database
- * @route POST /getOpenTenderNoticesToDB
- * @returns {string} Success message
- */
-router.post("/getOpenTenderNoticesToDB", (req, res) =>
-  tenderController.getOpenTenderNoticesToDB(req, res)
-);
 
-/**
- * Fetches all open tender notices from database
- * @route GET /getOpenTenderNoticesFromDB
- * @returns {Object[]} Array of all tender notices
- */
-router.get("/getOpenTenderNoticesFromDB", (req, res) =>
-  tenderController.getOpenTenderNoticesFromDB(req, res)
-);
 
 /**
  * Search tenders using AI-powered Elasticsearch with vector similarity

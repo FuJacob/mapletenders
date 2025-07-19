@@ -29,17 +29,23 @@ const databaseService = new DatabaseService();
 const csvService = new CsvService();
 const mlService = new MlService();
 const aiService = new AiService();
-
-const tenderService = new TenderService(
+const scrapingService = new ScrapingService(
   databaseService,
   csvService,
   mlService,
   aiService
 );
 
+const tenderService = new TenderService(
+  databaseService,
+  csvService,
+  mlService,
+  aiService,
+  scrapingService
+);
+
 const rfpService = new RfpService(databaseService, aiService);
 const subscriptionService = new SubscriptionService(databaseService);
-const scrapingService = new ScrapingService(databaseService, csvService, mlService, aiService);
 
 // Initialize controllers
 export const aiController = new AiController(

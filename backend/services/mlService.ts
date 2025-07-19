@@ -20,16 +20,39 @@ export class MlService {
   private baseUrl = process.env.ML_BACKEND_URL || "http://127.0.0.1:8000";
 
   async generateEmbeddings(data: any[]) {
-    const response = await axios.post(
-      `${this.baseUrl}/embeddings/generate/data`,
-      data
-    );
+    try {
+      console.log(`🔄 Generating embeddings for ${data.length} tenders...`);
+      const response = await axios.post(
+        `${this.baseUrl}/embeddings/generate/data`,
+        data,
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+          timeout: 60000, // 60 seconds for embedding generation
+        }
+      );
 
-    if (response.status !== 200) {
-      throw new Error(`Failed to generate embeddings: ${response.statusText}`);
+      if (response.status !== 200) {
+        throw new Error(`Failed to generate embeddings: ${response.statusText}`);
+      }
+
+      console.log(`✅ Successfully generated ${response.data.embeddings?.length || 0} embeddings`);
+      return response.data;
+    } catch (error: any) {
+      console.error("❌ Embedding generation failed:", error.message);
+      if (error.code === "ECONNREFUSED") {
+        throw new Error(
+          "ML service unavailable: Embedding backend is not running"
+        );
+      } else if (error.response) {
+        throw new Error(
+          `Embedding generation failed: ${error.response.status} - ${error.response.data?.detail || error.response.data}`
+        );
+      } else {
+        throw new Error(`ML service error: ${error.message}`);
+      }
     }
-
-    return response.data;
   }
 
   async generateQueryEmbedding(query: string) {
@@ -55,8 +78,6 @@ export class MlService {
           timeout: 30000, // 30 second timeout
         }
       );
-      console.log("TEST", response.data);
-
       return response.data;
     } catch (error: any) {
       if (error.code === "ECONNREFUSED") {

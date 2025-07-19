@@ -14,6 +14,7 @@ import {
   CreditCard,
 } from "@phosphor-icons/react";
 import type { AppDispatch } from "../../app/configureStore";
+
 interface HeaderProps {
   transparent?: boolean;
   className?: string;
@@ -29,23 +30,21 @@ export default function Header({
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const menuRef = useRef<HTMLDivElement>(null);
 
-  // Check if we should show the view switcher (only on main app pages)
   const showViewSwitcher = [
     "/search",
-    "/table", 
+    "/table",
     "/rfp-analysis",
     "/calendar",
     "/bookmarks",
-    "/plans"
+    "/plans",
   ].includes(location.pathname);
-  // Memoize click outside handler
+
   const handleClickOutside = useCallback((event: MouseEvent) => {
     if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
       setIsMenuOpen(false);
     }
   }, []);
 
-  // Close menu when clicking outside
   useEffect(() => {
     document.addEventListener("mousedown", handleClickOutside);
     return () => document.removeEventListener("mousedown", handleClickOutside);
@@ -61,81 +60,104 @@ export default function Header({
       className={`flex items-center justify-between p-6 max-w-7xl mx-auto border-b border-border ${
         transparent ? "bg-transparent" : "bg-surface"
       } ${className}`}
+      role="banner"
     >
-      {/* Left Section - Logo */}
+      {/* Logo/Brand Section */}
       <div className="flex-shrink-0">
-        <Link to={isAuthenticated ? "/home" : "/"}>
+        <Link
+          to={isAuthenticated ? "/home" : "/"}
+          aria-label="Home"
+          className="flex items-center"
+        >
+          <span className="sr-only">Procuroo Home</span>
           <LogoTitle />
         </Link>
       </div>
 
-      {/* Center Section - Navigation */}
-      <nav className="hidden md:flex items-center gap-8">
-        {!isAuthenticated && (
-          // Guest navigation
-          <>
-            <Link
-              to="/about"
-              className={`text-sm font-medium transition-colors ${
-                location.pathname === "/about"
-                  ? "text-primary"
-                  : "text-text hover:text-primary"
-              }`}
-            >
-              About
-            </Link>
-            <Link
-              to="/pricing"
-              className={`text-sm font-medium transition-colors ${
-                location.pathname === "/pricing"
-                  ? "text-primary"
-                  : "text-text hover:text-primary"
-              }`}
-            >
-              Pricing
-            </Link>
-            <Link
-              to="/contact"
-              className={`text-sm font-medium transition-colors ${
-                location.pathname === "/contact"
-                  ? "text-primary"
-                  : "text-text hover:text-primary"
-              }`}
-            >
-              Contact
-            </Link>
-            <Link
-              to="/help"
-              className={`text-sm font-medium transition-colors ${
-                location.pathname === "/help"
-                  ? "text-primary"
-                  : "text-text hover:text-primary"
-              }`}
-            >
-              Help
-            </Link>
-          </>
-        )}
-      </nav>
+      {/* Center Navigation for Guests */}
+      {!isAuthenticated && (
+        <nav aria-label="Main" className="hidden md:flex items-center gap-8">
+          <ul className="flex items-center gap-8">
+            <li>
+              <Link
+                to="/about"
+                className={`text-sm font-medium transition-colors ${
+                  location.pathname === "/about"
+                    ? "text-primary"
+                    : "text-text hover:text-primary"
+                }`}
+              >
+                About
+              </Link>
+            </li>
+            <li>
+              <Link
+                to="/pricing"
+                className={`text-sm font-medium transition-colors ${
+                  location.pathname === "/pricing"
+                    ? "text-primary"
+                    : "text-text hover:text-primary"
+                }`}
+              >
+                Pricing
+              </Link>
+            </li>
+            <li>
+              <Link
+                to="/contact"
+                className={`text-sm font-medium transition-colors ${
+                  location.pathname === "/contact"
+                    ? "text-primary"
+                    : "text-text hover:text-primary"
+                }`}
+              >
+                Contact
+              </Link>
+            </li>
+            <li>
+              <Link
+                to="/help"
+                className={`text-sm font-medium transition-colors ${
+                  location.pathname === "/help"
+                    ? "text-primary"
+                    : "text-text hover:text-primary"
+                }`}
+              >
+                Help
+              </Link>
+            </li>
+          </ul>
+        </nav>
+      )}
 
-      {/* View Switcher for Main App Pages */}
+      {/* Center ViewSwitcher for Authenticated Users */}
       {isAuthenticated && showViewSwitcher && (
-        <>
-          <div className="absolute left-1/2 transform -translate-x-1/2">
-            <ViewSwitcher />
-          </div>
+        <div className="absolute left-1/2 transform -translate-x-1/2">
+          <ViewSwitcher />
+        </div>
+      )}
 
-          {/* Right Section - User Menu / Auth Buttons */}
-          <div className="flex items-center gap-4">
-            <button className="p-2 text-text-light hover:text-primary transition-colors relative">
+      {/* Right Section */}
+      <div className="flex items-center gap-4">
+        {/* Authenticated User Menu */}
+        {isAuthenticated && (
+          <>
+            <button
+              className="p-2 text-text-light hover:text-primary transition-colors relative"
+              aria-label="Notifications"
+            >
               <Bell className="w-5 h-5" />
               <span className="absolute -top-1 -right-1 w-3 h-3 bg-primary rounded-full"></span>
             </button>
 
+            {/* Profile Dropdown */}
             <div className="relative" ref={menuRef}>
               <button
                 onClick={() => setIsMenuOpen(!isMenuOpen)}
                 className="flex items-center gap-2 p-2 rounded-lg hover:bg-border transition-colors"
+                aria-haspopup="menu"
+                aria-expanded={isMenuOpen}
+                aria-label="User menu"
               >
                 <div className="w-8 h-8 bg-primary text-white rounded-full flex items-center justify-center text-sm font-medium">
                   {profile?.company_name?.charAt(0)?.toUpperCase() ||
@@ -149,7 +171,10 @@ export default function Header({
               </button>
 
               {isMenuOpen && (
-                <div className="absolute right-0 mt-2 w-48 bg-surface border border-border rounded-lg shadow-lg z-50">
+                <nav
+                  className="absolute right-0 mt-2 w-48 bg-surface border border-border rounded-lg shadow-lg z-50"
+                  aria-label="User menu"
+                >
                   <div className="p-3 border-b border-border">
                     <p className="text-sm font-medium text-text">
                       {profile?.company_name || "Your Company"}
@@ -160,73 +185,89 @@ export default function Header({
                       </p>
                     )}
                   </div>
-                  <div className="py-1">
-                    <button
-                      onClick={() => {
-                        setIsMenuOpen(false);
-                        navigate("/profile");
-                      }}
-                      className="w-full flex items-center gap-3 px-3 py-2 text-sm text-text hover:bg-border transition-colors text-left"
-                    >
-                      <User className="w-4 h-4" />
-                      Profile
-                    </button>
-                    <button
-                      onClick={() => {
-                        setIsMenuOpen(false);
-                        navigate("/plans");
-                      }}
-                      className="w-full flex items-center gap-3 px-3 py-2 text-sm text-text hover:bg-border transition-colors text-left"
-                    >
-                      <CreditCard className="w-4 h-4" />
-                      Plans & Billing
-                    </button>
-                    <button
-                      onClick={() => {
-                        setIsMenuOpen(false);
-                        navigate("/settings");
-                      }}
-                      className="w-full flex items-center gap-3 px-3 py-2 text-sm text-text hover:bg-border transition-colors text-left"
-                    >
-                      <Gear className="w-4 h-4" />
-                      Settings
-                    </button>
-                    <hr className="my-1 border-border" />
-                    <button
-                      onClick={() => {
-                        setIsMenuOpen(false);
-                        handleSignOut();
-                      }}
-                      className="w-full flex items-center gap-3 px-3 py-2 text-sm text-red-600 hover:bg-red-50 transition-colors text-left"
-                    >
-                      <SignOut className="w-4 h-4" />
-                      Sign Out
-                    </button>
-                  </div>
-                </div>
+                  <ul className="py-1">
+                    <li>
+                      <button
+                        onClick={() => {
+                          setIsMenuOpen(false);
+                          navigate("/profile");
+                        }}
+                        className="w-full flex items-center gap-3 px-3 py-2 text-sm text-text hover:bg-border transition-colors text-left"
+                      >
+                        <User className="w-4 h-4" />
+                        Profile
+                      </button>
+                    </li>
+                    <li>
+                      <button
+                        onClick={() => {
+                          setIsMenuOpen(false);
+                          navigate("/plans");
+                        }}
+                        className="w-full flex items-center gap-3 px-3 py-2 text-sm text-text hover:bg-border transition-colors text-left"
+                      >
+                        <CreditCard className="w-4 h-4" />
+                        Plans & Billing
+                      </button>
+                    </li>
+                    <li>
+                      <button
+                        onClick={() => {
+                          setIsMenuOpen(false);
+                          navigate("/settings");
+                        }}
+                        className="w-full flex items-center gap-3 px-3 py-2 text-sm text-text hover:bg-border transition-colors text-left"
+                      >
+                        <Gear className="w-4 h-4" />
+                        Settings
+                      </button>
+                    </li>
+                    <li>
+                      <hr className="my-1 border-border" />
+                    </li>
+                    <li>
+                      <button
+                        onClick={() => {
+                          setIsMenuOpen(false);
+                          handleSignOut();
+                        }}
+                        className="w-full flex items-center gap-3 px-3 py-2 text-sm text-red-600 hover:bg-red-50 transition-colors text-left"
+                      >
+                        <SignOut className="w-4 h-4" />
+                        Sign Out
+                      </button>
+                    </li>
+                  </ul>
+                </nav>
               )}
             </div>
-          </div>
-        </>
-      )}
+          </>
+        )}
 
-      {!isAuthenticated && (
-        // Guest buttons - Enhanced styling
-        <>
-          <button
-            onClick={() => navigate("/sign-in")}
-            className="px-4 py-2 text-sm text-text hover:text-primary transition-colors font-medium"
-          >
-            Sign In
-          </button>
-          <button
-            onClick={() => navigate("/sign-up")}
-            className="px-6 py-2 bg-primary text-white rounded-lg text-sm font-medium hover:bg-primary-dark transition-colors shadow-sm"
-          >
-            Start Free Trial
-          </button>
-        </>
-      )}
+        {/* Guest Auth Buttons */}
+        {!isAuthenticated && (
+          <nav aria-label="Account">
+            <ul className="flex items-center gap-4">
+              <li>
+                <button
+                  onClick={() => navigate("/sign-in")}
+                  className="px-4 py-2 text-sm text-text hover:text-primary transition-colors font-medium"
+                >
+                  Sign In
+                </button>
+              </li>
+              <li>
+                <button
+                  onClick={() => navigate("/sign-up")}
+                  className="px-6 py-2 bg-primary text-white rounded-lg text-sm font-medium hover:bg-primary-dark transition-colors shadow-sm"
+                >
+                  Start Free Trial
+                </button>
+              </li>
+            </ul>
+          </nav>
+        )}
+      </div>
     </header>
   );
 }

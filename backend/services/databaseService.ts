@@ -197,10 +197,7 @@ export class DatabaseService {
   }
 
   async getTendersByIds(ids: string[]) {
-    return await this.supabase
-      .from("tenders")
-      .select("*")
-      .in("id", ids);
+    return await this.supabase.from("tenders").select("*").in("id", ids);
   }
 
   async getAllTenders() {

@@ -41,6 +41,24 @@ function parseCanadianDate(dateString: string): string | null {
 }
 
 /**
+ * Parse Ontario date string format and return ISO string or null
+ */
+function parseOntarioDate(dateInput: any): string | null {
+  if (dateInput == null) return null; // handles undefined/null
+  if (typeof dateInput === "number" && !isNaN(dateInput)) {
+    // Excel serial number
+    const excelEpoch = Date.UTC(1899, 11, 30);
+    const millis = Math.round(dateInput * 24 * 60 * 60 * 1000);
+    const date = new Date(excelEpoch + millis);
+    return isNaN(date.getTime()) ? null : date.toISOString();
+  }
+  if (typeof dateInput === "string" && dateInput.trim()) {
+    const date = new Date(dateInput);
+    return isNaN(date.getTime()) ? null : date.toISOString();
+  }
+  return null;
+}
+/**
  * Clean HTML tags from description
  */
 function cleanHtmlDescription(html: string): string | null {
@@ -124,9 +142,13 @@ function mapOntarioTender(row: any) {
         .join("\n\n") || null,
     status: "open",
 
-    published_date: row["Publication Date"],
-    closing_date: row["Listing Expiry Date (dd/mm/yyyy hh:mm)"],
-    contract_start_date: row["Estimated Contract Start Date (dd/mm/yyyy)"],
+    published_date: parseOntarioDate(row["Publication Date"]),
+    closing_date: parseOntarioDate(
+      row["Listing Expiry Date (dd/mm/yyyy hh:mm)"]
+    ),
+    contract_start_date: parseOntarioDate(
+      row["Estimated Contract Start Date (dd/mm/yyyy)"]
+    ),
 
     contracting_entity_name: row["Buyer Organization"],
     contracting_entity_city: null,
@@ -323,28 +345,28 @@ export class ScrapingService {
     console.log("Upserting Canadian tenders to preserve bookmarks...");
     await this.dbService.upsertTenders(finalData);
 
-    // 6. Generate precomputed summaries for first 10 tenders
-    console.log("Generating precomputed summaries for first 10 tenders...");
-    try {
-      for (let i = 0; i < Math.min(finalData.length, 10); i++) {
-        const tender = finalData[i];
-        try {
-          const summary = await this.aiService.generatePrecomputedSummary(
-            tender
-          );
-          await this.dbService.updateTenderSummary(tender.id!, summary);
-          console.log(`✓ Summary generated for ${tender.id}`);
-        } catch (summaryError: any) {
-          console.error(
-            `Failed to generate summary for ${tender.id}:`,
-            summaryError.message
-          );
-        }
-        await new Promise((resolve) => setTimeout(resolve, 100));
-      }
-    } catch (error: any) {
-      console.error("Error during summary generation:", error.message);
-    }
+    // // 6. Generate precomputed summaries for first 10 tenders
+    // console.log("Generating precomputed summaries for first 10 tenders...");
+    // try {
+    //   for (let i = 0; i < Math.min(finalData.length, 10); i++) {
+    //     const tender = finalData[i];
+    //     try {
+    //       const summary = await this.aiService.generatePrecomputedSummary(
+    //         tender
+    //       );
+    //       await this.dbService.updateTenderSummary(tender.id!, summary);
+    //       console.log(`✓ Summary generated for ${tender.id}`);
+    //     } catch (summaryError: any) {
+    //       console.error(
+    //         `Failed to generate summary for ${tender.id}:`,
+    //         summaryError.message
+    //       );
+    //     }
+    //     await new Promise((resolve) => setTimeout(resolve, 100));
+    //   }
+    // } catch (error: any) {
+    //   console.error("Error during summary generation:", error.message);
+    // }
 
     // 7. Remove stale tenders
     const currentReferenceNumbers = finalData
@@ -496,7 +518,6 @@ export class ScrapingService {
       message: "Ready to import",
     };
   }
-
   /**
    * Import Ontario tenders from Jaggaer Excel export
    */
@@ -512,26 +533,59 @@ export class ScrapingService {
         count: 0,
       };
     }
+    // Add color functions at the top
+    const yellow = (text: string) => `\x1b[33m${text}\x1b[0m`;
+    const green = (text: string) => `\x1b[32m${text}\x1b[0m`;
+    const cyan = (text: string) => `\x1b[36m${text}\x1b[0m`;
+    const bold = (text: string) => `\x1b[1m${text}\x1b[0m`;
+
+    // Step 1: Deduplicate and concatenate Project Category for each Project Code
+    const tenderMap: Record<string, any> = {};
+
+    for (const tender of rawTenders) {
+      const code = tender["Project Code"];
+      const category = tender["Project Category"];
+      if (!code) continue;
+
+      if (!tenderMap[code]) {
+        // First occurrence: copy tender and set Project Category as initial string
+        tenderMap[code] = { ...tender };
+      } else {
+        // Append new category if not already present (comma-separated, no duplicates)
+        const categories = tenderMap[code]["Project Category"]
+          ? tenderMap[code]["Project Category"]
+              .split(",")
+              .map((c: string) => c.trim())
+          : [];
+        if (category && !categories.includes(category)) {
+          tenderMap[code]["Project Category"] = categories.join(", ");
+          categories.push(category);
+        }
+      }
+    }
+
+    const uniqueTenders = Object.values(tenderMap);
 
     // 2. Transform to canonical schema
-    const mappedTenders = rawTenders.map((tender) => mapOntarioTender(tender));
+    const mappedTenders = uniqueTenders.map((tender: any) =>
+      mapOntarioTender(tender)
+    );
 
-    // 3. Generate embeddings
     console.log("Generating embeddings for Ontario tenders...");
     try {
       const embeddingsData = await this.mlService.generateEmbeddings(
         mappedTenders
       );
-
-      const tendersWithEmbeddings = mappedTenders.map((tender, index) => ({
-        ...tender,
-        embedding: embeddingsData.embeddings?.[index] || null,
-      }));
+      const tendersWithEmbeddings = mappedTenders.map(
+        (tender: any, index: number) => ({
+          ...tender,
+          embedding: embeddingsData.embeddings?.[index] || null,
+        })
+      );
 
       // 4. Upsert to database
       console.log("Upserting Ontario tenders to database...");
       await this.dbService.upsertTenders(tendersWithEmbeddings);
-
       return {
         message: "Ontario tenders imported successfully",
         count: mappedTenders.length,
@@ -623,15 +677,17 @@ export class ScrapingService {
       // Find the row where actual table data starts by looking for "Project Code" column
       const range = XLSX.utils.decode_range(worksheet["!ref"] || "A1:Z1000");
       let headerRowIndex = -1;
-      
+
       for (let rowIndex = range.s.r; rowIndex <= range.e.r; rowIndex++) {
         const cellAddress = XLSX.utils.encode_cell({ r: rowIndex, c: 0 }); // Check column A
         const cell = worksheet[cellAddress];
-        
-        if (cell && cell.v && typeof cell.v === 'string') {
+
+        if (cell && cell.v && typeof cell.v === "string") {
           // Look for the first column header "Project Code"
-          if (cell.v.trim().toLowerCase().includes('project code') || 
-              cell.v.trim().toLowerCase().includes('tender_')) {
+          if (
+            cell.v.trim().toLowerCase().includes("project code") ||
+            cell.v.trim().toLowerCase().includes("tender_")
+          ) {
             headerRowIndex = rowIndex;
             break;
           }
@@ -639,33 +695,39 @@ export class ScrapingService {
       }
 
       let data: any[] = [];
-      
+
       if (headerRowIndex >= 0) {
         // Parse starting from the header row
         const tableRange = {
           s: { r: headerRowIndex, c: range.s.c },
-          e: { r: range.e.r, c: range.e.c }
+          e: { r: range.e.r, c: range.e.c },
         };
-        
+
         // Update worksheet range to only include table data
         worksheet["!ref"] = XLSX.utils.encode_range(tableRange);
-        
+
         // Convert to JSON with headers
         data = XLSX.utils.sheet_to_json(worksheet);
-        
-        console.log(`Found table headers at row ${headerRowIndex + 1}, parsed ${data.length} Ontario tenders`);
+
+        console.log(
+          `Found table headers at row ${headerRowIndex + 1}, parsed ${
+            data.length
+          } Ontario tenders`
+        );
       } else {
         // Fallback: try to extract data starting from row 7 (0-indexed = 6)
         console.log("Could not find header row, trying fallback at row 7");
         const tableRange = {
           s: { r: 6, c: range.s.c },
-          e: { r: range.e.r, c: range.e.c }
+          e: { r: range.e.r, c: range.e.c },
         };
-        
+
         worksheet["!ref"] = XLSX.utils.encode_range(tableRange);
         data = XLSX.utils.sheet_to_json(worksheet);
-        
-        console.log(`Fallback: parsed ${data.length} Ontario tenders from row 7`);
+
+        console.log(
+          `Fallback: parsed ${data.length} Ontario tenders from row 7`
+        );
       }
 
       // Clean up downloaded file
@@ -947,56 +1009,62 @@ export class ScrapingService {
 
   async testScrapeCanadian(limit: number = 5): Promise<any[]> {
     console.log(`Test scraping Canadian tenders (limit: ${limit})...`);
-    
+
     // 1. Download CSV data
     const csvResponse = await this.csvService.downloadTendersCsvData();
-    
+
     // 2. Parse and transform data
     const parsedData = await this.csvService.parseCsvData(csvResponse.data);
     const limitedData = parsedData.data.slice(0, limit);
-    
+
     // 3. Map to our schema
     const mappedTenders = limitedData.map((row) => mapCanadianTender(row));
-    
+
     return mappedTenders;
   }
 
   async testScrapeToronto(limit: number = 5): Promise<any[]> {
     console.log(`Test scraping Toronto tenders (limit: ${limit})...`);
-    
+
     // Scrape all Toronto tenders and limit the results
     const tenders = await this.scrapeTorontoTenders();
     const limitedTenders = tenders.slice(0, limit);
-    
+
     // Map to our schema
-    const mappedTenders = limitedTenders.map((tender) => mapTorontoTender(tender));
-    
+    const mappedTenders = limitedTenders.map((tender) =>
+      mapTorontoTender(tender)
+    );
+
     return mappedTenders;
   }
 
   async testScrapeOntario(limit: number = 5): Promise<any[]> {
     console.log(`Test scraping Ontario tenders (limit: ${limit})...`);
-    
+
     // Scrape all Ontario tenders and limit the results
     const tenders = await this.scrapeOntarioTenders();
     const limitedTenders = tenders.slice(0, limit);
-    
+
     // Map to our schema
-    const mappedTenders = limitedTenders.map((tender) => mapOntarioTender(tender));
-    
+    const mappedTenders = limitedTenders.map((tender: any) =>
+      mapOntarioTender(tender)
+    );
+
     return mappedTenders;
   }
 
   async testScrapeMississauga(limit: number = 5): Promise<any[]> {
     console.log(`Test scraping Mississauga tenders (limit: ${limit})...`);
-    
+
     // Scrape all Mississauga tenders and limit the results
     const tenders = await this.scrapeMississaugaTenders();
     const limitedTenders = tenders.slice(0, limit);
-    
+
     // Map to our schema
-    const mappedTenders = limitedTenders.map((tender) => mapMississaugaTender(tender));
-    
+    const mappedTenders = limitedTenders.map((tender) =>
+      mapMississaugaTender(tender)
+    );
+
     return mappedTenders;
   }
 }

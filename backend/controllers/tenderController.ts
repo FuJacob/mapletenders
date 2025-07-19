@@ -58,40 +58,6 @@ export class TenderController {
     }
   };
 
-  getOpenTenderNotices = async (req: Request, res: Response) => {
-    try {
-      const response = await this.tenderService.downloadTendersCsv();
-      res.setHeader(
-        "Content-Disposition",
-        "attachment; filename=newTenderNotice.csv"
-      );
-      response.data.pipe(res);
-      console.log("Successfully downloaded newest tender notice!");
-    } catch (error: any) {
-      console.error("Error downloading tender notices:", error);
-      res.status(500).json({ error: "Failed to download tender notices" });
-    }
-  };
-
-  getOpenTenderNoticesToDB = async (req: Request, res: Response) => {
-    try {
-      const result = await this.tenderService.importTendersFromCsv();
-      res.json(result);
-    } catch (error: any) {
-      console.error("Error importing tender notices:", error);
-      res.status(500).json({ error: error.message });
-    }
-  };
-
-  getOpenTenderNoticesFromDB = async (req: Request, res: Response) => {
-    try {
-      const result = await this.tenderService.getAllTenders();
-      res.json(result);
-    } catch (error: any) {
-      console.error("Error fetching tender notices:", error);
-      res.status(500).json({ error: error.message });
-    }
-  };
 
   getTenderById = async (req: Request, res: Response) => {
     try {
@@ -106,12 +72,15 @@ export class TenderController {
   searchTenders = async (req: Request, res: Response) => {
     const requestStartTime = Date.now();
     const requestId = Math.random().toString(36).substr(2, 9);
-    
+
     console.log(`🔍 [${requestId}] SEARCH REQUEST RECEIVED`);
-    console.log(`📝 [${requestId}] Request body:`, JSON.stringify(req.body, null, 2));
-    console.log(`🌐 [${requestId}] User Agent: ${req.get('User-Agent')}`);
+    console.log(
+      `📝 [${requestId}] Request body:`,
+      JSON.stringify(req.body, null, 2)
+    );
+    console.log(`🌐 [${requestId}] User Agent: ${req.get("User-Agent")}`);
     console.log(`📍 [${requestId}] IP: ${req.ip}`);
-    
+
     try {
       const searchRequest: SearchTendersRequest = req.body || {};
       const {
@@ -141,11 +110,13 @@ export class TenderController {
         closing_date_before,
         publication_date_after,
         publication_date_before,
-        limit
+        limit,
       });
 
       if (!q) {
-        console.log(`❌ [${requestId}] Search rejected: Missing query parameter`);
+        console.log(
+          `❌ [${requestId}] Search rejected: Missing query parameter`
+        );
         res.status(400).json({ error: "Query is required" });
         return;
       }
@@ -163,43 +134,44 @@ export class TenderController {
         closing_date_before: closing_date_before || undefined,
         publication_date_after: publication_date_after || undefined,
         publication_date_before: publication_date_before || undefined,
-        limit: limit || 20,
+        limit: limit || 100,
       };
 
-      console.log(`🔧 [${requestId}] Final Elasticsearch search params:`, searchParams);
+      console.log(
+        `🔧 [${requestId}] Final Elasticsearch search params:`,
+        searchParams
+      );
 
       // Use ML service layer for Elasticsearch search (returns minimal data)
       const elasticsearchResults: any[] =
         await this.mlService.searchTendersWithElasticsearch(searchParams);
-      
       console.log(
         `Found ${elasticsearchResults.length} tenders matching query: "${q}"`
       );
 
-      // Extract IDs and search metadata
-      const tenderIds = elasticsearchResults.map(result => result.id);
-      const searchMetadata = elasticsearchResults.reduce((acc, result) => {
-        acc[result.id] = {
-          search_score: result.search_score,
-          match_explanation: result.match_explanation
-        };
-        return acc;
-      }, {} as Record<string, any>);
+      // Get all bookmarks
+      const bookmarks = await this.tenderService.getAllBookmarks();
+      const bookmarkIds = bookmarks.map(
+        (bookmark) => bookmark.tender_notice_id
+      );
 
+      // Extract IDs and search metadata
+      const tenderIds = elasticsearchResults.map((result) => result.id);
       // Fetch full tender data from database
       const fullTenderData: TenderSearchResult[] = [];
-      
+
       if (tenderIds.length > 0) {
         const tenders = await this.tenderService.getTendersByIds(tenderIds);
-        
+
         // Combine database data with search metadata, preserving search order
         for (const result of elasticsearchResults) {
-          const tender = tenders.find(t => t.id === result.id);
+          const tender = tenders.find((t) => t.id === result.id);
           if (tender) {
             fullTenderData.push({
               ...tender,
               search_score: result.search_score,
-              match_explanation: result.match_explanation
+              match_explanation: result.match_explanation,
+              is_bookmarked: bookmarkIds.includes(result.id),
             } as TenderSearchResult);
           }
         }
@@ -223,7 +195,7 @@ export class TenderController {
             fullTenderData.length > 0 ? fullTenderData[0].search_score : 0,
         },
       };
-
+      console.log(response);
       res.json(response);
     } catch (error: any) {
       console.error("Error in /searchTenders:", error);

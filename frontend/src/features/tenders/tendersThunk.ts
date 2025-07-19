@@ -1,6 +1,5 @@
 import { setTenders, setTendersLoading } from "./tendersSlice";
 import type { AppDispatch, RootState } from "../../app/configureStore";
-import { getOpenTenderNoticesFromDB } from "../../api/tenders";
 
 export const loadTenders =
   () => async (dispatch: AppDispatch, getState: () => RootState) => {
@@ -14,8 +13,9 @@ export const loadTenders =
 
     try {
       dispatch(setTendersLoading(true));
-      const data = await getOpenTenderNoticesFromDB();
-      dispatch(setTenders(data));
+      // TODO: Replace with proper tender loading mechanism
+      // The old getOpenTenderNoticesFromDB was removed as it was broken
+      dispatch(setTenders([]));
     } catch (error) {
       console.error("Error fetching tenders:", error);
       dispatch(setTendersLoading(false));

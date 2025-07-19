@@ -45,8 +45,8 @@ async def generate_embedding(data: List[Dict[str, Any]]):
         raise HTTPException(status_code=400, detail="No data provided")
 
     texts = []
-    print("Generating embeddings for tenders...", len(data))
-    for tender in data:
+    print(f"Generating embeddings for {len(data)} tenders...")
+    for i, tender in enumerate(data):
         # Use the new centralized schema column names
         title = tender.get("title", "")
         description = tender.get("description", "")
@@ -56,15 +56,25 @@ async def generate_embedding(data: List[Dict[str, Any]]):
         trade_agreements = tender.get("trade_agreements", "")
         delivery_location = tender.get("delivery_location", "")
         
-        # Extract from nested objects
+        # Extract from both nested and flat structures for compatibility
+        # Try nested structure first, then fall back to flat structure
         contracting_entity = tender.get("contracting_entity", {})
-        contracting_entity_name = contracting_entity.get("name", "") if contracting_entity else ""
+        contracting_entity_name = (
+            contracting_entity.get("name", "") if contracting_entity 
+            else tender.get("contracting_entity_name", "")
+        )
         
         end_user_entity = tender.get("end_user_entity", {})
-        end_user_name = end_user_entity.get("name", "") if end_user_entity else ""
+        end_user_name = (
+            end_user_entity.get("name", "") if end_user_entity 
+            else tender.get("end_user_entity_name", "")
+        )
         
         classification_codes = tender.get("classification_codes", {})
-        gsin_description = classification_codes.get("gsin_description", "") if classification_codes else ""
+        gsin_description = (
+            classification_codes.get("gsin_description", "") if classification_codes 
+            else tender.get("gsin", "")
+        )
     
         combined_text = f"""
 Title: {title}
@@ -79,8 +89,13 @@ End User: {end_user_name}
 Classification: {gsin_description}
 """
         texts.append(combined_text.strip())
-        print(f"Processed tender: {title}")
+        print(f"Processed tender {i+1}/{len(data)}: {title[:50]}{'...' if len(title) > 50 else ''}")
     
-    embeddings = model.encode(texts)
-
-    return {"embeddings": embeddings.tolist(), "embedding_inputs": texts}
+    try:
+        print("Encoding texts with sentence transformer...")
+        embeddings = model.encode(texts)
+        print(f"Successfully generated {len(embeddings)} embeddings")
+        return {"embeddings": embeddings.tolist(), "embedding_inputs": texts}
+    except Exception as e:
+        print(f"Error during embedding generation: {str(e)}")
+        raise HTTPException(status_code=500, detail=f"Embedding generation failed: {str(e)}")

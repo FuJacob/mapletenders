@@ -25,7 +25,17 @@ class SearchService:
         logger.info("🔗 Connecting to Elasticsearch at http://localhost:9200")
         self.es = Elasticsearch(['http://localhost:9200'])
         logger.info("✅ Elasticsearch connection established")
-        
+    
+    def get_all_tenders(self):
+        """Get all tenders from Elasticsearch"""
+        response = self.es.search(index="tenders", body={"query": {"match_all": {}}}, size=10000)
+        for hit in response['hits']['hits']:
+            if '_source' in hit and 'embedding' in hit['_source']:
+                del hit['_source']['embedding']
+                del hit['_source']['embedding_input']
+                del hit['_source']['summary']
+        return response['hits']['hits']
+    
     def create_tenders_index(self):
         """Create the search index matching actual database schema"""
         logger.info("🏗️ Creating tenders index with database schema mapping")
@@ -125,7 +135,7 @@ class SearchService:
             logger.debug(f"🔢 Using precomputed embedding for tender {tender_id} (length: {len(embedding) if isinstance(embedding, list) else 'unknown'})")
         else:
             logger.warning(f"⚠️ No embedding found for tender {tender_id}")
-        
+            
         # Log key fields being indexed
         logger.debug(f"📊 Tender data - Title: '{tender_data.get('title', 'N/A')[:50]}...', Status: '{tender_data.get('status')}', Closing: '{tender_data.get('closing_date')}')")
         
@@ -193,7 +203,7 @@ class SearchService:
             logger.debug(f"🔍 Elasticsearch response: {result}")
         except Exception as e:
             logger.error(f"❌ Failed to index tender {tender_id}: {e}")
-            logger.error(f"📄 Tender data that failed: {json.dumps({k: v for k, v in tender_data.items() if k not in ['embedding']}, default=str, indent=2)}")
+            logger.error(f"📄 Tender data that failed: {json.dumps({k: v for k, v in tender_data.items()}, default=str, indent=2)}")
             raise
 
     def _generate_embedding(self, tender_data: Dict[str, Any]) -> List[float]:
@@ -221,7 +231,7 @@ class SearchService:
                       closing_date_before: Optional[str] = None,
                       publication_date_after: Optional[str] = None,
                       publication_date_before: Optional[str] = None,
-                      limit: int = 20) -> List[Dict[str, Any]]:
+                      limit: Optional[int] = 100) -> List[Dict[str, Any]]:
         """Search tenders with natural language and advanced filters"""
         search_start_time = datetime.now()
         logger.info(f"🔍 SEARCH REQUEST RECEIVED")
@@ -279,9 +289,9 @@ class SearchService:
                             "multi_match": {
                                 "query": query,
                                 "fields": [
-                                    "title^3",
-                                    "description^2", 
-                                    "summary^2"
+                                        "title^3",
+                                        "description^2", 
+                                        "summary^2"
                                 ],
                                 "type": "best_fields",
                                 "boost": 0.4
@@ -327,14 +337,6 @@ class SearchService:
             applied_filters.append(f"status: {status}")
         else:
             # Only show open tenders by default if no status specified
-            filters.append({
-                "bool": {
-                    "should": [
-                        {"term": {"status": "Open"}},
-                        {"bool": {"must_not": {"exists": {"field": "status"}}}}
-                    ]
-                }
-            })
             applied_filters.append("status: Open (default)")
         
         # Contracting entity filtering using actual schema
@@ -457,6 +459,48 @@ class SearchService:
         except Exception as e:
             logger.error(f"❌ Elasticsearch health check failed: {e}")
             return {"elasticsearch": "red", "status": "unhealthy", "error": str(e)}
+
+    def wipe_elasticsearch_database(self) -> Dict[str, Any]:
+        """Completely wipe the Elasticsearch database by deleting the tenders index"""
+        logger.warning("🚨 CRITICAL OPERATION: Wiping Elasticsearch database!")
+        try:
+            # Check if index exists first
+            if self.es.indices.exists(index="tenders"):
+                logger.info("🗑️ Tenders index exists, deleting...")
+                delete_response = self.es.indices.delete(index="tenders")
+                logger.info(f"✅ Tenders index deleted successfully: {delete_response}")
+                
+                # Verify deletion
+                if not self.es.indices.exists(index="tenders"):
+                    logger.info("✅ Verified: Tenders index no longer exists")
+                    return {
+                        "status": "success",
+                        "message": "Elasticsearch database wiped successfully",
+                        "deleted_index": "tenders",
+                        "acknowledged": delete_response.get("acknowledged", False)
+                    }
+                else:
+                    logger.error("❌ Index still exists after deletion attempt")
+                    return {
+                        "status": "error",
+                        "message": "Index deletion was not successful",
+                        "error": "Index still exists after deletion"
+                    }
+            else:
+                logger.info("ℹ️ Tenders index does not exist, nothing to delete")
+                return {
+                    "status": "success",
+                    "message": "No Elasticsearch database to wipe (index already doesn't exist)",
+                    "deleted_index": None
+                }
+                
+        except Exception as e:
+            logger.error(f"❌ Failed to wipe Elasticsearch database: {e}")
+            return {
+                "status": "error",
+                "message": "Failed to wipe Elasticsearch database",
+                "error": str(e)
+            }
 
 # Global instance
 search_service = SearchService()

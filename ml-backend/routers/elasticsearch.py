@@ -120,3 +120,36 @@ def create_search_index():
         return {"message": "Tenders index created successfully"}
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
+    
+@router.get("/get-all-tenders")
+def get_all_tenders():
+    """Get all tenders from Elasticsearch"""
+    try:
+        results = search_service.get_all_tenders()
+        return results
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+@router.delete("/wipe-database")
+def wipe_elasticsearch_database():
+    """
+    🚨 DANGER: Completely wipe the Elasticsearch database
+    
+    This endpoint will permanently delete the entire tenders index and all data.
+    Use with extreme caution - this action cannot be undone!
+    """
+    try:
+        logger.warning("🚨 CRITICAL: Elasticsearch wipe endpoint called!")
+        result = search_service.wipe_elasticsearch_database()
+        
+        if result["status"] == "error":
+            raise HTTPException(status_code=500, detail=result)
+            
+        logger.warning(f"🗑️ DATABASE WIPED: {result['message']}")
+        return result
+        
+    except HTTPException:
+        raise
+    except Exception as e:
+        logger.error(f"❌ Unexpected error during database wipe: {e}")
+        raise HTTPException(status_code=500, detail=str(e))

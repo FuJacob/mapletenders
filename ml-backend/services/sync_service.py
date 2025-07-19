@@ -5,7 +5,7 @@ from dotenv import load_dotenv
 from typing import List, Dict, Any
 import logging
 from datetime import datetime
-
+import json
 load_dotenv()
 
 # Configure logging
@@ -63,6 +63,7 @@ class SyncService:
             logger.info("🔄 Starting to index tenders...")
             for i, tender in enumerate(tenders):
                 try:
+                    tender["embedding"] = json.loads(tender["embedding"])
                     search_service.index_tender(tender)
                     indexed_count += 1
                     

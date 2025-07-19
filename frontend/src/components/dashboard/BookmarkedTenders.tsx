@@ -1,6 +1,6 @@
 import { Link } from "react-router-dom";
 import { Bookmark } from "@phosphor-icons/react";
-import TenderCard from "./TenderCard.tsx";
+import { TenderCard } from "../TenderCard";
 import { type Database } from "../../../database.types";
 import { useEffect, useState } from "react";
 import type { Tender } from "../../features/tenders/types";
@@ -49,7 +49,7 @@ export default function BookmarkedTenders({
           </div>
         ) : tenders.length > 0 ? (
           tenders.map((tender) => (
-            <TenderCard key={tender.id} tender={tender} />
+            <TenderCard key={tender.id} tender={tender} mode="normal" />
           ))
         ) : (
           <div className="flex flex-col items-center justify-center h-full text-center">

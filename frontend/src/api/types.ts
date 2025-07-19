@@ -1,4 +1,6 @@
-import { type Tender } from "../features/tenders/types";
+// Re-export types from centralized location
+export type { Tender, TenderSearchResult, TenderSummary, TenderDisplayData } from "../types/tender";
+import type { TenderSearchResult } from "../types/tender";
 
 export interface LeadGenerationFormData {
   [key: string]: string | number | boolean | string[];
@@ -64,11 +66,6 @@ export interface SearchTendersRequest {
   limit?: number;
 }
 
-export interface TenderSearchResult extends Tender {
-  search_score?: number;
-  match_explanation?: string;
-}
-
 export interface SearchTendersResponse {
   results: TenderSearchResult[];
   total_results: number;
@@ -89,5 +86,3 @@ export interface PdfAnalysisResponse {
   success: boolean;
   message?: string;
 }
-
-export { type Tender };
