@@ -8,302 +8,15 @@ import StealthPlugin from "puppeteer-extra-plugin-stealth";
 import * as XLSX from "xlsx";
 import * as fs from "fs";
 import * as path from "path";
-
+import {
+  mapBidsAndTendersTender,
+  mapOntarioTender,
+  mapTorontoTender,
+  mapCanadianTender,
+} from "./utils/scrapingColumnsMapper";
+import { URLS } from "./utils/scrapingUrls";
 // Configure puppeteer-extra with stealth plugin
 puppeteerExtra.use(StealthPlugin());
-
-/**
- * Parse Mississauga date format "/Date(1749216600000)/" to ISO string
- */
-function parseMississaugaDate(dateStr: string): string | null {
-  if (!dateStr || !dateStr.includes("/Date(")) return null;
-
-  const match = dateStr.match(/\/Date\((\d+)\)\//);
-  if (!match) return null;
-
-  const timestamp = parseInt(match[1]);
-  return new Date(timestamp).toISOString();
-}
-
-/**
- * Parse Canadian date string format and return ISO string or null
- */
-function parseCanadianDate(dateString: string): string | null {
-  if (!dateString || dateString.trim() === "") return null;
-
-  try {
-    const date = new Date(dateString);
-    if (isNaN(date.getTime())) return null;
-    return date.toISOString();
-  } catch {
-    return null;
-  }
-}
-
-/**
- * Parse Ontario date string format and return ISO string or null
- */
-function parseOntarioDate(dateInput: any): string | null {
-  if (dateInput == null) return null; // handles undefined/null
-  if (typeof dateInput === "number" && !isNaN(dateInput)) {
-    // Excel serial number
-    const excelEpoch = Date.UTC(1899, 11, 30);
-    const millis = Math.round(dateInput * 24 * 60 * 60 * 1000);
-    const date = new Date(excelEpoch + millis);
-    return isNaN(date.getTime()) ? null : date.toISOString();
-  }
-  if (typeof dateInput === "string" && dateInput.trim()) {
-    const date = new Date(dateInput);
-    return isNaN(date.getTime()) ? null : date.toISOString();
-  }
-  return null;
-}
-/**
- * Clean HTML tags from description
- */
-function cleanHtmlDescription(html: string): string | null {
-  if (!html) return null;
-
-  // Remove HTML tags and decode entities
-  return (
-    html
-      .replace(/<[^>]*>/g, " ")
-      .replace(/&nbsp;/g, " ")
-      .replace(/&amp;/g, "&")
-      .replace(/&lt;/g, "<")
-      .replace(/&gt;/g, ">")
-      .replace(/\s+/g, " ")
-      .trim() || null
-  );
-}
-
-/**
- * Convert a raw Mississauga tender row to the new simplified schema.
- */
-function mapMississaugaTender(row: any) {
-  return {
-    id: row.Id,
-    source: "mississauga",
-    source_reference: row.Title?.match(/^([A-Z]+\d+)/)?.[1] ?? row.Id,
-    source_url: `https://mississauga.bidsandtenders.ca/Module/Tenders/en/Tender/Detail/${row.Id}`,
-
-    title: row.Title,
-    description: cleanHtmlDescription(row.Description),
-    status: row.Status?.toLowerCase(),
-
-    published_date: parseMississaugaDate(row.DateAvailable),
-    closing_date: parseMississaugaDate(row.DateClosing),
-    contract_start_date: null,
-
-    contracting_entity_name: "City of Mississauga",
-    contracting_entity_city: "Mississauga",
-    contracting_entity_province: "ON",
-    contracting_entity_country: "CA",
-
-    delivery_location: "Mississauga, ON",
-    category_primary: row.Scope,
-    procurement_type: "rfp",
-    procurement_method: "open",
-
-    estimated_value_min: null,
-    currency: "CAD",
-
-    contact_name: null,
-    contact_email: null,
-    contact_phone: null,
-
-    gsin: null,
-    unspsc: null,
-
-    plan_takers_count: row.PlanTakers,
-    submissions_count: row.Submitted,
-
-    embedding: null,
-    summary: null,
-
-    last_scraped_at: new Date().toISOString(),
-  };
-}
-
-/**
- * Convert a raw Ontario Excel row to the new simplified schema.
- */
-function mapOntarioTender(row: any) {
-  return {
-    id: row["Project Code"],
-    source: "ontario",
-    source_reference: row["Project Reference"] ?? row["Project Code"],
-    source_url: row["Web Link"],
-
-    title: row["Project Title"],
-    description:
-      [row["Detailed Description"], row["Scope of Work"]]
-        .filter(Boolean)
-        .join("\n\n") || null,
-    status: "open",
-
-    published_date: parseOntarioDate(row["Publication Date"]),
-    closing_date: parseOntarioDate(
-      row["Listing Expiry Date (dd/mm/yyyy hh:mm)"]
-    ),
-    contract_start_date: parseOntarioDate(
-      row["Estimated Contract Start Date (dd/mm/yyyy)"]
-    ),
-
-    contracting_entity_name: row["Buyer Organization"],
-    contracting_entity_city: null,
-    contracting_entity_province: "ON",
-    contracting_entity_country: "CA",
-
-    delivery_location: "Ontario, CA",
-    category_primary: row["Work Category"],
-    procurement_type: row["Project Type"]?.toLowerCase().includes("rfp")
-      ? "rfp"
-      : "tender",
-    procurement_method: row["Procurement Route"]?.toLowerCase(),
-
-    estimated_value_min: row["Estimated Value of Contract"]
-      ? parseFloat(row["Estimated Value of Contract"])
-      : null,
-    currency: "CAD",
-
-    contact_name: row["Contact"],
-    contact_email: row["Email"],
-    contact_phone: null,
-
-    gsin: null,
-    unspsc: row["Project Categories"],
-
-    plan_takers_count: null,
-    submissions_count: null,
-
-    embedding: null,
-    summary: null,
-
-    last_scraped_at: new Date().toISOString(),
-  };
-}
-
-/**
- * Convert a raw Toronto OData tender row to the new simplified schema.
- */
-function mapTorontoTender(row: any) {
-  return {
-    id: row.id,
-    source: "toronto",
-    source_reference: row.Solicitation_Document_Number,
-    source_url: row.Ariba_Discovery_Posting_Link?.trim(),
-
-    title: row.Posting_Title,
-    description: row.Solicitation_Document_Description,
-    status: row.Status?.toLowerCase(),
-
-    published_date: row.Publish_Date,
-    closing_date: row.Closing_Date_Formatted,
-    contract_start_date: null,
-
-    contracting_entity_name: Array.isArray(row.Client_Division)
-      ? row.Client_Division[0]
-      : "City of Toronto",
-    contracting_entity_city: "Toronto",
-    contracting_entity_province: "ON",
-    contracting_entity_country: "CA",
-
-    delivery_location: Array.isArray(row.Client_Division)
-      ? row.Client_Division.join(", ")
-      : "Toronto, ON",
-    category_primary: row.High_Level_Category,
-    procurement_type: row.Solicitation_Form_Type?.toLowerCase().includes("rfp")
-      ? "rfp"
-      : "tender",
-    procurement_method: row.Limited_Suppliers === "Yes" ? "limited" : "open",
-
-    estimated_value_min: null,
-    currency: "CAD",
-
-    contact_name: row.Buyer_Name,
-    contact_email: row.Buyer_Email,
-    contact_phone: row.Buyer_Phone_Number,
-
-    gsin: null,
-    unspsc: null,
-
-    plan_takers_count: null,
-    submissions_count: null,
-
-    embedding: null,
-    summary: null,
-
-    last_scraped_at: new Date().toISOString(),
-  };
-}
-
-/**
- * Convert a raw Canadian CSV row to the new simplified schema.
- */
-function mapCanadianTender(row: any): any {
-  return {
-    id: row["referenceNumber-numeroReference"] || row.id,
-    source: "canadian",
-    source_reference: row["referenceNumber-numeroReference"],
-    source_url: row["noticeURL-URLavis-eng"],
-
-    title: row["title-titre-eng"],
-    description: row["tenderDescription-descriptionAppelOffres-eng"],
-    status: row["tenderStatus-appelOffresStatut-eng"]?.toLowerCase(),
-
-    published_date: parseCanadianDate(row["publicationDate-datePublication"]),
-    closing_date: parseCanadianDate(
-      row["tenderClosingDate-appelOffresDateCloture"]
-    ),
-    contract_start_date: parseCanadianDate(
-      row["expectedContractStartDate-dateDebutContratPrevue"]
-    ),
-
-    contracting_entity_name:
-      row["contractingEntityName-nomEntitContractante-eng"],
-    contracting_entity_city:
-      row["contractingEntityAddressCity-entiteContractanteAdresseVille-eng"],
-    contracting_entity_province:
-      row[
-        "contractingEntityAddressProvince-entiteContractanteAdresseProvince-eng"
-      ],
-    contracting_entity_country:
-      row[
-        "contractingEntityAddressCountry-entiteContractanteAdressePays-eng"
-      ] || "Canada",
-
-    delivery_location: row["regionsOfDelivery-regionsLivraison-eng"],
-    category_primary: row["procurementCategory-categorieApprovisionnement"],
-    procurement_type: row["noticeType-avisType-eng"]
-      ?.toLowerCase()
-      .includes("rfp")
-      ? "rfp"
-      : row["noticeType-avisType-eng"]?.toLowerCase().includes("rfq")
-      ? "rfq"
-      : "tender",
-    procurement_method:
-      row["procurementMethod-methodeApprovisionnement-eng"]?.toLowerCase(),
-
-    estimated_value_min: null,
-    currency: "CAD",
-
-    contact_name: row["contactInfoName-informationsContactNom"],
-    contact_email: row["contactInfoEmail-informationsContactCourriel"],
-    contact_phone: row["contactInfoPhone-contactInfoTelephone"],
-
-    gsin: row["gsin-nibs"],
-    unspsc: row["unspsc"],
-
-    plan_takers_count: null,
-    submissions_count: null,
-
-    embedding: null,
-    summary: null,
-
-    last_scraped_at: new Date().toISOString(),
-  };
-}
 
 export class ScrapingService {
   constructor(
@@ -459,8 +172,7 @@ export class ScrapingService {
   async scrapeTorontoTenders(): Promise<any[]> {
     console.log("Starting Toronto tender scraping...");
 
-    const tenderUrl =
-      "https://secure.toronto.ca/c3api_data/v2/DataAccess.svc/pmmd_solicitations/feis_solicitation?$format=application/json;odata.metadata=none&$count=true&$skip=0&$orderby=Closing_Date%20desc,Issue_Date%20desc";
+    const tenderUrl = URLS.TORONTO.API;
     const browser = await puppeteer.launch({ headless: true });
 
     try {
@@ -482,9 +194,10 @@ export class ScrapingService {
   }
 
   /**
-   * Check rate limiting for Canadian tender imports
+   * Generic rate limiting check for tender imports
+   * TODO: Add separate rate limiting for different sources
    */
-  async getCanadianImportStatus() {
+  private async getGenericImportStatus() {
     const { data: refreshData, error } =
       await this.dbService.getLastRefreshDate();
 
@@ -518,6 +231,13 @@ export class ScrapingService {
       message: "Ready to import",
     };
   }
+
+  /**
+   * Check rate limiting for Canadian tender imports
+   */
+  async getCanadianImportStatus() {
+    return this.getGenericImportStatus();
+  }
   /**
    * Import Ontario tenders from Jaggaer Excel export
    */
@@ -533,11 +253,6 @@ export class ScrapingService {
         count: 0,
       };
     }
-    // Add color functions at the top
-    const yellow = (text: string) => `\x1b[33m${text}\x1b[0m`;
-    const green = (text: string) => `\x1b[32m${text}\x1b[0m`;
-    const cyan = (text: string) => `\x1b[36m${text}\x1b[0m`;
-    const bold = (text: string) => `\x1b[1m${text}\x1b[0m`;
 
     // Step 1: Deduplicate and concatenate Project Category for each Project Code
     const tenderMap: Record<string, any> = {};
@@ -621,8 +336,7 @@ export class ScrapingService {
       fs.mkdirSync(downloadDir, { recursive: true });
     }
 
-    const sourceUrl =
-      "https://ontariotenders.app.jaggaer.com/esop/guest/go/public/opportunity/current?locale=en_CA&customLoginPage=/esop/nac-host/public/web/login.html&customGuest=";
+    const sourceUrl = URLS.ONTARIO.JAGGAER;
     const browser = await puppeteer.launch({ headless: true });
 
     try {
@@ -743,105 +457,42 @@ export class ScrapingService {
    * Check rate limiting for Ontario tender imports
    */
   async getOntarioImportStatus() {
-    // For now, use the same refresh date as other sources
-    // TODO: Add separate rate limiting for different sources
-    const { data: refreshData, error } =
-      await this.dbService.getLastRefreshDate();
-
-    if (error || !refreshData?.value) {
-      return {
-        canImport: true,
-        message: "No previous import found",
-      };
-    }
-
-    const lastRefresh = Number(refreshData.value);
-    const currentTime = new Date().getTime();
-    const timeSinceLastRefresh = currentTime - lastRefresh;
-    const twentyFourHours = 24 * 60 * 60 * 1000;
-
-    if (timeSinceLastRefresh < twentyFourHours) {
-      const hoursRemaining = Math.ceil(
-        (twentyFourHours - timeSinceLastRefresh) / (60 * 60 * 1000)
-      );
-
-      return {
-        canImport: false,
-        message: `Rate limited - wait ${hoursRemaining} hours`,
-        hoursRemaining,
-        lastImportAt: new Date(lastRefresh).toISOString(),
-      };
-    }
-
-    return {
-      canImport: true,
-      message: "Ready to import",
-    };
+    return this.getGenericImportStatus();
   }
 
   /**
    * Check rate limiting for Toronto tender imports
    */
   async getTorontoImportStatus() {
-    // For now, use the same refresh date as Canadian tenders
-    // TODO: Add separate rate limiting for different sources
-    const { data: refreshData, error } =
-      await this.dbService.getLastRefreshDate();
-
-    if (error || !refreshData?.value) {
-      return {
-        canImport: true,
-        message: "No previous import found",
-      };
-    }
-
-    const lastRefresh = Number(refreshData.value);
-    const currentTime = new Date().getTime();
-    const timeSinceLastRefresh = currentTime - lastRefresh;
-    const twentyFourHours = 24 * 60 * 60 * 1000;
-
-    if (timeSinceLastRefresh < twentyFourHours) {
-      const hoursRemaining = Math.ceil(
-        (twentyFourHours - timeSinceLastRefresh) / (60 * 60 * 1000)
-      );
-
-      return {
-        canImport: false,
-        message: `Rate limited - wait ${hoursRemaining} hours`,
-        hoursRemaining,
-        lastImportAt: new Date(lastRefresh).toISOString(),
-      };
-    }
-
-    return {
-      canImport: true,
-      message: "Ready to import",
-    };
+    return this.getGenericImportStatus();
   }
 
   /**
-   * Import Mississauga tenders from bidsandtenders.ca API
+   * Import BidsAndTenders tenders (Mississauga, Brampton, Hamilton, London)
    */
-  async importMississaugaTenders() {
-    console.log("Importing Mississauga tenders...");
+  async importBidsAndTendersTenders(
+    city: "mississauga" | "brampton" | "hamilton" | "london"
+  ) {
+    const cityName = city.charAt(0).toUpperCase() + city.slice(1);
+    console.log(`Importing ${cityName} tenders...`);
 
     // 1. Scrape tender data
-    const rawTenders = await this.scrapeMississaugaTenders();
+    const rawTenders = await this.scrapeBidsAndTendersTenders(city);
 
     if (rawTenders.length === 0) {
       return {
-        message: "No Mississauga tenders found",
+        message: `No ${cityName} tenders found`,
         count: 0,
       };
     }
 
     // 2. Transform to canonical schema
     const mappedTenders = rawTenders.map((tender) =>
-      mapMississaugaTender(tender)
+      mapBidsAndTendersTender(tender, city)
     );
 
     // 3. Generate embeddings
-    console.log("Generating embeddings for Mississauga tenders...");
+    console.log(`Generating embeddings for ${cityName} tenders...`);
     try {
       const embeddingsData = await this.mlService.generateEmbeddings(
         mappedTenders
@@ -853,39 +504,59 @@ export class ScrapingService {
       }));
 
       // 4. Upsert to database
-      console.log("Upserting Mississauga tenders to database...");
+      console.log(`Upserting ${cityName} tenders to database...`);
       await this.dbService.upsertTenders(tendersWithEmbeddings);
 
       return {
-        message: "Mississauga tenders imported successfully",
+        message: `${cityName} tenders imported successfully`,
         count: mappedTenders.length,
       };
     } catch (error: any) {
       console.error(
-        "Error generating embeddings for Mississauga tenders:",
+        `Error generating embeddings for ${cityName} tenders:`,
         error
       );
 
       // Fallback: import without embeddings
       console.log(
-        "Importing Mississauga tenders without embeddings as fallback..."
+        `Importing ${cityName} tenders without embeddings as fallback...`
       );
       await this.dbService.upsertTenders(mappedTenders);
 
       return {
-        message:
-          "Mississauga tenders imported successfully (without embeddings)",
+        message: `${cityName} tenders imported successfully (without embeddings)`,
         count: mappedTenders.length,
         warning: "Embeddings generation failed",
       };
     }
   }
 
+  // Legacy methods for backward compatibility
+  async importMississaugaTenders() {
+    return this.importBidsAndTendersTenders("mississauga");
+  }
+
+  async importBramptonTenders() {
+    return this.importBidsAndTendersTenders("brampton");
+  }
+
+  async importHamiltonTenders() {
+    return this.importBidsAndTendersTenders("hamilton");
+  }
+
+  async importLondonTenders() {
+    return this.importBidsAndTendersTenders("london");
+  }
+
   /**
-   * Scrape Mississauga tender data using stealth puppeteer
+   * Scrape BidsAndTenders tender data using stealth puppeteer
+   * Works for Mississauga, Brampton, Hamilton, and London
    */
-  async scrapeMississaugaTenders(): Promise<any[]> {
-    console.log("Starting Mississauga tender scraping...");
+  async scrapeBidsAndTendersTenders(
+    city: "mississauga" | "brampton" | "hamilton" | "london"
+  ): Promise<any[]> {
+    const cityName = city.charAt(0).toUpperCase() + city.slice(1);
+    console.log(`Starting ${cityName} tender scraping...`);
 
     const browser = await puppeteerExtra.launch({
       headless: true,
@@ -931,14 +602,15 @@ export class ScrapingService {
         }
       });
 
-      // Navigate to the tenders page
-      await page.goto(
-        "https://mississauga.bidsandtenders.ca/Module/Tenders/en",
-        {
-          waitUntil: "networkidle2",
-          timeout: 45000,
-        }
-      );
+      // Navigate to the appropriate city's tenders page
+      const baseUrl =
+        URLS.BIDSANDTENDERS[
+          city.toUpperCase() as keyof typeof URLS.BIDSANDTENDERS
+        ].BASE;
+      await page.goto(baseUrl, {
+        waitUntil: "networkidle2",
+        timeout: 45000,
+      });
 
       // Wait for tender data to be captured
       let maxTries = 25;
@@ -955,7 +627,7 @@ export class ScrapingService {
       }
 
       const tenders = Array.isArray(tenderData.data) ? tenderData.data : [];
-      console.log(`Scraped ${tenders.length} Mississauga tenders`);
+      console.log(`Scraped ${tenders.length} ${cityName} tenders`);
 
       return tenders;
     } finally {
@@ -963,49 +635,64 @@ export class ScrapingService {
     }
   }
 
+  // Legacy methods for backward compatibility
+  async scrapeMississaugaTenders(): Promise<any[]> {
+    return this.scrapeBidsAndTendersTenders("mississauga");
+  }
+
+  async scrapeBramptonTenders(): Promise<any[]> {
+    return this.scrapeBidsAndTendersTenders("brampton");
+  }
+
+  async scrapeHamiltonTenders(): Promise<any[]> {
+    return this.scrapeBidsAndTendersTenders("hamilton");
+  }
+
+  async scrapeLondonTenders(): Promise<any[]> {
+    return this.scrapeBidsAndTendersTenders("london");
+  }
+
   /**
    * Check rate limiting for Mississauga tender imports
    */
   async getMississaugaImportStatus() {
-    // For now, use the same refresh date as other sources
-    // TODO: Add separate rate limiting for different sources
-    const { data: refreshData, error } =
-      await this.dbService.getLastRefreshDate();
+    return this.getGenericImportStatus();
+  }
 
-    if (error || !refreshData?.value) {
-      return {
-        canImport: true,
-        message: "No previous import found",
-      };
-    }
+  /**
+   * Check rate limiting for Brampton tender imports
+   */
+  async getBramptonImportStatus() {
+    return this.getGenericImportStatus();
+  }
 
-    const lastRefresh = Number(refreshData.value);
-    const currentTime = new Date().getTime();
-    const timeSinceLastRefresh = currentTime - lastRefresh;
-    const twentyFourHours = 24 * 60 * 60 * 1000;
+  async getHamiltonImportStatus() {
+    return this.getGenericImportStatus();
+  }
 
-    if (timeSinceLastRefresh < twentyFourHours) {
-      const hoursRemaining = Math.ceil(
-        (twentyFourHours - timeSinceLastRefresh) / (60 * 60 * 1000)
-      );
-
-      return {
-        canImport: false,
-        message: `Rate limited - wait ${hoursRemaining} hours`,
-        hoursRemaining,
-        lastImportAt: new Date(lastRefresh).toISOString(),
-      };
-    }
-
-    return {
-      canImport: true,
-      message: "Ready to import",
-    };
+  async getLondonImportStatus() {
+    return this.getGenericImportStatus();
   }
 
   /**
    * Test scraping methods that return limited data without importing
    */
+
+  async testScrapeBidsAndTenders(city: "mississauga" | "brampton" | "hamilton" | "london", limit: number = 5): Promise<any[]> {
+    const cityName = city.charAt(0).toUpperCase() + city.slice(1);
+    console.log(`Test scraping ${cityName} tenders (limit: ${limit})...`);
+
+    // Scrape all tenders and limit the results
+    const tenders = await this.scrapeBidsAndTendersTenders(city);
+    const limitedTenders = tenders.slice(0, limit);
+
+    // Map to our schema
+    const mappedTenders = limitedTenders.map((tender) =>
+      mapBidsAndTendersTender(tender, city)
+    );
+
+    return mappedTenders;
+  }
 
   async testScrapeCanadian(limit: number = 5): Promise<any[]> {
     console.log(`Test scraping Canadian tenders (limit: ${limit})...`);
@@ -1053,18 +740,20 @@ export class ScrapingService {
     return mappedTenders;
   }
 
+  // Legacy test methods for backward compatibility
   async testScrapeMississauga(limit: number = 5): Promise<any[]> {
-    console.log(`Test scraping Mississauga tenders (limit: ${limit})...`);
+    return this.testScrapeBidsAndTenders("mississauga", limit);
+  }
 
-    // Scrape all Mississauga tenders and limit the results
-    const tenders = await this.scrapeMississaugaTenders();
-    const limitedTenders = tenders.slice(0, limit);
+  async testScrapeBrampton(limit: number = 5): Promise<any[]> {
+    return this.testScrapeBidsAndTenders("brampton", limit);
+  }
 
-    // Map to our schema
-    const mappedTenders = limitedTenders.map((tender) =>
-      mapMississaugaTender(tender)
-    );
+  async testScrapeHamilton(limit: number = 5): Promise<any[]> {
+    return this.testScrapeBidsAndTenders("hamilton", limit);
+  }
 
-    return mappedTenders;
+  async testScrapeLondon(limit: number = 5): Promise<any[]> {
+    return this.testScrapeBidsAndTenders("london", limit);
   }
 }

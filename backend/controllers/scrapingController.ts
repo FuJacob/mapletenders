@@ -227,10 +227,196 @@ export class ScrapingController {
   };
 
   /**
+   * Import Brampton tenders from bidsandtenders.ca
+   * @route POST /scraping/brampton
+   */
+  importBramptonTenders = async (req: Request, res: Response) => {
+    try {
+      console.log("Starting Brampton tender import...");
+
+      const result = await this.scrapingService.importBramptonTenders();
+
+      console.log("Brampton tenders imported successfully:", result);
+      res.json(result);
+    } catch (error: any) {
+      console.error("Error importing Brampton tenders:", error);
+      res.status(500).json({
+        error: "Failed to import Brampton tenders",
+        details: error.message,
+      });
+    }
+  };
+
+  /**
+   * Get Brampton tender import status
+   * @route GET /scraping/brampton/status
+   */
+  getBramptonImportStatus = async (req: Request, res: Response) => {
+    try {
+      const status = await this.scrapingService.getBramptonImportStatus();
+      res.json(status);
+    } catch (error: any) {
+      console.error("Error getting Brampton import status:", error);
+      res.status(500).json({
+        error: "Failed to get import status",
+        details: error.message,
+      });
+    }
+  };
+
+  /**
+   * Scrape Brampton tenders without importing (for testing)
+   * @route GET /scraping/brampton/scrape
+   */
+  scrapeBramptonTenders = async (req: Request, res: Response) => {
+    try {
+      console.log("Scraping Brampton tenders (test mode)...");
+
+      const tenders = await this.scrapingService.scrapeBramptonTenders();
+
+      res.json({
+        message: "Brampton tenders scraped successfully",
+        count: tenders.length,
+        data: tenders,
+      });
+    } catch (error: any) {
+      console.error("Error scraping Brampton tenders:", error);
+      res.status(500).json({
+        error: "Failed to scrape Brampton tenders",
+        details: error.message,
+      });
+    }
+  };
+
+  /**
+   * Import Hamilton tenders from bidsandtenders.ca
+   * @route POST /scraping/hamilton
+   */
+  importHamiltonTenders = async (_req: Request, res: Response) => {
+    try {
+      console.log("Starting Hamilton tender import...");
+
+      const result = await this.scrapingService.importHamiltonTenders();
+
+      console.log("Hamilton tenders imported successfully:", result);
+      res.json(result);
+    } catch (error: any) {
+      console.error("Error importing Hamilton tenders:", error);
+      res.status(500).json({
+        error: "Failed to import Hamilton tenders",
+        details: error.message,
+      });
+    }
+  };
+
+  /**
+   * Get Hamilton tender import status
+   * @route GET /scraping/hamilton/status
+   */
+  getHamiltonImportStatus = async (_req: Request, res: Response) => {
+    try {
+      const status = await this.scrapingService.getHamiltonImportStatus();
+      res.json(status);
+    } catch (error: any) {
+      console.error("Error getting Hamilton import status:", error);
+      res.status(500).json({
+        error: "Failed to get import status",
+        details: error.message,
+      });
+    }
+  };
+
+  /**
+   * Scrape Hamilton tenders without importing (for testing)
+   * @route GET /scraping/hamilton/scrape
+   */
+  scrapeHamiltonTenders = async (_req: Request, res: Response) => {
+    try {
+      console.log("Scraping Hamilton tenders (test mode)...");
+
+      const tenders = await this.scrapingService.scrapeHamiltonTenders();
+
+      res.json({
+        message: "Hamilton tenders scraped successfully",
+        count: tenders.length,
+        data: tenders,
+      });
+    } catch (error: any) {
+      console.error("Error scraping Hamilton tenders:", error);
+      res.status(500).json({
+        error: "Failed to scrape Hamilton tenders",
+        details: error.message,
+      });
+    }
+  };
+
+  /**
+   * Import London tenders from bidsandtenders.ca
+   * @route POST /scraping/london
+   */
+  importLondonTenders = async (_req: Request, res: Response) => {
+    try {
+      console.log("Starting London tender import...");
+
+      const result = await this.scrapingService.importLondonTenders();
+
+      console.log("London tenders imported successfully:", result);
+      res.json(result);
+    } catch (error: any) {
+      console.error("Error importing London tenders:", error);
+      res.status(500).json({
+        error: "Failed to import London tenders",
+        details: error.message,
+      });
+    }
+  };
+
+  /**
+   * Get London tender import status
+   * @route GET /scraping/london/status
+   */
+  getLondonImportStatus = async (_req: Request, res: Response) => {
+    try {
+      const status = await this.scrapingService.getLondonImportStatus();
+      res.json(status);
+    } catch (error: any) {
+      console.error("Error getting London import status:", error);
+      res.status(500).json({
+        error: "Failed to get import status",
+        details: error.message,
+      });
+    }
+  };
+
+  /**
+   * Scrape London tenders without importing (for testing)
+   * @route GET /scraping/london/scrape
+   */
+  scrapeLondonTenders = async (_req: Request, res: Response) => {
+    try {
+      console.log("Scraping London tenders (test mode)...");
+
+      const tenders = await this.scrapingService.scrapeLondonTenders();
+
+      res.json({
+        message: "London tenders scraped successfully",
+        count: tenders.length,
+        data: tenders,
+      });
+    } catch (error: any) {
+      console.error("Error scraping London tenders:", error);
+      res.status(500).json({
+        error: "Failed to scrape London tenders",
+        details: error.message,
+      });
+    }
+  };
+
+  /**
    * Get available scraping sources for testing
    * @route GET /scraping/test/sources
    */
-  getTestSources = async (req: Request, res: Response) => {
+  getTestSources = async (_req: Request, res: Response) => {
     try {
       const sources = [
         {
@@ -256,6 +442,24 @@ export class ScrapingController {
           name: "City of Mississauga",
           description: "Mississauga tenders from bidsandtenders.ca",
           testEndpoint: "/scraping/test/mississauga",
+        },
+        {
+          id: "brampton",
+          name: "City of Brampton",
+          description: "Brampton tenders from bidsandtenders.ca",
+          testEndpoint: "/scraping/test/brampton",
+        },
+        {
+          id: "hamilton",
+          name: "City of Hamilton",
+          description: "Hamilton tenders from bidsandtenders.ca",
+          testEndpoint: "/scraping/test/hamilton",
+        },
+        {
+          id: "london",
+          name: "City of London",
+          description: "London tenders from bidsandtenders.ca",
+          testEndpoint: "/scraping/test/london",
         },
       ];
 
@@ -298,10 +502,19 @@ export class ScrapingController {
         case "mississauga":
           result = await this.scrapingService.testScrapeMississauga(limit);
           break;
+        case "brampton":
+          result = await this.scrapingService.testScrapeBrampton(limit);
+          break;
+        case "hamilton":
+          result = await this.scrapingService.testScrapeHamilton(limit);
+          break;
+        case "london":
+          result = await this.scrapingService.testScrapeLondon(limit);
+          break;
         default:
           res.status(400).json({
             error: "Invalid source",
-            message: `Source '${source}' not supported. Available sources: canadian, toronto, ontario, mississauga`,
+            message: `Source '${source}' not supported. Available sources: canadian, toronto, ontario, mississauga, brampton, hamilton, london`,
           });
       }
 

@@ -10,6 +10,13 @@ export class DatabaseService {
       process.env.SUPABASE_SERVICE_KEY || ""
     );
   }
+  async getNumberOfBookmarks(userId: string): Promise<number> {
+    const { count } = await this.supabase
+      .from("bookmarks")
+      .select("*", { count: "exact", head: true }) // only returns count, no data
+      .eq("user_id", userId);
+    return count || 0;
+  }
 
   async getTendersFromBookmarkIds(bookmarkIds: string[]) {
     return await this.supabase

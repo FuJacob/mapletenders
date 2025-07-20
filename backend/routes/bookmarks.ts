@@ -3,6 +3,10 @@ import { bookmarkController } from "../container";
 
 const router = Router();
 
+router.get("/:userId/count", (req, res) => {
+  bookmarkController.getNumberOfBookmarks(req, res);
+});
+
 /**
  * @route POST /bookmarks
  * @desc Create or update a bookmark for a tender notice

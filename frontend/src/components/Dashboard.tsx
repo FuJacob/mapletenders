@@ -1,16 +1,8 @@
-import {
-  Lightning,
-  Bookmark,
-  Bell,
-  Clock,
-  Star,
-  Eye,
-} from "@phosphor-icons/react";
+import { Lightning, Bell, Clock, Star, Eye } from "@phosphor-icons/react";
 
 export default function Dashboard() {
   const mockStats = {
     newTenders: 12,
-    savedTenders: 8,
     activeAlerts: 3,
     deadlinesThisWeek: 5,
   };
@@ -60,12 +52,6 @@ export default function Dashboard() {
     },
     {
       id: 2,
-      action: "Saved",
-      title: "Database Migration Project",
-      time: "1 day ago",
-    },
-    {
-      id: 3,
       action: "Alert",
       title: "New IT tender matching your profile",
       time: "2 days ago",
@@ -83,7 +69,7 @@ export default function Dashboard() {
       </div>
 
       {/* Stats Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
         <div className="bg-surface border border-border rounded-xl p-6">
           <div className="flex items-center justify-between mb-2">
             <div className="p-2 bg-primary/10 rounded-lg">
@@ -97,18 +83,6 @@ export default function Dashboard() {
             {mockStats.newTenders}
           </h3>
           <p className="text-sm text-text-light">New tenders this week</p>
-        </div>
-
-        <div className="bg-surface border border-border rounded-xl p-6">
-          <div className="flex items-center justify-between mb-2">
-            <div className="p-2 bg-blue-50 rounded-lg">
-              <Bookmark className="w-5 h-5 text-blue-600" />
-            </div>
-          </div>
-          <h3 className="text-2xl font-bold text-text">
-            {mockStats.savedTenders}
-          </h3>
-          <p className="text-sm text-text-light">Saved opportunities</p>
         </div>
 
         <div className="bg-surface border border-border rounded-xl p-6">

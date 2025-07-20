@@ -9,6 +9,10 @@ export interface BookmarkWithTender extends BookmarkRow {
   tender_notice: TenderNoticeRow;
 }
 
+export interface GetNumberOfBookmarksResponse {
+  count: number;
+}
+
 export interface CreateBookmarkRequest {
   userId: string;
   tenderNoticeId: string;
@@ -34,6 +38,17 @@ export interface BookmarkStatusResponse {
   isBookmarked: boolean;
   error?: string;
 }
+
+export const getNumberOfBookmarks = async (
+  userId: string
+): Promise<GetNumberOfBookmarksResponse> => {
+  try {
+    const response = await axios.get(`/bookmarks/${userId}/count`);
+    return response.data;
+  } catch (error) {
+    return handleApiError(error, "Get number of bookmarks");
+  }
+};
 
 /**
  * Create a new bookmark

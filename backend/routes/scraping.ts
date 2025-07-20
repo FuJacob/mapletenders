@@ -92,6 +92,30 @@ router.get("/mississauga/scrape", (req, res) =>
 );
 
 /**
+ * Import Brampton tenders from bidsandtenders.ca
+ * @route POST /scraping/brampton
+ */
+router.post("/brampton", (req, res) =>
+  scrapingController.importBramptonTenders(req, res)
+);
+
+/**
+ * Get Brampton tender import status
+ * @route GET /scraping/brampton/status
+ */
+router.get("/brampton/status", (req, res) =>
+  scrapingController.getBramptonImportStatus(req, res)
+);
+
+/**
+ * Scrape Brampton tenders without importing (for testing)
+ * @route GET /scraping/brampton/scrape
+ */
+router.get("/brampton/scrape", (req, res) =>
+  scrapingController.scrapeBramptonTenders(req, res)
+);
+
+/**
  * Test playground - get available scraping sources
  * @route GET /scraping/test/sources
  */

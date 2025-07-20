@@ -58,7 +58,6 @@ export class TenderController {
     }
   };
 
-
   getTenderById = async (req: Request, res: Response) => {
     try {
       const result = await this.databaseService.getTenderById(req.params.id);

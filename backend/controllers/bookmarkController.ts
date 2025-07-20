@@ -5,6 +5,18 @@ import type { Database } from "../database.types";
 export class BookmarkController {
   constructor(private databaseService: DatabaseService) {}
 
+  getNumberOfBookmarks = async (req: Request, res: Response) => {
+    try {
+      const result = await this.databaseService.getNumberOfBookmarks(
+        req.params.userId
+      );
+      res.json(result);
+    } catch (error: any) {
+      console.error("Error fetching number of bookmarks:", error);
+      res.status(500).json({ error: error.message });
+    }
+  };
+
   createBookmark = async (req: Request, res: Response) => {
     try {
       const { userId, tenderNoticeId, notes } = req.body;
