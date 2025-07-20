@@ -46,12 +46,60 @@ export class TenderController {
         query = "government procurement opportunities";
       }
 
-      const recommendedTenders =
+      const elasticsearchResults =
         await this.mlService.searchTendersWithElasticsearch({
           query: query.trim(),
           limit: 10,
         });
-      res.json(recommendedTenders);
+
+      // Get all bookmarks
+      const bookmarks = await this.tenderService.getAllBookmarks();
+      const bookmarkIds = bookmarks.map(
+        (bookmark) => bookmark.tender_notice_id
+      );
+
+      // Extract IDs and search metadata
+      const tenderIds = elasticsearchResults.map((result) => result.id);
+      console.log("tenderIds", tenderIds);
+      // Fetch full tender data from database
+      const fullTenderData: TenderSearchResult[] = [];
+
+      if (tenderIds.length > 0) {
+        const tenders = await this.tenderService.getTendersByIds(tenderIds);
+
+        // Combine database data with search metadata, preserving search order
+        for (const result of elasticsearchResults) {
+          const tender = tenders.find((t) => t.id === result.id);
+          if (tender) {
+            fullTenderData.push({
+              ...tender,
+              search_score: result.search_score,
+              match_explanation: result.match_explanation,
+              is_bookmarked: bookmarkIds.includes(result.id),
+            } as TenderSearchResult);
+          }
+        }
+      }
+       // Log search score and match explanation details
+      if (fullTenderData.length > 0) {
+        console.log("Top result details:");
+        console.log(`- Search Score: ${fullTenderData[0].search_score}`);
+        console.log(
+          `- Match Explanation: ${fullTenderData[0].match_explanation}`
+        );
+      }
+
+      const response: SearchTendersResponse = {
+        results: fullTenderData,
+        total_results: fullTenderData.length,
+        query: query,
+        search_metadata: {
+          max_score:
+            fullTenderData.length > 0 ? fullTenderData[0].search_score : 0,
+        },
+      };
+      console.log(response);
+      res.json(response);
     } catch (error: any) {
       console.error("Error getting recommended tenders:", error);
       res.status(500).json({ error: error.message });

@@ -52,7 +52,7 @@ export default function SearchPage() {
       console.log("recommendedTenders", recommendedTenders);
     };
     fetchRecommendedTenders();
-  }, [recommendedTenders]);
+  }, []);
 
   // Mock data for demonstration - replace with real data later
   const handleSubmitSearch = () => {
@@ -111,12 +111,12 @@ export default function SearchPage() {
               exampleSearches={exampleSearches}
             />
 
-          <div>
+            <div>
               <ViewModeToggle
                 viewMode={mainViewMode}
                 onViewModeChange={setMainViewMode}
               />
-  
+
               {/* Dynamic Content Based on Toggle */}
               <div className="p-6 bg-surface border-x-1 border-b-1 border-border rounded-b-xl px-6 pb-6 h-[600px] flex flex-col">
                 {mainViewMode === "recommended" ? (

@@ -1,14 +1,15 @@
 import { Link } from "react-router-dom";
 import { TenderCard } from "../tenders";
-import type { TenderSummary } from "./types.tsx";
+import type { TenderSearchResult } from "../../api/types";
 
 interface RecommendedTendersProps {
-  tenders: TenderSummary[];
+  tenders: TenderSearchResult[];
 }
 
 export default function RecommendedTenders({
   tenders,
 }: RecommendedTendersProps) {
+  console.log("tenders", tenders);
   return (
     <>
       <div className="flex items-center justify-between mb-6">
