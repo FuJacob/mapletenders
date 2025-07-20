@@ -1,4 +1,10 @@
-import { Lightning, Target, Star, CheckCircle, Leaf, Shield } from "@phosphor-icons/react";
+import {
+  Lightning,
+  Target,
+  CheckCircle,
+  Leaf,
+  Shield,
+} from "@phosphor-icons/react";
 import type { PricingTier } from "./types";
 
 interface PricingCardProps {
@@ -46,7 +52,9 @@ export default function PricingCard({
           </div>
         </div>
         <h3 className="text-2xl font-bold text-text mb-2">{tier.name}</h3>
-        <p className="text-text-muted text-sm mb-4 leading-relaxed">{tier.description}</p>
+        <p className="text-text-muted text-sm mb-4 leading-relaxed">
+          {tier.description}
+        </p>
         <div className="text-center">
           {tier.originalPrice && tier.billingCycle === "yearly" && (
             <div className="flex items-center justify-center gap-2 mb-1">
@@ -81,19 +89,27 @@ export default function PricingCard({
         <div className="grid grid-cols-2 gap-4 text-xs">
           <div className="text-center">
             <span className="text-text-muted block mb-1">Searches</span>
-            <div className="font-bold text-text text-lg">{tier.limits.searches}</div>
+            <div className="font-bold text-text text-lg">
+              {tier.limits.searches}
+            </div>
           </div>
           <div className="text-center">
             <span className="text-text-muted block mb-1">Alerts</span>
-            <div className="font-bold text-text text-lg">{tier.limits.alerts}</div>
+            <div className="font-bold text-text text-lg">
+              {tier.limits.alerts}
+            </div>
           </div>
           <div className="text-center">
             <span className="text-text-muted block mb-1">Exports</span>
-            <div className="font-bold text-text text-lg">{tier.limits.exports}</div>
+            <div className="font-bold text-text text-lg">
+              {tier.limits.exports}
+            </div>
           </div>
           <div className="text-center">
             <span className="text-text-muted block mb-1">Users</span>
-            <div className="font-bold text-text text-lg">{tier.limits.users}</div>
+            <div className="font-bold text-text text-lg">
+              {tier.limits.users}
+            </div>
           </div>
         </div>
       </div>
