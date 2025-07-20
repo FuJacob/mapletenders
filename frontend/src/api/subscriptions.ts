@@ -1,4 +1,4 @@
-import apiClient from "./client/apiClient";
+import apiClient from "../client/apiClient";
 import { handleApiError } from "./config";
 
 export interface PlanFeatures {
@@ -144,7 +144,9 @@ export const createBillingPortalSession = async (
   userId: string
 ): Promise<{ url?: string; error?: string }> => {
   try {
-    const response = await apiClient.post(`/subscriptions/billing-portal/${userId}`);
+    const response = await apiClient.post(
+      `/subscriptions/billing-portal/${userId}`
+    );
     return response.data;
   } catch (error) {
     return handleApiError(error, "Create billing portal session");

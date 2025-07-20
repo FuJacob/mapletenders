@@ -32,15 +32,18 @@ import BookmarksPage from "./pages/BookmarksPage";
 import SearchPage from "./pages/SearchPage";
 import TablePage from "./pages/TablePage";
 
+import { useAuth } from "./hooks/auth";
 export function App() {
+  const { user } = useAuth();
   const dispatch = useAppDispatch();
-
   // Memoize initialization logic
   const initializeApp = useCallback(() => {
     dispatch(loadTenders());
     refreshTenders();
-    dispatch(loadSession());
-  }, [dispatch]);
+    if (!user) {
+      dispatch(loadSession());
+    }
+  }, [dispatch, user]);
 
   useEffect(() => {
     initializeApp();

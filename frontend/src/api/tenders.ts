@@ -1,4 +1,4 @@
-import apiClient from "./client/apiClient";
+import apiClient from "../client/apiClient";
 import { handleApiError } from "./config";
 import {
   type Tender,
@@ -6,7 +6,6 @@ import {
   type SearchTendersRequest,
   type SearchTendersResponse,
 } from "./types";
-
 
 export const getTenderById = async (id: string): Promise<Tender> => {
   try {
@@ -21,9 +20,12 @@ export const getTendersFromBookmarkIds = async (
   bookmarkIds: string[]
 ): Promise<Tender[]> => {
   try {
-    const response = await apiClient.post("/tenders/getTendersFromBookmarkIds", {
-      bookmarkIds,
-    });
+    const response = await apiClient.post(
+      "/tenders/getTendersFromBookmarkIds",
+      {
+        bookmarkIds,
+      }
+    );
     return response.data;
   } catch (error) {
     return handleApiError(error, "Fetch tenders from bookmark ids");
@@ -39,7 +41,10 @@ export const searchTenders = async (
   searchParams: SearchTendersRequest
 ): Promise<SearchTendersResponse> => {
   try {
-    const response = await apiClient.post("/tenders/searchTenders", searchParams);
+    const response = await apiClient.post(
+      "/tenders/searchTenders",
+      searchParams
+    );
     return response.data;
   } catch (error) {
     return handleApiError(error, "Search tenders");
@@ -60,19 +65,19 @@ export const getTenderNotice = async (tenderId: string): Promise<Tender> => {
   }
 };
 
-
 /**
  * Get recommended tenders based on user profile
  * @returns {Promise<SearchTendersResponse>} Recommended tenders for the authenticated user
  */
-export const getRecommendedTenders = async (): Promise<SearchTendersResponse> => {
-  try {
-    const response = await apiClient.get("/tenders/recommended");
-    return response.data;
-  } catch (error) {
-    return handleApiError(error, "Get recommended tenders");
-  }
-};
+export const getRecommendedTenders =
+  async (): Promise<SearchTendersResponse> => {
+    try {
+      const response = await apiClient.get("/tenders/recommended");
+      return response.data;
+    } catch (error) {
+      return handleApiError(error, "Get recommended tenders");
+    }
+  };
 
 /**
  * Refresh tender data (rate limited to once per 24 hours)
@@ -86,4 +91,3 @@ export const refreshTenders = async (): Promise<RefreshTendersResponse> => {
     return handleApiError(error, "Refresh tenders");
   }
 };
-

@@ -4,7 +4,8 @@ import { authenticateUser } from "../middleware/authenticateUser";
 
 const router = Router();
 router.use(authenticateUser);
-router.get("/:userId/count", (req, res) => {
+
+router.get("/count", (req, res) => {
   bookmarkController.getNumberOfBookmarks(req, res);
 });
 

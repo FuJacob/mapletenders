@@ -35,10 +35,10 @@ export default function ViewModeToggle({
         <button
           key={option.id}
           onClick={() => onViewModeChange(option.id)}
-          className={`px-4 py-2 rounded-lg font-medium transition-colors flex items-center gap-2 ${
+          className={`px-4 py-2 rounded-x-lg rounded-t-lg font-medium transition-colors flex items-center gap-2 ${
             viewMode === option.id
-              ? "bg-primary text-white"
-              : "bg-surface border border-border text-text hover:bg-primary/5"
+              ? "bg-surface text-text border-border border-t-1 border-x-1"
+              : "border-t-1 border-border border-x-1  text-text-light hover:bg-primary/5"
           }`}
         >
           {option.icon}

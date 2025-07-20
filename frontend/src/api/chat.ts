@@ -1,4 +1,4 @@
-import apiClient from "./client/apiClient";
+import apiClient from "../client/apiClient";
 import { handleApiError } from "./config";
 
 export interface ChatMessage {
@@ -46,9 +46,12 @@ export const sendChatMessage = async (
   message: string
 ): Promise<ChatResponse> => {
   try {
-    const response = await apiClient.post(`/chat/session/${sessionId}/message`, {
-      message,
-    });
+    const response = await apiClient.post(
+      `/chat/session/${sessionId}/message`,
+      {
+        message,
+      }
+    );
     return response.data;
   } catch (error) {
     throw handleApiError(error, "Send chat message");

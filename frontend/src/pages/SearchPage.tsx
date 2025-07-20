@@ -43,15 +43,16 @@ export default function SearchPage() {
       setStats({ ...stats, bookmarks: bookmarksResponse });
     };
     fetchStats();
-  }, [stats]);
+  }, []);
 
   useEffect(() => {
     const fetchRecommendedTenders = async () => {
       const recommendedTenders = await getRecommendedTenders();
       setRecommendedTenders(recommendedTenders.results);
+      console.log("recommendedTenders", recommendedTenders);
     };
     fetchRecommendedTenders();
-  }, []);
+  }, [recommendedTenders]);
 
   // Mock data for demonstration - replace with real data later
   const handleSubmitSearch = () => {
@@ -100,9 +101,9 @@ export default function SearchPage() {
           description="Discover and search through thousands of government contract opportunities"
         />
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
           {/* Main Content */}
-          <div className="lg:col-span-2 space-y-8">
+          <div className="lg:col-span-2 space-y-4">
             <SearchSection
               searchQuery={searchQuery}
               setSearchQuery={setSearchQuery}
@@ -110,19 +111,23 @@ export default function SearchPage() {
               exampleSearches={exampleSearches}
             />
 
-            <ViewModeToggle
-              viewMode={mainViewMode}
-              onViewModeChange={setMainViewMode}
-            />
-
-            {/* Dynamic Content Based on Toggle */}
-            {mainViewMode === "recommended" ? (
-              <RecommendedTenders tenders={recommendedTenders} />
-            ) : mainViewMode === "chat" ? (
-              <BreezeChat />
-            ) : (
-              <RecentActivity activities={mockRecentActivity} />
-            )}
+          <div>
+              <ViewModeToggle
+                viewMode={mainViewMode}
+                onViewModeChange={setMainViewMode}
+              />
+  
+              {/* Dynamic Content Based on Toggle */}
+              <div className="p-6 bg-surface border-x-1 border-b-1 border-border rounded-b-xl px-6 pb-6 h-[600px] flex flex-col">
+                {mainViewMode === "recommended" ? (
+                  <RecommendedTenders tenders={recommendedTenders ?? []} />
+                ) : mainViewMode === "chat" ? (
+                  <BreezeChat />
+                ) : (
+                  <RecentActivity activities={mockRecentActivity} />
+                )}
+              </div>
+            </div>
           </div>
 
           {/* Sidebar */}

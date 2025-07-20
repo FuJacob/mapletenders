@@ -10,7 +10,7 @@ export default function RecommendedTenders({
   tenders,
 }: RecommendedTendersProps) {
   return (
-    <div className="bg-surface border border-border rounded-xl p-6 h-[1200px] flex flex-col">
+    <>
       <div className="flex items-center justify-between mb-6">
         <h2 className="text-xl font-semibold text-text">Recommended for You</h2>
         <Link
@@ -25,6 +25,6 @@ export default function RecommendedTenders({
           <TenderCard key={tender.id} tender={tender} compact={true} />
         ))}
       </div>
-    </div>
+    </>
   );
 }

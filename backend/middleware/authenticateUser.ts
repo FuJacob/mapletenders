@@ -22,11 +22,12 @@ export const authenticateUser = async (
 
   const { data, error } = await supabase.auth.getUser(token);
 
-  if (error || !data?.user) {
+  if (error || !data.user) {
     res.status(401).json({ error: "Invalid token" });
     return;
   }
-
-  req.headers.userId = data.user?.id;
+  const userId = data.user.id;
+  console.log("data", userId);
+  req.headers.userId = userId;
   next();
 };

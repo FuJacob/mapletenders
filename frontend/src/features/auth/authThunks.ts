@@ -1,5 +1,4 @@
 import {
-  signInUser,
   signOutUser,
   getUser,
   createOrUpdateProfile,
@@ -15,11 +14,11 @@ import {
 import { type AppDispatch } from "../../app/configureStore";
 import type { Database } from "../../../database.types";
 import type { ProfileData } from "../../api/profile";
+import { supabaseClient } from "../../client/supabaseClient";
 
 // Use database types as source of truth
 type ProfileUpdate = Database["public"]["Tables"]["profiles"]["Update"];
 type DatabaseProfile = Database["public"]["Tables"]["profiles"]["Row"];
-
 // Helper function to convert database profile to API format
 const convertDatabaseProfileToAPI = (
   dbProfile: Partial<DatabaseProfile>
@@ -61,9 +60,17 @@ export const signIn =
     dispatch(setAuthLoading(true));
 
     try {
-      const response = await signInUser({ email, password });
+      const { data, error } = await supabaseClient.auth.signInWithPassword({
+        email,
+        password,
+      });
+
+      if (error) {
+        console.error("Error signing in user:", error);
+        throw error;
+      }
       // Get or create user profile
-      const user = response.user;
+      const user = data.user;
       if (!user?.id) {
         dispatch(setAuthError("No authenticated user"));
         dispatch(setAuthLoading(false));
@@ -91,10 +98,12 @@ export const signIn =
         profile = createResponse.profile;
       }
       // Set combined user and profile data
-      dispatch(setUser({
-        user,
-        profile: profile ? convertAPIProfileToDatabase(profile) : null
-      }));
+      dispatch(
+        setUser({
+          user,
+          profile: profile ? convertAPIProfileToDatabase(profile) : null,
+        })
+      );
       dispatch(setAuthLoading(false));
     } catch (error) {
       console.error("Sign in error:", error);
@@ -128,15 +137,21 @@ export const loadSession = () => async (dispatch: AppDispatch) => {
       if (profileResponse.error) {
         console.error("Error fetching profile:", profileResponse.error);
         dispatch(setAuthError("Failed to load user profile"));
-        dispatch(setUser({
-          user,
-          profile: null
-        }));
+        dispatch(
+          setUser({
+            user,
+            profile: null,
+          })
+        );
       } else {
-        dispatch(setUser({
-          user,
-          profile: profileResponse.profile ? convertAPIProfileToDatabase(profileResponse.profile) : null
-        }));
+        dispatch(
+          setUser({
+            user,
+            profile: profileResponse.profile
+              ? convertAPIProfileToDatabase(profileResponse.profile)
+              : null,
+          })
+        );
       }
     }
   } catch (error) {

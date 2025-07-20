@@ -29,12 +29,14 @@ const authSlice = createSlice({
   reducers: {
     setUser: (state, action: PayloadAction<CombinedUser | null>) => {
       state.user = action.payload;
-      state.onboarding_completed = action.payload?.profile?.onboarding_completed || false;
+      state.onboarding_completed =
+        action.payload?.profile?.onboarding_completed || false;
     },
     setProfile: (state, action: PayloadAction<Profile | null>) => {
       if (state.user) {
         state.user.profile = action.payload;
-        state.onboarding_completed = action.payload?.onboarding_completed || false;
+        state.onboarding_completed =
+          action.payload?.onboarding_completed || false;
       }
     },
     logout: (state) => {

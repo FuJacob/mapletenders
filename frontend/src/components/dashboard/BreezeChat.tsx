@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef, useCallback } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { PaperPlaneTilt, Robot } from "@phosphor-icons/react";
 import MessageBubble from "../common/MessageBubble";
 import {
@@ -13,16 +13,6 @@ const BreezeChat: React.FC = () => {
   const [isTyping, setIsTyping] = useState(false);
   const [sessionId, setSessionId] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
-  const messagesEndRef = useRef<HTMLDivElement>(null);
-
-  // Auto-scroll to bottom when new messages arrive
-  const scrollToBottom = useCallback(() => {
-    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
-  }, []);
-
-  useEffect(() => {
-    scrollToBottom();
-  }, [messages, scrollToBottom]);
 
   // Initialize chat session when component mounts
   useEffect(() => {
@@ -106,7 +96,7 @@ const BreezeChat: React.FC = () => {
   );
 
   return (
-    <div className="bg-surface border border-border rounded-xl p-6 h-[1200px] flex flex-col">
+    <>
       {/* Header */}
       <div className="flex items-center gap-3 mb-4 pb-4 border-b border-border">
         <div className="w-10 h-10 bg-primary/10 rounded-full flex items-center justify-center">
@@ -161,8 +151,6 @@ const BreezeChat: React.FC = () => {
             </div>
           </div>
         )}
-
-        <div ref={messagesEndRef} />
       </div>
 
       {/* Input Area */}
@@ -190,7 +178,7 @@ const BreezeChat: React.FC = () => {
           Breeze AI is in beta. Information may not always be accurate.
         </p>
       </div>
-    </div>
+    </>
   );
 };
 

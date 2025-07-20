@@ -1,4 +1,4 @@
-import apiClient from "./client/apiClient";
+import apiClient from "../client/apiClient";
 import { handleApiError } from "./config";
 import type { Database } from "../../database.types";
 
