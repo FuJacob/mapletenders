@@ -6,6 +6,9 @@ services:
       - "4000:4000"
     env_file:
       - ./backend/.env
+    volumes:
+      - ./backend:/app
+      - backend_node_modules:/app/node_modules
 
   ml-backend:
     build: ./ml-backend
@@ -13,6 +16,9 @@ services:
       - "8000:8000"
     env_file:
       - ./ml-backend/.env
+    volumes:
+      - ./ml-backend:/app
+      - ml_backend_node_modules:/app/node_modules
 
   frontend:
     build: ./frontend
@@ -20,8 +26,9 @@ services:
       - "3000:3000"
     env_file:
       - ./frontend/.env
-    environment:
-      - VITE_BACKEND_URL=http://backend:4000 # This can stay or move to .env
+    volumes:
+      - ./frontend:/app
+      - frontend_node_modules:/app/node_modules
 
   elasticsearch:
     image: docker.elastic.co/elasticsearch/elasticsearch:8.17.0
@@ -32,3 +39,8 @@ services:
       - ES_JAVA_OPTS=-Xms512m -Xmx512m
       - xpack.security.enabled=false
       - xpack.security.enrollment.enabled=false
+
+volumes:
+  frontend_node_modules:
+  backend_node_modules:
+  ml_backend_node_modules:
