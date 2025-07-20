@@ -82,7 +82,7 @@ export function TenderNoticeHeader({
                   {tender.status || "Status Unknown"}
                 </span>
                 {tender.procurement_type && (
-                  <span className="px-3 py-1 bg-blue-100 text-blue-800 rounded-full text-sm font-medium">
+                  <span className="px-3 py-1 bg-info/10 text-info rounded-full text-sm font-medium">
                     {tender.procurement_type}
                   </span>
                 )}
@@ -111,7 +111,7 @@ export function TenderNoticeHeader({
               </div>
               <div
                 className={`flex items-center gap-2 ${
-                  isUrgent ? "text-red-600" : "text-text-light"
+                  isUrgent ? "text-error" : "text-text-light"
                 }`}
               >
                 <Clock className="w-4 h-4" />
@@ -122,8 +122,8 @@ export function TenderNoticeHeader({
                   <span
                     className={`ml-2 px-2 py-1 rounded-full text-xs font-medium ${
                       isUrgent
-                        ? "bg-red-100 text-red-800"
-                        : "bg-green-100 text-green-800"
+                        ? "bg-error/10 text-error"
+                        : "bg-success/10 text-success"
                     }`}
                   >
                     {closingDays}

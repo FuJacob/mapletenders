@@ -167,7 +167,7 @@ export default function TenderTable({ isLoading = false }: TenderTableProps) {
             </TableHeader>
             <TableBody>
               {table.getRowModel().rows.map((row) => (
-                <TableRow key={row.id} className="hover:bg-gray-50">
+                <TableRow key={row.id} className="hover:bg-surface-muted">
                   {row.getVisibleCells().map((cell) => {
                     const column = cell.column.columnDef;
                     const width = column.size ? `${column.size}px` : undefined;

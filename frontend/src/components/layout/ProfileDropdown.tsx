@@ -112,7 +112,7 @@ export default function ProfileDropdown({
                   setIsMenuOpen(false);
                   handleSignOut();
                 }}
-                className="w-full flex items-center gap-3 px-3 py-2 text-sm text-red-600 hover:bg-red-50 transition-colors text-left"
+                className="w-full flex items-center gap-3 px-3 py-2 text-sm text-error hover:bg-error/10 transition-colors text-left"
               >
                 <SignOut className="w-4 h-4" />
                 Sign Out

@@ -78,9 +78,9 @@ export default function TablePaginationControls({
       <div className="flex-1 text-sm text-text mb-4 sm:mb-0">
         {rowCount > 0 ? (
           <>
-            Showing <span className="font-semibold text-blue-900">{start}</span>{" "}
-            to <span className="font-semibold text-blue-900">{end}</span> of{" "}
-            <span className="font-semibold text-blue-900">{rowCount}</span>{" "}
+            Showing <span className="font-semibold text-primary">{start}</span>{" "}
+            to <span className="font-semibold text-primary">{end}</span> of{" "}
+            <span className="font-semibold text-primary">{rowCount}</span>{" "}
             tenders
           </>
         ) : (
@@ -90,7 +90,7 @@ export default function TablePaginationControls({
 
       <div className="flex items-center space-x-2">
         <button
-          className="flex items-center justify-center w-8 h-8 rounded-lg border border-border bg-surface hover:bg-blue-50 hover:border-blue-200 disabled:opacity-40 disabled:hover:bg-surface disabled:hover:border-border disabled:cursor-not-allowed transition-colors"
+          className="flex items-center justify-center w-8 h-8 rounded-lg border border-border bg-surface hover:bg-primary/10 hover:border-primary/30 disabled:opacity-40 disabled:hover:bg-surface disabled:hover:border-border disabled:cursor-not-allowed transition-colors"
           onClick={previousPage}
           disabled={!getCanPreviousPage()}
           aria-label="Previous page"
@@ -114,8 +114,8 @@ export default function TablePaginationControls({
               key={pageNumber}
               className={`flex items-center justify-center w-8 h-8 rounded-lg text-sm font-medium transition-colors ${
                 isActive
-                  ? "bg-blue-600 text-white border border-blue-600 shadow-sm"
-                  : "bg-surface text-text border border-border hover:bg-blue-50 hover:border-blue-200 hover:text-blue-700"
+                  ? "bg-primary text-white border border-primary shadow-sm"
+                  : "bg-surface text-text border border-border hover:bg-primary/10 hover:border-primary/30 hover:text-primary"
               }`}
               onClick={() => setPageIndex(() => pageNumber)}
               disabled={isActive}
@@ -126,7 +126,7 @@ export default function TablePaginationControls({
         })}
 
         <button
-          className="flex items-center justify-center w-8 h-8 rounded-lg border border-border bg-surface hover:bg-blue-50 hover:border-blue-200 disabled:opacity-40 disabled:hover:bg-surface disabled:hover:border-border disabled:cursor-not-allowed transition-colors"
+          className="flex items-center justify-center w-8 h-8 rounded-lg border border-border bg-surface hover:bg-primary/10 hover:border-primary/30 disabled:opacity-40 disabled:hover:bg-surface disabled:hover:border-border disabled:cursor-not-allowed transition-colors"
           onClick={nextPage}
           disabled={!getCanNextPage()}
           aria-label="Next page"

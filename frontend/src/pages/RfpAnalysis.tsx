@@ -241,7 +241,7 @@ export default function RfpAnalysis() {
             >
               <div className="flex items-start justify-between mb-4">
                 <div className="flex items-center gap-3">
-                  <FilePdf className="w-8 h-8 text-red-500" />
+                  <FilePdf className="w-8 h-8 text-error" />
                   <div>
                     <h3 className="font-medium text-text">{fileObj.file.name}</h3>
                     <p className="text-sm text-text-muted">
@@ -270,7 +270,7 @@ export default function RfpAnalysis() {
                   )}
                   <button
                     onClick={() => removeFile(fileObj.id)}
-                    className="p-2 text-text-muted hover:text-red-500 transition-colors"
+                    className="p-2 text-text-muted hover:text-error transition-colors"
                   >
                     <Trash className="w-4 h-4" />
                   </button>
@@ -306,7 +306,7 @@ export default function RfpAnalysis() {
                   </div>
                 )}
                 {fileObj.status === "error" && (
-                  <div className="flex items-center gap-2 text-red-500">
+                  <div className="flex items-center gap-2 text-error">
                     <Warning className="w-4 h-4" />
                     <span className="text-sm">{fileObj.error || "Analysis failed"}</span>
                   </div>

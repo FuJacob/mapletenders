@@ -8,17 +8,17 @@ export default function QuickActionsSidebar() {
       onClick: () => console.log("Set up alert"),
     },
     {
-      icon: <MagnifyingGlass className="w-5 h-5 text-blue-500" />,
+      icon: <MagnifyingGlass className="w-5 h-5 text-info" />,
       label: "Advanced Search",
       onClick: () => console.log("Advanced search"),
     },
     {
-      icon: <Bell className="w-5 h-5 text-orange-500" />,
+      icon: <Bell className="w-5 h-5 text-warning" />,
       label: "Manage Alerts",
       onClick: () => console.log("Manage alerts"),
     },
     {
-      icon: <Clock className="w-5 h-5 text-red-500" />,
+      icon: <Clock className="w-5 h-5 text-error" />,
       label: "Track Deadlines",
       onClick: () => console.log("Track deadlines"),
     },

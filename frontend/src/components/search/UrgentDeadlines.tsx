@@ -29,21 +29,21 @@ export default function UrgentDeadlines({ deadlines }: UrgentDeadlinesProps) {
   const getDeadlineStyles = (urgencyLevel: "urgent" | "warning") => {
     return urgencyLevel === "urgent"
       ? {
-          containerClass: "bg-red-50 border-red-200",
-          titleClass: "text-red-800",
-          timeClass: "text-red-600",
+          containerClass: "bg-error/10 border-error/20",
+          titleClass: "text-error",
+          timeClass: "text-error",
         }
       : {
-          containerClass: "bg-yellow-50 border-yellow-200",
-          titleClass: "text-yellow-800",
-          timeClass: "text-yellow-600",
+          containerClass: "bg-warning/10 border-warning/20",
+          titleClass: "text-warning",
+          timeClass: "text-warning",
         };
   };
 
   return (
     <div className="bg-surface border border-border rounded-xl p-6">
       <h3 className="text-lg font-semibold text-text mb-4 flex items-center gap-2">
-        <Clock className="w-5 h-5 text-red-500" />
+        <Clock className="w-5 h-5 text-error" />
         Urgent Deadlines
       </h3>
       <div className="space-y-3">

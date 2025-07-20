@@ -144,16 +144,16 @@ export default function CalendarPage() {
               style: {
                 backgroundColor:
                   event.resource === "high"
-                    ? "#dc2626"
+                    ? "var(--color-error)"
                     : event.resource === "medium"
-                    ? "#f59e0b"
-                    : "#10b981",
+                    ? "var(--color-warning)"
+                    : "var(--color-success)",
                 borderColor:
                   event.resource === "high"
-                    ? "#dc2626"
+                    ? "var(--color-error)"
                     : event.resource === "medium"
-                    ? "#f59e0b"
-                    : "#10b981",
+                    ? "var(--color-warning)"
+                    : "var(--color-success)",
               },
             })}
           />
@@ -162,15 +162,15 @@ export default function CalendarPage() {
         {/* Legend */}
         <div className="mt-6 flex flex-wrap items-center justify-center gap-6">
           <div className="flex items-center gap-2">
-            <div className="w-4 h-4 bg-red-600 rounded"></div>
+            <div className="w-4 h-4 bg-error rounded"></div>
             <span className="text-sm text-text">High Priority</span>
           </div>
           <div className="flex items-center gap-2">
-            <div className="w-4 h-4 bg-amber-500 rounded"></div>
+            <div className="w-4 h-4 bg-warning rounded"></div>
             <span className="text-sm text-text">Medium Priority</span>
           </div>
           <div className="flex items-center gap-2">
-            <div className="w-4 h-4 bg-emerald-500 rounded"></div>
+            <div className="w-4 h-4 bg-success rounded"></div>
             <span className="text-sm text-text">Low Priority</span>
           </div>
         </div>

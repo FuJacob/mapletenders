@@ -2,6 +2,9 @@ import { useState, useEffect } from "react";
 import {
   FloppyDisk,
   X,
+  User,
+  Briefcase,
+  Crown,
 } from "@phosphor-icons/react";
 import { useAuth } from "../hooks/auth";
 import { useAppDispatch } from "../app/hooks";

@@ -60,7 +60,7 @@ export function TenderNoticeSidebar({
             </label>
             <p
               className={
-                isUrgent ? "text-red-600 font-medium" : "text-text-light"
+                isUrgent ? "text-error font-medium" : "text-text-light"
               }
             >
               {formatDateTime(tender.closing_date)}

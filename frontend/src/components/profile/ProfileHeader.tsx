@@ -2,10 +2,7 @@ import { PencilSimple } from "@phosphor-icons/react";
 import { industries, type IndustryOption } from "./profileConstants";
 
 interface ProfileHeaderProps {
-  profile: {
-    company_name?: string;
-    industry?: string;
-  } | null;
+  profile: any;
   isEditing: boolean;
   onEditClick: () => void;
 }

@@ -26,10 +26,10 @@ export const tenderColumns = [
           rel="noopener noreferrer"
           className="block space-y-2 py-1 hover:underline"
         >
-          <div className="font-medium text-blue-900" title={title || "-"}>
+          <div className="font-medium text-primary" title={title || "-"}>
             {title || "-"} <ArrowSquareOutIcon size={16} className="inline" />
           </div>
-          <div className="space-y-1 text-xs text-gray-600">
+          <div className="space-y-1 text-xs text-text-muted">
             <div title={organization}>
               <span className="font-medium">Organization:</span> {organization}
             </div>

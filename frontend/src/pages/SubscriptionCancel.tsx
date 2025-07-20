@@ -12,8 +12,8 @@ export default function SubscriptionCancel() {
 
         <div className="bg-surface border border-border rounded-2xl p-8 mb-8">
           <div className="flex justify-center mb-6">
-            <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center">
-              <XCircle className="w-8 h-8 text-red-600" />
+            <div className="w-16 h-16 bg-error/10 rounded-full flex items-center justify-center">
+              <XCircle className="w-8 h-8 text-error" />
             </div>
           </div>
 

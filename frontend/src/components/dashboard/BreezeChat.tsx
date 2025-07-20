@@ -114,7 +114,7 @@ const BreezeChat: React.FC = () => {
 
       {/* Error Message */}
       {error && (
-        <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-lg text-red-600 text-sm">
+        <div className="mb-4 p-3 bg-error/10 border border-error/20 rounded-lg text-error text-sm">
           {error}
         </div>
       )}

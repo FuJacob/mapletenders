@@ -137,10 +137,10 @@ Delivery Location: ${tender.delivery_location || "Not specified"}
                   <span
                     className={`text-sm px-2 py-1 rounded ${
                       tenderSummary.recommendation.priority === "High"
-                        ? "bg-green-500/20 text-green-200"
+                        ? "bg-success/20 text-success"
                         : tenderSummary.recommendation.priority === "Medium"
-                        ? "bg-yellow-500/20 text-yellow-200"
-                        : "bg-red-500/20 text-red-200"
+                        ? "bg-warning/20 text-warning"
+                        : "bg-error/20 text-error"
                     }`}
                   >
                     {tenderSummary.recommendation.priority || "Medium"}
