@@ -7,7 +7,7 @@ import {
 /**
  * Clean HTML tags from description
  */
-function cleanHtmlDescription(html: string): string | null {
+export function cleanHtmlDescription(html: string): string | null {
   if (!html) return null;
 
   // Remove HTML tags and decode entities
@@ -29,7 +29,7 @@ import { URLS } from "./scrapingUrls";
  * Convert a raw BidsAndTenders tender row to the new simplified schema.
  * Works for Mississauga, Brampton, and Hamilton.
  */
-function mapBidsAndTendersTender(
+export function mapBidsAndTendersTender(
   row: any,
   city: "mississauga" | "brampton" | "hamilton" | "london"
 ) {
@@ -107,26 +107,26 @@ function mapBidsAndTendersTender(
 }
 
 // Legacy mappers for backward compatibility
-function mapMississaugaTender(row: any) {
+export function mapMississaugaTender(row: any) {
   return mapBidsAndTendersTender(row, "mississauga");
 }
 
-function mapBramptonTender(row: any) {
+export function mapBramptonTender(row: any) {
   return mapBidsAndTendersTender(row, "brampton");
 }
 
-function mapHamiltonTender(row: any) {
+export function mapHamiltonTender(row: any) {
   return mapBidsAndTendersTender(row, "hamilton");
 }
 
-function mapLondonTender(row: any) {
+export function mapLondonTender(row: any) {
   return mapBidsAndTendersTender(row, "london");
 }
 
 /**
  * Convert a raw Ontario Excel row to the new simplified schema.
  */
-function mapOntarioTender(row: any) {
+export function mapOntarioTender(row: any) {
   return {
     id: row["Project Code"],
     source: "ontario",
@@ -185,7 +185,7 @@ function mapOntarioTender(row: any) {
 /**
  * Convert a raw Toronto OData tender row to the new simplified schema.
  */
-function mapTorontoTender(row: any) {
+export function mapTorontoTender(row: any) {
   return {
     id: row.id,
     source: "toronto",
@@ -239,7 +239,7 @@ function mapTorontoTender(row: any) {
 /**
  * Convert a raw Canadian CSV row to the new simplified schema.
  */
-function mapCanadianTender(row: any): any {
+export function mapCanadianTender(row: any): any {
   return {
     id: row["referenceNumber-numeroReference"] || row.id,
     source: "canadian",
@@ -303,13 +303,121 @@ function mapCanadianTender(row: any): any {
   };
 }
 
-export {
-  mapBidsAndTendersTender,
-  mapMississaugaTender,
-  mapBramptonTender,
-  mapHamiltonTender,
-  mapLondonTender,
-  mapOntarioTender,
-  mapTorontoTender,
-  mapCanadianTender,
+// Place this at the top of your file or export as needed
+export const QUEBEC_CATEGORY_MAP: Record<number, string> = {
+  52: "Buildings",
+  53: "Civil engineering work",
+  51: "Other construction work",
+  54: "Concession",
+  1: "Aerospace",
+  20: "Air Conditioning and Refrigeration Equipment",
+  4: "Armaments",
+  27: "Chemicals and Chemical Specialties",
+  5: "Communications, Detection and Fibre Optics",
+  18: "Construction Products",
+  7: "Cosmetics and Toiletries",
+  21: "EDP Hardware and Software",
+  9: "EDP and Office Equipment Maintenance",
+  26: "Electrical and Electronics",
+  8: "Energy",
+  22: "Engines, Turbines, Components and Accessories",
+  28: "Fabricated Materials",
+  10: "Fire Fighting, Security and Safety Equipment",
+  2: "Food",
+  24: "Food Preparation and Serving Equipment",
+  3: "Furniture",
+  12: "Industrial Equipment",
+  16: "Machinery and Tools",
+  17: "Marine",
+  13: "Medical Equipment, Supplies, and Pharmaceuticals",
+  25: "Miscellaneous Goods",
+  19: "Office Equipment",
+  23: "Office Stationery and Supplies",
+  6: "Prefabricated Structures",
+  29: "Publications, Forms, and Paper Products",
+  14: "Scientific Instruments",
+  31: "Special Purpose Vehicles",
+  15: "Systems Integration",
+  30: "Textiles and Apparel",
+  11: "Transportation Equipment and Spares",
+  56: "Sales of immovable property",
+  55: "Sales of movable property",
+  57: "Undefined",
+  58: "Partnership",
+  38: "Research and Development (R&D)",
+  34: "Special Studies and Analysis",
+  39: "Architect and Engineering Services",
+  50: "Information Processing and Related Telecommunications Services",
+  46: "Environmental Services",
+  42: "Natural Resources Services",
+  43: "Health and Social Services",
+  32: "Quality Control, Testing, Inspection, and Technical Representative Services",
+  33: "Maintenance, Repair, Modification, Rebuilding, and Installation of Goods/Equipment",
+  41: "Custodial Operations and Related Services",
+  47: "Financial and Related Services",
+  35: "Government Operation",
+  44: "Professional, Administrative, and Management Support Services",
+  49: "Utilities",
+  40: "Communications, Photographic, Mapping, Printing, and Publication Services",
+  48: "Educational and Training Services",
+  45: "Transportation, Travel, and Relocation Services",
+  36: "Lease and Rental of Equipment",
+  37: "Leasing or Rental of Facilities",
 };
+
+/**
+ * Converts a Quebec tender row to the unified schema.
+ * Assumes quebecCategoryMapper() is in scope.
+ */
+export function mapQuebecTender(row: any) {
+  // Status mapping (6 = open, otherwise closed or other logic if needed)
+  let status = null;
+  if (typeof row.statutAvisId === "number") {
+    status = row.statutAvisId === 6 ? "open" : "closed";
+  }
+
+  return {
+    id: row.id || row.uuid,
+    source: "quebec",
+    source_reference: row.numero,
+    source_url: `https://www.seao.ca/avis/${row.id}`,
+
+    title: row.titre,
+    description: null, // No description in sample. Add if you get it.
+    status,
+
+    published_date: row.datePublicationUtc,
+    closing_date: row.dateFermetureUtc,
+    contract_start_date: null, // Not present in Quebec data
+
+    contracting_entity_name: row.nomDonneurOuvrage,
+    contracting_entity_city: null, // Not in data
+    contracting_entity_province: "QC",
+    contracting_entity_country: "CA",
+
+    delivery_location: Array.isArray(row.regionIds)
+      ? row.regionIds.join(", ")
+      : null,
+    category_primary: QUEBEC_CATEGORY_MAP[row.categorieId] || null,
+    procurement_type: "tender", // If you want to map typeAvisId to 'rfp', add logic here
+    procurement_method: "open",
+
+    estimated_value_min: null,
+    currency: "CAD",
+
+    contact_name: null,
+    contact_email: null,
+    contact_phone: null,
+
+    gsin: null,
+    unspsc: null,
+
+    plan_takers_count: null,
+    submissions_count: null,
+
+    embedding: null,
+    summary: null,
+
+    last_scraped_at: new Date().toISOString(),
+  };
+}

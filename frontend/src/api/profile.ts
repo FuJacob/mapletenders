@@ -1,4 +1,4 @@
-import axios from "axios";
+import apiClient from "./client/apiClient";
 import { handleApiError } from "./config";
 import type { Database } from "../../database.types";
 
@@ -36,7 +36,7 @@ export const createOrUpdateProfile = async (
   profileData: ProfileData
 ): Promise<ProfileResponse> => {
   try {
-    const response = await axios.post("/profile", profileData);
+    const response = await apiClient.post("/profile", profileData);
     return { profile: response.data };
   } catch (error) {
     return handleApiError(error, "Create or update profile");
@@ -50,7 +50,7 @@ export const createOrUpdateProfile = async (
  */
 export const getProfile = async (userId: string): Promise<ProfileResponse> => {
   try {
-    const response = await axios.get(`/profile/${userId}`);
+    const response = await apiClient.get(`/profile/${userId}`);
     return { profile: response.data };
   } catch (error) {
     return handleApiError(error, "Get profile");

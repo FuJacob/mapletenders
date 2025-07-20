@@ -13,6 +13,51 @@ export class TenderController {
     private databaseService: DatabaseService
   ) {}
 
+  getRecommendedTenders = async (req: Request, res: Response) => {
+    try {
+      const userId = req.headers.userId as string;
+      if (!userId) {
+        res.status(401).json({ error: "User ID is required" });
+      }
+
+      // Get user profile to build query from user info
+      const userProfile = await this.databaseService.getProfile(userId);
+
+      if (!userProfile) {
+        res.status(404).json({ error: "User profile not found" });
+        return;
+      }
+
+      // Build query from user profile information (using available fields)
+      let query = "";
+      if (userProfile.company_name) query += userProfile.company_name + " ";
+      if (userProfile.industry) query += userProfile.industry + " ";
+      if (
+        userProfile.primary_services &&
+        Array.isArray(userProfile.primary_services)
+      ) {
+        query += userProfile.primary_services.join(" ") + " ";
+      }
+      if (userProfile.government_experience)
+        query += userProfile.government_experience + " ";
+
+      // Fallback to basic query if no profile data
+      if (!query.trim()) {
+        query = "government procurement opportunities";
+      }
+
+      const recommendedTenders =
+        await this.mlService.searchTendersWithElasticsearch({
+          query: query.trim(),
+          limit: 10,
+        });
+      res.json(recommendedTenders);
+    } catch (error: any) {
+      console.error("Error getting recommended tenders:", error);
+      res.status(500).json({ error: error.message });
+    }
+  };
+
   getTendersFromBookmarkIds = async (req: Request, res: Response) => {
     try {
       const result = await this.tenderService.getTendersFromBookmarkIds(

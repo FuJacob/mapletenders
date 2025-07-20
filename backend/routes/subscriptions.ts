@@ -1,9 +1,10 @@
 import { Router } from "express";
 import { subscriptionController } from "../container";
 import express from "express";
+import { authenticateUser } from "../middleware/authenticateUser";
 
 const router = Router();
-
+router.use(authenticateUser);
 /**
  * Create checkout session for subscription
  * @route POST /subscriptions/checkout

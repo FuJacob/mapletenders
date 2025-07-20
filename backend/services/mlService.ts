@@ -1,5 +1,7 @@
 import axios from "axios";
 import { TenderSearchResult } from "../types/search";
+import { DatabaseService } from "./databaseService";
+import { Database } from "../database.types";
 
 interface ElasticsearchSearchParams {
   query: string;
@@ -19,6 +21,8 @@ interface ElasticsearchSearchParams {
 export class MlService {
   private baseUrl = process.env.ML_BACKEND_URL || "http://127.0.0.1:8000";
 
+  constructor(private databaseService: DatabaseService) {}
+
   async generateEmbeddings(data: any[]) {
     try {
       console.log(`🔄 Generating embeddings for ${data.length} tenders...`);
@@ -34,10 +38,16 @@ export class MlService {
       );
 
       if (response.status !== 200) {
-        throw new Error(`Failed to generate embeddings: ${response.statusText}`);
+        throw new Error(
+          `Failed to generate embeddings: ${response.statusText}`
+        );
       }
 
-      console.log(`✅ Successfully generated ${response.data.embeddings?.length || 0} embeddings`);
+      console.log(
+        `✅ Successfully generated ${
+          response.data.embeddings?.length || 0
+        } embeddings`
+      );
       return response.data;
     } catch (error: any) {
       console.error("❌ Embedding generation failed:", error.message);
@@ -47,7 +57,9 @@ export class MlService {
         );
       } else if (error.response) {
         throw new Error(
-          `Embedding generation failed: ${error.response.status} - ${error.response.data?.detail || error.response.data}`
+          `Embedding generation failed: ${error.response.status} - ${
+            error.response.data?.detail || error.response.data
+          }`
         );
       } else {
         throw new Error(`ML service error: ${error.message}`);
@@ -158,6 +170,18 @@ export class MlService {
       } else {
         throw new Error(`ML service error: ${error.message}`);
       }
+    }
+  }
+
+  async getUserInfo(
+    userId: string
+  ): Promise<Database["public"]["Tables"]["profiles"]["Row"] | null> {
+    try {
+      const profile = await this.databaseService.getProfile(userId);
+      return profile;
+    } catch (error: any) {
+      console.error("Error fetching user info for recommendations:", error);
+      throw new Error(`Failed to fetch user information: ${error.message}`);
     }
   }
 

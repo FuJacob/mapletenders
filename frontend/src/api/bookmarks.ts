@@ -1,4 +1,4 @@
-import axios from "axios";
+import apiClient from "./client/apiClient";
 import { handleApiError } from "./config";
 import type { Database } from "../../database.types";
 
@@ -7,10 +7,6 @@ type TenderNoticeRow = Database["public"]["Tables"]["tenders"]["Row"];
 
 export interface BookmarkWithTender extends BookmarkRow {
   tender_notice: TenderNoticeRow;
-}
-
-export interface GetNumberOfBookmarksResponse {
-  count: number;
 }
 
 export interface CreateBookmarkRequest {
@@ -39,11 +35,9 @@ export interface BookmarkStatusResponse {
   error?: string;
 }
 
-export const getNumberOfBookmarks = async (
-  userId: string
-): Promise<GetNumberOfBookmarksResponse> => {
+export const getNumberOfBookmarks = async (): Promise<number> => {
   try {
-    const response = await axios.get(`/bookmarks/${userId}/count`);
+    const response = await apiClient.get(`/bookmarks/count`);
     return response.data;
   } catch (error) {
     return handleApiError(error, "Get number of bookmarks");
@@ -57,7 +51,7 @@ export const createBookmark = async (
   data: CreateBookmarkRequest
 ): Promise<BookmarkResponse> => {
   try {
-    const response = await axios.post("/bookmarks", data);
+    const response = await apiClient.post("/bookmarks", data);
     return response.data;
   } catch (error) {
     return handleApiError(error, "Create bookmark");
@@ -71,7 +65,7 @@ export const getUserBookmarks = async (
   userId: string
 ): Promise<BookmarksResponse> => {
   try {
-    const response = await axios.get(`/bookmarks/user/${userId}`);
+    const response = await apiClient.get(`/bookmarks/user/${userId}`);
     return response.data;
   } catch (error) {
     return handleApiError(error, "Get user bookmarks");
@@ -86,7 +80,7 @@ export const removeBookmark = async (
   tenderNoticeId: string
 ): Promise<{ success: boolean; removed: boolean; error?: string }> => {
   try {
-    const response = await axios.delete(
+    const response = await apiClient.delete(
       `/bookmarks/${userId}/${tenderNoticeId}`
     );
     return response.data;
@@ -104,7 +98,7 @@ export const updateBookmarkNotes = async (
   data: UpdateBookmarkNotesRequest
 ): Promise<BookmarkResponse> => {
   try {
-    const response = await axios.put(
+    const response = await apiClient.put(
       `/bookmarks/${userId}/${tenderNoticeId}/notes`,
       data
     );
@@ -122,7 +116,7 @@ export const checkBookmarkStatus = async (
   tenderNoticeId: string
 ): Promise<BookmarkStatusResponse> => {
   try {
-    const response = await axios.get(
+    const response = await apiClient.get(
       `/bookmarks/${userId}/${tenderNoticeId}/status`
     );
     return response.data;

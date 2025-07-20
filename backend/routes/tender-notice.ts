@@ -1,8 +1,9 @@
 import { Router } from "express";
 import { tenderNoticeController } from "../container";
+import { authenticateUser } from "../middleware/authenticateUser";
 
 const router = Router();
-
+router.use(authenticateUser);
 /**
  * Fetches a specific tender notice by ID
  * @route GET /:id

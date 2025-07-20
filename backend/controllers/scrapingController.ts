@@ -24,6 +24,26 @@ export class ScrapingController {
   };
 
   /**
+   * Import Quebec tenders from SEAO API
+   * @route POST /scraping/quebec
+   */
+  importQuebecTenders = async (req: Request, res: Response) => {
+    try {
+      console.log("Starting Quebec tender import...");
+
+      const result = await this.scrapingService.importQuebecTenders();
+
+      console.log("Quebec tenders imported successfully:", result);
+      res.json(result);
+    } catch (error: any) {
+      console.error("Error importing Quebec tenders:", error);
+      res.status(500).json({
+        error: "Failed to import Quebec tenders",
+        details: error.message,
+      });
+    }
+  };
+  /**
    * Import Toronto tenders from City API
    * @route POST /scraping/toronto
    */
@@ -197,6 +217,47 @@ export class ScrapingController {
       console.error("Error getting Mississauga import status:", error);
       res.status(500).json({
         error: "Failed to get import status",
+        details: error.message,
+      });
+    }
+  };
+
+  /**
+   * Get Quebec tender import status
+   * @route GET /scraping/quebec/status
+   */
+  getQuebecImportStatus = async (req: Request, res: Response) => {
+    try {
+      const status = await this.scrapingService.getQuebecImportStatus();
+      res.json(status);
+    } catch (error: any) {
+      console.error("Error getting Quebec import status:", error);
+      res.status(500).json({
+        error: "Failed to get import status",
+        details: error.message,
+      });
+    }
+  };
+
+  /**
+   * Scrape Quebec tenders without importing (for testing)
+   * @route GET /scraping/quebec/scrape
+   */
+  scrapeQuebecTenders = async (req: Request, res: Response) => {
+    try {
+      console.log("Scraping Quebec tenders (test mode)...");
+
+      const tenders = await this.scrapingService.scrapeQuebecTenders();
+
+      res.json({
+        message: "Quebec tenders scraped successfully",
+        count: tenders.length,
+        data: tenders,
+      });
+    } catch (error: any) {
+      console.error("Error scraping Quebec tenders:", error);
+      res.status(500).json({
+        error: "Failed to scrape Quebec tenders",
         details: error.message,
       });
     }
@@ -461,6 +522,12 @@ export class ScrapingController {
           description: "London tenders from bidsandtenders.ca",
           testEndpoint: "/scraping/test/london",
         },
+        {
+          id: "quebec",
+          name: "Government of Quebec",
+          description: "Quebec tenders from SEAO API",
+          testEndpoint: "/scraping/test/quebec",
+        },
       ];
 
       res.json({
@@ -511,10 +578,13 @@ export class ScrapingController {
         case "london":
           result = await this.scrapingService.testScrapeLondon(limit);
           break;
+        case "quebec":
+          result = await this.scrapingService.testScrapeQuebec(limit);
+          break;
         default:
           res.status(400).json({
             error: "Invalid source",
-            message: `Source '${source}' not supported. Available sources: canadian, toronto, ontario, mississauga, brampton, hamilton, london`,
+            message: `Source '${source}' not supported. Available sources: canadian, toronto, ontario, mississauga, brampton, hamilton, london, quebec`,
           });
       }
 

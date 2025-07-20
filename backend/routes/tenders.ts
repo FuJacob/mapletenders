@@ -1,12 +1,22 @@
 import { Router } from "express";
 import { tenderController } from "../container";
+import { authenticateUser } from "../middleware/authenticateUser";
 
 const router = Router();
+router.use(authenticateUser);
+/**
+ * Get recommended tenders based on user profile
+ * @route GET /recommended
+ * @returns {Object} Recommended tenders for the authenticated user
+ */
+router.get("/recommended", (req, res) =>
+  tenderController.getRecommendedTenders(req, res)
+);
 
 /**
- * Refresh tender data (rate limited to once per 24 hours)
- * @route POST /refreshTenders
- * @returns {Object} Refresh operation result
+ * Get all bookmarks
+ * @route GET /bookmarks
+ * @returns {Object} All bookmarks
  */
 router.get("/bookmarks", (req, res) =>
   tenderController.getAllBookmarks(req, res)
@@ -21,7 +31,6 @@ router.post("/refreshTenders", (req, res) =>
   tenderController.refreshTenders(req, res)
 );
 
-
 router.get("/getTenderById/:id", (req, res) =>
   tenderController.getTenderById(req, res)
 );
@@ -29,8 +38,6 @@ router.get("/getTenderById/:id", (req, res) =>
 router.post("/getTendersFromBookmarkIds", (req, res) =>
   tenderController.getTendersFromBookmarkIds(req, res)
 );
-
-
 
 /**
  * Search tenders using AI-powered Elasticsearch with vector similarity

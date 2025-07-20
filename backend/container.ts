@@ -27,7 +27,7 @@ import {
 // Initialize services
 const databaseService = new DatabaseService();
 const csvService = new CsvService();
-const mlService = new MlService();
+const mlService = new MlService(databaseService);
 const aiService = new AiService();
 const scrapingService = new ScrapingService(
   databaseService,

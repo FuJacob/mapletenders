@@ -13,8 +13,9 @@ import {
   UrgentDeadlines,
 } from "../components/search";
 import type { ViewMode } from "../components/search";
-import { useAuth } from "../hooks/auth";
 import { getNumberOfBookmarks } from "../api/bookmarks";
+import { getRecommendedTenders } from "../api/tenders";
+import type { TenderSearchResult } from "../api/types";
 
 interface StatsData {
   newTenders: number;
@@ -33,102 +34,30 @@ export default function SearchPage() {
     activeAlerts: 0,
     deadlinesThisWeek: 0,
   });
-  const { user } = useAuth();
+  const [recommendedTenders, setRecommendedTenders] = useState<
+    TenderSearchResult[]
+  >([]);
   useEffect(() => {
     const fetchStats = async () => {
-      if (!user?.id) return;
-      const bookmarksResponse = await getNumberOfBookmarks(user.id);
-      setStats({ ...stats, bookmarks: bookmarksResponse.count });
+      const bookmarksResponse = await getNumberOfBookmarks();
+      setStats({ ...stats, bookmarks: bookmarksResponse });
     };
     fetchStats();
-  }, [user?.id]);
+  }, [stats]);
+
+  useEffect(() => {
+    const fetchRecommendedTenders = async () => {
+      const recommendedTenders = await getRecommendedTenders();
+      setRecommendedTenders(recommendedTenders.results);
+    };
+    fetchRecommendedTenders();
+  }, []);
 
   // Mock data for demonstration - replace with real data later
   const handleSubmitSearch = () => {
     console.log("Searching for:", searchQuery);
     navigate(`/search-results?q=${encodeURIComponent(searchQuery)}`);
   };
-
-  const mockRecommendedTenders = [
-    {
-      id: "1",
-      title: "Software Development Services for Digital Transformation",
-      contracting_entity_name: "Government of Ontario",
-      closing_date: "2025-07-25",
-      delivery_location: "Toronto, ON",
-      relevanceScore: 95,
-      procurement_type: "rfp",
-      status: "open",
-      published_date: "2025-06-25",
-      category_primary: "Information Technology",
-      source_url: "#",
-    },
-    {
-      id: "2",
-      title: "IT Infrastructure Consulting Services",
-      contracting_entity_name: "City of Vancouver",
-      closing_date: "2025-07-30",
-      delivery_location: "Vancouver, BC",
-      relevanceScore: 88,
-      procurement_type: "rfq",
-      status: "open",
-      published_date: "2025-06-30",
-      category_primary: "Consulting Services",
-      source_url: "#",
-    },
-    {
-      id: "3",
-      title: "Cybersecurity Assessment and Implementation",
-      contracting_entity_name: "Government of Canada",
-      closing_date: "2025-08-05",
-      delivery_location: "Ottawa, ON",
-      relevanceScore: 92,
-      procurement_type: "rfp",
-      status: "open",
-      published_date: "2025-07-05",
-      category_primary: "Security Services",
-      source_url: "#",
-    },
-    {
-      id: "4",
-      title: "Cloud Migration and DevOps Services",
-      contracting_entity_name: "City of Calgary",
-      closing_date: "2025-08-15",
-      delivery_location: "Calgary, AB",
-      relevanceScore: 89,
-      procurement_type: "rfp",
-      status: "open",
-      published_date: "2025-07-15",
-      category_primary: "Information Technology",
-      source_url: "#",
-    },
-    {
-      id: "5",
-      title: "Database Modernization Project",
-      contracting_entity_name: "Province of British Columbia",
-      closing_date: "2025-08-20",
-      delivery_location: "Victoria, BC",
-      relevanceScore: 91,
-      procurement_type: "rfq",
-      status: "open",
-      published_date: "2025-07-20",
-      category_primary: "Data Management",
-      source_url: "#",
-    },
-    {
-      id: "6",
-      title: "Mobile Application Development",
-      contracting_entity_name: "City of Montreal",
-      closing_date: "2025-09-01",
-      delivery_location: "Montreal, QC",
-      relevanceScore: 86,
-      procurement_type: "rfp",
-      status: "open",
-      published_date: "2025-08-01",
-      category_primary: "Software Development",
-      source_url: "#",
-    },
-  ];
 
   const mockRecentActivity = [
     {
@@ -188,7 +117,7 @@ export default function SearchPage() {
 
             {/* Dynamic Content Based on Toggle */}
             {mainViewMode === "recommended" ? (
-              <RecommendedTenders tenders={mockRecommendedTenders} />
+              <RecommendedTenders tenders={recommendedTenders} />
             ) : mainViewMode === "chat" ? (
               <BreezeChat />
             ) : (

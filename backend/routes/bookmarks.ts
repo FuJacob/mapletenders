@@ -1,8 +1,9 @@
 import { Router } from "express";
 import { bookmarkController } from "../container";
+import { authenticateUser } from "../middleware/authenticateUser";
 
 const router = Router();
-
+router.use(authenticateUser);
 router.get("/:userId/count", (req, res) => {
   bookmarkController.getNumberOfBookmarks(req, res);
 });

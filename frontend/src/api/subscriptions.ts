@@ -1,4 +1,4 @@
-import axios from "axios";
+import apiClient from "./client/apiClient";
 import { handleApiError } from "./config";
 
 export interface PlanFeatures {
@@ -73,7 +73,7 @@ export const createCheckoutSession = async (
   name?: string
 ): Promise<CheckoutSessionResponse> => {
   try {
-    const response = await axios.post("/subscriptions/checkout", {
+    const response = await apiClient.post("/subscriptions/checkout", {
       planId,
       billingCycle,
       userId,
@@ -95,7 +95,7 @@ export const getUserSubscription = async (
   userId: string
 ): Promise<Subscription | null> => {
   try {
-    const response = await axios.get(`/subscriptions/user/${userId}`);
+    const response = await apiClient.get(`/subscriptions/user/${userId}`);
     return response.data;
   } catch (error) {
     console.error("Error getting user subscription:", error);
@@ -112,7 +112,7 @@ export const checkSubscriptionStatus = async (
   userId: string
 ): Promise<SubscriptionStatusResponse> => {
   try {
-    const response = await axios.get(`/subscriptions/status/${userId}`);
+    const response = await apiClient.get(`/subscriptions/status/${userId}`);
     return response.data;
   } catch (error) {
     return handleApiError(error, "Check subscription status");
@@ -128,7 +128,7 @@ export const cancelSubscription = async (
   userId: string
 ): Promise<{ message?: string; error?: string }> => {
   try {
-    const response = await axios.delete(`/subscriptions/user/${userId}`);
+    const response = await apiClient.delete(`/subscriptions/user/${userId}`);
     return response.data;
   } catch (error) {
     return handleApiError(error, "Cancel subscription");
@@ -144,7 +144,7 @@ export const createBillingPortalSession = async (
   userId: string
 ): Promise<{ url?: string; error?: string }> => {
   try {
-    const response = await axios.post(`/subscriptions/billing-portal/${userId}`);
+    const response = await apiClient.post(`/subscriptions/billing-portal/${userId}`);
     return response.data;
   } catch (error) {
     return handleApiError(error, "Create billing portal session");
@@ -157,7 +157,7 @@ export const createBillingPortalSession = async (
  */
 export const getPlans = async (): Promise<Plan[]> => {
   try {
-    const response = await axios.get("/subscriptions/plans");
+    const response = await apiClient.get("/subscriptions/plans");
     return response.data;
   } catch (error) {
     console.error("Error getting plans:", error);

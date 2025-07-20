@@ -1,4 +1,4 @@
-import axios from "axios";
+import apiClient from "./client/apiClient";
 import { handleApiError } from "./config";
 
 export interface ChatMessage {
@@ -28,7 +28,7 @@ export interface CreateSessionResponse {
  */
 export const createChatSession = async (): Promise<CreateSessionResponse> => {
   try {
-    const response = await axios.post("/chat/session");
+    const response = await apiClient.post("/chat/session");
     return response.data;
   } catch (error) {
     throw handleApiError(error, "Create chat session");
@@ -46,7 +46,7 @@ export const sendChatMessage = async (
   message: string
 ): Promise<ChatResponse> => {
   try {
-    const response = await axios.post(`/chat/session/${sessionId}/message`, {
+    const response = await apiClient.post(`/chat/session/${sessionId}/message`, {
       message,
     });
     return response.data;
@@ -64,7 +64,7 @@ export const deleteChatSession = async (
   sessionId: string
 ): Promise<{ success: boolean; message: string }> => {
   try {
-    const response = await axios.delete(`/chat/session/${sessionId}`);
+    const response = await apiClient.delete(`/chat/session/${sessionId}`);
     return response.data;
   } catch (error) {
     throw handleApiError(error, "Delete chat session");

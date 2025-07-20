@@ -13,6 +13,7 @@ import {
   mapOntarioTender,
   mapTorontoTender,
   mapCanadianTender,
+  mapQuebecTender,
 } from "./utils/scrapingColumnsMapper";
 import { URLS } from "./utils/scrapingUrls";
 // Configure puppeteer-extra with stealth plugin
@@ -25,7 +26,6 @@ export class ScrapingService {
     private mlService: MlService,
     private aiService: AiService
   ) {}
-
   /**
    * Import Canadian government tenders from CSV (existing logic from TenderService)
    */
@@ -238,6 +238,61 @@ export class ScrapingService {
   async getCanadianImportStatus() {
     return this.getGenericImportStatus();
   }
+
+  /**
+   * Import Quebec tenders from SEAO API
+   */
+  async importQuebecTenders() {
+    console.log("Importing Quebec tenders...");
+
+    // 1. Scrape tender data
+    const rawTenders = await this.scrapeQuebecTenders();
+
+    if (rawTenders.length === 0) {
+      return {
+        message: "No Quebec tenders found",
+        count: 0,
+      };
+    }
+
+    // 2. Transform to canonical schema
+    const mappedTenders = rawTenders.map((tender) => mapQuebecTender(tender));
+
+    // 3. Generate embeddings
+    console.log("Generating embeddings for Quebec tenders...");
+    try {
+      const embeddingsData = await this.mlService.generateEmbeddings(
+        mappedTenders
+      );
+
+      const tendersWithEmbeddings = mappedTenders.map((tender, index) => ({
+        ...tender,
+        embedding: embeddingsData.embeddings?.[index] || null,
+      }));
+
+      // 4. Upsert to database
+      console.log("Upserting Quebec tenders to database...");
+      await this.dbService.upsertTenders(tendersWithEmbeddings);
+
+      return {
+        message: "Quebec tenders imported successfully",
+        count: mappedTenders.length,
+      };
+    } catch (error: any) {
+      console.error("Error generating embeddings for Quebec tenders:", error);
+
+      // Fallback: import without embeddings
+      console.log("Importing Quebec tenders without embeddings as fallback...");
+      await this.dbService.upsertTenders(mappedTenders);
+
+      return {
+        message: "Quebec tenders imported successfully (without embeddings)",
+        count: mappedTenders.length,
+        warning: "Embeddings generation failed",
+      };
+    }
+  }
+
   /**
    * Import Ontario tenders from Jaggaer Excel export
    */
@@ -319,6 +374,24 @@ export class ScrapingService {
         count: mappedTenders.length,
         warning: "Embeddings generation failed",
       };
+    }
+  }
+  /**
+   * Scrape Quebec tender data from SEAO API
+   */
+  async scrapeQuebecTenders(): Promise<any[]> {
+    console.log("Starting Quebec tender scraping...");
+
+    const tenderUrl = URLS.QUEBEC.BASE;
+    try {
+      const response = await fetch(tenderUrl);
+      const data = await response.json();
+      const tenders = data.results;
+      console.log(`Scraped ${tenders.length} Quebec tenders`);
+      return tenders;
+    } catch (error: any) {
+      console.error("Error scraping Quebec tenders:", error);
+      return [];
     }
   }
 
@@ -457,6 +530,13 @@ export class ScrapingService {
    * Check rate limiting for Ontario tender imports
    */
   async getOntarioImportStatus() {
+    return this.getGenericImportStatus();
+  }
+
+  /**
+   * Check rate limiting for Quebec tender imports
+   */
+  async getQuebecImportStatus() {
     return this.getGenericImportStatus();
   }
 
@@ -678,7 +758,10 @@ export class ScrapingService {
    * Test scraping methods that return limited data without importing
    */
 
-  async testScrapeBidsAndTenders(city: "mississauga" | "brampton" | "hamilton" | "london", limit: number = 5): Promise<any[]> {
+  async testScrapeBidsAndTenders(
+    city: "mississauga" | "brampton" | "hamilton" | "london",
+    limit: number = 5
+  ): Promise<any[]> {
     const cityName = city.charAt(0).toUpperCase() + city.slice(1);
     console.log(`Test scraping ${cityName} tenders (limit: ${limit})...`);
 
@@ -720,6 +803,21 @@ export class ScrapingService {
     // Map to our schema
     const mappedTenders = limitedTenders.map((tender) =>
       mapTorontoTender(tender)
+    );
+
+    return mappedTenders;
+  }
+
+  async testScrapeQuebec(limit: number = 5): Promise<any[]> {
+    console.log(`Test scraping Quebec tenders (limit: ${limit})...`);
+
+    // Scrape all Toronto tenders and limit the results
+    const tenders = await this.scrapeQuebecTenders();
+    const limitedTenders = tenders.slice(0, limit);
+
+    // Map to our schema
+    const mappedTenders = limitedTenders.map((tender) =>
+      mapQuebecTender(tender)
     );
 
     return mappedTenders;

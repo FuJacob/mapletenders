@@ -1,8 +1,9 @@
 import { Router } from "express";
 import { profileController } from "../container";
+import { authenticateUser } from "../middleware/authenticateUser";
 
 const router = Router();
-
+router.use(authenticateUser);
 /**
  * Create or update user profile
  * @route POST /profile

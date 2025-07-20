@@ -171,6 +171,37 @@ export function TenderCard({
           </div>
         </div>
 
+        {/* Description Section with Expand/Collapse */}
+        {description && (
+          <div className="mb-4">
+            <div
+              className={`text-sm text-text-muted leading-relaxed ${
+                isDescriptionExpanded ? "" : "line-clamp-2"
+              }`}
+            >
+              {description}
+            </div>
+            {description.length > 150 && (
+              <button
+                onClick={() => setIsDescriptionExpanded(!isDescriptionExpanded)}
+                className="mt-2 flex items-center gap-1 text-xs text-primary hover:text-primary/80 transition-colors font-medium"
+              >
+                {isDescriptionExpanded ? (
+                  <>
+                    <CaretUp className="w-3 h-3" />
+                    Show less
+                  </>
+                ) : (
+                  <>
+                    <CaretDown className="w-3 h-3" />
+                    Show more
+                  </>
+                )}
+              </button>
+            )}
+          </div>
+        )}
+
         {/* Compact Tags */}
         <div className="flex items-center gap-1.5 mt-2">
           {procurementMethod && (

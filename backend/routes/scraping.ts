@@ -92,6 +92,14 @@ router.get("/mississauga/scrape", (req, res) =>
 );
 
 /**
+ * Import Quebec tenders from SEAO API
+ * @route POST /scraping/quebec
+ */
+router.post("/quebec", (req, res) =>
+  scrapingController.importQuebecTenders(req, res)
+);
+
+/**
  * Import Brampton tenders from bidsandtenders.ca
  * @route POST /scraping/brampton
  */
@@ -100,11 +108,27 @@ router.post("/brampton", (req, res) =>
 );
 
 /**
+ * Get Quebec tender import status
+ * @route GET /scraping/quebec/status
+ */
+router.get("/quebec/status", (req, res) =>
+  scrapingController.getQuebecImportStatus(req, res)
+);
+
+/**
  * Get Brampton tender import status
  * @route GET /scraping/brampton/status
  */
 router.get("/brampton/status", (req, res) =>
   scrapingController.getBramptonImportStatus(req, res)
+);
+
+/**
+ * Scrape Quebec tenders without importing (for testing)
+ * @route GET /scraping/quebec/scrape
+ */
+router.get("/quebec/scrape", (req, res) =>
+  scrapingController.scrapeQuebecTenders(req, res)
 );
 
 /**

@@ -1,8 +1,9 @@
 import { Router } from "express";
 import { chatController } from "../container";
+import { authenticateUser } from "../middleware/authenticateUser";
 
 const router = Router();
-
+router.use(authenticateUser);
 /**
  * @route POST /chat/session
  * @desc Create a new AI chat session for tender-related conversations
