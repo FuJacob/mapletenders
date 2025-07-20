@@ -1,0 +1,16 @@
+version: '3'
+services:
+  backend:
+    build: ./backend
+    ports:
+      - "4000:4000"
+  ml-backend:
+    build: ./ml-backend
+    ports:
+      - "5000:5000"
+  frontend:
+    build: ./frontend
+    ports:
+      - "5173:5173"
+    environment:
+      - VITE_BACKEND_URL=http://backend:4000 # Example for API calls from frontend
