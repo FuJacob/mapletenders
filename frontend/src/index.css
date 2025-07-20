@@ -7,11 +7,11 @@
 }
 
 @theme {
-  /* Brand Colors - Canadian Heritage Theme */
+  /* ===== MAPLETENDERS COLOR PALETTE ===== */
+  /* Canadian Heritage Theme - Clean & Consistent */
+  
   /* Brand Colors */
   --color-primary: #f75567; /* Main brand / action color */
-  --color-secondary: #fffae3; /* Soft highlight or background tint */
-  --color-accent: #fca5a5; /* Lighter accent tone for hover or emphasis */
   --color-secondary: #f3f4f6; /* Soft neutral background */
   --color-accent: #dc2626; /* Canadian red accent */
   --color-maple: #f59e0b; /* Maple gold for highlights */
@@ -19,57 +19,73 @@
   /* Backgrounds */
   --color-bg: #fafafa; /* Slightly warmer page background */
   --color-surface: #ffffff; /* Card / panel background */
-  --color-surface-muted: #f3f4f6; /* Subtle contrast for secondary surfaces */
+  --color-surface-muted: #f9fafb; /* Subtle contrast for secondary surfaces */
   --color-surface-warm: #fef7ed; /* Warm highlight background */
 
-  /* Text */
+  /* Text Colors */
   --color-text: #1f2937; /* Dark gray for readability */
   --color-text-muted: #6b7280; /* Lighter gray for secondary text */
+  --color-text-light: #9ca3af; /* Even lighter gray for subtle text */
   --color-text-warm: #92400e; /* Warm brown for highlights */
 
   /* Borders & Dividers */
-  --color-border: #e5e7eb;
-  --color-border-warm: #fed7aa;
+  --color-border: #e5e7eb; /* Standard border color */
+  --color-border-warm: #fed7aa; /* Warm border for special elements */
 
   /* Status Colors */
-  --color-success: #10b981; /* Green for success */
+  --color-success: #10b981; /* Green for success states */
   --color-warning: #f59e0b; /* Amber for warnings */
   --color-error: #dc2626; /* Red for errors */
   --color-info: #3b82f6; /* Blue for information */
 
-  /* Match Score Colors */
-  --color-match-excellent: #10b981; /* 90%+ match */
-  --color-match-good: #f59e0b; /* 75-89% match */
-  --color-match-fair: #6b7280; /* Below 75% match */
+  /* Contract Match Score Colors */
+  --color-match-excellent: #10b981; /* 90%+ match - bright green */
+  --color-match-good: #f59e0b; /* 75-89% match - amber */
+  --color-match-fair: #6b7280; /* Below 75% match - muted gray */
+  
+  /* Interactive States */
+  --color-primary-dark: #e53e3e; /* Darker primary for hover states */
+  --color-primary-light: #feb2b2; /* Lighter primary for backgrounds */
 }
 
-@media (prefers-color-scheme: s) {
+@media (prefers-color-scheme: dark) {
   :root {
-    --color-bg: #18181b; /* Dark background */
-    --color-surface: #232326; /* Card / panel background in dark */
-    --color-surface-muted: #25252a; /* Subtle contrast for secondary surfaces */
-    --color-surface-warm: #1e1e20; /* Warm highlight background in dark */
+    /* Dark Mode Overrides */
+    --color-bg: #0f0f0f; /* Deep dark background */
+    --color-surface: #1a1a1a; /* Card / panel background in dark */
+    --color-surface-muted: #1f1f1f; /* Subtle contrast for secondary surfaces */
+    --color-surface-warm: #1c1917; /* Warm highlight background in dark */
 
+    /* Dark Mode Text */
     --color-text: #fafafa; /* Light text for readability */
-    --color-text-muted: #a1a1aa; /* Muted text */
-    --color-text-warm: #fde68a; /* Warm highlight */
+    --color-text-muted: #a1a1aa; /* Muted text in dark mode */
+    --color-text-light: #71717a; /* Even lighter text in dark mode */
+    --color-text-warm: #fde68a; /* Warm highlight text */
 
-    --color-border: #27272a;
-    --color-border-warm: #fbbf24;
+    /* Dark Mode Borders */
+    --color-border: #27272a; /* Standard border in dark mode */
+    --color-border-warm: #92400e; /* Warm border adjusted for dark mode */
 
-    --color-primary: #f75567; /* Keep brand action color for contrast */
+    /* Brand Colors - Adjusted for Dark Mode */
+    --color-primary: #f87171; /* Slightly brighter primary for dark backgrounds */
     --color-secondary: #27272a; /* Soft neutral dark background */
-    --color-accent: #dc2626; /* Strong accent remains the same */
-    --color-maple: #f59e0b;
+    --color-accent: #ef4444; /* Brighter red accent for dark mode */
+    --color-maple: #fbbf24; /* Brighter maple gold for dark mode */
 
-    --color-success: #10b981;
-    --color-warning: #f59e0b;
-    --color-error: #ef4444;
-    --color-info: #3b82f6;
+    /* Status Colors - Dark Mode Adjustments */
+    --color-success: #34d399; /* Brighter green for dark mode */
+    --color-warning: #fbbf24; /* Brighter amber for dark mode */
+    --color-error: #ef4444; /* Brighter red for dark mode */
+    --color-info: #60a5fa; /* Brighter blue for dark mode */
 
+    /* Contract Match Scores - Dark Mode */
     --color-match-excellent: #34d399;
     --color-match-good: #fbbf24;
     --color-match-fair: #a1a1aa;
+    
+    /* Interactive States - Dark Mode */
+    --color-primary-dark: #dc2626; /* Darker state for dark mode */
+    --color-primary-light: #991b1b; /* Light state adjusted for dark mode */
   }
 }
 html {

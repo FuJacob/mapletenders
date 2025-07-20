@@ -61,7 +61,7 @@ export default function ResetPassword() {
           ) : (
             <form onSubmit={handleSubmit} className="space-y-6">
               {error && (
-                <div className="mb-4 p-3 bg-red-100 border border-red-300 text-red-700 rounded-lg">
+                <div className="mb-4 p-3 bg-error/10 border border-error/20 text-error rounded-lg">
                   {error}
                 </div>
               )}

@@ -33,6 +33,7 @@ export default function PasswordInput({
       <div className="relative">
         <input
           id={id}
+          name={id}
           type={showPassword ? "text" : "password"}
           value={value}
           onChange={onChange}

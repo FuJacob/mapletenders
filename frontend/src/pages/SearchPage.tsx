@@ -40,7 +40,7 @@ export default function SearchPage() {
   useEffect(() => {
     const fetchStats = async () => {
       const bookmarksResponse = await getNumberOfBookmarks();
-      setStats({ ...stats, bookmarks: bookmarksResponse });
+      setStats(prevStats => ({ ...prevStats, bookmarks: bookmarksResponse }));
     };
     fetchStats();
   }, []);

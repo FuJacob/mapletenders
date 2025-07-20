@@ -1,4 +1,4 @@
-import { EnvelopeSimple, MapPin } from "@phosphor-icons/react";
+import { EnvelopeSimple, MapPin, Leaf } from "@phosphor-icons/react";
 import { Link } from "react-router-dom";
 import { LogoTitle } from "../ui/LogoTitle";
 
@@ -6,79 +6,166 @@ export default function Footer() {
   const currentYear = new Date().getFullYear();
 
   return (
-    <footer className="border-t border-border bg-surface min-h-[67vh]">
-      <div className="max-w-7xl mx-auto px-6 h-full">
-        {/* Main Footer Content - Large Layout */}
-        <div className="py-20 grid grid-cols-1 lg:grid-cols-4 gap-16 min-h-[55vh]">
-          {/* Column 1: Brand & Description - Expanded */}
-          <div className="lg:col-span-2 flex flex-col justify-between">
-            <div>
-              <div className="mb-8">
-                <LogoTitle size="text-2xl" />
+    <footer className="border-t border-border bg-surface">
+      <div className="max-w-7xl mx-auto px-6">
+        {/* Main Footer Content */}
+        <div className="py-16 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12">
+          {/* Column 1: Brand & Description */}
+          <div className="lg:col-span-1">
+            <div className="mb-6">
+              <LogoTitle size="text-xl" />
+            </div>
+            <div className="inline-flex items-center gap-2 px-3 py-1 bg-maple/10 text-maple border border-maple/20 rounded-full text-sm font-medium mb-4">
+              <Leaf className="w-3 h-3" />
+              Canada's Procurement Intelligence
+            </div>
+            <p className="text-text-muted mb-6 leading-relaxed">
+              AI-powered platform helping Canadian businesses discover and win government contracts.
+            </p>
+            
+            {/* Contact Info */}
+            <div className="space-y-3">
+              <div className="flex items-center gap-3">
+                <EnvelopeSimple className="w-4 h-4 text-primary flex-shrink-0" />
+                <a
+                  href="mailto:info@mapletenders.com"
+                  className="text-text-muted hover:text-primary transition-colors text-sm"
+                >
+                  info@mapletenders.com
+                </a>
               </div>
-              <h2 className="text-4xl font-light mb-6 text-text leading-tight">
-                AI-powered procurement
-                <br />
-                <span className="text-primary font-bold">
-                  intelligence platform
-                </span>
-              </h2>
-              <p className="text-lg text-text-light mb-8 max-w-lg leading-relaxed">
-                Transform how your business discovers government opportunities
-                with enterprise-grade AI that understands your capabilities and
-                delivers precision-matched contracts.
-              </p>
-
-              {/* CTA Section */}
-              <div className="mb-12">
-                <h3 className="text-xl font-semibold mb-4 text-text">
-                  Ready to get started?
-                </h3>
-                <div className="flex flex-col sm:flex-row gap-4">
-                  <Link
-                    to="/sign-up"
-                    className="px-8 py-4 bg-primary text-white rounded-xl font-medium hover:bg-primary-dark transition-colors text-center"
-                  >
-                    Start Free Trial
-                  </Link>
-                  <Link
-                    to="/contact"
-                    className="px-8 py-4 border border-border text-text rounded-xl font-medium hover:bg-background transition-colors text-center"
-                  >
-                    Book Demo
-                  </Link>
-                </div>
+              <div className="flex items-center gap-3">
+                <MapPin className="w-4 h-4 text-primary flex-shrink-0" />
+                <span className="text-text-muted text-sm">Toronto, Canada</span>
               </div>
             </div>
+          </div>
 
-            {/* Social Media - Bottom of left section */}
-            <div>
-              <h4 className="text-sm font-semibold mb-4 text-text uppercase tracking-wider">
-                Follow Us
-              </h4>
-              <div className="flex gap-4">
+          {/* Column 2: Platform */}
+          <div>
+            <h3 className="text-lg font-semibold mb-6 text-text">Platform</h3>
+            <ul className="space-y-3">
+              <li>
+                <Link
+                  to="/home"
+                  className="text-text-muted hover:text-primary transition-colors text-sm"
+                >
+                  Dashboard
+                </Link>
+              </li>
+              <li>
+                <Link
+                  to="/search"
+                  className="text-text-muted hover:text-primary transition-colors text-sm"
+                >
+                  AI Search
+                </Link>
+              </li>
+              <li>
+                <Link
+                  to="/table-view"
+                  className="text-text-muted hover:text-primary transition-colors text-sm"
+                >
+                  Browse Tenders
+                </Link>
+              </li>
+              <li>
+                <Link
+                  to="/alerts"
+                  className="text-text-muted hover:text-primary transition-colors text-sm"
+                >
+                  Smart Alerts
+                </Link>
+              </li>
+              <li>
+                <Link
+                  to="/analytics"
+                  className="text-text-muted hover:text-primary transition-colors text-sm"
+                >
+                  Analytics
+                </Link>
+              </li>
+            </ul>
+          </div>
+
+          {/* Column 3: Company */}
+          <div>
+            <h3 className="text-lg font-semibold mb-6 text-text">Company</h3>
+            <ul className="space-y-3">
+              <li>
+                <Link
+                  to="/about"
+                  className="text-text-muted hover:text-primary transition-colors text-sm"
+                >
+                  About Us
+                </Link>
+              </li>
+              <li>
+                <Link
+                  to="/pricing"
+                  className="text-text-muted hover:text-primary transition-colors text-sm"
+                >
+                  Pricing
+                </Link>
+              </li>
+              <li>
+                <Link
+                  to="/contact"
+                  className="text-text-muted hover:text-primary transition-colors text-sm"
+                >
+                  Contact
+                </Link>
+              </li>
+              <li>
+                <Link
+                  to="/careers"
+                  className="text-text-muted hover:text-primary transition-colors text-sm"
+                >
+                  Careers
+                </Link>
+              </li>
+              <li>
+                <Link
+                  to="/help"
+                  className="text-text-muted hover:text-primary transition-colors text-sm"
+                >
+                  Help Center
+                </Link>
+              </li>
+            </ul>
+          </div>
+
+          {/* Column 4: Get Started */}
+          <div>
+            <h3 className="text-lg font-semibold mb-6 text-text">Get Started</h3>
+            <div className="space-y-4">
+              <Link
+                to="/sign-up"
+                className="block w-full px-4 py-3 bg-primary text-white rounded-lg font-medium hover:bg-primary-dark transition-colors text-center text-sm"
+              >
+                Start Free Trial
+              </Link>
+              <Link
+                to="/contact"
+                className="block w-full px-4 py-3 border border-border text-text rounded-lg font-medium hover:bg-background transition-colors text-center text-sm"
+              >
+                Book Demo
+              </Link>
+            </div>
+            
+            {/* Social Links */}
+            <div className="mt-8">
+              <h4 className="text-sm font-semibold mb-4 text-text">Follow Us</h4>
+              <div className="flex gap-3">
                 <a
                   href="#"
-                  className="p-3 bg-background border border-border rounded-lg text-primary hover:text-primary-dark hover:bg-primary/5 transition-all"
+                  className="p-2 bg-background border border-border rounded-lg text-primary hover:text-primary-dark hover:bg-primary/5 transition-all"
+                  title="LinkedIn"
                 >
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
-                    width="20"
-                    height="20"
-                    fill="currentColor"
-                    viewBox="0 0 16 16"
-                  >
-                    <path d="M16 8.049c0-4.446-3.582-8.05-8-8.05C3.58 0-.002 3.603-.002 8.05c0 4.017 2.926 7.347 6.75 7.951v-5.625h-2.03V8.05H6.75V6.275c0-2.017 1.195-3.131 3.022-3.131.876 0 1.791.157 1.791.157v1.98h-1.009c-.993 0-1.303.621-1.303 1.258v1.51h2.218l-.354 2.326H9.25V16c3.824-.604 6.75-3.934 6.75-7.951z" />
-                  </svg>
-                </a>
-                <a
-                  href="#"
-                  className="p-3 bg-background border border-border rounded-lg text-primary hover:text-primary-dark hover:bg-primary/5 transition-all"
-                >
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    width="20"
-                    height="20"
+                    width="16"
+                    height="16"
                     fill="currentColor"
                     viewBox="0 0 16 16"
                   >
@@ -87,12 +174,13 @@ export default function Footer() {
                 </a>
                 <a
                   href="#"
-                  className="p-3 bg-background border border-border rounded-lg text-primary hover:text-primary-dark hover:bg-primary/5 transition-all"
+                  className="p-2 bg-background border border-border rounded-lg text-primary hover:text-primary-dark hover:bg-primary/5 transition-all"
+                  title="Twitter"
                 >
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
-                    width="20"
-                    height="20"
+                    width="16"
+                    height="16"
                     fill="currentColor"
                     viewBox="0 0 16 16"
                   >
@@ -102,190 +190,31 @@ export default function Footer() {
               </div>
             </div>
           </div>
-
-          {/* Column 2: Platform Navigation */}
-          <div>
-            <h3 className="text-xl font-semibold mb-8 text-text">Platform</h3>
-            <ul className="space-y-4 text-base">
-              <li>
-                <Link
-                  to="/home"
-                  className="text-text-light hover:text-primary transition-colors flex items-center gap-2 py-1"
-                >
-                  Dashboard
-                </Link>
-              </li>
-              <li>
-                <Link
-                  to="/table-view"
-                  className="text-text-light hover:text-primary transition-colors flex items-center gap-2 py-1"
-                >
-                  Browse Tenders
-                </Link>
-              </li>
-              <li>
-                <Link
-                  to="/search"
-                  className="text-text-light hover:text-primary transition-colors flex items-center gap-2 py-1"
-                >
-                  AI Search
-                </Link>
-              </li>
-              <li>
-                <Link
-                  to="/analytics"
-                  className="text-text-light hover:text-primary transition-colors flex items-center gap-2 py-1"
-                >
-                  Analytics
-                </Link>
-              </li>
-              <li>
-                <Link
-                  to="/alerts"
-                  className="text-text-light hover:text-primary transition-colors flex items-center gap-2 py-1"
-                >
-                  Smart Alerts
-                </Link>
-              </li>
-              <li>
-                <Link
-                  to="/pipeline"
-                  className="text-text-light hover:text-primary transition-colors flex items-center gap-2 py-1"
-                >
-                  Pipeline
-                </Link>
-              </li>
-            </ul>
-
-            <h3 className="text-xl font-semibold mb-6 mt-12 text-text">
-              Resources
-            </h3>
-            <ul className="space-y-4 text-base">
-              <li>
-                <Link
-                  to="/help"
-                  className="text-text-light hover:text-primary transition-colors py-1 block"
-                >
-                  Help Center
-                </Link>
-              </li>
-              <li>
-                <Link
-                  to="/api-docs"
-                  className="text-text-light hover:text-primary transition-colors py-1 block"
-                >
-                  API Documentation
-                </Link>
-              </li>
-              <li>
-                <Link
-                  to="/guides"
-                  className="text-text-light hover:text-primary transition-colors py-1 block"
-                >
-                  User Guides
-                </Link>
-              </li>
-            </ul>
-          </div>
-
-          {/* Column 3: Company & Contact */}
-          <div>
-            <h3 className="text-xl font-semibold mb-8 text-text">Company</h3>
-            <ul className="space-y-4 text-base mb-12">
-              <li>
-                <Link
-                  to="/about"
-                  className="text-text-light hover:text-primary transition-colors py-1 block"
-                >
-                  About Us
-                </Link>
-              </li>
-              <li>
-                <Link
-                  to="/pricing"
-                  className="text-text-light hover:text-primary transition-colors py-1 block"
-                >
-                  Pricing
-                </Link>
-              </li>
-              <li>
-                <Link
-                  to="/careers"
-                  className="text-text-light hover:text-primary transition-colors py-1 block"
-                >
-                  Careers
-                </Link>
-              </li>
-              <li>
-                <Link
-                  to="/news"
-                  className="text-text-light hover:text-primary transition-colors py-1 block"
-                >
-                  News & Updates
-                </Link>
-              </li>
-              <li>
-                <Link
-                  to="/contact"
-                  className="text-text-light hover:text-primary transition-colors py-1 block"
-                >
-                  Contact Us
-                </Link>
-              </li>
-            </ul>
-
-            <div className="bg-background border border-border rounded-2xl p-6">
-              <h4 className="text-lg font-semibold mb-4 text-text">
-                Get in Touch
-              </h4>
-              <ul className="space-y-3">
-                <li className="flex items-center gap-3">
-                  <EnvelopeSimple className="w-5 h-5 text-primary flex-shrink-0" />
-                  <a
-                    href="mailto:info@procuroo.com"
-                    className="text-text-light hover:text-primary transition-colors"
-                  >
-                    info@mapletenders.com
-                  </a>
-                </li>
-                <li className="flex items-center gap-3">
-                  <MapPin className="w-5 h-5 text-primary flex-shrink-0" />
-                  <span className="text-text-light">Toronto, Canada</span>
-                </li>
-              </ul>
-            </div>
-          </div>
         </div>
 
-        {/* Bottom Bar - Enhanced */}
-        <div className="py-8 border-t border-border flex flex-col md:flex-row justify-between items-center">
-          <div className="mb-4 md:mb-0 text-text-light">
-            © {currentYear} MapleTenders. All rights reserved.
+        {/* Bottom Bar */}
+        <div className="py-6 border-t border-border flex flex-col sm:flex-row justify-between items-center">
+          <div className="text-text-muted text-sm mb-4 sm:mb-0">
+            © {currentYear} Mapletenders. All rights reserved.
           </div>
           <div className="flex flex-wrap gap-6 text-sm">
             <Link
               to="/privacy"
-              className="text-text-light hover:text-primary transition-colors"
+              className="text-text-muted hover:text-primary transition-colors"
             >
               Privacy Policy
             </Link>
             <Link
               to="/terms"
-              className="text-text-light hover:text-primary transition-colors"
+              className="text-text-muted hover:text-primary transition-colors"
             >
               Terms of Service
             </Link>
             <Link
               to="/accessibility"
-              className="text-text-light hover:text-primary transition-colors"
+              className="text-text-muted hover:text-primary transition-colors"
             >
               Accessibility
-            </Link>
-            <Link
-              to="/cookies"
-              className="text-text-light hover:text-primary transition-colors"
-            >
-              Cookie Policy
             </Link>
           </div>
         </div>

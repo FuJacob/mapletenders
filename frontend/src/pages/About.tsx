@@ -12,6 +12,7 @@ import {
   Star,
   Robot,
   ChartBar,
+  Leaf,
 } from "@phosphor-icons/react";
 
 export default function About() {
@@ -86,36 +87,45 @@ export default function About() {
       icon: <TrendUp className="w-8 h-8 text-secondary" />,
       number: "$2.8B",
       label: "Contract Value",
-      description: "Total value of opportunities discovered through MapleBids",
+      description: "Total value of opportunities discovered through Mapletenders",
     },
   ];
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-bg">
       {/* Hero Section */}
-      <section className="py-20 px-6 text-center">
-        <div className="max-w-4xl mx-auto">
-          <h1 className="text-5xl font-bold mb-6 text-text">
-            We're democratizing government contracts
+      <section className="relative py-20 px-6 bg-surface overflow-hidden">
+
+        <div className="max-w-5xl mx-auto text-center relative z-10">
+
+          <div className="inline-flex items-center gap-2 px-3 py-1 bg-maple/10 text-maple border border-maple/20 rounded-full text-sm font-medium mb-8">
+            <Leaf className="w-3 h-3" />
+            Built by Canadians, for Canadians
+          </div>
+          
+          <h1 className="text-4xl md:text-5xl font-bold mb-6 text-text">
+            Democratizing Canadian government contracts
           </h1>
-          <p className="text-xl text-text-light mb-8 max-w-3xl mx-auto">
-            MapleBids was born from a simple frustration: why should finding
-            government opportunities be so hard? We're building AI that makes
-            contract discovery as easy as asking a question.
+          <p className="text-xl text-text-muted mb-12 max-w-3xl mx-auto">
+            Mapletenders was born from a simple frustration: why should finding government opportunities be so hard? We're building AI that makes contract discovery as easy as asking a question.
           </p>
-          <div className="flex items-center justify-center gap-8 text-sm text-text-light">
-            <span className="flex items-center gap-2">
-              <MapPin className="w-4 h-4" />
-              Founded in Toronto, Canada
-            </span>
-            <span className="flex items-center gap-2">
-              <Clock className="w-4 h-4" />
-              Established 2023
-            </span>
-            <span className="flex items-center gap-2">
-              <Users className="w-4 h-4" />
-              5,000+ users
-            </span>
+          
+          <div className="grid md:grid-cols-3 gap-6 max-w-3xl mx-auto">
+            <div className="text-center p-4 bg-surface-warm rounded-xl border border-border-warm">
+              <MapPin className="w-8 h-8 text-accent mx-auto mb-2" />
+              <div className="font-semibold text-text">Toronto, Canada</div>
+              <div className="text-sm text-text-muted">Founded & headquartered</div>
+            </div>
+            <div className="text-center p-4 bg-surface-warm rounded-xl border border-border-warm">
+              <Clock className="w-8 h-8 text-success mx-auto mb-2" />
+              <div className="font-semibold text-text">Since 2023</div>
+              <div className="text-sm text-text-muted">Serving Canadian businesses</div>
+            </div>
+            <div className="text-center p-4 bg-surface-warm rounded-xl border border-border-warm">
+              <Users className="w-8 h-8 text-maple mx-auto mb-2" />
+              <div className="font-semibold text-text">500+ companies</div>
+              <div className="text-sm text-text-muted">Active users across Canada</div>
+            </div>
           </div>
         </div>
       </section>
@@ -335,7 +345,7 @@ export default function About() {
       {/* Footer */}
       <footer className="py-8 px-6 border-t text-center text-sm">
         <div className="max-w-4xl mx-auto flex justify-between items-center">
-          <div>© 2025 MapleBids</div>
+          <div>© 2025 Mapletenders</div>
           <div className="flex gap-6">
             <Link to="/privacy" className="hover:underline text-text-light">
               Privacy

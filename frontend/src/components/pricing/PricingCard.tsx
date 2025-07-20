@@ -22,8 +22,8 @@ export default function PricingCard({
     <div
       className={`relative rounded-2xl border-2 p-8 transition-all duration-300 hover:shadow-lg ${
         tier.popular
-          ? "border-accent bg-gradient-to-br from-accent/5 to-maple/5 scale-105 shadow-md"
-          : "border-border-warm bg-surface hover:border-accent/30"
+          ? "border-accent bg-gradient-to-br from-accent/5 to-maple/5 shadow-lg hover:shadow-xl transform hover:scale-[1.02]"
+          : "border-border-warm bg-surface hover:border-accent/30 hover:scale-[1.01]"
       }`}
     >
       {tier.popular && (
@@ -38,7 +38,7 @@ export default function PricingCard({
       {/* Plan Header */}
       <div className="text-center mb-8">
         <div className="flex items-center justify-center mb-4">
-          <div className="p-4 rounded-full bg-gradient-to-br from-surface-warm to-surface border border-border-warm">
+          <div className="p-4 rounded-xl bg-surface-warm border border-border-warm">
             {tier.id === "starter" && (
               <Lightning className="w-8 h-8 text-maple" />
             )}
@@ -51,8 +51,8 @@ export default function PricingCard({
             )}
           </div>
         </div>
-        <h3 className="text-2xl font-bold text-text mb-2">{tier.name}</h3>
-        <p className="text-text-muted text-sm mb-4 leading-relaxed">
+        <h3 className="text-2xl font-bold text-text mb-3">{tier.name}</h3>
+        <p className="text-text-muted text-sm mb-6 leading-relaxed px-2">
           {tier.description}
         </p>
         <div className="text-center">

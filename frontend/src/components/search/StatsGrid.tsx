@@ -40,10 +40,10 @@ export default function StatsGrid({ stats }: StatsGridProps) {
     {
       value: stats.deadlinesThisWeek,
       label: "Deadlines",
-      icon: <Clock className="w-4 h-4 text-red-500" />,
-      iconBg: "bg-red-100",
+      icon: <Clock className="w-4 h-4 text-error" />,
+      iconBg: "bg-error/10",
       badge: "Urgent",
-      badgeColor: "text-red-500",
+      badgeColor: "text-error",
       to: "/search?deadline=week",
     },
   ];

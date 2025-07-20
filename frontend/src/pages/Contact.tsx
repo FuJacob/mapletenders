@@ -12,6 +12,8 @@ import {
   Headset,
   Calendar,
   ArrowRight,
+  Leaf,
+  ArrowLeft,
 } from "@phosphor-icons/react";
 
 export default function Contact() {
@@ -60,8 +62,8 @@ export default function Contact() {
     {
       icon: <EnvelopeSimple className="w-6 h-6" />,
       title: "Email us",
-      description: "We'll respond within 24 hours",
-      contact: "hello@procuroo.com",
+      description: "We'll respond within 4 hours",
+      contact: "hello@mapletenders.com",
       availability: "24/7 support",
       action: "Send email",
     },
@@ -79,7 +81,7 @@ export default function Contact() {
     {
       icon: <Lightning className="w-5 h-5 text-accent" />,
       title: "Product Demo",
-      description: "See MapleBids in action with a personalized demo",
+      description: "See Mapletenders in action with a personalized demo",
       cta: "Book demo",
     },
     {
@@ -97,7 +99,7 @@ export default function Contact() {
     {
       icon: <Calendar className="w-5 h-5 text-secondary" />,
       title: "Training & Onboarding",
-      description: "Learn how to maximize your success with MapleBids",
+      description: "Learn how to maximize your procurement success with Mapletenders",
       cta: "Schedule training",
     },
   ];
@@ -113,8 +115,8 @@ export default function Contact() {
             <h1 className="text-2xl font-bold text-text mb-4">
               Message sent successfully!
             </h1>
-            <p className="text-text-light mb-8">
-              Thanks for reaching out. We'll get back to you within 24 hours.
+            <p className="text-text-muted mb-8">
+              Thanks for reaching out. We'll get back to you within 4 hours during business hours.
             </p>
             <div className="flex gap-4 justify-center">
               <Link
@@ -147,29 +149,50 @@ export default function Contact() {
   }
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-bg">
       {/* Hero Section */}
-      <section className="py-16 px-6 text-center">
-        <div className="max-w-4xl mx-auto">
-          <h1 className="text-4xl font-bold mb-4 text-text">Get in touch</h1>
-          <p className="text-xl text-text-light mb-8">
-            Have questions about MapleBids? We're here to help you succeed.
-          </p>
+      <section className="relative py-20 px-6 bg-surface overflow-hidden">
 
-          {/* Quick Stats */}
-          <div className="flex items-center justify-center gap-8 text-sm text-text-light">
-            <span className="flex items-center gap-2">
-              <Clock className="w-4 h-4" />
-              24h response time
-            </span>
-            <span className="flex items-center gap-2">
-              <Users className="w-4 h-4" />
-              5,000+ satisfied customers
-            </span>
-            <span className="flex items-center gap-2">
-              <CheckCircle className="w-4 h-4 text-success" />
-              97% satisfaction rate
-            </span>
+        <div className="max-w-4xl mx-auto relative z-10">
+          <Link
+            to="/"
+            className="inline-flex items-center gap-2 text-sm text-text-muted hover:text-accent transition-colors mb-8"
+          >
+            <ArrowLeft className="w-4 h-4" />
+            Back to home
+          </Link>
+
+          <div className="text-center">
+            <div className="inline-flex items-center gap-2 px-3 py-1 bg-maple/10 text-maple border border-maple/20 rounded-full text-sm font-medium mb-6">
+              <Leaf className="w-3 h-3" />
+              Canadian support team
+            </div>
+            
+            <h1 className="text-4xl md:text-5xl font-bold mb-6 text-text">
+              Get in touch with Mapletenders
+            </h1>
+            <p className="text-xl text-text-muted mb-12 max-w-3xl mx-auto">
+              Have questions about winning government contracts? Our Canadian team is here to help you succeed in procurement.
+            </p>
+
+            {/* Quick Stats */}
+            <div className="grid md:grid-cols-3 gap-6 max-w-2xl mx-auto">
+              <div className="text-center p-4 bg-surface-warm rounded-xl border border-border-warm">
+                <Clock className="w-8 h-8 text-accent mx-auto mb-2" />
+                <div className="font-semibold text-text">4 hour response</div>
+                <div className="text-sm text-text-muted">for sales inquiries</div>
+              </div>
+              <div className="text-center p-4 bg-surface-warm rounded-xl border border-border-warm">
+                <Users className="w-8 h-8 text-success mx-auto mb-2" />
+                <div className="font-semibold text-text">500+ businesses</div>
+                <div className="text-sm text-text-muted">trust Mapletenders</div>
+              </div>
+              <div className="text-center p-4 bg-surface-warm rounded-xl border border-border-warm">
+                <CheckCircle className="w-8 h-8 text-maple mx-auto mb-2" />
+                <div className="font-semibold text-text">Canadian focused</div>
+                <div className="text-sm text-text-muted">support team</div>
+              </div>
+            </div>
           </div>
         </div>
       </section>
@@ -481,7 +504,7 @@ export default function Contact() {
       {/* Footer */}
       <footer className="py-8 px-6 border-t text-center text-sm">
         <div className="max-w-4xl mx-auto flex justify-between items-center">
-          <div>© 2025 MapleBids</div>
+          <div>© 2025 Mapletenders</div>
           <div className="flex gap-6">
             <Link to="/privacy" className="hover:underline text-text-light">
               Privacy

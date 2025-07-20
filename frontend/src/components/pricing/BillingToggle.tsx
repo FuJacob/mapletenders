@@ -6,15 +6,15 @@ interface BillingToggleProps {
 export default function BillingToggle({ billingCycle, onBillingCycleChange }: BillingToggleProps) {
   return (
     <div className="flex items-center justify-center">
-      <div className="relative p-2 bg-surface rounded-2xl border border-border-warm shadow-sm">
+      <div className="relative p-1 bg-surface-warm rounded-xl border border-border-warm">
         <div className="flex items-center gap-1">
           {/* Monthly Button */}
           <button
             onClick={() => onBillingCycleChange("monthly")}
-            className={`relative px-6 py-3 rounded-xl text-sm font-medium transition-all duration-300 ${
+            className={`relative px-6 py-3 rounded-lg text-sm font-medium transition-all duration-200 ${
               billingCycle === "monthly"
-                ? "bg-gradient-to-r from-accent to-maple text-white shadow-sm"
-                : "text-text-muted hover:text-text hover:bg-surface-warm"
+                ? "bg-accent text-white shadow-sm"
+                : "text-text-muted hover:text-text hover:bg-surface"
             }`}
           >
             Monthly
@@ -23,14 +23,14 @@ export default function BillingToggle({ billingCycle, onBillingCycleChange }: Bi
           {/* Yearly Button */}
           <button
             onClick={() => onBillingCycleChange("yearly")}
-            className={`relative px-6 py-3 rounded-xl text-sm font-medium transition-all duration-300 flex items-center gap-2 ${
+            className={`relative px-6 py-3 rounded-lg text-sm font-medium transition-all duration-200 flex items-center gap-2 ${
               billingCycle === "yearly"
-                ? "bg-gradient-to-r from-accent to-maple text-white shadow-sm"
-                : "text-text-muted hover:text-text hover:bg-surface-warm"
+                ? "bg-accent text-white shadow-sm"
+                : "text-text-muted hover:text-text hover:bg-surface"
             }`}
           >
             Yearly
-            <span className={`px-2 py-1 rounded-full text-xs font-semibold transition-all duration-300 border ${
+            <span className={`px-2 py-1 rounded-full text-xs font-semibold transition-all duration-200 border ${
               billingCycle === "yearly"
                 ? "bg-white/20 text-white border-white/30"
                 : "bg-maple/10 text-maple border-maple/20"

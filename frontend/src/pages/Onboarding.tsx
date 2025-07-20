@@ -299,7 +299,7 @@ export default function Onboarding() {
 
       <div className="max-w-3xl mx-auto p-8">
         {error && (
-          <div className="mb-6 p-4 bg-red-100 border border-red-300 text-red-700 rounded-lg">
+          <div className="mb-6 p-4 bg-error/10 border border-error/20 text-error rounded-lg">
             {error}
           </div>
         )}

@@ -53,10 +53,10 @@ export default function SignIn() {
       {/* Header */}
       <div className="text-center mb-8">
         <h1 className="text-2xl font-semibold text-text mb-2">
-          Welcome back
+          Welcome back to Mapletenders
         </h1>
         <p className="text-text-muted">
-          Sign in to continue finding government contracts
+          Continue discovering Canadian government opportunities
         </p>
       </div>
 
@@ -131,12 +131,12 @@ export default function SignIn() {
       {/* Footer */}
       <div className="mt-8 text-center">
         <p className="text-sm text-text-muted">
-          Don't have an account?{" "}
+          New to government contracts?{" "}
           <Link
             to="/sign-up"
             className="text-primary hover:opacity-80 font-medium"
           >
-            Start your free trial
+            Start your 14-day free trial
           </Link>
         </p>
       </div>

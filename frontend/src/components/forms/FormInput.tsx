@@ -29,6 +29,7 @@ export default function FormInput({
       </label>
       <input
         id={id}
+        name={id}
         type={type}
         value={value}
         onChange={onChange}

@@ -1,19 +1,24 @@
-import { CheckCircle } from "@phosphor-icons/react";
+import { CheckCircle, Leaf } from "@phosphor-icons/react";
 import type { PlanFeature } from "./types";
 
 const features: PlanFeature[] = [
   {
-    feature: "AI-powered search",
+    feature: "AI-powered contract matching",
     starter: true,
     pro: true,
   },
   {
-    feature: "Email notifications",
+    feature: "All Canadian jurisdictions",
     starter: true,
     pro: true,
   },
   {
-    feature: "Mobile app access",
+    feature: "Deadline tracking",
+    starter: true,
+    pro: true,
+  },
+  {
+    feature: "Basic email alerts",
     starter: true,
     pro: true,
   },
@@ -23,17 +28,27 @@ const features: PlanFeature[] = [
     pro: true,
   },
   {
-    feature: "Advanced AI search",
+    feature: "Smart opportunity scoring",
     starter: false,
     pro: true,
   },
   {
-    feature: "Win probability analysis",
+    feature: "Advanced filtering & search",
     starter: false,
     pro: true,
   },
   {
-    feature: "Smart alerts",
+    feature: "Competition analysis",
+    starter: false,
+    pro: true,
+  },
+  {
+    feature: "Custom alert rules",
+    starter: false,
+    pro: true,
+  },
+  {
+    feature: "Multiple team members",
     starter: false,
     pro: true,
   },
@@ -43,7 +58,7 @@ const features: PlanFeature[] = [
     pro: true,
   },
   {
-    feature: "Priority support",
+    feature: "Priority Canadian support",
     starter: false,
     pro: true,
   },
@@ -51,43 +66,60 @@ const features: PlanFeature[] = [
 
 export default function FeatureComparison() {
   return (
-    <section className="py-16 px-6 border-t border-border bg-surface">
+    <section className="py-20 px-6 bg-bg">
       <div className="max-w-4xl mx-auto">
-        <h2 className="text-3xl font-bold text-center mb-12 text-text">
-          Compare all features
-        </h2>
+        <div className="text-center mb-16">
+          <div className="inline-flex items-center gap-2 px-3 py-1 bg-maple/10 text-maple border border-maple/20 rounded-full text-sm font-medium mb-4">
+            <Leaf className="w-3 h-3" />
+            Everything you need to succeed
+          </div>
+          <h2 className="text-3xl font-bold mb-4 text-text">
+            Compare plan features
+          </h2>
+          <p className="text-lg text-text-muted max-w-2xl mx-auto">
+            Both plans include access to all Canadian procurement opportunities. Choose Pro for advanced features and team collaboration.
+          </p>
+        </div>
 
-        <div className="overflow-x-auto">
-          <table className="w-full">
-            <thead>
-              <tr className="border-b border-border">
-                <th className="text-left py-4 text-text">Features</th>
-                <th className="text-center py-4 text-text">Starter</th>
-                <th className="text-center py-4 text-text">Pro</th>
-              </tr>
-            </thead>
-            <tbody className="text-sm">
-              {features.map((row, index) => (
-                <tr key={index} className="border-b border-border">
-                  <td className="py-3 text-text">{row.feature}</td>
-                  <td className="text-center py-3">
-                    {row.starter ? (
-                      <CheckCircle className="w-4 h-4 text-success mx-auto" />
-                    ) : (
-                      <span className="text-text-light">—</span>
-                    )}
-                  </td>
-                  <td className="text-center py-3">
-                    {row.pro ? (
-                      <CheckCircle className="w-4 h-4 text-success mx-auto" />
-                    ) : (
-                      <span className="text-text-light">—</span>
-                    )}
-                  </td>
+        <div className="bg-surface rounded-2xl shadow-sm border border-border-warm overflow-hidden">
+          <div className="overflow-x-auto">
+            <table className="w-full">
+              <thead className="bg-surface-warm">
+                <tr>
+                  <th className="text-left py-6 px-6 text-text font-semibold">Features</th>
+                  <th className="text-center py-6 px-4 text-text font-semibold">Starter</th>
+                  <th className="text-center py-6 px-4 text-text font-semibold">Pro</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
+              </thead>
+              <tbody>
+                {features.map((row, index) => (
+                  <tr key={index} className={`border-t border-border-warm ${index % 2 === 0 ? 'bg-surface' : 'bg-surface-warm/30'}`}>
+                    <td className="py-4 px-6 text-text font-medium">{row.feature}</td>
+                    <td className="text-center py-4 px-4">
+                      {row.starter ? (
+                        <CheckCircle className="w-5 h-5 text-success mx-auto" />
+                      ) : (
+                        <span className="text-text-muted">—</span>
+                      )}
+                    </td>
+                    <td className="text-center py-4 px-4">
+                      {row.pro ? (
+                        <CheckCircle className="w-5 h-5 text-success mx-auto" />
+                      ) : (
+                        <span className="text-text-muted">—</span>
+                      )}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <div className="text-center mt-12">
+          <p className="text-sm text-text-muted">
+            All plans include a 14-day free trial • No setup fees • Cancel anytime
+          </p>
         </div>
       </div>
     </section>

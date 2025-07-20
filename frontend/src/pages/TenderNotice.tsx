@@ -43,15 +43,15 @@ const getStatusColor = (status: string | null) => {
   switch (status?.toLowerCase()) {
     case "open":
     case "active":
-      return "bg-green-100 text-green-800 border-green-200";
+      return "bg-success/10 text-success border-success/20";
     case "closed":
-      return "bg-red-100 text-red-800 border-red-200";
+      return "bg-error/10 text-error border-error/20";
     case "cancelled":
-      return "bg-gray-100 text-gray-800 border-gray-200";
+      return "bg-text-muted/10 text-text-muted border-text-muted/20";
     case "awarded":
-      return "bg-blue-100 text-blue-800 border-blue-200";
+      return "bg-info/10 text-info border-info/20";
     default:
-      return "bg-yellow-100 text-yellow-800 border-yellow-200";
+      return "bg-warning/10 text-warning border-warning/20";
   }
 };
 
