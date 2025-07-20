@@ -24,7 +24,7 @@ import {
 import { useState, useMemo, useCallback } from "react";
 import TablePaginationControls from "./TablePaginationControls";
 import "./tableStyles.css";
-import QuickFilters from "../QuickFilters.tsx";
+import { QuickFilters } from "../search";
 import type { Tender } from "../../api/types.ts";
 interface TenderTableProps {
   isLoading?: boolean;

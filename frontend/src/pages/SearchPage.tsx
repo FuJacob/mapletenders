@@ -37,8 +37,8 @@ export default function SearchPage() {
   useEffect(() => {
     const fetchStats = async () => {
       if (!user?.id) return;
-      const res = await getNumberOfBookmarks(user.id);
-      setStats({ ...stats, bookmarks: res.count });
+      const bookmarksResponse = await getNumberOfBookmarks(user.id);
+      setStats({ ...stats, bookmarks: bookmarksResponse.count });
     };
     fetchStats();
   }, [user?.id]);

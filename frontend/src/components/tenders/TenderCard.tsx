@@ -13,21 +13,21 @@ import {
   CaretDown,
   CaretUp,
 } from "@phosphor-icons/react";
-import type { TenderDisplayData } from "../types/tender";
-import { TenderAccessors } from "../types/tender";
+import type { TenderDisplayData } from "../../types/tender";
+import { TenderAccessors } from "../../types/tender";
 
 interface TenderCardProps {
   tender: TenderDisplayData;
-  mode?: 'normal' | 'compact';
+  compact?: boolean;
   onBookmarkToggle?: (tenderId: string) => void;
   className?: string;
 }
 
-export function TenderCard({ 
-  tender, 
-  mode = 'normal', 
+export function TenderCard({
+  tender,
+  compact = false,
   onBookmarkToggle,
-  className = ""
+  className = "",
 }: TenderCardProps) {
   const [isDescriptionExpanded, setIsDescriptionExpanded] = useState(false);
 
@@ -47,12 +47,12 @@ export function TenderCard({
     if (searchScore !== null) {
       return Math.min(searchScore * 10, 100);
     }
-    
+
     const relevanceScore = TenderAccessors.getRelevanceScore(tender);
     if (relevanceScore !== null) {
       return relevanceScore;
     }
-    
+
     return 85; // Default relevance
   }
 
@@ -88,7 +88,9 @@ export function TenderCard({
   // Extract data using type-safe accessors
   const matchScore = getMatchScore(tender);
   const scoreColorClass = getScoreColorClass(matchScore);
-  const daysUntilDeadline = getDaysUntilDeadline(TenderAccessors.getClosingDate(tender));
+  const daysUntilDeadline = getDaysUntilDeadline(
+    TenderAccessors.getClosingDate(tender)
+  );
   const urgencyClass = getUrgencyClass(daysUntilDeadline);
   const isBookmarked = TenderAccessors.getIsBookmarked(tender);
   const entityName = TenderAccessors.getContractingEntityName(tender);
@@ -101,26 +103,33 @@ export function TenderCard({
   const matchExplanation = TenderAccessors.getMatchExplanation(tender);
 
   // Compact mode - for recommended tenders
-  if (mode === 'compact') {
+  if (compact) {
     return (
-      <div className={`bg-surface border border-border rounded-lg p-4 hover:shadow-md hover:border-primary/30 transition-all duration-200 group ${className}`}>
+      <div
+        className={`bg-surface border border-border rounded-lg p-4 hover:shadow-md hover:border-primary/30 transition-all duration-200 group ${className}`}
+      >
         {/* Compact Header */}
         <div className="flex items-start gap-3 mb-3">
           {/* Compact Match Score */}
-          <div className={`flex items-center gap-1 px-2 py-1 rounded-md font-bold text-xs ${scoreColorClass} flex-shrink-0`}>
+          <div
+            className={`flex items-center gap-1 px-2 py-1 rounded-md font-bold text-xs ${scoreColorClass} flex-shrink-0`}
+          >
             {getScoreIcon(matchScore)}
             <span>{matchScore.toFixed(0)}%</span>
           </div>
-          
+
           {/* Title */}
           <div className="flex-1 min-w-0">
-            <Link to={`/tender-notice/${TenderAccessors.getId(tender)}`} className="group/link block">
+            <Link
+              to={`/tender-notice/${TenderAccessors.getId(tender)}`}
+              className="group/link block"
+            >
               <h3 className="text-base font-bold text-text group-hover/link:text-primary cursor-pointer transition-colors line-clamp-2 leading-tight">
                 {TenderAccessors.getTitle(tender)}
               </h3>
             </Link>
           </div>
-          
+
           {/* Bookmark */}
           {onBookmarkToggle && (
             <button
@@ -141,19 +150,24 @@ export function TenderCard({
           <div className="flex items-center gap-3">
             <span className="flex items-center gap-1">
               <Building className="w-3 h-3" />
-              <span className="truncate max-w-[120px]">{entityName || "Unknown"}</span>
+              <span className="truncate max-w-[120px]">
+                {entityName || "Unknown"}
+              </span>
             </span>
             <span className="flex items-center gap-1">
               <MapPin className="w-3 h-3" />
               {entityProvince || deliveryLocation || "Canada"}
             </span>
           </div>
-          <div className={`flex items-center gap-1 font-medium ${urgencyClass}`}>
+          <div
+            className={`flex items-center gap-1 font-medium ${urgencyClass}`}
+          >
             <Clock className="w-3 h-3" />
-            {daysUntilDeadline !== null && daysUntilDeadline <= 14 && daysUntilDeadline >= 0 ? 
-              `${daysUntilDeadline}d left` : 
-              formatDate(TenderAccessors.getClosingDate(tender))
-            }
+            {daysUntilDeadline !== null &&
+            daysUntilDeadline <= 14 &&
+            daysUntilDeadline >= 0
+              ? `${daysUntilDeadline}d left`
+              : formatDate(TenderAccessors.getClosingDate(tender))}
           </div>
         </div>
 
@@ -176,18 +190,25 @@ export function TenderCard({
 
   // Normal mode - full information layout
   return (
-    <div className={`bg-surface border border-border rounded-lg p-5 hover:shadow-lg hover:border-primary/30 transition-all duration-200 group ${className}`}>
+    <div
+      className={`bg-surface border border-border rounded-lg p-5 hover:shadow-lg hover:border-primary/30 transition-all duration-200 group ${className}`}
+    >
       {/* Header Row: Match Score + Title + Action */}
       <div className="flex items-start gap-4 mb-4">
         {/* Match Score Badge */}
-        <div className={`flex items-center gap-2 px-3 py-2 rounded-lg font-bold text-sm ${scoreColorClass} flex-shrink-0`}>
+        <div
+          className={`flex items-center gap-2 px-3 py-2 rounded-lg font-bold text-sm ${scoreColorClass} flex-shrink-0`}
+        >
           {getScoreIcon(matchScore)}
           <span>{matchScore.toFixed(0)}%</span>
         </div>
-        
+
         {/* Title and Canadian Badge */}
         <div className="flex-1 min-w-0">
-          <Link to={`/tender-notice/${TenderAccessors.getId(tender)}`} className="group/link block">
+          <Link
+            to={`/tender-notice/${TenderAccessors.getId(tender)}`}
+            className="group/link block"
+          >
             <h3 className="text-xl font-bold text-text group-hover/link:text-primary cursor-pointer transition-colors line-clamp-2 mb-1 leading-tight">
               {TenderAccessors.getTitle(tender)}
             </h3>
@@ -198,7 +219,7 @@ export function TenderCard({
             <ArrowSquareOut className="w-4 h-4 text-primary opacity-0 group-hover:opacity-100 transition-opacity" />
           </div>
         </div>
-        
+
         {/* Bookmark Action */}
         {onBookmarkToggle && (
           <button
@@ -222,8 +243,13 @@ export function TenderCard({
             <Building className="w-5 h-5 text-primary" />
           </div>
           <div className="min-w-0 flex-1">
-            <div className="text-xs text-text-muted font-medium uppercase tracking-wide">Entity</div>
-            <div className="font-semibold text-text truncate" title={entityName || "Unknown"}>
+            <div className="text-xs text-text-muted font-medium uppercase tracking-wide">
+              Entity
+            </div>
+            <div
+              className="font-semibold text-text truncate"
+              title={entityName || "Unknown"}
+            >
               {entityName || "Unknown Entity"}
             </div>
           </div>
@@ -235,25 +261,48 @@ export function TenderCard({
             <MapPin className="w-5 h-5 text-maple" />
           </div>
           <div className="min-w-0 flex-1">
-            <div className="text-xs text-text-muted font-medium uppercase tracking-wide">Location</div>
+            <div className="text-xs text-text-muted font-medium uppercase tracking-wide">
+              Location
+            </div>
             <div className="font-semibold text-text truncate">
-              {entityCity || deliveryLocation || "Unknown"}, {entityProvince || "Canada"}
+              {entityCity || deliveryLocation || "Unknown"},{" "}
+              {entityProvince || "Canada"}
             </div>
           </div>
         </div>
 
         {/* Deadline with Urgency */}
         <div className="flex items-center gap-3">
-          <div className={`p-2 rounded-lg ${daysUntilDeadline !== null && daysUntilDeadline <= 14 ? 'bg-error/10' : 'bg-accent/10'}`}>
-            <Clock className={`w-5 h-5 ${daysUntilDeadline !== null && daysUntilDeadline <= 14 ? 'text-error' : 'text-accent'}`} />
+          <div
+            className={`p-2 rounded-lg ${
+              daysUntilDeadline !== null && daysUntilDeadline <= 14
+                ? "bg-error/10"
+                : "bg-accent/10"
+            }`}
+          >
+            <Clock
+              className={`w-5 h-5 ${
+                daysUntilDeadline !== null && daysUntilDeadline <= 14
+                  ? "text-error"
+                  : "text-accent"
+              }`}
+            />
           </div>
           <div className="min-w-0 flex-1">
-            <div className="text-xs text-text-muted font-medium uppercase tracking-wide">Deadline</div>
+            <div className="text-xs text-text-muted font-medium uppercase tracking-wide">
+              Deadline
+            </div>
             <div className={`font-bold ${urgencyClass}`}>
               {formatDate(TenderAccessors.getClosingDate(tender))}
               {daysUntilDeadline !== null && (
                 <span className="ml-2 text-xs">
-                  ({daysUntilDeadline < 0 ? 'Expired' : daysUntilDeadline === 0 ? 'Today' : `${daysUntilDeadline}d left`})
+                  (
+                  {daysUntilDeadline < 0
+                    ? "Expired"
+                    : daysUntilDeadline === 0
+                    ? "Today"
+                    : `${daysUntilDeadline}d left`}
+                  )
                 </span>
               )}
             </div>
@@ -266,16 +315,24 @@ export function TenderCard({
         <div className="mb-4 p-3 bg-surface-muted rounded-lg border border-border">
           <div className="flex items-center gap-2 mb-2">
             <Lightning className="w-4 h-4 text-primary" />
-            <span className="text-sm font-semibold text-text">AI Match Analysis</span>
+            <span className="text-sm font-semibold text-text">
+              AI Match Analysis
+            </span>
           </div>
-          <p className="text-sm text-text-muted leading-relaxed">{matchExplanation}</p>
+          <p className="text-sm text-text-muted leading-relaxed">
+            {matchExplanation}
+          </p>
         </div>
       )}
 
       {/* Description Section with Expand/Collapse */}
       {description && (
         <div className="mb-4">
-          <div className={`text-sm text-text-muted leading-relaxed ${isDescriptionExpanded ? '' : 'line-clamp-2'}`}>
+          <div
+            className={`text-sm text-text-muted leading-relaxed ${
+              isDescriptionExpanded ? "" : "line-clamp-2"
+            }`}
+          >
             {description}
           </div>
           {description.length > 150 && (
@@ -315,13 +372,16 @@ export function TenderCard({
           )}
           {TenderAccessors.getCategoryPrimary(tender) && (
             <span className="text-xs bg-surface-muted text-text-muted px-3 py-1 rounded-full font-medium">
-              {TenderAccessors.getCategoryPrimary(tender)!.length > 20 
-                ? `${TenderAccessors.getCategoryPrimary(tender)!.substring(0, 20)}...` 
+              {TenderAccessors.getCategoryPrimary(tender)!.length > 20
+                ? `${TenderAccessors.getCategoryPrimary(tender)!.substring(
+                    0,
+                    20
+                  )}...`
                 : TenderAccessors.getCategoryPrimary(tender)}
             </span>
           )}
         </div>
-        
+
         {/* Full Reference ID - No truncation */}
         <div className="text-xs text-text-muted font-mono">
           {sourceReference || TenderAccessors.getId(tender) || "No ID"}

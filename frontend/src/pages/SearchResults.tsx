@@ -12,7 +12,7 @@ import {
   ListBullets,
 } from "@phosphor-icons/react";
 import { searchTenders } from "../api";
-import { TenderCard } from "../components/TenderCard";
+import { TenderCard } from "../components";
 import type { TenderSearchResult, SearchTendersResponse } from "../api/types";
 import { createBookmark } from "../api/bookmarks";
 import { useAuth } from "../hooks/auth";
@@ -509,7 +509,6 @@ export default function SearchResults() {
                   <TenderCard
                     key={result.id}
                     tender={result}
-                    mode="normal"
                     onBookmarkToggle={handleBookmarkToggle}
                   />
                 ))}

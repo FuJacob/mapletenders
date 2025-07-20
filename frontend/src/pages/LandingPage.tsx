@@ -1,5 +1,5 @@
 import { useCallback, useState } from "react";
-import WelcomeBanner from "../components/WelcomeBanner";
+import { WelcomeBanner } from "../components";
 import {
   HeroSection,
   TrustStatsSection,

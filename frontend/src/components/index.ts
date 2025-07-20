@@ -13,7 +13,11 @@ export * from "./forms";
 // Auth Components
 export * from "./auth";
 
+// UI Components
+export * from "./ui";
+
 // Search Components
-export { default as SearchHero } from "./SearchHero";
-export { default as SearchModal } from "./SearchModal";
 export * from "./search";
+
+// Tender Components
+export * from "./tenders";

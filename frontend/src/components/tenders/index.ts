@@ -1,0 +1,1 @@
+export { TenderCard } from './TenderCard';

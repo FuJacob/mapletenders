@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import { TenderCard } from "../TenderCard";
+import { TenderCard } from "../tenders";
 import type { TenderSummary } from "./types.tsx";
 
 interface RecommendedTendersProps {
@@ -22,7 +22,7 @@ export default function RecommendedTenders({
       </div>
       <div className="flex-1 overflow-y-auto space-y-4">
         {tenders.map((tender) => (
-          <TenderCard key={tender.id} tender={tender} mode="compact" />
+          <TenderCard key={tender.id} tender={tender} compact={true} />
         ))}
       </div>
     </div>

@@ -9,7 +9,7 @@ import {
   X,
 } from "@phosphor-icons/react";
 import { useState, useRef, useEffect } from "react";
-import type { Tender } from "../api/types";
+import type { Tender } from "../../api/types";
 
 interface QuickFiltersProps {
   setGlobalFilter: (filter: string) => void;
