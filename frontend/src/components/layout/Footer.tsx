@@ -15,9 +15,9 @@ export default function Footer() {
             <div className="mb-6">
               <LogoTitle size="text-xl" />
             </div>
-            <div className="inline-flex items-center gap-2 px-3 py-1 bg-maple/10 text-maple border border-maple/20 rounded-full text-sm font-medium mb-4">
-              <Leaf className="w-3 h-3" />
-              Canada's Procurement Intelligence
+            <div className="inline-flex items-center gap-2 px-3 py-1 bg-maple/10 text-maple border border-maple/20 rounded-full text-xs font-medium mb-4">
+              <Leaf className=" w-3 h-3" />
+              Canada's Leading Procurement Portal 
             </div>
             <p className="text-text-muted mb-6 leading-relaxed">
               AI-powered platform helping Canadian businesses discover and win government contracts.

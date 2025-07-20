@@ -79,6 +79,7 @@ export default function HeroSection() {
           </div>
 
           {/* Demo search */}
+          {/*
           <div className="max-w-2xl mx-auto mb-16">
             <p className="text-sm text-text-muted mb-4">Try searching for opportunities:</p>
             <div className="relative">
@@ -103,9 +104,11 @@ export default function HeroSection() {
               </button>
             </div>
           </div>
+          */}
         </div>
 
         {/* Value props grid */}
+        {/*
         <div className="grid md:grid-cols-3 gap-8 max-w-5xl mx-auto">
           <div className="text-center p-6 rounded-2xl bg-surface-warm border border-border-warm hover:border-accent/30 transition-colors">
             <div className="inline-flex p-4 bg-accent/10 rounded-xl mb-4">
@@ -129,6 +132,18 @@ export default function HeroSection() {
             </div>
             <h3 className="text-xl font-semibold text-text mb-3">Save Time</h3>
             <p className="text-text-muted leading-relaxed">Stop manually checking dozens of procurement portals. Get instant alerts when new relevant opportunities are published.</p>
+          </div>
+        </div>
+        */}
+        <div className="max-w-5xl mx-auto flex justify-center gap-0 relative" style={{marginLeft: '-1rem'}}>
+          <div className="text-center p-6 rounded-2xl bg-surface-warm border border-border-warm transition-colors z-30" style={{marginRight: '-1rem', minWidth: '200px'}}>
+            Box 1
+          </div>
+          <div className="text-center p-6 rounded-2xl bg-surface-warm border border-border-warm transition-colors z-20" style={{marginRight: '-1rem', minWidth: '200px'}}>
+            Box 2
+          </div>
+          <div className="text-center p-6 rounded-2xl bg-surface-warm border border-border-warm transition-colors z-10" style={{minWidth: '200px'}}>
+            Box 3
           </div>
         </div>
       </div>
