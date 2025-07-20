@@ -1,8 +1,6 @@
 import { DatabaseService } from "./databaseService";
-import { CsvService } from "./csvService";
 import { MlService } from "./mlService";
 import { AiService } from "./aiService";
-import type { Database } from "../database.types";
 import { ScrapingService } from "./scrapingService";
 
 /**
@@ -80,8 +78,7 @@ function mapCanadianTender(row: any): any {
 
 export class TenderService {
   constructor(
-    private dbService: DatabaseService,
-    private csvService: CsvService,
+    private dbService: DatabaseService, 
     private mlService: MlService,
     private aiService: AiService,
     private scrapingService: ScrapingService
@@ -104,10 +101,6 @@ export class TenderService {
       throw new Error(`Failed to fetch tender notices: ${error.message}`);
     }
     return data;
-  }
-
-  async downloadTendersCsv() {
-    return await this.csvService.downloadTendersCsvStream();
   }
 
   async getAllTenders() {

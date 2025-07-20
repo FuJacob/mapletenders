@@ -3,7 +3,6 @@ import dotenv from "dotenv";
 dotenv.config();
 import {
   DatabaseService,
-  CsvService,
   MlService,
   AiService,
   TenderService,
@@ -26,19 +25,16 @@ import {
 
 // Initialize services
 const databaseService = new DatabaseService();
-const csvService = new CsvService();
 const mlService = new MlService(databaseService);
 const aiService = new AiService();
 const scrapingService = new ScrapingService(
   databaseService,
-  csvService,
   mlService,
   aiService
 );
 
 const tenderService = new TenderService(
   databaseService,
-  csvService,
   mlService,
   aiService,
   scrapingService

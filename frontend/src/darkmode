@@ -1,0 +1,40 @@
+@media (prefers-color-scheme: dark) {
+  :root {
+    /* Dark Mode Overrides */
+    --color-bg: #0f0f0f; /* Deep dark background */
+    --color-surface: #1a1a1a; /* Card / panel background in dark */
+    --color-surface-muted: #1f1f1f; /* Subtle contrast for secondary surfaces */
+    --color-surface-warm: #1c1917; /* Warm highlight background in dark */
+
+    /* Dark Mode Text */
+    --color-text: #fafafa; /* Light text for readability */
+    --color-text-muted: #a1a1aa; /* Muted text in dark mode */
+    --color-text-light: #71717a; /* Even lighter text in dark mode */
+    --color-text-warm: #fde68a; /* Warm highlight text */
+
+    /* Dark Mode Borders */
+    --color-border: #27272a; /* Standard border in dark mode */
+    --color-border-warm: #92400e; /* Warm border adjusted for dark mode */
+
+    /* Brand Colors - Adjusted for Dark Mode */
+    --color-primary: #f87171; /* Slightly brighter primary for dark backgrounds */
+    --color-secondary: #27272a; /* Soft neutral dark background */
+    --color-accent: #ef4444; /* Brighter red accent for dark mode */
+    --color-maple: #fbbf24; /* Brighter maple gold for dark mode */
+
+    /* Status Colors - Dark Mode Adjustments */
+    --color-success: #34d399; /* Brighter green for dark mode */
+    --color-warning: #fbbf24; /* Brighter amber for dark mode */
+    --color-error: #ef4444; /* Brighter red for dark mode */
+    --color-info: #60a5fa; /* Brighter blue for dark mode */
+
+    /* Contract Match Scores - Dark Mode */
+    --color-match-excellent: #34d399;
+    --color-match-good: #fbbf24;
+    --color-match-fair: #a1a1aa;
+
+    /* Interactive States - Dark Mode */
+    --color-primary-dark: #dc2626; /* Darker state for dark mode */
+    --color-primary-light: #991b1b; /* Light state adjusted for dark mode */
+  }
+}

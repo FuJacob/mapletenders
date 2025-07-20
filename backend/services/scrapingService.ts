@@ -1,10 +1,10 @@
 import { DatabaseService } from "./databaseService";
-import { CsvService } from "./csvService";
 import { MlService } from "./mlService";
 import { AiService } from "./aiService";
 import * as puppeteer from "puppeteer";
 import puppeteerExtra from "puppeteer-extra";
 import StealthPlugin from "puppeteer-extra-plugin-stealth";
+import Papa from "papaparse";
 import * as XLSX from "xlsx";
 import * as fs from "fs";
 import * as path from "path";
@@ -22,7 +22,6 @@ puppeteerExtra.use(StealthPlugin());
 export class ScrapingService {
   constructor(
     private dbService: DatabaseService,
-    private csvService: CsvService,
     private mlService: MlService,
     private aiService: AiService
   ) {}
@@ -32,23 +31,17 @@ export class ScrapingService {
   async importCanadianTenders() {
     console.log("Importing Canadian tenders from CSV...");
 
-    // 1. Download CSV data
-    const csvResponse = await this.csvService.downloadTendersCsvData();
-
-    // 2. Parse and transform data using new mapping
-    const parsedData = await this.csvService.parseCsvData(csvResponse.data);
-    const transformedData = parsedData.data.map((row) =>
-      mapCanadianTender(row)
-    );
-
+    const tenders = await this.scrapeCanadianTenders();
     // 3. Generate embeddings
+    const mappedTenders = tenders.map((tender) => mapCanadianTender(tender));
+
     console.log("Generating embeddings for Canadian tenders...");
     const embeddingsData = await this.mlService.generateEmbeddings(
-      transformedData
+      mappedTenders
     );
 
     // 4. Combine data with embeddings
-    const finalData = transformedData.map((tender, index) => ({
+    const finalData = mappedTenders.map((tender, index) => ({
       ...tender,
       embedding: embeddingsData.embeddings?.[index] || null,
       embedding_input: embeddingsData.embedding_inputs?.[index] || null,
@@ -164,6 +157,24 @@ export class ScrapingService {
         warning: "Embeddings generation failed",
       };
     }
+  }
+
+  async scrapeCanadianTenders() {
+    // 1. Download CSV data
+    const csvResponse = await fetch(URLS.CANADA.BASE, {
+      headers: {
+        "User-Agent": URLS.CANADA.USER_AGENT,
+      },
+    });
+    const csvData = await csvResponse.text();
+
+    // 2. Parse and transform data using new mapping
+    const parsedData = await Papa.parse(csvData, {
+      header: true,
+      skipEmptyLines: true,
+    });
+    console.log(`Scraped ${parsedData.data.length} Canadian tenders`);
+    return parsedData.data;
   }
 
   /**
@@ -753,7 +764,6 @@ export class ScrapingService {
   async getLondonImportStatus() {
     return this.getGenericImportStatus();
   }
-
   /**
    * Test scraping methods that return limited data without importing
    */
@@ -780,15 +790,14 @@ export class ScrapingService {
   async testScrapeCanadian(limit: number = 5): Promise<any[]> {
     console.log(`Test scraping Canadian tenders (limit: ${limit})...`);
 
-    // 1. Download CSV data
-    const csvResponse = await this.csvService.downloadTendersCsvData();
+    // Scrape all Toronto tenders and limit the results
+    const tenders = await this.scrapeCanadianTenders();
+    const limitedTenders = tenders.slice(0, limit);
 
-    // 2. Parse and transform data
-    const parsedData = await this.csvService.parseCsvData(csvResponse.data);
-    const limitedData = parsedData.data.slice(0, limit);
-
-    // 3. Map to our schema
-    const mappedTenders = limitedData.map((row) => mapCanadianTender(row));
+    // Map to our schema
+    const mappedTenders = limitedTenders.map((tender) =>
+      mapTorontoTender(tender)
+    );
 
     return mappedTenders;
   }
