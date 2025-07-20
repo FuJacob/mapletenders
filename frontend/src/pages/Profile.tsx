@@ -1,18 +1,12 @@
 import { useState, useEffect } from "react";
-import {
-  FloppyDisk,
-  X,
-  User,
-  Briefcase,
-  Crown,
-} from "@phosphor-icons/react";
+import { FloppyDisk, X, User, Briefcase, Crown } from "@phosphor-icons/react";
 import { useAuth } from "../hooks/auth";
 import { useAppDispatch } from "../app/hooks";
 import { updateProfile } from "../features/auth/authThunks";
 
 import LoadingSpinner from "../components/common/LoadingSpinner";
-import { 
-  ProfileHeader, 
+import {
+  ProfileHeader,
   StatusMessages,
   companySizes,
   industries,
@@ -23,7 +17,7 @@ import {
   getIndustryDisplay,
   getExperienceDisplay,
   getContractSizeDisplay,
-  getCompanySizeDisplay
+  getCompanySizeDisplay,
 } from "../components/profile";
 
 export default function Profile() {
@@ -60,7 +54,6 @@ export default function Profile() {
       });
     }
   }, [profile]);
-
 
   const handleServiceToggle = (service: string) => {
     setFormData((prev) => ({
@@ -123,7 +116,6 @@ export default function Profile() {
     setSuccess("");
   };
 
-
   if (!user) {
     return <LoadingSpinner message="Loading your profile..." />;
   }
@@ -131,10 +123,10 @@ export default function Profile() {
   return (
     <div className="min-h-screen bg-background">
       <div className="max-w-4xl mx-auto p-8">
-        <ProfileHeader 
-          profile={profile} 
-          isEditing={isEditing} 
-          onEditClick={() => setIsEditing(true)} 
+        <ProfileHeader
+          profile={profile ?? null}
+          isEditing={isEditing}
+          onEditClick={() => setIsEditing(true)}
         />
 
         <StatusMessages success={success} error={error} />
@@ -268,7 +260,8 @@ export default function Profile() {
                 </div>
               ) : (
                 <div className="flex flex-wrap gap-2">
-                  {profile?.primary_services && profile.primary_services.length > 0 ? (
+                  {profile?.primary_services &&
+                  profile.primary_services.length > 0 ? (
                     profile.primary_services.map((service: string) => (
                       <span
                         key={service}
@@ -308,7 +301,8 @@ export default function Profile() {
                 </div>
               ) : (
                 <div className="flex flex-wrap gap-2">
-                  {profile?.service_regions && profile.service_regions.length > 0 ? (
+                  {profile?.service_regions &&
+                  profile.service_regions.length > 0 ? (
                     profile.service_regions.map((region: string) => (
                       <span
                         key={region}

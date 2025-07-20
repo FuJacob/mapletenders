@@ -2,12 +2,28 @@ import { PencilSimple } from "@phosphor-icons/react";
 import { industries, type IndustryOption } from "./profileConstants";
 
 interface ProfileHeaderProps {
-  profile: any;
+  profile: {
+    company_name?: string | null;
+    industry?: string | null;
+    company_size?: string | null;
+    created_at?: string | null;
+    government_experience?: string | null;
+    id?: string;
+    onboarding_completed?: boolean | null;
+    primary_services?: string[] | null;
+    service_regions?: string[] | null;
+    typical_contract_size?: string | null;
+    updated_at?: string | null;
+  } | null;
   isEditing: boolean;
   onEditClick: () => void;
 }
 
-export default function ProfileHeader({ profile, isEditing, onEditClick }: ProfileHeaderProps) {
+export default function ProfileHeader({
+  profile,
+  isEditing,
+  onEditClick,
+}: ProfileHeaderProps) {
   const getIndustryDisplay = (value: string) => {
     const industry = industries.find((i: IndustryOption) => i.value === value);
     return industry ? industry.label : "Unknown Industry";
