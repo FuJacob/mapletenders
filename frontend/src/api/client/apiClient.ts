@@ -9,7 +9,7 @@ apiClient.interceptors.request.use(
     const {
       data: { session },
     } = await supabaseClient.auth.getSession();
-
+    console.log("ASIOJDIOASDIOSDIOAJIOD", session);
     if (session && session.access_token) {
       config.headers.Authorization = `Bearer ${session.access_token}`;
     }
