@@ -514,7 +514,7 @@ def main():
 ```javascript
 // Frontend JavaScript example
 const searchTenders = async (searchQuery) => {
-  const response = await fetch("http://localhost:8000/elasticsearch/search", {
+  const response = await fetch("http://localhost:8000/elasticsearch/UTES", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",

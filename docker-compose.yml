@@ -4,13 +4,31 @@ services:
     build: ./backend
     ports:
       - "4000:4000"
+    env_file:
+      - ./backend/.env
+
   ml-backend:
     build: ./ml-backend
     ports:
-      - "5000:5000"
+      - "8000:8000"
+    env_file:
+      - ./ml-backend/.env
+
   frontend:
     build: ./frontend
     ports:
-      - "5173:5173"
+      - "3000:3000"
+    env_file:
+      - ./frontend/.env
     environment:
-      - VITE_BACKEND_URL=http://backend:4000 # Example for API calls from frontend
+      - VITE_BACKEND_URL=http://backend:4000 # This can stay or move to .env
+
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:8.17.0
+    ports:
+      - "9200:9200"
+    environment:
+      - discovery.type=single-node
+      - ES_JAVA_OPTS=-Xms512m -Xmx512m
+      - xpack.security.enabled=false
+      - xpack.security.enrollment.enabled=false

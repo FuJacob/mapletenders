@@ -5,6 +5,7 @@ from typing import Optional, List, Dict, Any
 import logging
 import json
 from datetime import datetime
+import os
 
 load_dotenv()
 
@@ -12,6 +13,7 @@ load_dotenv()
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(name)s - %(levelname)s - %(message)s')
 logger = logging.getLogger(__name__)
 
+elasticsearch_url = os.getenv("ELASTICSEARCH_URL")
 class SearchService:
     def __init__(self):
         logger.info("🚀 Initializing SearchService")
@@ -22,8 +24,8 @@ class SearchService:
         logger.info("✅ SentenceTransformer model loaded successfully")
         
         # Connect to Elasticsearch
-        logger.info("🔗 Connecting to Elasticsearch at http://localhost:9200")
-        self.es = Elasticsearch(['http://localhost:9200'])
+        logger.info(f"🔗 Connecting to Elasticsearch at {elasticsearch_url}")
+        self.es = Elasticsearch([elasticsearch_url])
         logger.info("✅ Elasticsearch connection established")
     
     def get_all_tenders(self):
