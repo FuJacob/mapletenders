@@ -248,7 +248,7 @@ export class ScrapingController {
       console.log("Scraping Quebec tenders (test mode)...");
 
       const tenders = await this.scrapingService.scrapeQuebecTenders();
-
+      console.log("Tenders", tenders);
       res.json({
         message: "Quebec tenders scraped successfully",
         count: tenders.length,

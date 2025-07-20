@@ -386,7 +386,7 @@ export class ScrapingService {
     try {
       const response = await fetch(tenderUrl);
       const data = await response.json();
-      const tenders = data.results;
+      const tenders = data.apiData.results;
       console.log(`Scraped ${tenders.length} Quebec tenders`);
       return tenders;
     } catch (error: any) {

@@ -272,7 +272,9 @@ export function mapCanadianTender(row: any): any {
       ] || "Canada",
 
     delivery_location: row["regionsOfDelivery-regionsLivraison-eng"],
-    category_primary: row["procurementCategory-categorieApprovisionnement"],
+    category_primary: mapCanadianCategoryToCentral(
+      row["procurementCategory-categorieApprovisionnement"]
+    ),
     procurement_type: row["noticeType-avisType-eng"]
       ?.toLowerCase()
       .includes("rfp")
@@ -380,7 +382,7 @@ export function mapQuebecTender(row: any) {
     id: row.id || row.uuid,
     source: "quebec",
     source_reference: row.numero,
-    source_url: `https://www.seao.ca/avis/${row.id}`,
+    source_url: `${URLS.QUEBEC.TENDER_DETAIL(row.uuid)}`,
 
     title: row.titre,
     description: null, // No description in sample. Add if you get it.
@@ -398,7 +400,7 @@ export function mapQuebecTender(row: any) {
     delivery_location: Array.isArray(row.regionIds)
       ? row.regionIds.join(", ")
       : null,
-    category_primary: QUEBEC_CATEGORY_MAP[row.categorieId] || null,
+    category_primary: mapQuebecCategoryToCentral(row.categorieId),
     procurement_type: "tender", // If you want to map typeAvisId to 'rfp', add logic here
     procurement_method: "open",
 
@@ -420,4 +422,110 @@ export function mapQuebecTender(row: any) {
 
     last_scraped_at: new Date().toISOString(),
   };
+}
+
+export const CENTRALIZED_CATEGORIES = [
+  "Construction",
+  "Engineering",
+  "IT & Software",
+  "Professional Services",
+  "Medical & Healthcare",
+  "Transportation",
+  "Education & Training",
+  "Facilities & Maintenance",
+  "Utilities & Energy",
+  "Office & Supplies",
+  "Food & Catering",
+  "Security & Safety",
+  "Real Estate & Leasing",
+  "Environmental",
+  "Telecommunications",
+  "Scientific & Lab Services",
+  "Administrative Services",
+  "Financial Services",
+  "Research & Development",
+  "Manufacturing & Industrial",
+  "Miscellaneous",
+];
+
+function mapCanadianCategoryToCentral(code: string): string {
+  switch (code) {
+    case "CNST":
+      return "Construction";
+    case "GD":
+      return "Office & Supplies";
+    case "SRV":
+      return "Professional Services";
+    case "SRVTGD":
+      return "Facilities & Maintenance";
+    default:
+      return "Miscellaneous";
+  }
+}
+
+/**
+ * Maps Quebec category IDs to centralized categories.
+ */
+function mapQuebecCategoryToCentral(categorieId: number): string {
+  const map: Record<number, string> = {
+    52: "Construction",
+    53: "Construction",
+    51: "Construction",
+    39: "Engineering",
+    50: "IT & Software",
+    1: "Transportation",
+    20: "Facilities & Maintenance",
+    4: "Security & Safety",
+    27: "Manufacturing & Industrial",
+    5: "Telecommunications",
+    18: "Construction",
+    7: "Medical & Healthcare",
+    21: "IT & Software",
+    9: "Facilities & Maintenance",
+    26: "Manufacturing & Industrial",
+    8: "Utilities & Energy",
+    22: "Transportation",
+    28: "Manufacturing & Industrial",
+    10: "Security & Safety",
+    2: "Food & Catering",
+    24: "Food & Catering",
+    3: "Office & Supplies",
+    12: "Manufacturing & Industrial",
+    16: "Manufacturing & Industrial",
+    17: "Transportation",
+    13: "Medical & Healthcare",
+    25: "Miscellaneous",
+    19: "Office & Supplies",
+    23: "Office & Supplies",
+    6: "Construction",
+    29: "Office & Supplies",
+    14: "Scientific & Lab Services",
+    31: "Transportation",
+    15: "IT & Software",
+    30: "Office & Supplies",
+    11: "Transportation",
+    56: "Real Estate & Leasing",
+    55: "Real Estate & Leasing",
+    57: "Miscellaneous",
+    58: "Miscellaneous",
+    38: "Research & Development",
+    34: "Research & Development",
+    46: "Environmental",
+    42: "Environmental",
+    43: "Medical & Healthcare",
+    32: "Scientific & Lab Services",
+    33: "Facilities & Maintenance",
+    41: "Facilities & Maintenance",
+    47: "Financial Services",
+    35: "Administrative Services",
+    44: "Professional Services",
+    49: "Utilities & Energy",
+    40: "Telecommunications",
+    48: "Education & Training",
+    45: "Transportation",
+    36: "Real Estate & Leasing",
+    37: "Real Estate & Leasing",
+  };
+
+  return map[categorieId] || "Miscellaneous";
 }
