@@ -1,30 +1,12 @@
-import { useState, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import {
-  MagnifyingGlass,
-  ArrowsClockwise,
   CheckCircle,
   ArrowRight,
   Leaf,
-  MapPin,
-  Timer,
-  Target,
 } from "@phosphor-icons/react";
 
 export default function HeroSection() {
-  const [searchQuery, setSearchQuery] = useState("");
-  const [isSearching, setIsSearching] = useState(false);
   const navigate = useNavigate();
-
-  const handleSearch = useCallback(async () => {
-    setIsSearching(true);
-    if (!searchQuery.trim()) {
-      setIsSearching(false);
-      return;
-    }
-    console.log("Searching for:", searchQuery);
-    setTimeout(() => setIsSearching(false), 2000);
-  }, [searchQuery]);
 
   return (
     <section className="relative py-24 bg-surface overflow-hidden">
