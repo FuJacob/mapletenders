@@ -4,7 +4,6 @@ import {
   HeroSection,
   TrustStatsSection,
   ProblemSolutionSection,
-  KeyFeaturesSection,
   TestimonialsSection,
   FAQSection,
   FinalCTASection,
@@ -25,7 +24,6 @@ export default function LandingPage() {
       {showBanner && <WelcomeBanner closeBanner={handleCloseBanner} />}
       <HeroSection />
       <TrustStatsSection />
-      <KeyFeaturesSection />
       <ProblemSolutionSection />
       <TestimonialsSection />
       <FAQSection />

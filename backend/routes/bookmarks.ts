@@ -5,10 +5,6 @@ import { authenticateUser } from "../middleware/authenticateUser";
 const router = Router();
 router.use(authenticateUser);
 
-router.get("/count", (req, res) => {
-  bookmarkController.getNumberOfBookmarks(req, res);
-});
-
 /**
  * @route POST /bookmarks
  * @desc Create or update a bookmark for a tender notice
@@ -30,6 +26,12 @@ router.get("/count", (req, res) => {
 router.post("/", (req, res) => {
   bookmarkController.createBookmark(req, res);
 });
+
+
+router.get("/count", (req, res) => {
+  bookmarkController.getNumberOfBookmarks(req, res);
+});
+
 
 /**
  * @route DELETE /bookmarks/:userId/:tenderNoticeId

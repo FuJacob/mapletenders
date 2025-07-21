@@ -283,31 +283,12 @@ export class DatabaseService {
   }
 
   async signOutUser() {
-    try {
-      const { error } = await this.supabase.auth.signOut();
-
-      if (error) {
-        console.error("Error signing out user:", error);
-        throw error;
-      }
-
-      return { success: true };
-    } catch (error) {
-      console.error("Failed to sign out user:", error);
-      throw error;
-    }
+  
   }
 
   async getUser() {
     try {
-      const { data, error } = await this.supabase.auth.getUser();
-      console.log("data", data);
-      if (error) {
-        console.error("Error getting session:", error);
-        throw error;
-      }
-
-      return data;
+     
     } catch (error) {
       console.error("Failed to get session:", error);
       throw error;

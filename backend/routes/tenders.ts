@@ -9,9 +9,9 @@ router.use(authenticateUser);
  * @route GET /recommended
  * @returns {Object} Recommended tenders for the authenticated user
  */
-router.get("/recommended", (req, res) =>
-  tenderController.getRecommendedTenders(req, res)
-);
+router.get("/recommended", (req, res) => {
+  tenderController.getRecommendedTenders(req, res);
+});
 
 /**
  * Get all bookmarks

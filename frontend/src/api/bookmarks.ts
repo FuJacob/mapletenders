@@ -38,6 +38,7 @@ export interface BookmarkStatusResponse {
 export const getNumberOfBookmarks = async (): Promise<number> => {
   try {
     const response = await apiClient.get(`/bookmarks/count`);
+    console.log("GET /bookmarks/count", response.data);
     return response.data;
   } catch (error) {
     return handleApiError(error, "Get number of bookmarks");

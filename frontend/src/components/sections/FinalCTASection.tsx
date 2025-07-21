@@ -1,45 +1,50 @@
 import { useNavigate } from "react-router-dom";
-import { ArrowRight, CheckCircle } from "@phosphor-icons/react";
+import { ArrowRight } from "@phosphor-icons/react";
 
 export default function FinalCTASection() {
   const navigate = useNavigate();
 
   return (
-    <section className="py-24 px-6 bg-bg">
-      <div className="max-w-4xl mx-auto text-center">
-        <h2 className="text-4xl font-semibold text-text mb-6">
-          Ready to find better contracts faster?
-        </h2>
-        <p className="text-lg text-text-muted mb-10 max-w-2xl mx-auto">
-          Join Canadian contractors who save hours every week with AI-powered procurement intelligence.
-        </p>
-
-        <div className="flex flex-col sm:flex-row gap-4 justify-center mb-8">
-          <button
-            onClick={() => navigate("/sign-up")}
-            className="px-8 py-4 bg-primary text-white font-medium rounded-lg hover:opacity-90 transition-opacity flex items-center justify-center gap-2"
-          >
-            Start free trial
-            <ArrowRight className="w-5 h-5" />
-          </button>
-          <button className="px-8 py-4 border border-border text-text font-medium rounded-lg hover:bg-surface-muted transition-colors">
-            Book a demo
-          </button>
+    <section className="py-24 px-6 bg-primary">
+      <div className="max-w-7xl mx-auto flex flex-col lg:flex-row gap-12 items-center">
+        {/* Left side - Text content */}
+        <div className="flex-1 text-center lg:text-left">
+          <h2 className="text-6xl font-semibold text-white mb-6">
+            Ready to see <span>MapleTenders in action?</span>
+          </h2>
         </div>
 
-        <div className="flex items-center justify-center gap-8 text-sm text-text-muted">
-          <span className="flex items-center gap-2">
-            <CheckCircle className="w-4 h-4 text-success" />
-            Free 14-day trial
-          </span>
-          <span className="flex items-center gap-2">
-            <CheckCircle className="w-4 h-4 text-success" />
-            No credit card required
-          </span>
-          <span className="flex items-center gap-2">
-            <CheckCircle className="w-4 h-4 text-success" />
-            Cancel anytime
-          </span>
+        {/* Right side - Form box */}
+        <div className="flex-1 w-full max-w-md">
+          <div className="bg-surface rounded-2xl p-8">
+            <form className="space-y-4">
+              <div>
+                <input
+                  type="email"
+                  id="email"
+                  name="email"
+                  placeholder="Enter your email"
+                  className="w-full px-4 py-3 border border-border rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent"
+                  required
+                />
+              </div>
+              <button
+                type="submit"
+                className="w-full px-8 py-4 bg-primary text-white font-medium rounded-lg hover:bg-primary-dark transition-colors flex items-center justify-center gap-2"
+              >
+                Request Live Demo
+                <ArrowRight className="w-5 h-5" />
+              </button>
+            </form>
+            <div className="mt-6 text-center">
+              <button
+                onClick={() => navigate("/sign-up")}
+                className="text-primary hover:text-primary-dark font-medium transition-colors"
+              >
+                Or start your free trial →
+              </button>
+            </div>
+          </div>
         </div>
       </div>
     </section>

@@ -1,9 +1,4 @@
-import {
-  signOutUser,
-  getUser,
-  createOrUpdateProfile,
-  getProfile,
-} from "../../api";
+import { getUser, createOrUpdateProfile, getProfile } from "../../api";
 import {
   setUser,
   setProfile,
@@ -115,7 +110,12 @@ export const signIn =
 export const signOut = () => async (dispatch: AppDispatch) => {
   dispatch(setAuthLoading(true));
   try {
-    await signOutUser();
+    const { error } = await supabaseClient.auth.signOut();
+
+    if (error) {
+      console.error("Error getting session:", error);
+      throw error;
+    }
     dispatch(logout());
   } catch (error) {
     console.error("Sign out error:", error);
