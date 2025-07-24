@@ -27,6 +27,7 @@ interface TenderNoticeSidebarProps {
   onBookmark: () => void;
   formatDate: (dateString: string | null) => string;
   formatDateTime: (dateString: string | null) => string;
+  compact?: boolean;
 }
 
 export function TenderNoticeSidebar({
@@ -36,7 +37,97 @@ export function TenderNoticeSidebar({
   onBookmark,
   formatDate,
   formatDateTime,
+  compact = false,
 }: TenderNoticeSidebarProps) {
+  if (compact) {
+    return (
+      <div className="flex w-full bg-surface border border-border rounded-lg p-4 gap-4 text-sm">
+        {/* Dates */}
+        <div className="flex-1 space-y-1">
+          <h3 className="font-semibold text-text flex items-center gap-2 mb-1">
+            <Calendar className="w-4 h-4" /> Dates
+          </h3>
+          <p>
+            <span className="font-medium">Pub:</span>{" "}
+            {formatDate(tender.published_date)}
+          </p>
+          <p className={isUrgent ? "text-error font-medium" : ""}>
+            <span className="font-medium">Close:</span>{" "}
+            {formatDateTime(tender.closing_date)}
+          </p>
+          {tender.contract_start_date && (
+            <p>
+              <span className="font-medium">Start:</span>{" "}
+              {formatDate(tender.contract_start_date)}
+            </p>
+          )}
+        </div>
+
+        {/* Contact */}
+        {(tender.contact_name ||
+          tender.contact_email ||
+          tender.contact_phone) && (
+          <div className="flex-1 space-y-1">
+            <h3 className="font-semibold text-text flex items-center gap-2 mb-1">
+              <User className="w-4 h-4" /> Contact
+            </h3>
+            {tender.contact_name && (
+              <p>
+                <span className="font-medium">Name:</span> {tender.contact_name}
+              </p>
+            )}
+            {tender.contact_email && (
+              <p className="flex items-center gap-1">
+                <Envelope className="w-4 h-4" />
+                <a
+                  href={`mailto:${tender.contact_email}`}
+                  className="text-primary hover:underline"
+                >
+                  {tender.contact_email}
+                </a>
+              </p>
+            )}
+            {tender.contact_phone && (
+              <p className="flex items-center gap-1">
+                <Phone className="w-4 h-4" />
+                <a
+                  href={`tel:${tender.contact_phone}`}
+                  className="text-primary hover:underline"
+                >
+                  {tender.contact_phone}
+                </a>
+              </p>
+            )}
+          </div>
+        )}
+
+        {/* Entity */}
+        <div className="flex-1 space-y-1">
+          <h3 className="font-semibold text-text flex items-center gap-2 mb-1">
+            <Building className="w-4 h-4" /> Entity
+          </h3>
+          <p>
+            <span className="font-medium">Org:</span>{" "}
+            {tender.contracting_entity_name || "Not specified"}
+          </p>
+          {(tender.contracting_entity_city ||
+            tender.contracting_entity_province ||
+            tender.contracting_entity_country) && (
+            <p>
+              <span className="font-medium">Loc:</span>{" "}
+              {[
+                tender.contracting_entity_city,
+                tender.contracting_entity_province,
+                tender.contracting_entity_country,
+              ]
+                .filter(Boolean)
+                .join(", ")}
+            </p>
+          )}
+        </div>
+      </div>
+    );
+  }
   return (
     <div className="space-y-6">
       {/* Important Dates */}

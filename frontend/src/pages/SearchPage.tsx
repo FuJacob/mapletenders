@@ -172,12 +172,12 @@ export default function SearchPage() {
       {/* Main Content: 1/3 and 2/3 Layout */}
       <div className="flex-1 flex gap-6 min-h-0">
         {/* Left Side - Filters (1/3) */}
-        <div className="w-1/3 flex flex-col">
+        <div className="w-2/5 flex flex-col">
           <TenderNoticeFullContent tenderId={selectedTender} />
         </div>
 
         {/* Right Side - Search Results (2/3) */}
-        <div className="w-2/3">
+        <div className="w-3/5">
           <SearchResultsList
             setSelectedTender={setSelectedTender}
             searchResults={searchResults}

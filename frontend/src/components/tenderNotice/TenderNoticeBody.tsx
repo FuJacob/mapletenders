@@ -13,7 +13,7 @@ interface TenderNoticeBodyProps {
 
 export function TenderNoticeBody({ tender }: TenderNoticeBodyProps) {
   return (
-    <div className="space-y-6">
+    <>
       {/* Description */}
       <div className="bg-surface border border-border rounded-xl p-6">
         <h2 className="text-xl font-semibold text-text mb-4 flex items-center gap-2">
@@ -72,6 +72,6 @@ export function TenderNoticeBody({ tender }: TenderNoticeBodyProps) {
           </div>
         </div>
       </div>
-    </div>
+    </>
   );
 }

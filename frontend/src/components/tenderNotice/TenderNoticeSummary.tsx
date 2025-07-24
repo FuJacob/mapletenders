@@ -70,7 +70,7 @@ Delivery Location: ${tender.delivery_location || "Not specified"}
   }, [getTenderSummary]);
 
   return (
-    <div className="bg-primary border border-primary rounded-xl p-6 mb-8">
+    <div className="w-full bg-primary border border-primary rounded-xl p-6">
       <h2 className="text-xl font-semibold text-white mb-4 flex items-center gap-2">
         <Sparkle className="w-5 h-5" />
         Tender Notice Summary by BreezeAI

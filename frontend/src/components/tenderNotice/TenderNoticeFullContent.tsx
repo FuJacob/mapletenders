@@ -1,5 +1,4 @@
 import { useState, useCallback, useMemo, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
 import { FileText } from "@phosphor-icons/react";
 import {
   TenderNoticeHeader,
@@ -81,7 +80,7 @@ export function TenderNoticeFullContent({
     };
     fetchTender();
   }, [tenderId]);
-  const navigate = useNavigate();
+
   const [isBookmarked, setIsBookmarked] = useState(false);
   const handleBookmark = useCallback(() => {
     setIsBookmarked(!isBookmarked);
@@ -120,17 +119,12 @@ export function TenderNoticeFullContent({
           <div className="text-center">
             <FileText className="w-16 h-16 text-text-light mx-auto mb-4" />
             <h1 className="text-2xl font-bold text-text mb-2">
-              Tender Not Found
+              Select a Tender
             </h1>
             <p className="text-text-light mb-6">
-              The requested tender could not be found.
+              You can view the full tender details by selecting a tender from
+              the search results.
             </p>
-            <button
-              onClick={() => navigate("/search")}
-              className="bg-primary text-white px-6 py-2 rounded-lg hover:bg-primary-dark transition-colors"
-            >
-              Back to Search
-            </button>
           </div>
         </div>
       </div>
@@ -150,26 +144,24 @@ export function TenderNoticeFullContent({
           formatDate={formatDate}
           formatDateTime={formatDateTime}
           getStatusColor={getStatusColor}
+          compact={true}
         />
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <div className="flex flex-col items-center gap-2">
           {/* Main Content */}
-          <div className="lg:col-span-2">
-            <TenderNoticeSummary tender={tender} />
-            <TenderNoticeBody tender={tender} />
-          </div>
 
-          {/* Sidebar */}
-          <div>
-            <TenderNoticeSidebar
-              tender={tender}
-              isBookmarked={isBookmarked}
-              isUrgent={isUrgent}
-              onBookmark={handleBookmark}
-              formatDate={formatDate}
-              formatDateTime={formatDateTime}
-            />
-          </div>
+          <TenderNoticeSidebar
+            tender={tender}
+            isBookmarked={isBookmarked}
+            isUrgent={isUrgent}
+            onBookmark={handleBookmark}
+            formatDate={formatDate}
+            formatDateTime={formatDateTime}
+            compact={true}
+          />
+
+          <TenderNoticeSummary tender={tender} />
+          <TenderNoticeBody tender={tender} />
         </div>
       </div>
     </div>

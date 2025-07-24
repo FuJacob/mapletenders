@@ -32,6 +32,7 @@ interface TenderNoticeHeaderProps {
   formatDate: (dateString: string | null) => string;
   formatDateTime: (dateString: string | null) => string;
   getStatusColor: (status: string | null) => string;
+  compact?: boolean;
 }
 
 export function TenderNoticeHeader({
@@ -44,8 +45,60 @@ export function TenderNoticeHeader({
   formatDate,
   formatDateTime,
   getStatusColor,
+  compact = false,
 }: TenderNoticeHeaderProps) {
   const navigate = useNavigate();
+  if (compact) {
+    return (
+      <div className="bg-surface border border-border rounded-lg p-4 mb-4 text-sm">
+        <div className="flex justify-between items-start mb-2">
+          <h1 className="text-lg font-semibold text-text">{tender.title}</h1>
+          <button
+            onClick={onBookmark}
+            className={`p-1 rounded-md transition-colors ${
+              isBookmarked ? "text-primary" : "text-text-light hover:text-text"
+            }`}
+            aria-label={isBookmarked ? "Remove bookmark" : "Add bookmark"}
+          >
+            <Bookmark className="w-4 h-4" />
+          </button>
+        </div>
+        <div className="flex gap-2 mb-2">
+          <span
+            className={`px-2 py-0.5 rounded text-xs font-medium border ${getStatusColor(
+              tender.status
+            )}`}
+          >
+            {tender.status || "Status Unknown"}
+          </span>
+          <span className="px-2 py-0.5 bg-info/10 text-info rounded text-xs font-medium">
+            {tender.procurement_type}
+          </span>
+          {closingDays && (
+            <span
+              className={`ml-1 px-1.5 py-0.5 rounded text-[10px] font-medium ${
+                isUrgent
+                  ? "bg-error/10 text-error"
+                  : "bg-success/10 text-success"
+              }`}
+            >
+              {closingDays}
+            </span>
+          )}
+        </div>
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-3">
+          <div className="flex items-center gap-1 text-text-light text-xs">
+            <Building className="w-3 h-3" />
+            <span>{tender.contracting_entity_name}</span>
+          </div>
+          <div className="flex items-center gap-1 text-text-light text-xs">
+            <Building className="w-3 h-3" />
+            <span>{formatDate(tender.published_date)}</span>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <>
@@ -115,9 +168,7 @@ export function TenderNoticeHeader({
                 }`}
               >
                 <Clock className="w-4 h-4" />
-                <span>
-                  Closes: {formatDateTime(tender.closing_date)}
-                </span>
+                <span>Closes: {formatDateTime(tender.closing_date)}</span>
                 {closingDays && (
                   <span
                     className={`ml-2 px-2 py-1 rounded-full text-xs font-medium ${
