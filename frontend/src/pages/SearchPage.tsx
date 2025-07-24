@@ -1,10 +1,6 @@
 import { useState, useEffect } from "react";
 import { useSearchParams } from "react-router-dom";
-import {
-  SearchSection,
-  SearchFilters,
-  SearchResultsList,
-} from "../components/search";
+import { SearchSection, SearchResultsList } from "../components/search";
 import { searchTenders } from "../api";
 import { createBookmark } from "../api/bookmarks";
 import { useAuth } from "../hooks/auth";
@@ -99,7 +95,7 @@ export default function SearchPage() {
     if (initialQuery.trim()) {
       performSearch(initialQuery);
     }
-  }, [initialQuery]);
+  }, [initialQuery, performSearch]);
 
   // Handle search submission
   const handleSubmitSearch = () => {
@@ -138,11 +134,6 @@ export default function SearchPage() {
         )
       );
     }
-  };
-
-  // Apply filters
-  const applyFilters = () => {
-    performSearch();
   };
 
   // Reset filters
