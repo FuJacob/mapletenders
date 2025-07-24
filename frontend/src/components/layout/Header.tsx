@@ -21,6 +21,7 @@ export default function Header({
   const { user, profile, isAuthenticated } = useAuth();
 
   const showViewSwitcher = [
+    "/dashboard",
     "/search",
     "/table",
     "/rfp-analysis",
@@ -40,7 +41,7 @@ export default function Header({
         {/* Logo/Brand Section */}
         <div className="flex-shrink-0">
           <Link
-            to={isAuthenticated ? "/home" : "/"}
+            to={isAuthenticated ? "/dashboard" : "/"}
             aria-label="Home"
             className="flex items-center"
           >

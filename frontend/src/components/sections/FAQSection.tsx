@@ -43,12 +43,12 @@ export default function FAQSection() {
   return (
     <section className="bg-primary">
       <div className="py-20 px-6 bg-surface rounded-t-[8rem]">
-        <div className="max-w-7xl mx-auto grid grid-cols-3 gap-6">
-          <div className="flex flex-col gap-4 justify-center">
-            <h2 className="text-5xl font-semibold text-accent mb-2">
+        <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-3 gap-6">
+          <div className="flex flex-col gap-4 justify-center text-center lg:text-left">
+            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-semibold text-accent mb-2">
               Frequently Asked Questions
             </h2>
-            <p className="text-text-muted">
+            <p className="text-sm sm:text-base text-text-muted">
               Everything you need to know about MapleTenders
             </p>
           </div>
@@ -56,18 +56,18 @@ export default function FAQSection() {
           {faqs.map((faq, index) => (
             <div
               key={index}
-              className={`border border-border rounded-lg p-6 ${
+              className={`border border-border rounded-lg p-4 sm:p-6 ${
                 faq.grow && faq.grow === 2
-                  ? "col-span-2"
+                  ? "lg:col-span-2"
                   : faq.grow === 3
-                  ? "col-span-3"
-                  : "col-span-1"
+                  ? "lg:col-span-3"
+                  : "lg:col-span-1"
               }`}
             >
-              <h3 className="text-lg font-semibold text-text mb-3">
+              <h3 className="text-base sm:text-lg font-semibold text-text mb-2 sm:mb-3">
                 {faq.question}
               </h3>
-              <p className="text-text-muted leading-relaxed">{faq.answer}</p>
+              <p className="text-sm sm:text-base text-text-muted leading-relaxed">{faq.answer}</p>
             </div>
           ))}
         </div>

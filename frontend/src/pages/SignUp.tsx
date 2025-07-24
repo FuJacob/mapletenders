@@ -90,19 +90,22 @@ export default function SignUp() {
     {
       icon: <Lightning className="w-6 h-6 text-success" />,
       title: "Find opportunities 10x faster",
-      description: "Our AI understands your business and finds relevant Canadian government contracts instantly.",
+      description:
+        "Our AI understands your business and finds relevant Canadian government contracts instantly.",
       iconBg: "bg-success/10",
     },
     {
       icon: <CheckCircle className="w-6 h-6 text-primary" />,
       title: "95% time saved on search",
-      description: "AI-powered matching helps you focus on contracts you can actually win.",
+      description:
+        "AI-powered matching helps you focus on contracts you can actually win.",
       iconBg: "bg-primary/10",
     },
     {
       icon: <Leaf className="w-6 h-6 text-maple" />,
       title: "Never miss deadlines",
-      description: "Smart alerts ensure you're always first to know about new opportunities.",
+      description:
+        "Smart alerts ensure you're always first to know about new opportunities.",
       iconBg: "bg-maple/10",
     },
   ];
@@ -116,8 +119,6 @@ export default function SignUp() {
           benefits={signupBenefits}
         />
       }
-      showBackButton={true}
-      backTo="/"
     >
       {/* Header */}
       <div className="text-center mb-8">

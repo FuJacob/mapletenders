@@ -10,6 +10,11 @@ export class DatabaseService {
       process.env.SUPABASE_SERVICE_KEY || ""
     );
   }
+
+  async requestLiveDemo(email: string) {
+    return await this.supabase.from("live_demo_requests").insert({ email });
+  }
+
   async getNumberOfBookmarks(userId: string): Promise<number> {
     const { count } = await this.supabase
       .from("bookmarks")
@@ -282,13 +287,10 @@ export class DatabaseService {
     }
   }
 
-  async signOutUser() {
-  
-  }
+  async signOutUser() {}
 
   async getUser() {
     try {
-     
     } catch (error) {
       console.error("Failed to get session:", error);
       throw error;

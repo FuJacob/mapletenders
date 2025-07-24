@@ -10,15 +10,15 @@ export default function ProblemSolutionSection() {
             <Leaf className="w-3 h-3" />
             The Canadian procurement challenge
           </div>
-          <h2 className="text-4xl font-bold text-text mb-6">
+          <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-text mb-6">
             Stop wasting time on manual searches
           </h2>
-          <p className="text-xl text-text-muted max-w-3xl mx-auto">
+          <p className="text-lg sm:text-xl text-text-muted max-w-3xl mx-auto">
             Canadian contractors lose valuable opportunities because procurement discovery takes too long and lacks precision.
           </p>
         </div>
 
-        <div className="grid lg:grid-cols-2 gap-16 items-center">
+        <div className="grid lg:grid-cols-2 gap-8 lg:gap-16 items-center">
           {/* Problem Side */}
           <div className="order-2 lg:order-1">
             <div className="flex items-center gap-3 mb-6">
@@ -27,7 +27,7 @@ export default function ProblemSolutionSection() {
               </div>
               <span className="text-sm font-semibold text-accent uppercase tracking-wider">Current Process</span>
             </div>
-            <h3 className="text-3xl font-bold text-text mb-6">
+            <h3 className="text-2xl sm:text-3xl font-bold text-text mb-6">
               The procurement search problem
             </h3>
             <div className="space-y-4 mb-8">
@@ -45,14 +45,14 @@ export default function ProblemSolutionSection() {
               </div>
             </div>
             
-            <div className="grid grid-cols-2 gap-4">
-              <div className="bg-surface-warm p-4 rounded-xl border border-border-warm text-center">
-                <div className="text-2xl font-bold text-accent mb-1">15+ hrs</div>
-                <div className="text-sm text-text-muted">wasted weekly on manual search</div>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div className="bg-surface-warm p-3 sm:p-4 rounded-xl border border-border-warm text-center">
+                <div className="text-xl sm:text-2xl font-bold text-accent mb-1">15+ hrs</div>
+                <div className="text-xs sm:text-sm text-text-muted">wasted weekly on manual search</div>
               </div>
-              <div className="bg-surface-warm p-4 rounded-xl border border-border-warm text-center">
-                <div className="text-2xl font-bold text-accent mb-1">70%</div>
-                <div className="text-sm text-text-muted">of relevant opportunities missed</div>
+              <div className="bg-surface-warm p-3 sm:p-4 rounded-xl border border-border-warm text-center">
+                <div className="text-xl sm:text-2xl font-bold text-accent mb-1">70%</div>
+                <div className="text-xs sm:text-sm text-text-muted">of relevant opportunities missed</div>
               </div>
             </div>
           </div>
@@ -65,7 +65,7 @@ export default function ProblemSolutionSection() {
               </div>
               <span className="text-sm font-semibold text-success uppercase tracking-wider">Mapletenders Way</span>
             </div>
-            <h3 className="text-3xl font-bold text-text mb-6">
+            <h3 className="text-2xl sm:text-3xl font-bold text-text mb-6">
               AI-powered procurement intelligence
             </h3>
             <div className="space-y-4 mb-8">
@@ -89,14 +89,14 @@ export default function ProblemSolutionSection() {
               </div>
             </div>
             
-            <div className="grid grid-cols-2 gap-4 mb-8">
-              <div className="bg-surface p-4 rounded-xl border border-success/20 text-center">
-                <div className="text-2xl font-bold text-success mb-1">2 min</div>
-                <div className="text-sm text-text-muted">daily time investment</div>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-8">
+              <div className="bg-surface p-3 sm:p-4 rounded-xl border border-success/20 text-center">
+                <div className="text-xl sm:text-2xl font-bold text-success mb-1">2 min</div>
+                <div className="text-xs sm:text-sm text-text-muted">daily time investment</div>
               </div>
-              <div className="bg-surface p-4 rounded-xl border border-success/20 text-center">
-                <div className="text-2xl font-bold text-success mb-1">95%</div>
-                <div className="text-sm text-text-muted">more opportunities found</div>
+              <div className="bg-surface p-3 sm:p-4 rounded-xl border border-success/20 text-center">
+                <div className="text-xl sm:text-2xl font-bold text-success mb-1">95%</div>
+                <div className="text-xs sm:text-sm text-text-muted">more opportunities found</div>
               </div>
             </div>
 

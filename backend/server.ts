@@ -12,6 +12,7 @@ import chatRoutes from "./routes/chat";
 import bookmarkRoutes from "./routes/bookmarks";
 import subscriptionRoutes from "./routes/subscriptions";
 import scrapingRoutes from "./routes/scraping";
+import requestRoutes from "./routes/request";
 
 const app = express();
 app.use(cors({ origin: "*" })); // Allow all origins
@@ -36,6 +37,7 @@ app.use("/chat", chatRoutes);
 app.use("/bookmarks", bookmarkRoutes);
 app.use("/subscriptions", subscriptionRoutes);
 app.use("/scraping", scrapingRoutes);
+app.use("/request", requestRoutes);
 
 /**
  * Scraping test playground page

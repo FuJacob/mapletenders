@@ -47,8 +47,6 @@ export default function SignIn() {
   return (
     <AuthFormLayout
       sidebarContent={<AuthBenefitsSection />}
-      showBackButton={true}
-      backTo="/"
     >
       {/* Header */}
       <div className="text-center mb-8">

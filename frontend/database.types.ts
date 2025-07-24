@@ -59,6 +59,18 @@ export type Database = {
           },
         ]
       }
+      live_demo_requests: {
+        Row: {
+          email: string
+        }
+        Insert: {
+          email: string
+        }
+        Update: {
+          email?: string
+        }
+        Relationships: []
+      }
       metadata: {
         Row: {
           key: string

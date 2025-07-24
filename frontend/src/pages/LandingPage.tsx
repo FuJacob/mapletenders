@@ -7,13 +7,14 @@ import {
   TestimonialsSection,
   FAQSection,
   FinalCTASection,
+  FeaturesSection,
 } from "../components/sections";
 
 export default function LandingPage() {
   const [showBanner, setShowBanner] = useState(
     localStorage.getItem("maplebids:welcomeBannerClosed") !== "true"
   );
-  
+
   const handleCloseBanner = useCallback(() => {
     setShowBanner(false);
     localStorage.setItem("maplebids:welcomeBannerClosed", "true");
@@ -25,6 +26,7 @@ export default function LandingPage() {
       <HeroSection />
       <TrustStatsSection />
       <ProblemSolutionSection />
+      <FeaturesSection />
       <TestimonialsSection />
       <FAQSection />
       <FinalCTASection />

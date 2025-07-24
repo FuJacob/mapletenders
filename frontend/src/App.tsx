@@ -31,6 +31,7 @@ import CalendarPage from "./pages/CalendarPage";
 import BookmarksPage from "./pages/BookmarksPage";
 import SearchPage from "./pages/SearchPage";
 import TablePage from "./pages/TablePage";
+import DashboardPage from "./pages/DashboardPage";
 
 import { useAuth } from "./hooks/auth";
 export function App() {
@@ -69,6 +70,7 @@ export function App() {
         </Route>
         <Route element={<ProtectedRoutes />}>
           <Route element={<OnboardingRequiredRoutes />}>
+            <Route path="/dashboard" element={<DashboardPage />} />
             <Route path="/table-view" element={<TableView />} />
             <Route path="/home" element={<Home />} />
             <Route path="/search" element={<SearchPage />} />

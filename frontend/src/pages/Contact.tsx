@@ -13,7 +13,6 @@ import {
   Calendar,
   ArrowRight,
   Leaf,
-  ArrowLeft,
 } from "@phosphor-icons/react";
 
 export default function Contact() {
@@ -99,7 +98,8 @@ export default function Contact() {
     {
       icon: <Calendar className="w-5 h-5 text-secondary" />,
       title: "Training & Onboarding",
-      description: "Learn how to maximize your procurement success with Mapletenders",
+      description:
+        "Learn how to maximize your procurement success with Mapletenders",
       cta: "Schedule training",
     },
   ];
@@ -116,15 +116,10 @@ export default function Contact() {
               Message sent successfully!
             </h1>
             <p className="text-text-muted mb-8">
-              Thanks for reaching out. We'll get back to you within 4 hours during business hours.
+              Thanks for reaching out. We'll get back to you within 4 hours
+              during business hours.
             </p>
             <div className="flex gap-4 justify-center">
-              <Link
-                to="/"
-                className="px-6 py-3 bg-primary text-white rounded-lg font-medium hover:bg-primary-dark transition-colors"
-              >
-                Back to Home
-              </Link>
               <button
                 onClick={() => {
                   setIsSubmitted(false);
@@ -152,27 +147,19 @@ export default function Contact() {
     <div className="min-h-screen bg-bg">
       {/* Hero Section */}
       <section className="relative py-20 px-6 bg-surface overflow-hidden">
-
         <div className="max-w-4xl mx-auto relative z-10">
-          <Link
-            to="/"
-            className="inline-flex items-center gap-2 text-sm text-text-muted hover:text-accent transition-colors mb-8"
-          >
-            <ArrowLeft className="w-4 h-4" />
-            Back to home
-          </Link>
-
           <div className="text-center">
             <div className="inline-flex items-center gap-2 px-3 py-1 bg-maple/10 text-maple border border-maple/20 rounded-full text-sm font-medium mb-6">
               <Leaf className="w-3 h-3" />
               Canadian support team
             </div>
-            
+
             <h1 className="text-4xl md:text-5xl font-bold mb-6 text-text">
               Get in touch with Mapletenders
             </h1>
             <p className="text-xl text-text-muted mb-12 max-w-3xl mx-auto">
-              Have questions about winning government contracts? Our Canadian team is here to help you succeed in procurement.
+              Have questions about winning government contracts? Our Canadian
+              team is here to help you succeed in procurement.
             </p>
 
             {/* Quick Stats */}
@@ -180,12 +167,16 @@ export default function Contact() {
               <div className="text-center p-4 bg-surface-warm rounded-xl border border-border-warm">
                 <Clock className="w-8 h-8 text-accent mx-auto mb-2" />
                 <div className="font-semibold text-text">4 hour response</div>
-                <div className="text-sm text-text-muted">for sales inquiries</div>
+                <div className="text-sm text-text-muted">
+                  for sales inquiries
+                </div>
               </div>
               <div className="text-center p-4 bg-surface-warm rounded-xl border border-border-warm">
                 <Users className="w-8 h-8 text-success mx-auto mb-2" />
                 <div className="font-semibold text-text">500+ businesses</div>
-                <div className="text-sm text-text-muted">trust Mapletenders</div>
+                <div className="text-sm text-text-muted">
+                  trust Mapletenders
+                </div>
               </div>
               <div className="text-center p-4 bg-surface-warm rounded-xl border border-border-warm">
                 <CheckCircle className="w-8 h-8 text-maple mx-auto mb-2" />
@@ -500,24 +491,6 @@ export default function Contact() {
           </Link>
         </div>
       </section>
-
-      {/* Footer */}
-      <footer className="py-8 px-6 border-t text-center text-sm">
-        <div className="max-w-4xl mx-auto flex justify-between items-center">
-          <div>© 2025 Mapletenders</div>
-          <div className="flex gap-6">
-            <Link to="/privacy" className="hover:underline text-text-light">
-              Privacy
-            </Link>
-            <Link to="/terms" className="hover:underline text-text-light">
-              Terms
-            </Link>
-            <Link to="/about" className="hover:underline text-text-light">
-              About
-            </Link>
-          </div>
-        </div>
-      </footer>
     </div>
   );
 }

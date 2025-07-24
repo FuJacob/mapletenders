@@ -6,6 +6,7 @@ import {
   CreditCardIcon,
   Calendar,
   Bookmark,
+  House,
 } from "@phosphor-icons/react";
 import { Link, useLocation } from "react-router-dom";
 
@@ -24,6 +25,17 @@ const ViewSwitcher: React.FC<ViewSwitcherProps> = ({
     <div
       className={`flex gap-1 rounded-lg p-1 bg-background border border-border ${className}`}
     >
+      <Link
+        to="/dashboard"
+        className={`px-3 py-2 rounded-md transition-all duration-200 flex items-center gap-2 text-sm ${
+          isActive("/dashboard")
+            ? "bg-primary text-white"
+            : "text-text-light hover:bg-border"
+        }`}
+      >
+        <House className="w-4 h-4" />
+        Dashboard
+      </Link>
       <Link
         to="/search"
         className={`px-3 py-2 rounded-md transition-all duration-200 flex items-center gap-2 text-sm ${
