@@ -61,17 +61,13 @@ export default function ProfileDropdown({
     <div className="relative" ref={menuRef}>
       <button
         onClick={() => setIsMenuOpen(!isMenuOpen)}
-        className="flex items-center gap-2 p-2 rounded-lg hover:bg-border transition-colors"
+        className="flex items-center text-lg gap-2 p-2 rounded-lg hover:bg-border transition-colors"
         aria-haspopup="menu"
         aria-expanded={isMenuOpen}
         aria-label="User menu"
       >
-        <span className="flex flex-col items-start">
-          <span className="text-sm text-text-light leading-none">
-            Welcome back
-          </span>
-          <span className="text-lg text-text font-bold">{displayName}</span>
-        </span>
+        <span className=" text-text-light">Welcome back,</span>{" "}
+        <span className=" text-text font-bold">{displayName}</span>
         <CaretDown className="w-4 h-4 text-text-light ml-2" />
       </button>
 

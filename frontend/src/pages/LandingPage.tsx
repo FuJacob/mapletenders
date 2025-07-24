@@ -1,5 +1,6 @@
 import { useCallback, useState } from "react";
 import { WelcomeBanner } from "../components";
+import { LandingPageContainer } from "../components/layout";
 import {
   HeroSection,
   TrustStatsSection,
@@ -21,7 +22,7 @@ export default function LandingPage() {
   }, []);
 
   return (
-    <div className="min-h-screen bg-bg">
+    <LandingPageContainer>
       {showBanner && <WelcomeBanner closeBanner={handleCloseBanner} />}
       <HeroSection />
       <TrustStatsSection />
@@ -30,6 +31,6 @@ export default function LandingPage() {
       <TestimonialsSection />
       <FAQSection />
       <FinalCTASection />
-    </div>
+    </LandingPageContainer>
   );
 }

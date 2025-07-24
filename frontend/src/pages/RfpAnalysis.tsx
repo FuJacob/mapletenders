@@ -11,6 +11,7 @@ import {
   FileText,
 } from "@phosphor-icons/react";
 import { PageHeader } from "../components/ui";
+import { AppContainer } from "../components/layout";
 
 interface UploadedFile {
   file: File;
@@ -176,8 +177,7 @@ export default function RfpAnalysis() {
   };
 
   return (
-    <div className="min-h-screen bg-background py-8">
-      <div className="max-w-7xl mx-auto px-6">
+    <AppContainer>
         <PageHeader
           icon={<FileText className="w-10 h-10 text-primary" />}
           title="RFP Analysis"
@@ -413,7 +413,6 @@ export default function RfpAnalysis() {
           </p>
         </div>
       )}
-      </div>
-    </div>
+    </AppContainer>
   );
 }

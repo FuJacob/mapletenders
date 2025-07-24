@@ -5,4 +5,6 @@ export { default as StatsGrid } from './StatsGrid';
 export { default as UrgentDeadlines } from './UrgentDeadlines';
 export { default as SearchModal } from './SearchModal';
 export { default as QuickFilters } from './QuickFilters';
+export { default as SearchFilters } from './SearchFilters';
+export { default as SearchResultsList } from './SearchResultsList';
 export type { ViewMode } from './ViewModeToggle';

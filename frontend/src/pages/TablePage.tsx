@@ -4,14 +4,14 @@ import { useAuth } from "../hooks/auth";
 import { selectTenders } from "../features/tenders/tendersSelectors";
 import { Table } from "@phosphor-icons/react";
 import { PageHeader } from "../components/ui";
+import { AppContainer } from "../components/layout";
 
 export default function TablePage() {
   const { profile } = useAuth();
   const tenders = useAppSelector(selectTenders);
 
   return (
-    <div className="min-h-screen bg-background py-8">
-      <div className="max-w-7xl mx-auto px-6">
+    <AppContainer>
         <PageHeader
           icon={<Table className="w-10 h-10 text-primary" />}
           title="Tender Table"
@@ -44,7 +44,6 @@ export default function TablePage() {
         </div>
 
         <TenderTable />
-      </div>
-    </div>
+    </AppContainer>
   );
 }

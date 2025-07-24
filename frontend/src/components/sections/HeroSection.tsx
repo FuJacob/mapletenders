@@ -1,15 +1,11 @@
 import { useNavigate } from "react-router-dom";
-import {
-  CheckCircle,
-  ArrowRight,
-  Leaf,
-} from "@phosphor-icons/react";
+import { CheckCircle, ArrowRight, Leaf } from "@phosphor-icons/react";
 
 export default function HeroSection() {
   const navigate = useNavigate();
 
   return (
-    <section className="relative py-24 bg-surface overflow-hidden">
+    <section className="relative py-24 overflow-hidden">
       <div className=" px-6 max-w-7xl mx-auto relative z-10">
         <div className="flex flex-col lg:flex-row gap-8 mb-16">
           <div className="w-full lg:w-3/4">

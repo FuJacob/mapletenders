@@ -28,6 +28,7 @@ import {
 import TenderEventModal from "../components/calendar/TenderEventModal";
 import CalendarLoadingState from "../components/calendar/CalendarLoadingState";
 import CalendarEmptyState from "../components/calendar/CalendarEmptyState";
+import { AppContainer } from "../components/layout";
 
 const localizer = momentLocalizer(moment);
 
@@ -132,63 +133,56 @@ export default function CalendarPage() {
   // Show loading state
   if (loading) {
     return (
-      <div className="min-h-screen bg-background py-8">
-        <div className="max-w-7xl mx-auto px-6">
-          <PageHeader
-            icon={<CalendarIcon className="w-10 h-10 text-primary" />}
-            title="Calendar"
-            description="Track important dates, deadlines, and procurement events"
-          />
-          <CalendarLoadingState />
-        </div>
-      </div>
+      <AppContainer>
+        <PageHeader
+          icon={<CalendarIcon className="w-10 h-10 text-primary" />}
+          title="Calendar"
+          description="Track important dates, deadlines, and procurement events"
+        />
+        <CalendarLoadingState />
+      </AppContainer>
     );
   }
 
   // Show error state
   if (error) {
     return (
-      <div className="min-h-screen bg-background py-8">
-        <div className="max-w-7xl mx-auto px-6">
-          <PageHeader
-            icon={<CalendarIcon className="w-10 h-10 text-primary" />}
-            title="Calendar"
-            description="Track important dates, deadlines, and procurement events"
-          />
-          <div className="bg-surface rounded-lg border border-border shadow-sm p-8 text-center">
-            <div className="text-error mb-4">⚠️ Error loading calendar</div>
-            <p className="text-text-muted mb-4">{error}</p>
-            <button
-              onClick={loadBookmarks}
-              className="px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary-dark transition-colors"
-            >
-              Try Again
-            </button>
-          </div>
+      <AppContainer>
+        <PageHeader
+          icon={<CalendarIcon className="w-10 h-10 text-primary" />}
+          title="Calendar"
+          description="Track important dates, deadlines, and procurement events"
+        />
+        <div className="bg-surface rounded-lg border border-border shadow-sm p-8 text-center">
+          <div className="text-error mb-4">⚠️ Error loading calendar</div>
+          <p className="text-text-muted mb-4">{error}</p>
+          <button
+            onClick={loadBookmarks}
+            className="px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary-dark transition-colors"
+          >
+            Try Again
+          </button>
         </div>
-      </div>
+      </AppContainer>
     );
   }
 
   // Show empty state
   if (events.length === 0) {
     return (
-      <div className="min-h-screen bg-background py-8">
-        <div className="max-w-7xl mx-auto px-6">
-          <PageHeader
-            icon={<CalendarIcon className="w-10 h-10 text-primary" />}
-            title="Calendar"
-            description="Track important dates, deadlines, and procurement events"
-          />
-          <CalendarEmptyState />
-        </div>
-      </div>
+      <AppContainer>
+        <PageHeader
+          icon={<CalendarIcon className="w-10 h-10 text-primary" />}
+          title="Calendar"
+          description="Track important dates, deadlines, and procurement events"
+        />
+        <CalendarEmptyState />
+      </AppContainer>
     );
   }
 
   return (
-    <div className="min-h-screen bg-background py-8">
-      <div className="max-w-7xl mx-auto px-6">
+    <AppContainer>
         <PageHeader
           icon={<CalendarIcon className="w-10 h-10 text-primary" />}
           title="Calendar"
@@ -337,7 +331,6 @@ export default function CalendarPage() {
           onToggleBookmark={handleToggleBookmark}
           isBookmarked={true}
         />
-      </div>
-    </div>
+    </AppContainer>
   );
 }

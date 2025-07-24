@@ -1,142 +1,200 @@
 import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
-import { MagnifyingGlass } from "@phosphor-icons/react";
-import RecommendedTenders from "../components/dashboard/RecommendedTenders";
-import RecentActivity from "../components/dashboard/RecentActivity";
-import BreezeChat from "../components/dashboard/BreezeChat";
-import { PageHeader } from "../components/ui";
-import {
-  SearchSection,
-  ViewModeToggle,
-  QuickActionsSidebar,
-  StatsGrid,
-  UrgentDeadlines,
-} from "../components/search";
-import type { ViewMode } from "../components/search";
-import { getNumberOfBookmarks } from "../api/bookmarks";
-import { getRecommendedTenders } from "../api/tenders";
-import type { TenderSearchResult } from "../api/types";
-
-interface StatsData {
-  newTenders: number;
-  bookmarks: number;
-  activeAlerts: number;
-  deadlinesThisWeek: number;
-}
+import { useSearchParams } from "react-router-dom";
+import { SearchSection, SearchFilters, SearchResultsList } from "../components/search";
+import { searchTenders } from "../api";
+import { createBookmark } from "../api/bookmarks";
+import { useAuth } from "../hooks/auth";
+import type { TenderSearchResult, SearchTendersResponse } from "../api/types";
 
 export default function SearchPage() {
-  const navigate = useNavigate();
-  const [searchQuery, setSearchQuery] = useState("");
-  const [mainViewMode, setMainViewMode] = useState<ViewMode>("recommended");
-  const [stats, setStats] = useState<StatsData>({
-    newTenders: 0,
-    bookmarks: 0,
-    activeAlerts: 0,
-    deadlinesThisWeek: 0,
-  });
-  const [recommendedTenders, setRecommendedTenders] = useState<
-    TenderSearchResult[]
-  >([]);
-  useEffect(() => {
-    const fetchStats = async () => {
-      const bookmarksResponse = await getNumberOfBookmarks();
-      setStats(prevStats => ({ ...prevStats, bookmarks: bookmarksResponse }));
-    };
-    fetchStats();
-  }, []);
+  const [searchParams, setSearchParams] = useSearchParams();
+  const { user } = useAuth();
+  const userId = user?.id;
 
-  useEffect(() => {
-    const fetchRecommendedTenders = async () => {
-      const recommendedTenders = await getRecommendedTenders();
-      setRecommendedTenders(recommendedTenders.results);
-      console.log("recommendedTenders", recommendedTenders);
-    };
-    fetchRecommendedTenders();
-  }, []);
+  // Search query state
+  const [searchQuery, setSearchQuery] = useState(searchParams.get("q") || "");
+  const [initialQuery] = useState(searchParams.get("q") || "");
 
-  // Mock data for demonstration - replace with real data later
-  const handleSubmitSearch = () => {
-    console.log("Searching for:", searchQuery);
-    navigate(`/search-results?q=${encodeURIComponent(searchQuery)}`);
-  };
+  // Search results state
+  const [searchResults, setSearchResults] = useState<TenderSearchResult[]>([]);
+  const [searchResponse, setSearchResponse] = useState<SearchTendersResponse | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
 
-  const mockRecentActivity = [
-    {
-      id: 1,
-      action: "Viewed",
-      title: "Cloud Services RFP",
-      time: "2025-07-08T14:00:00Z",
-      description:
-        "Comprehensive cloud infrastructure migration services for government agencies. This RFP covers multi-cloud strategy implementation and security compliance.",
-      location: "Toronto, ON",
-      publishDate: "2025-07-01",
-      closingDate: "2025-07-25",
-    },
-    {
-      id: 2,
-      action: "Alert",
-      title: "New IT tender matching your profile",
-      time: "2025-07-06T16:45:00Z",
-      description:
-        "Enterprise software development and system integration services. Focus on agile methodologies and DevOps practices.",
-      location: "Ottawa, ON",
-      publishDate: "2025-07-05",
-      closingDate: "2025-08-05",
-    },
-  ];
+  // Filter states
+  const [selectedRegions, setSelectedRegions] = useState<string[]>([]);
+  const [selectedProcurementMethod, setSelectedProcurementMethod] = useState<string>("");
+  const [selectedProcurementCategories, setSelectedProcurementCategories] = useState<string[]>([]);
+  const [selectedNoticeTypes, setSelectedNoticeTypes] = useState<string[]>([]);
+  const [selectedStatus, setSelectedStatus] = useState<string[]>([]);
+  const [selectedContractingEntities, setSelectedContractingEntities] = useState<string[]>([]);
+  const [closingDateAfter, setClosingDateAfter] = useState<string>("");
+  const [closingDateBefore, setClosingDateBefore] = useState<string>("");
+  const [publicationDateAfter, setPublicationDateAfter] = useState<string>("");
+  const [publicationDateBefore, setPublicationDateBefore] = useState<string>("");
 
   const exampleSearches = [
     "IT services contracts in Ontario under $100K",
     "Construction projects in Alberta over $500K",
     "Consulting opportunities closing this month",
     "Software development with government agencies",
+    "Cybersecurity services for government",
+    "Cloud infrastructure modernization",
   ];
 
+  // Perform search function
+  const performSearch = async (searchQueryParam?: string) => {
+    const queryToSearch = searchQueryParam || searchQuery;
+    if (!queryToSearch.trim()) return;
+
+    setIsLoading(true);
+    try {
+      const response = await searchTenders({
+        q: queryToSearch,
+        regions: selectedRegions.length > 0 ? selectedRegions : undefined,
+        procurement_method: selectedProcurementMethod || undefined,
+        procurement_category: selectedProcurementCategories.length > 0 ? selectedProcurementCategories : undefined,
+        notice_type: selectedNoticeTypes.length > 0 ? selectedNoticeTypes : undefined,
+        status: selectedStatus.length > 0 ? selectedStatus : undefined,
+        contracting_entity_name: selectedContractingEntities.length > 0 ? selectedContractingEntities : undefined,
+        closing_date_after: closingDateAfter || undefined,
+        closing_date_before: closingDateBefore || undefined,
+        publication_date_after: publicationDateAfter || undefined,
+        publication_date_before: publicationDateBefore || undefined,
+        limit: undefined,
+      });
+
+      setSearchResponse(response);
+      setSearchResults(response.results);
+      
+      // Update URL with search query
+      if (queryToSearch !== searchParams.get("q")) {
+        setSearchParams({ q: queryToSearch });
+      }
+    } catch (error) {
+      console.error("Error fetching search results:", error);
+      setSearchResults([]);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  // Initial search effect
+  useEffect(() => {
+    if (initialQuery.trim()) {
+      performSearch(initialQuery);
+    }
+  }, [initialQuery]);
+
+  // Handle search submission
+  const handleSubmitSearch = () => {
+    performSearch();
+  };
+
+  // Handle bookmark toggle
+  const handleBookmarkToggle = async (tenderId: string) => {
+    if (!userId) {
+      console.error("User ID is not set");
+      return;
+    }
+
+    setSearchResults(
+      searchResults.map((result) =>
+        result.id === tenderId
+          ? { ...result, is_bookmarked: !result.is_bookmarked }
+          : result
+      )
+    );
+
+    try {
+      const response = await createBookmark({
+        userId,
+        tenderNoticeId: tenderId,
+      });
+      console.log(response);
+    } catch (error) {
+      console.error("Error bookmarking tender:", error);
+      // Revert on error
+      setSearchResults(
+        searchResults.map((result) =>
+          result.id === tenderId
+            ? { ...result, is_bookmarked: !result.is_bookmarked }
+            : result
+        )
+      );
+    }
+  };
+
+  // Apply filters
+  const applyFilters = () => {
+    performSearch();
+  };
+
+  // Reset filters
+  const resetFilters = () => {
+    setSelectedRegions([]);
+    setSelectedProcurementMethod("");
+    setSelectedProcurementCategories([]);
+    setSelectedNoticeTypes([]);
+    setSelectedStatus([]);
+    setSelectedContractingEntities([]);
+    setClosingDateAfter("");
+    setClosingDateBefore("");
+    setPublicationDateAfter("");
+    setPublicationDateBefore("");
+  };
+
   return (
-    <div className="min-h-screen bg-background py-8">
-      <div className="max-w-7xl mx-auto px-6">
-        <PageHeader
-          icon={<MagnifyingGlass className="w-10 h-10 text-primary" />}
-          title="Search Tenders"
-          description="Discover and search through thousands of government contract opportunities"
-        />
+    <div className="h-full flex flex-col space-y-6">
+      {/* Search Section - Full Width */}
+      <SearchSection
+        searchQuery={searchQuery}
+        setSearchQuery={setSearchQuery}
+        onSubmitSearch={handleSubmitSearch}
+        exampleSearches={exampleSearches}
+      />
 
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
-          {/* Main Content */}
-          <div className="lg:col-span-2 space-y-4">
-            <SearchSection
-              searchQuery={searchQuery}
-              setSearchQuery={setSearchQuery}
-              onSubmitSearch={handleSubmitSearch}
-              exampleSearches={exampleSearches}
-            />
+      {/* Main Content: 1/3 and 2/3 Layout */}
+      <div className="flex-1 flex gap-6 min-h-0">
+        {/* Left Side - Filters (1/3) */}
+        <div className="w-1/3 flex flex-col">
+          <SearchFilters
+            selectedRegions={selectedRegions}
+            setSelectedRegions={setSelectedRegions}
+            selectedProcurementMethod={selectedProcurementMethod}
+            setSelectedProcurementMethod={setSelectedProcurementMethod}
+            selectedProcurementCategories={selectedProcurementCategories}
+            setSelectedProcurementCategories={setSelectedProcurementCategories}
+            selectedNoticeTypes={selectedNoticeTypes}
+            setSelectedNoticeTypes={setSelectedNoticeTypes}
+            selectedStatus={selectedStatus}
+            setSelectedStatus={setSelectedStatus}
+            selectedContractingEntities={selectedContractingEntities}
+            setSelectedContractingEntities={setSelectedContractingEntities}
+            closingDateAfter={closingDateAfter}
+            setClosingDateAfter={setClosingDateAfter}
+            closingDateBefore={closingDateBefore}
+            setClosingDateBefore={setClosingDateBefore}
+            publicationDateAfter={publicationDateAfter}
+            setPublicationDateAfter={setPublicationDateAfter}
+            publicationDateBefore={publicationDateBefore}
+            setPublicationDateBefore={setPublicationDateBefore}
+            onApplyFilters={applyFilters}
+            onResetFilters={resetFilters}
+          />
+        </div>
 
-            <div>
-              <ViewModeToggle
-                viewMode={mainViewMode}
-                onViewModeChange={setMainViewMode}
-              />
-
-              {/* Dynamic Content Based on Toggle */}
-              <div className="p-6 bg-surface border-x-1 border-b-1 border-border rounded-b-xl px-6 pb-6 h-[600px] flex flex-col">
-                {mainViewMode === "recommended" ? (
-                  <RecommendedTenders tenders={recommendedTenders ?? []} />
-                ) : mainViewMode === "chat" ? (
-                  <BreezeChat />
-                ) : (
-                  <RecentActivity activities={mockRecentActivity} />
-                )}
-              </div>
-            </div>
-          </div>
-
-          {/* Sidebar */}
-          <div className="space-y-6">
-            <StatsGrid stats={stats} />
-            <QuickActionsSidebar />
-
-            <UrgentDeadlines />
-          </div>
+        {/* Right Side - Search Results (2/3) */}
+        <div className="w-2/3">
+          <SearchResultsList
+            searchResults={searchResults}
+            searchResponse={searchResponse}
+            isLoading={isLoading}
+            onBookmarkToggle={handleBookmarkToggle}
+            onResetFilters={resetFilters}
+            selectedRegions={selectedRegions}
+            selectedProcurementMethod={selectedProcurementMethod}
+            closingDateAfter={closingDateAfter}
+          />
         </div>
       </div>
     </div>

@@ -1,4 +1,5 @@
 import { Link } from "react-router-dom";
+import { LandingPageContainer } from "../components/layout";
 import {
   Lightning,
   Target,
@@ -92,7 +93,7 @@ export default function About() {
   ];
 
   return (
-    <div className="min-h-screen bg-bg">
+    <LandingPageContainer>
       {/* Hero Section */}
       <section className="relative py-20 px-6 bg-surface overflow-hidden">
 
@@ -359,6 +360,6 @@ export default function About() {
           </div>
         </div>
       </footer>
-    </div>
+    </LandingPageContainer>
   );
 }

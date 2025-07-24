@@ -1,8 +1,7 @@
 import { createSlice, type PayloadAction } from "@reduxjs/toolkit";
 import { type Database } from "../../../database.types";
 import type { User } from "@supabase/supabase-js";
-
-type Profile = Database["public"]["Tables"]["profiles"]["Row"];
+export type Profile = Database["public"]["Tables"]["profiles"]["Row"];
 
 interface CombinedUser {
   user: User;

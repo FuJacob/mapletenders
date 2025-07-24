@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
+import { LandingPageContainer } from "../components/layout";
 import {
   Lightning,
   Phone,
@@ -106,7 +107,7 @@ export default function Contact() {
 
   if (isSubmitted) {
     return (
-      <div className="min-h-screen bg-background">
+      <LandingPageContainer>
         <div className="flex items-center justify-center min-h-[80vh] px-6">
           <div className="max-w-md text-center">
             <div className="w-16 h-16 bg-success/10 rounded-full flex items-center justify-center mx-auto mb-6">
@@ -139,12 +140,12 @@ export default function Contact() {
             </div>
           </div>
         </div>
-      </div>
+      </LandingPageContainer>
     );
   }
 
   return (
-    <div className="min-h-screen bg-bg">
+    <LandingPageContainer>
       {/* Hero Section */}
       <section className="relative py-20 px-6 bg-surface overflow-hidden">
         <div className="max-w-4xl mx-auto relative z-10">
@@ -491,6 +492,6 @@ export default function Contact() {
           </Link>
         </div>
       </section>
-    </div>
+    </LandingPageContainer>
   );
 }

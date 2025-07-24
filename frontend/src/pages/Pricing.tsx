@@ -7,6 +7,7 @@ import {
   selectAuthProfile,
 } from "../features/auth/authSelectors";
 import { createCheckoutSession } from "../api/subscriptions";
+import { LandingPageContainer } from "../components/layout";
 
 // Components
 import PricingHero from "../components/pricing/PricingHero";
@@ -81,8 +82,7 @@ export default function Pricing() {
   };
 
   return (
-    <div className="bg-background py-8">
-      <div className="max-w-6xl mx-auto">
+    <LandingPageContainer>
         {/* Hero Section */}
         <PricingHero
           billingCycle={billingCycle}
@@ -121,7 +121,6 @@ export default function Pricing() {
 
         {/* CTA Section */}
         <CTASection isAuthenticated={isAuthenticated} />
-      </div>
-    </div>
+    </LandingPageContainer>
   );
 }

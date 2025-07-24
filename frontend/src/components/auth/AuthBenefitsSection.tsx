@@ -3,6 +3,9 @@ import {
   Target,
   TrendUp,
   Lightning,
+  Star,
+  ArrowRight,
+  ChartLineUp,
 } from "@phosphor-icons/react";
 
 interface Benefit {
@@ -58,39 +61,72 @@ export default function AuthBenefitsSection({
   trustIndicators = defaultTrustIndicators,
 }: AuthBenefitsSectionProps) {
   return (
-    <div className="hidden lg:flex flex-1 bg-surface items-center justify-center px-12">
-      <div className="max-w-lg">
-        <h2 className="text-3xl font-semibold text-text mb-6">{title}</h2>
-        <p className="text-lg text-text-muted mb-8">{subtitle}</p>
+    <div className="hidden lg:flex flex-1 bg-gradient-to-br from-surface via-surface to-surface-muted items-center justify-center px-12 relative overflow-hidden">
+      {/* Background decorative elements */}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+        <div className="absolute top-20 right-20 w-32 h-32 bg-gradient-to-r from-primary/10 to-accent/10 rounded-full blur-2xl" />
+        <div className="absolute bottom-20 left-20 w-40 h-40 bg-gradient-to-l from-success/10 to-maple/10 rounded-full blur-2xl" />
+        <div className="absolute top-1/3 right-1/3 w-24 h-24 bg-gradient-to-tr from-accent/5 to-primary/5 rounded-full blur-xl" />
+      </div>
 
-        {/* Success Stories */}
-        <div className="space-y-6 mb-8">
+      <div className="max-w-lg relative z-10">
+        {/* Enhanced header */}
+        <div className="mb-8">
+          <div className="flex items-center gap-2 mb-4">
+            <div className="flex items-center gap-1">
+              {[...Array(5)].map((_, i) => (
+                <Star key={i} className="w-4 h-4 text-warning fill-current" />
+              ))}
+            </div>
+            <span className="text-sm text-text-muted font-medium">4.9/5 from 2,847+ users</span>
+          </div>
+          <h2 className="text-3xl lg:text-4xl font-bold text-text mb-4 leading-tight">{title}</h2>
+          <p className="text-lg text-text-muted leading-relaxed">{subtitle}</p>
+        </div>
+
+        {/* Enhanced Success Stories */}
+        <div className="space-y-6 mb-10">
           {benefits.map((benefit, index) => (
-            <div key={index} className="flex items-start gap-4">
-              <div className={`flex-shrink-0 w-12 h-12 ${benefit.iconBg} rounded-lg flex items-center justify-center`}>
+            <div key={index} className="group flex items-start gap-4 p-4 rounded-xl hover:bg-background/50 transition-all duration-300 hover:shadow-sm">
+              <div className={`flex-shrink-0 w-14 h-14 ${benefit.iconBg} rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300 shadow-sm`}>
                 {benefit.icon}
               </div>
-              <div>
-                <div className="font-semibold text-text mb-1">
+              <div className="flex-1">
+                <div className="font-semibold text-text mb-2 group-hover:text-primary transition-colors">
                   {benefit.title}
                 </div>
-                <div className="text-sm text-text-muted">
+                <div className="text-sm text-text-muted leading-relaxed">
                   {benefit.description}
                 </div>
               </div>
+              <ArrowRight className="w-4 h-4 text-text-muted opacity-0 group-hover:opacity-100 transition-opacity" />
             </div>
           ))}
         </div>
 
-        {/* Trust Indicators */}
-        <div className="border-t border-border pt-6">
-          <div className="grid grid-cols-2 gap-4 text-sm text-text-muted">
+        {/* Enhanced Trust Indicators */}
+        <div className="bg-background/30 backdrop-blur-sm border border-border/50 rounded-2xl p-6">
+          <div className="flex items-center gap-2 mb-4">
+            <ChartLineUp className="w-5 h-5 text-success" />
+            <span className="font-semibold text-text">Platform Stats</span>
+          </div>
+          <div className="grid grid-cols-2 gap-4 text-sm">
             {trustIndicators.map((indicator, index) => (
-              <span key={index} className="flex items-center gap-2">
-                <CheckCircle className="w-4 h-4 text-success" />
-                {indicator.text}
-              </span>
+              <div key={index} className="flex items-center gap-2 p-2 rounded-lg hover:bg-surface/50 transition-colors">
+                <CheckCircle className="w-4 h-4 text-success flex-shrink-0" />
+                <span className="text-text-muted font-medium">{indicator.text}</span>
+              </div>
             ))}
+          </div>
+        </div>
+
+        {/* Testimonial Quote */}
+        <div className="mt-8 p-6 bg-gradient-to-r from-primary/5 to-accent/5 border border-primary/10 rounded-2xl">
+          <div className="text-text-muted text-sm italic mb-2">
+            "Mapletenders helped us win our first $500K government contract within 30 days of signing up."
+          </div>
+          <div className="text-xs text-text-muted font-medium">
+            — Sarah Chen, CEO at BuildTech Solutions
           </div>
         </div>
       </div>

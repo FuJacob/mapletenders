@@ -1,5 +1,6 @@
 import { useNavigate } from "react-router-dom";
 import { useEffect } from "react";
+import { AppContainer } from "../components/layout";
 
 export default function Home() {
   const navigate = useNavigate();
@@ -10,12 +11,10 @@ export default function Home() {
   }, [navigate]);
 
   return (
-    <div className="min-h-screen bg-background">
-      <div className="mx-auto p-6 py-36">
-        <div className="text-center">
-          <p className="text-text-light">Redirecting to search...</p>
-        </div>
+    <AppContainer>
+      <div className="text-center py-36">
+        <p className="text-text-light">Redirecting to search...</p>
       </div>
-    </div>
+    </AppContainer>
   );
 }
