@@ -1,9 +1,18 @@
 import { useState } from "react";
-import { MagnifyingGlass, Star, GridFour, ListBullets } from "@phosphor-icons/react";
+import {
+  MagnifyingGlass,
+  Star,
+  GridFour,
+  ListBullets,
+} from "@phosphor-icons/react";
 import { TenderCard } from "../";
-import type { TenderSearchResult, SearchTendersResponse } from "../../api/types";
+import type {
+  TenderSearchResult,
+  SearchTendersResponse,
+} from "../../api/types";
 
 interface SearchResultsListProps {
+  setSelectedTender: (tenderId: string) => void;
   searchResults: TenderSearchResult[];
   searchResponse: SearchTendersResponse | null;
   isLoading: boolean;
@@ -15,6 +24,7 @@ interface SearchResultsListProps {
 }
 
 export default function SearchResultsList({
+  setSelectedTender,
   searchResults,
   searchResponse,
   isLoading,
@@ -25,7 +35,9 @@ export default function SearchResultsList({
   closingDateAfter,
 }: SearchResultsListProps) {
   const [viewMode, setViewMode] = useState<"grid" | "list">("list");
-  const [sortBy, setSortBy] = useState<"relevance" | "deadline" | "published">("relevance");
+  const [sortBy, setSortBy] = useState<"relevance" | "deadline" | "published">(
+    "relevance"
+  );
 
   return (
     <div className="bg-surface border border-border rounded-lg flex flex-col h-full">
@@ -34,13 +46,16 @@ export default function SearchResultsList({
         <div className="flex items-center justify-between mb-4">
           <div className="flex items-center gap-4">
             <h2 className="text-lg font-semibold text-text">
-              {isLoading ? "Searching..." : `${searchResults.length} results found`}
+              {isLoading
+                ? "Searching..."
+                : `${searchResults.length} results found`}
             </h2>
             {searchResponse?.search_metadata?.max_score && (
               <div className="flex items-center gap-1 text-sm text-text-muted">
                 <Star className="w-4 h-4 text-primary" />
                 <span>
-                  Best match: {(searchResponse.search_metadata.max_score * 10).toFixed(1)}%
+                  Best match:{" "}
+                  {(searchResponse.search_metadata.max_score * 10).toFixed(1)}%
                 </span>
               </div>
             )}
@@ -52,7 +67,11 @@ export default function SearchResultsList({
               <span className="text-text-muted">Sort:</span>
               <select
                 value={sortBy}
-                onChange={(e) => setSortBy(e.target.value as "relevance" | "deadline" | "published")}
+                onChange={(e) =>
+                  setSortBy(
+                    e.target.value as "relevance" | "deadline" | "published"
+                  )
+                }
                 className="text-primary font-medium bg-transparent border-none focus:outline-none cursor-pointer text-sm"
               >
                 <option value="relevance">Relevance</option>
@@ -88,7 +107,9 @@ export default function SearchResultsList({
         </div>
 
         {/* Active Filters */}
-        {(selectedRegions.length > 0 || selectedProcurementMethod || closingDateAfter) && (
+        {(selectedRegions.length > 0 ||
+          selectedProcurementMethod ||
+          closingDateAfter) && (
           <div className="flex items-center gap-2 p-2 bg-surface-muted rounded text-xs">
             <span className="text-text-muted font-medium">Active filters:</span>
             {selectedRegions.slice(0, 2).map((region) => (
@@ -130,7 +151,9 @@ export default function SearchResultsList({
         {isLoading && (
           <div className="text-center py-8">
             <div className="inline-block animate-spin rounded-full h-6 w-6 border-b-2 border-primary"></div>
-            <p className="mt-3 text-text-muted text-sm">Searching contracts...</p>
+            <p className="mt-3 text-text-muted text-sm">
+              Searching contracts...
+            </p>
           </div>
         )}
 
@@ -142,6 +165,7 @@ export default function SearchResultsList({
                 key={result.id}
                 tender={result}
                 onBookmarkToggle={onBookmarkToggle}
+                setSelectedTender={setSelectedTender}
               />
             ))}
           </div>
@@ -151,9 +175,12 @@ export default function SearchResultsList({
         {!isLoading && searchResults.length === 0 && (
           <div className="text-center py-8">
             <MagnifyingGlass className="w-12 h-12 text-text-muted mx-auto mb-3" />
-            <h3 className="text-lg font-semibold text-text mb-2">No results found</h3>
+            <h3 className="text-lg font-semibold text-text mb-2">
+              No results found
+            </h3>
             <p className="text-text-muted mb-4 text-sm">
-              Try adjusting your search terms or filters to find relevant contracts.
+              Try adjusting your search terms or filters to find relevant
+              contracts.
             </p>
             <button
               onClick={onResetFilters}
@@ -165,13 +192,15 @@ export default function SearchResultsList({
         )}
 
         {/* Load More */}
-        {!isLoading && searchResults.length > 0 && searchResults.length >= 20 && (
-          <div className="text-center mt-8">
-            <button className="bg-surface border border-border text-text px-6 py-2.5 rounded-lg hover:bg-surface-muted transition-colors font-medium text-sm">
-              Load More Results
-            </button>
-          </div>
-        )}
+        {!isLoading &&
+          searchResults.length > 0 &&
+          searchResults.length >= 20 && (
+            <div className="text-center mt-8">
+              <button className="bg-surface border border-border text-text px-6 py-2.5 rounded-lg hover:bg-surface-muted transition-colors font-medium text-sm">
+                Load More Results
+              </button>
+            </div>
+          )}
       </div>
     </div>
   );

@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import {
   Bookmark,
   Building,
@@ -21,6 +21,7 @@ interface TenderCardProps {
   compact?: boolean;
   onBookmarkToggle?: (tenderId: string) => void;
   className?: string;
+  setSelectedTender?: (tenderId: string) => void;
 }
 
 export function TenderCard({
@@ -28,9 +29,10 @@ export function TenderCard({
   compact = false,
   onBookmarkToggle,
   className = "",
+  setSelectedTender,
 }: TenderCardProps) {
   const [isDescriptionExpanded, setIsDescriptionExpanded] = useState(false);
-
+  const navigate = useNavigate();
   function formatDate(dateString: string | null): string {
     if (!dateString) return "No deadline";
     const date = new Date(dateString);
@@ -85,6 +87,14 @@ export function TenderCard({
     return "text-text-muted"; // Normal
   }
 
+  function handleTitleClick() {
+    if (setSelectedTender) {
+      setSelectedTender(TenderAccessors.getId(tender));
+    } else {
+      navigate(`/tender-notice/${TenderAccessors.getId(tender)}`);
+    }
+  }
+
   // Extract data using type-safe accessors
   const matchScore = getMatchScore(tender);
   const scoreColorClass = getScoreColorClass(matchScore);
@@ -120,14 +130,11 @@ export function TenderCard({
 
           {/* Title */}
           <div className="flex-1 min-w-0">
-            <Link
-              to={`/tender-notice/${TenderAccessors.getId(tender)}`}
-              className="group/link block"
-            >
+            <button onClick={handleTitleClick} className="group/link block">
               <h3 className="text-base font-bold text-text group-hover/link:text-primary cursor-pointer transition-colors line-clamp-2 leading-tight">
                 {TenderAccessors.getTitle(tender)}
               </h3>
-            </Link>
+            </button>
           </div>
 
           {/* Bookmark */}
@@ -236,14 +243,11 @@ export function TenderCard({
 
         {/* Title and Canadian Badge */}
         <div className="flex-1 min-w-0">
-          <Link
-            to={`/tender-notice/${TenderAccessors.getId(tender)}`}
-            className="group/link block"
-          >
+          <button onClick={handleTitleClick} className="group/link block">
             <h3 className="text-xl font-bold text-text group-hover/link:text-primary cursor-pointer transition-colors line-clamp-2 mb-1 leading-tight">
               {TenderAccessors.getTitle(tender)}
             </h3>
-          </Link>
+          </button>
           <div className="flex items-center gap-2 text-sm text-text-muted">
             <Leaf className="w-4 h-4 text-maple" />
             <span>Canadian Government Opportunity</span>

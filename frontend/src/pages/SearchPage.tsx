@@ -1,11 +1,15 @@
 import { useState, useEffect } from "react";
 import { useSearchParams } from "react-router-dom";
-import { SearchSection, SearchFilters, SearchResultsList } from "../components/search";
+import {
+  SearchSection,
+  SearchFilters,
+  SearchResultsList,
+} from "../components/search";
 import { searchTenders } from "../api";
 import { createBookmark } from "../api/bookmarks";
 import { useAuth } from "../hooks/auth";
 import type { TenderSearchResult, SearchTendersResponse } from "../api/types";
-
+import { TenderNoticeFullContent } from "../components/tenderNotice/TenderNoticeFullContent";
 export default function SearchPage() {
   const [searchParams, setSearchParams] = useSearchParams();
   const { user } = useAuth();
@@ -17,20 +21,25 @@ export default function SearchPage() {
 
   // Search results state
   const [searchResults, setSearchResults] = useState<TenderSearchResult[]>([]);
-  const [searchResponse, setSearchResponse] = useState<SearchTendersResponse | null>(null);
+  const [searchResponse, setSearchResponse] =
+    useState<SearchTendersResponse | null>(null);
   const [isLoading, setIsLoading] = useState(false);
-
+  const [selectedTender, setSelectedTender] = useState<string | null>(" ");
   // Filter states
   const [selectedRegions, setSelectedRegions] = useState<string[]>([]);
-  const [selectedProcurementMethod, setSelectedProcurementMethod] = useState<string>("");
-  const [selectedProcurementCategories, setSelectedProcurementCategories] = useState<string[]>([]);
+  const [selectedProcurementMethod, setSelectedProcurementMethod] =
+    useState<string>("");
+  const [selectedProcurementCategories, setSelectedProcurementCategories] =
+    useState<string[]>([]);
   const [selectedNoticeTypes, setSelectedNoticeTypes] = useState<string[]>([]);
   const [selectedStatus, setSelectedStatus] = useState<string[]>([]);
-  const [selectedContractingEntities, setSelectedContractingEntities] = useState<string[]>([]);
+  const [selectedContractingEntities, setSelectedContractingEntities] =
+    useState<string[]>([]);
   const [closingDateAfter, setClosingDateAfter] = useState<string>("");
   const [closingDateBefore, setClosingDateBefore] = useState<string>("");
   const [publicationDateAfter, setPublicationDateAfter] = useState<string>("");
-  const [publicationDateBefore, setPublicationDateBefore] = useState<string>("");
+  const [publicationDateBefore, setPublicationDateBefore] =
+    useState<string>("");
 
   const exampleSearches = [
     "IT services contracts in Ontario under $100K",
@@ -52,10 +61,17 @@ export default function SearchPage() {
         q: queryToSearch,
         regions: selectedRegions.length > 0 ? selectedRegions : undefined,
         procurement_method: selectedProcurementMethod || undefined,
-        procurement_category: selectedProcurementCategories.length > 0 ? selectedProcurementCategories : undefined,
-        notice_type: selectedNoticeTypes.length > 0 ? selectedNoticeTypes : undefined,
+        procurement_category:
+          selectedProcurementCategories.length > 0
+            ? selectedProcurementCategories
+            : undefined,
+        notice_type:
+          selectedNoticeTypes.length > 0 ? selectedNoticeTypes : undefined,
         status: selectedStatus.length > 0 ? selectedStatus : undefined,
-        contracting_entity_name: selectedContractingEntities.length > 0 ? selectedContractingEntities : undefined,
+        contracting_entity_name:
+          selectedContractingEntities.length > 0
+            ? selectedContractingEntities
+            : undefined,
         closing_date_after: closingDateAfter || undefined,
         closing_date_before: closingDateBefore || undefined,
         publication_date_after: publicationDateAfter || undefined,
@@ -65,7 +81,7 @@ export default function SearchPage() {
 
       setSearchResponse(response);
       setSearchResults(response.results);
-      
+
       // Update URL with search query
       if (queryToSearch !== searchParams.get("q")) {
         setSearchParams({ q: queryToSearch });
@@ -157,35 +173,13 @@ export default function SearchPage() {
       <div className="flex-1 flex gap-6 min-h-0">
         {/* Left Side - Filters (1/3) */}
         <div className="w-1/3 flex flex-col">
-          <SearchFilters
-            selectedRegions={selectedRegions}
-            setSelectedRegions={setSelectedRegions}
-            selectedProcurementMethod={selectedProcurementMethod}
-            setSelectedProcurementMethod={setSelectedProcurementMethod}
-            selectedProcurementCategories={selectedProcurementCategories}
-            setSelectedProcurementCategories={setSelectedProcurementCategories}
-            selectedNoticeTypes={selectedNoticeTypes}
-            setSelectedNoticeTypes={setSelectedNoticeTypes}
-            selectedStatus={selectedStatus}
-            setSelectedStatus={setSelectedStatus}
-            selectedContractingEntities={selectedContractingEntities}
-            setSelectedContractingEntities={setSelectedContractingEntities}
-            closingDateAfter={closingDateAfter}
-            setClosingDateAfter={setClosingDateAfter}
-            closingDateBefore={closingDateBefore}
-            setClosingDateBefore={setClosingDateBefore}
-            publicationDateAfter={publicationDateAfter}
-            setPublicationDateAfter={setPublicationDateAfter}
-            publicationDateBefore={publicationDateBefore}
-            setPublicationDateBefore={setPublicationDateBefore}
-            onApplyFilters={applyFilters}
-            onResetFilters={resetFilters}
-          />
+          <TenderNoticeFullContent tenderId={selectedTender} />
         </div>
 
         {/* Right Side - Search Results (2/3) */}
         <div className="w-2/3">
           <SearchResultsList
+            setSelectedTender={setSelectedTender}
             searchResults={searchResults}
             searchResponse={searchResponse}
             isLoading={isLoading}

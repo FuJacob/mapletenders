@@ -510,6 +510,7 @@ export default function SearchResults() {
                     key={result.id}
                     tender={result}
                     onBookmarkToggle={handleBookmarkToggle}
+                    
                   />
                 ))}
               </div>

@@ -6,7 +6,7 @@ import ResetPassword from "./pages/ResetPassword";
 import UpdatePassword from "./pages/UpdatePassword";
 import Onboarding from "./pages/Onboarding";
 import Profile from "./pages/Profile";
-import TenderNotice from "./pages/TenderNotice";
+import TenderNotice from "./pages/TenderNoticePage";
 import Pricing from "./pages/Pricing";
 import About from "./pages/About";
 import Contact from "./pages/Contact";
