@@ -80,7 +80,7 @@ export default function Plans() {
   return (
     <LandingPageContainer>
       {/* Hero Section */}
-      <PricingHero />
+      <PricingHero billingCycle={billingCycle} onBillingCycleChange={setBillingCycle} />
 
       {/* Billing Toggle */}
       <div className="flex items-center justify-center gap-4 mb-12">

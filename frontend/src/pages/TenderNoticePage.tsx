@@ -10,7 +10,6 @@ import {
   TenderNoticeSummary,
 } from "../components/tenderNotice";
 import type { Tender as TenderData } from "../api/types";
-import { getTenderById } from "../api";
 
 // Pure utility functions moved outside component
 const formatDate = (dateString: string | null): string => {

@@ -3,7 +3,6 @@ import {
   ChartBar,
   TrendUp,
   Target,
-  Calendar,
   Clock,
   Users,
   CurrencyDollar,
@@ -49,11 +48,13 @@ interface MonthlyTrend {
 }
 
 export default function AnalyticsPage() {
-  const [timeRange, setTimeRange] = useState<"7d" | "30d" | "90d" | "1y">("30d");
+  const [timeRange, setTimeRange] = useState<"7d" | "30d" | "90d" | "1y">(
+    "30d"
+  );
   const [loading, setLoading] = useState(true);
 
   // Mock analytics data
-  const [analyticsData, setAnalyticsData] = useState({
+  const [analyticsData] = useState({
     keyMetrics: [
       {
         label: "Total Opportunities Viewed",
@@ -115,11 +116,36 @@ export default function AnalyticsPage() {
       },
     ] as TopPerformingCategory[],
     regionalData: [
-      { province: "Ontario", opportunities: 423, totalValue: "$12.8M", winRate: 26 },
-      { province: "British Columbia", opportunities: 267, totalValue: "$8.4M", winRate: 22 },
-      { province: "Quebec", opportunities: 198, totalValue: "$6.2M", winRate: 29 },
-      { province: "Alberta", opportunities: 145, totalValue: "$4.1M", winRate: 24 },
-      { province: "Manitoba", opportunities: 89, totalValue: "$2.8M", winRate: 31 },
+      {
+        province: "Ontario",
+        opportunities: 423,
+        totalValue: "$12.8M",
+        winRate: 26,
+      },
+      {
+        province: "British Columbia",
+        opportunities: 267,
+        totalValue: "$8.4M",
+        winRate: 22,
+      },
+      {
+        province: "Quebec",
+        opportunities: 198,
+        totalValue: "$6.2M",
+        winRate: 29,
+      },
+      {
+        province: "Alberta",
+        opportunities: 145,
+        totalValue: "$4.1M",
+        winRate: 24,
+      },
+      {
+        province: "Manitoba",
+        opportunities: 89,
+        totalValue: "$2.8M",
+        winRate: 31,
+      },
     ] as RegionalData[],
     monthlyTrends: [
       { month: "Aug", opportunities: 245, applications: 23, wins: 7 },
@@ -175,7 +201,7 @@ export default function AnalyticsPage() {
             title="Analytics"
             description="Track your procurement performance and insights"
           />
-          
+
           <div className="flex items-center gap-4">
             {/* Time Range Selector */}
             <div className="flex bg-surface border border-border rounded-lg p-1">
@@ -214,16 +240,21 @@ export default function AnalyticsPage() {
           {/* Key Metrics */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
             {analyticsData.keyMetrics.map((metric, index) => (
-              <div key={index} className="bg-surface border border-border rounded-xl p-6">
+              <div
+                key={index}
+                className="bg-surface border border-border rounded-xl p-6"
+              >
                 <div className="flex items-center justify-between mb-4">
-                  <div className={`${metric.color} bg-current/10 p-3 rounded-lg`}>
-                    <div className={metric.color}>
-                      {metric.icon}
-                    </div>
+                  <div
+                    className={`${metric.color} bg-current/10 p-3 rounded-lg`}
+                  >
+                    <div className={metric.color}>{metric.icon}</div>
                   </div>
-                  <div className={`flex items-center gap-1 text-sm ${
-                    metric.change >= 0 ? "text-success" : "text-error"
-                  }`}>
+                  <div
+                    className={`flex items-center gap-1 text-sm ${
+                      metric.change >= 0 ? "text-success" : "text-error"
+                    }`}
+                  >
                     {metric.change >= 0 ? (
                       <ArrowUp className="w-4 h-4" />
                     ) : (
@@ -232,9 +263,13 @@ export default function AnalyticsPage() {
                     {Math.abs(metric.change)}%
                   </div>
                 </div>
-                <h3 className="text-2xl font-bold text-text mb-1">{metric.value}</h3>
+                <h3 className="text-2xl font-bold text-text mb-1">
+                  {metric.value}
+                </h3>
                 <p className="text-sm text-text-muted">{metric.label}</p>
-                <p className="text-xs text-text-light mt-1">{metric.changeLabel}</p>
+                <p className="text-xs text-text-light mt-1">
+                  {metric.changeLabel}
+                </p>
               </div>
             ))}
           </div>
@@ -249,29 +284,43 @@ export default function AnalyticsPage() {
               </h3>
               <div className="space-y-4">
                 {analyticsData.monthlyTrends.map((month, index) => (
-                  <div key={index} className="flex items-center justify-between py-3 border-b border-border last:border-b-0">
+                  <div
+                    key={index}
+                    className="flex items-center justify-between py-3 border-b border-border last:border-b-0"
+                  >
                     <div className="flex items-center gap-3">
                       <div className="w-12 text-center">
-                        <span className="text-sm font-medium text-text">{month.month}</span>
+                        <span className="text-sm font-medium text-text">
+                          {month.month}
+                        </span>
                       </div>
                       <div className="flex gap-6">
                         <div className="text-sm">
-                          <span className="text-text-muted">Opportunities:</span>
-                          <span className="font-medium text-text ml-1">{month.opportunities}</span>
+                          <span className="text-text-muted">
+                            Opportunities:
+                          </span>
+                          <span className="font-medium text-text ml-1">
+                            {month.opportunities}
+                          </span>
                         </div>
                         <div className="text-sm">
                           <span className="text-text-muted">Applied:</span>
-                          <span className="font-medium text-text ml-1">{month.applications}</span>
+                          <span className="font-medium text-text ml-1">
+                            {month.applications}
+                          </span>
                         </div>
                         <div className="text-sm">
                           <span className="text-text-muted">Won:</span>
-                          <span className="font-medium text-success ml-1">{month.wins}</span>
+                          <span className="font-medium text-success ml-1">
+                            {month.wins}
+                          </span>
                         </div>
                       </div>
                     </div>
                     <div className="text-right">
                       <div className="text-sm font-medium text-text">
-                        {Math.round((month.wins / month.applications) * 100)}% Win Rate
+                        {Math.round((month.wins / month.applications) * 100)}%
+                        Win Rate
                       </div>
                     </div>
                   </div>
@@ -287,16 +336,31 @@ export default function AnalyticsPage() {
               </h3>
               <div className="space-y-4">
                 {analyticsData.topCategories.map((category, index) => (
-                  <div key={index} className="flex items-center justify-between py-3 border-b border-border last:border-b-0">
+                  <div
+                    key={index}
+                    className="flex items-center justify-between py-3 border-b border-border last:border-b-0"
+                  >
                     <div>
-                      <h4 className="font-medium text-text">{category.category}</h4>
-                      <p className="text-sm text-text-muted">{category.matches} opportunities matched</p>
+                      <h4 className="font-medium text-text">
+                        {category.category}
+                      </h4>
+                      <p className="text-sm text-text-muted">
+                        {category.matches} opportunities matched
+                      </p>
                     </div>
                     <div className="text-right">
-                      <div className="text-sm font-medium text-text">{category.avgValue} avg</div>
-                      <div className={`text-sm ${
-                        category.winRate >= 25 ? "text-success" : category.winRate >= 20 ? "text-warning" : "text-text-muted"
-                      }`}>
+                      <div className="text-sm font-medium text-text">
+                        {category.avgValue} avg
+                      </div>
+                      <div
+                        className={`text-sm ${
+                          category.winRate >= 25
+                            ? "text-success"
+                            : category.winRate >= 20
+                            ? "text-warning"
+                            : "text-text-muted"
+                        }`}
+                      >
                         {category.winRate}% win rate
                       </div>
                     </div>
@@ -316,33 +380,64 @@ export default function AnalyticsPage() {
               <table className="w-full">
                 <thead>
                   <tr className="border-b border-border">
-                    <th className="text-left py-3 px-4 font-medium text-text">Province</th>
-                    <th className="text-left py-3 px-4 font-medium text-text">Opportunities</th>
-                    <th className="text-left py-3 px-4 font-medium text-text">Total Value</th>
-                    <th className="text-left py-3 px-4 font-medium text-text">Win Rate</th>
-                    <th className="text-left py-3 px-4 font-medium text-text">Performance</th>
+                    <th className="text-left py-3 px-4 font-medium text-text">
+                      Province
+                    </th>
+                    <th className="text-left py-3 px-4 font-medium text-text">
+                      Opportunities
+                    </th>
+                    <th className="text-left py-3 px-4 font-medium text-text">
+                      Total Value
+                    </th>
+                    <th className="text-left py-3 px-4 font-medium text-text">
+                      Win Rate
+                    </th>
+                    <th className="text-left py-3 px-4 font-medium text-text">
+                      Performance
+                    </th>
                   </tr>
                 </thead>
                 <tbody>
                   {analyticsData.regionalData.map((region, index) => (
-                    <tr key={index} className="border-b border-border last:border-b-0 hover:bg-surface-muted">
-                      <td className="py-3 px-4 font-medium text-text">{region.province}</td>
-                      <td className="py-3 px-4 text-text-muted">{region.opportunities}</td>
-                      <td className="py-3 px-4 text-text-muted">{region.totalValue}</td>
+                    <tr
+                      key={index}
+                      className="border-b border-border last:border-b-0 hover:bg-surface-muted"
+                    >
+                      <td className="py-3 px-4 font-medium text-text">
+                        {region.province}
+                      </td>
+                      <td className="py-3 px-4 text-text-muted">
+                        {region.opportunities}
+                      </td>
+                      <td className="py-3 px-4 text-text-muted">
+                        {region.totalValue}
+                      </td>
                       <td className="py-3 px-4">
-                        <span className={`text-sm ${
-                          region.winRate >= 25 ? "text-success" : region.winRate >= 20 ? "text-warning" : "text-text-muted"
-                        }`}>
+                        <span
+                          className={`text-sm ${
+                            region.winRate >= 25
+                              ? "text-success"
+                              : region.winRate >= 20
+                              ? "text-warning"
+                              : "text-text-muted"
+                          }`}
+                        >
                           {region.winRate}%
                         </span>
                       </td>
                       <td className="py-3 px-4">
                         {region.winRate >= 25 ? (
-                          <span className="px-2 py-1 bg-success/10 text-success rounded text-xs font-medium">Excellent</span>
+                          <span className="px-2 py-1 bg-success/10 text-success rounded text-xs font-medium">
+                            Excellent
+                          </span>
                         ) : region.winRate >= 20 ? (
-                          <span className="px-2 py-1 bg-warning/10 text-warning rounded text-xs font-medium">Good</span>
+                          <span className="px-2 py-1 bg-warning/10 text-warning rounded text-xs font-medium">
+                            Good
+                          </span>
                         ) : (
-                          <span className="px-2 py-1 bg-text-muted/10 text-text-muted rounded text-xs font-medium">Average</span>
+                          <span className="px-2 py-1 bg-text-muted/10 text-text-muted rounded text-xs font-medium">
+                            Average
+                          </span>
                         )}
                       </td>
                     </tr>
@@ -363,20 +458,25 @@ export default function AnalyticsPage() {
                 <div className="flex items-start gap-3 p-4 bg-success/5 border border-success/20 rounded-lg">
                   <CheckCircle className="w-5 h-5 text-success mt-0.5" />
                   <div>
-                    <h4 className="font-medium text-text mb-1">Strong IT Performance</h4>
+                    <h4 className="font-medium text-text mb-1">
+                      Strong IT Performance
+                    </h4>
                     <p className="text-sm text-text-muted">
-                      Your IT & Software Development category shows 24% win rate, above industry average. 
-                      Consider focusing more resources here.
+                      Your IT & Software Development category shows 24% win
+                      rate, above industry average. Consider focusing more
+                      resources here.
                     </p>
                   </div>
                 </div>
                 <div className="flex items-start gap-3 p-4 bg-warning/5 border border-warning/20 rounded-lg">
                   <Clock className="w-5 h-5 text-warning mt-0.5" />
                   <div>
-                    <h4 className="font-medium text-text mb-1">Improve Response Time</h4>
+                    <h4 className="font-medium text-text mb-1">
+                      Improve Response Time
+                    </h4>
                     <p className="text-sm text-text-muted">
-                      Your response rate decreased by 2.1% this month. 
-                      Consider setting up alerts for high-match opportunities.
+                      Your response rate decreased by 2.1% this month. Consider
+                      setting up alerts for high-match opportunities.
                     </p>
                   </div>
                 </div>
@@ -385,19 +485,23 @@ export default function AnalyticsPage() {
                 <div className="flex items-start gap-3 p-4 bg-info/5 border border-info/20 rounded-lg">
                   <TrendUp className="w-5 h-5 text-info mt-0.5" />
                   <div>
-                    <h4 className="font-medium text-text mb-1">Quebec Opportunity</h4>
+                    <h4 className="font-medium text-text mb-1">
+                      Quebec Opportunity
+                    </h4>
                     <p className="text-sm text-text-muted">
-                      Quebec shows your highest win rate at 29%. 
-                      Consider expanding your presence in this region.
+                      Quebec shows your highest win rate at 29%. Consider
+                      expanding your presence in this region.
                     </p>
                   </div>
                 </div>
                 <div className="flex items-start gap-3 p-4 bg-maple/5 border border-maple/20 rounded-lg">
                   <CurrencyDollar className="w-5 h-5 text-maple mt-0.5" />
                   <div>
-                    <h4 className="font-medium text-text mb-1">Contract Value Growth</h4>
+                    <h4 className="font-medium text-text mb-1">
+                      Contract Value Growth
+                    </h4>
                     <p className="text-sm text-text-muted">
-                      Your average contract values increased 15% this quarter. 
+                      Your average contract values increased 15% this quarter.
                       Focus on higher-value opportunities to maximize ROI.
                     </p>
                   </div>
