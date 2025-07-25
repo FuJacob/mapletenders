@@ -48,9 +48,10 @@ export default function SubscriptionSuccess() {
           <h1 className="text-3xl font-bold text-text mb-4">
             Welcome to MapleBids!
           </h1>
-          
+
           <p className="text-text-light mb-6">
-            Your subscription has been activated successfully. You now have access to all premium features and your 14-day free trial has begun.
+            Your subscription has been activated successfully. You now have
+            access to all premium features and your 14-day free trial has begun.
           </p>
 
           <div className="space-y-4 text-sm text-left">
@@ -75,13 +76,13 @@ export default function SubscriptionSuccess() {
 
         <div className="space-y-4">
           <Link
-            to="/dashboard"
+            to="/home"
             className="w-full px-6 py-3 bg-primary text-white rounded-lg font-medium hover:bg-primary-dark transition-colors flex items-center justify-center gap-2"
           >
             Get Started
             <ArrowRight className="w-4 h-4" />
           </Link>
-          
+
           <Link
             to="/profile"
             className="w-full px-6 py-3 border border-border text-text rounded-lg font-medium hover:bg-surface transition-colors block"

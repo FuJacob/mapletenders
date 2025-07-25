@@ -36,7 +36,10 @@ export default function AuthFormLayout({
 
           {/* Logo with subtle animation */}
           <div className="text-center">
-            <Link to="/" className="inline-block transform hover:scale-105 transition-transform duration-300">
+            <Link
+              to="/"
+              className="inline-block transform hover:scale-105 transition-transform duration-300"
+            >
               <LogoTitle />
             </Link>
           </div>

@@ -16,6 +16,15 @@ export const getTenderById = async (id: string): Promise<Tender> => {
   }
 };
 
+export const getAllTenders = async (): Promise<Tender[]> => {
+  try {
+    const response = await apiClient.get("/tenders/getAllTenders");
+    return response.data;
+  } catch (error) {
+    return handleApiError(error, "Fetch all tenders");
+  }
+};
+
 export const getTendersFromBookmarkIds = async (
   bookmarkIds: string[]
 ): Promise<Tender[]> => {

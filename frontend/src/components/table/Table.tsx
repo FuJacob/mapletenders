@@ -12,7 +12,7 @@ export function Table({
   fullWidth = true,
 }: TableProps) {
   return (
-    <div className="overflow-hidden rounded-lg border border-border bg-surface max-w-7xl mx-auto">
+    <div className="overflow-hidden rounded-lg border border-border bg-surface">
       <div className="overflow-x-auto scrollbar-thin scrollbar-thumb-gray-300 scrollbar-track-transparent">
         <table
           className={`${

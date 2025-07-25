@@ -7,15 +7,16 @@ import {
   selectAuthProfile,
 } from "../features/auth/authSelectors";
 import { createCheckoutSession } from "../api/subscriptions";
-import { CreditCard } from "@phosphor-icons/react";
-import { PageHeader } from "../components/ui";
+import { LandingPageContainer } from "../components/layout";
 
 // Components
+import PricingHero from "../components/pricing/PricingHero";
 import LoadingState from "../components/pricing/LoadingState";
 import ErrorState from "../components/pricing/ErrorState";
 import PricingCard from "../components/pricing/PricingCard";
 import FeatureComparison from "../components/pricing/FeatureComparison";
 import FAQ from "../components/pricing/FAQ";
+import CTASection from "../components/pricing/CTASection";
 
 // Hooks and types
 import { usePricingData } from "../components/pricing/usePricingData";
@@ -34,15 +35,15 @@ export default function Plans() {
   const { pricingTiers, plansLoading, plansError } =
     usePricingData(billingCycle);
 
-  // Redirect if not authenticated
-  if (!isAuthenticated) {
-    navigate("/pricing");
-    return null;
-  }
-
   const handlePlanSelect = async (tier: PricingTier) => {
-    if (!user) return;
+    // Check if user is authenticated
+    if (!isAuthenticated || !user) {
+      // Redirect to signup/login with plan info
+      navigate(`/sign-up?plan=${tier.id}&billing=${billingCycle}`);
+      return;
+    }
 
+    // User is authenticated, proceed with checkout
     setLoading(tier.id);
     try {
       const userEmail = user?.email || "";
@@ -77,72 +78,67 @@ export default function Plans() {
   };
 
   return (
-    <div className="min-h-screen bg-background py-8">
-      <div className="max-w-6xl mx-auto px-6">
-        <PageHeader
-          icon={<CreditCard className="w-10 h-10 text-primary" />}
-          title="Plans & Billing"
-          description="Upgrade your procurement intelligence with MapleTenders"
-        />
-        
-        <div className="text-center mb-12">
-          
-          {/* Billing Toggle */}
-          <div className="flex items-center justify-center gap-4 mb-8">
-            <span className={`text-sm font-medium ${billingCycle === 'monthly' ? 'text-primary' : 'text-text-light'}`}>
-              Monthly
-            </span>
-            <button
-              onClick={() => setBillingCycle(billingCycle === 'monthly' ? 'yearly' : 'monthly')}
-              className={`relative w-14 h-7 rounded-full transition-colors ${
-                billingCycle === 'yearly' ? 'bg-primary' : 'bg-border'
-              }`}
-            >
-              <div
-                className={`absolute w-5 h-5 bg-white rounded-full top-1 transition-transform ${
-                  billingCycle === 'yearly' ? 'translate-x-8' : 'translate-x-1'
-                }`}
+    <LandingPageContainer>
+      {/* Hero Section */}
+      <PricingHero />
+
+      {/* Billing Toggle */}
+      <div className="flex items-center justify-center gap-4 mb-12">
+        <span className={`text-sm font-medium ${billingCycle === 'monthly' ? 'text-primary' : 'text-text-light'}`}>
+          Monthly
+        </span>
+        <button
+          onClick={() => setBillingCycle(billingCycle === 'monthly' ? 'yearly' : 'monthly')}
+          className={`relative w-14 h-7 rounded-full transition-colors ${
+            billingCycle === 'yearly' ? 'bg-primary' : 'bg-border'
+          }`}
+        >
+          <div
+            className={`absolute w-5 h-5 bg-white rounded-full top-1 transition-transform ${
+              billingCycle === 'yearly' ? 'translate-x-8' : 'translate-x-1'
+            }`}
+          />
+        </button>
+        <span className={`text-sm font-medium ${billingCycle === 'yearly' ? 'text-primary' : 'text-text-light'}`}>
+          Yearly
+        </span>
+        {billingCycle === 'yearly' && (
+          <span className="bg-primary text-white text-xs px-2 py-1 rounded-full ml-2">
+            Save 20%
+          </span>
+        )}
+      </div>
+
+      {/* Loading State */}
+      {plansLoading && <LoadingState />}
+
+      {/* Error State */}
+      {plansError && <ErrorState error={plansError} />}
+
+      {/* Pricing Cards */}
+      {!plansLoading && !plansError && (
+        <div className="mb-16">
+          <div className="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto">
+            {pricingTiers.map((tier) => (
+              <PricingCard
+                key={tier.id}
+                tier={tier}
+                loading={loading}
+                onPlanSelect={handlePlanSelect}
               />
-            </button>
-            <span className={`text-sm font-medium ${billingCycle === 'yearly' ? 'text-primary' : 'text-text-light'}`}>
-              Yearly
-            </span>
-            {billingCycle === 'yearly' && (
-              <span className="bg-primary text-white text-xs px-2 py-1 rounded-full ml-2">
-                Save 20%
-              </span>
-            )}
+            ))}
           </div>
         </div>
+      )}
 
-        {/* Loading State */}
-        {plansLoading && <LoadingState />}
+      {/* Feature Comparison */}
+      {!plansLoading && !plansError && <FeatureComparison />}
 
-        {/* Error State */}
-        {plansError && <ErrorState error={plansError} />}
+      {/* FAQ Section */}
+      <FAQ />
 
-        {/* Pricing Cards */}
-        {!plansLoading && !plansError && (
-          <div className="mb-16">
-            <div className="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto">
-              {pricingTiers.map((tier) => (
-                <PricingCard
-                  key={tier.id}
-                  tier={tier}
-                  loading={loading}
-                  onPlanSelect={handlePlanSelect}
-                />
-              ))}
-            </div>
-          </div>
-        )}
-
-        {/* Feature Comparison */}
-        {!plansLoading && !plansError && <FeatureComparison />}
-
-        {/* FAQ Section */}
-        <FAQ />
-      </div>
-    </div>
+      {/* CTA Section */}
+      <CTASection />
+    </LandingPageContainer>
   );
 }

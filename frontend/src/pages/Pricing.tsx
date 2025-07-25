@@ -97,9 +97,9 @@ export default function Pricing() {
 
         {/* Pricing Cards */}
         {!plansLoading && !plansError && (
-          <section className="py-16 px-6 relative z-10">
+          <section className="py-8 px-6 relative z-10">
             <div className="max-w-6xl mx-auto">
-              <div className="grid md:grid-cols-2 gap-16 lg:gap-20 max-w-5xl mx-auto">
+              <div className="grid md:grid-cols-2 gap-8 lg:gap-12 max-w-5xl mx-auto">
                 {pricingTiers.map((tier) => (
                   <PricingCard
                     key={tier.id}

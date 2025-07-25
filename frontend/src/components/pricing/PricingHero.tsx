@@ -8,26 +8,26 @@ interface PricingHeroProps {
 
 export default function PricingHero({ billingCycle, onBillingCycleChange }: PricingHeroProps) {
   return (
-    <section className="relative py-16 px-6 overflow-hidden bg-surface">
+    <section className="relative py-8 px-6 overflow-hidden bg-surface">
       
       <div className="max-w-5xl mx-auto relative z-10">
 
         {/* Main Heading Section */}
-        <div className="text-center mb-12">
-          <div className="inline-flex items-center gap-2 px-3 py-1 bg-maple/10 text-maple border border-maple/20 rounded-full text-sm font-medium mb-6">
+        <div className="text-center mb-8">
+          <div className="inline-flex items-center gap-2 px-3 py-1 bg-maple/10 text-maple border border-maple/20 rounded-full text-sm font-medium mb-4">
             <Leaf className="w-3 h-3" />
             Canada's Procurement Intelligence Platform
           </div>
           
-          <h1 className="text-4xl md:text-5xl font-bold mb-4 text-text">
+          <h1 className="text-4xl md:text-5xl font-bold mb-3 text-text">
             Win More Government Contracts
           </h1>
-          <p className="text-lg text-text-muted mb-8 max-w-2xl mx-auto">
+          <p className="text-lg text-text-muted mb-6 max-w-2xl mx-auto">
             Stop searching through dozens of procurement sites. Our AI finds opportunities that match your business across all Canadian jurisdictions.
           </p>
 
           {/* Social Proof */}
-          <div className="flex items-center justify-center gap-8 text-sm text-text-muted mb-8">
+          <div className="flex items-center justify-center gap-8 text-sm text-text-muted mb-6">
             <div className="flex items-center gap-2">
               <Building className="w-4 h-4 text-success" />
               <span>500+ Canadian businesses</span>

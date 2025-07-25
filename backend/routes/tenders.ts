@@ -35,6 +35,10 @@ router.get("/getTenderById/:id", (req, res) =>
   tenderController.getTenderById(req, res)
 );
 
+router.get("/getAllTenders", (req, res) =>
+  tenderController.getAllTenders(req, res)
+);
+
 router.post("/getTendersFromBookmarkIds", (req, res) =>
   tenderController.getTendersFromBookmarkIds(req, res)
 );

@@ -9,9 +9,55 @@ interface TenderNoticeBodyProps {
     unspsc: string | null;
     delivery_location: string | null;
   };
+  compact?: boolean;
 }
 
-export function TenderNoticeBody({ tender }: TenderNoticeBodyProps) {
+export function TenderNoticeBody({ tender, compact = false }: TenderNoticeBodyProps) {
+  if (compact) {
+    return (
+      <div className="w-full bg-surface border border-border rounded-lg p-4">
+        <h3 className="text-lg font-semibold text-text mb-3 flex items-center gap-2">
+          <FileText className="w-4 h-4" />
+          Description
+        </h3>
+        <div className="text-sm text-text-light mb-4">
+          {tender.description ? (
+            <p className="whitespace-pre-wrap line-clamp-4">
+              {tender.description}
+            </p>
+          ) : (
+            <p className="italic">No description provided</p>
+          )}
+        </div>
+        
+        <div className="grid grid-cols-2 gap-3 text-xs">
+          <div>
+            <span className="font-medium text-text">Method:</span>
+            <p className="text-text-light">
+              {tender.procurement_method || "Not specified"}
+            </p>
+          </div>
+          <div>
+            <span className="font-medium text-text">Category:</span>
+            <p className="text-text-light">
+              {tender.category_primary || "Not specified"}
+            </p>
+          </div>
+          <div>
+            <span className="font-medium text-text">Location:</span>
+            <p className="text-text-light">
+              {tender.delivery_location || "Not specified"}
+            </p>
+          </div>
+          <div>
+            <span className="font-medium text-text">GSIN:</span>
+            <p className="text-text-light">{tender.gsin || "Not specified"}</p>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <>
       {/* Description */}

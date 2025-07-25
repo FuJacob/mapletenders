@@ -27,8 +27,8 @@ export default function Sidebar() {
 
   const navigationItems = [
     {
-      label: "Dashboard",
-      path: "/dashboard",
+      label: "Home",
+      path: "/home",
       icon: House,
     },
     {
@@ -91,7 +91,7 @@ export default function Sidebar() {
         {/* Sidebar Header */}
         <div className="p-6 border-b border-border">
           <div className="flex items-center justify-between">
-            <LogoTitle />
+            <LogoTitle size="text-xl"   />
             <button
               onClick={() => setIsMobileMenuOpen(false)}
               className="lg:hidden p-1 hover:bg-background rounded"

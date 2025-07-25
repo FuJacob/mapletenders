@@ -66,5 +66,5 @@ export const {
   setOnboardingCompleted,
 } = authSlice.actions;
 
-export type { CombinedUser, Profile };
+export type { CombinedUser };
 export default authSlice.reducer;

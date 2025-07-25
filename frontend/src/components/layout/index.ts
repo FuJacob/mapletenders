@@ -8,5 +8,4 @@ export { default as NotificationButton } from "./NotificationButton";
 export { default as ProfileDropdown } from "./ProfileDropdown";
 export { default as GuestAuthButtons } from "./GuestAuthButtons";
 export { default as LandingPageContainer } from "./LandingPageContainer";
-export { default as AppContainer } from "./AppContainer";
 export { default as AppPageContainer } from "./AppPageContainer";

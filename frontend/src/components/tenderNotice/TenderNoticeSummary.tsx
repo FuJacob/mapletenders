@@ -12,9 +12,10 @@ interface TenderNoticeBodyProps {
     unspsc: string | null;
     delivery_location: string | null;
   };
+  compact?: boolean;
 }
 
-export function TenderNoticeSummary({ tender }: TenderNoticeBodyProps) {
+export function TenderNoticeSummary({ tender, compact = false }: TenderNoticeBodyProps) {
   const [tenderSummary, setTenderSummary] = useState<TenderSummaryData | null>(
     null
   );
@@ -68,6 +69,51 @@ Delivery Location: ${tender.delivery_location || "Not specified"}
   useEffect(() => {
     getTenderSummary();
   }, [getTenderSummary]);
+
+  if (compact) {
+    return (
+      <div className="w-full bg-primary border border-primary rounded-lg p-4">
+        <h3 className="text-lg font-semibold text-white mb-3 flex items-center gap-2">
+          <Sparkle className="w-4 h-4" />
+          AI Summary
+        </h3>
+        <div className="text-white text-sm">
+          {tenderSummary &&
+          typeof tenderSummary === "object" &&
+          Object.keys(tenderSummary).length > 0 ? (
+            <div className="space-y-3">
+              <p className="text-sm leading-relaxed">
+                {tenderSummary.summary || "Generating summary..."}
+              </p>
+              {tenderSummary.recommendation && (
+                <div className="flex items-center gap-2">
+                  <span className="text-xs font-medium">Priority:</span>
+                  <span
+                    className={`text-xs px-1.5 py-0.5 rounded ${
+                      tenderSummary.recommendation.priority === "High"
+                        ? "bg-success/20 text-success"
+                        : tenderSummary.recommendation.priority === "Medium"
+                        ? "bg-warning/20 text-warning"
+                        : "bg-error/20 text-error"
+                    }`}
+                  >
+                    {tenderSummary.recommendation.priority || "Medium"}
+                  </span>
+                </div>
+              )}
+            </div>
+          ) : (
+            <div className="flex items-center justify-center py-4">
+              <div className="text-center">
+                <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-white mx-auto mb-1"></div>
+                <p className="text-xs">Analyzing...</p>
+              </div>
+            </div>
+          )}
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="w-full bg-primary border border-primary rounded-xl p-6">

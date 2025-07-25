@@ -1,20 +1,18 @@
 import { configureStore } from "@reduxjs/toolkit";
 
 import authReducer from "../features/auth/authSlice";
-import tendersReducer from "../features/tenders/tendersSlice";
 import { bookmarksReducer } from "../features/bookmarks";
 import { persistStore, persistCombineReducers } from "redux-persist";
 import storage from "redux-persist/lib/storage"; // defaults to localStorage for web
 
 const persistConfig = {
   key: "root",
-  blacklist: ["tenders", "bookmarks"],
+  blacklist: ["bookmarks"],
   storage,
 };
 
 const persistedReducer = persistCombineReducers(persistConfig, {
   auth: authReducer,
-  tenders: tendersReducer,
   bookmarks: bookmarksReducer,
 });
 

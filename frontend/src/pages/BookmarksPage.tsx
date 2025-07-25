@@ -9,7 +9,6 @@ import { useAuth } from "../hooks/auth";
 import { Bookmark } from "@phosphor-icons/react";
 import BookmarkedTenders from "../components/dashboard/BookmarkedTenders";
 import { PageHeader } from "../components/ui";
-import { AppContainer } from "../components/layout";
 
 export default function BookmarksPage() {
   const dispatch = useAppDispatch();
@@ -25,19 +24,23 @@ export default function BookmarksPage() {
   }, [dispatch, profile?.id]);
 
   return (
-    <AppContainer>
-      {/* Header Section */}
-      <PageHeader
-        icon={<Bookmark className="w-10 h-10 text-primary" />}
-        title="Bookmarked Tenders"
-        description="All your saved procurement opportunities in one place"
-      />
+    <div className="h-full flex flex-col">
+      <div className="flex-shrink-0">
+        {/* Header Section */}
+        <PageHeader
+          icon={<Bookmark className="w-10 h-10 text-primary" />}
+          title="Bookmarked Tenders"
+          description="All your saved procurement opportunities in one place"
+        />
+      </div>
 
-      {/* Bookmarks Content */}
-      <BookmarkedTenders
-        bookmarks={bookmarkedTenders}
-        loading={bookmarksLoading}
-      />
-    </AppContainer>
+      <div className="flex-1 min-h-0">
+        {/* Bookmarks Content */}
+        <BookmarkedTenders
+          bookmarks={bookmarkedTenders}
+          loading={bookmarksLoading}
+        />
+      </div>
+    </div>
   );
 }

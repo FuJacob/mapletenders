@@ -161,6 +161,16 @@ export class TenderController {
     }
   };
 
+  getAllTenders = async (req: Request, res: Response) => {
+    try {
+      const result = await this.tenderService.getAllTenders();
+      res.json(result);
+    } catch (error: any) {
+      console.error("Error fetching all tenders:", error);
+      res.status(500).json({ error: error.message });
+    }
+  };
+
   searchTenders = async (req: Request, res: Response) => {
     const requestStartTime = Date.now();
     const requestId = Math.random().toString(36).substr(2, 9);

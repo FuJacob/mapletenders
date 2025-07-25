@@ -1,11 +1,17 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useSearchParams } from "react-router-dom";
-import { SearchSection, SearchResultsList } from "../components/search";
+import {
+  SearchSection,
+  SearchResultsList,
+  SearchHistory,
+} from "../components/search";
 import { searchTenders } from "../api";
 import { createBookmark } from "../api/bookmarks";
 import { useAuth } from "../hooks/auth";
 import type { TenderSearchResult, SearchTendersResponse } from "../api/types";
 import { TenderNoticeFullContent } from "../components/tenderNotice/TenderNoticeFullContent";
+import { PageHeader } from "../components/ui";
+import { MagnifyingGlass } from "@phosphor-icons/react";
 export default function SearchPage() {
   const [searchParams, setSearchParams] = useSearchParams();
   const { user } = useAuth();
@@ -21,74 +27,37 @@ export default function SearchPage() {
     useState<SearchTendersResponse | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [selectedTender, setSelectedTender] = useState<string | null>(" ");
-  // Filter states
-  const [selectedRegions, setSelectedRegions] = useState<string[]>([]);
-  const [selectedProcurementMethod, setSelectedProcurementMethod] =
-    useState<string>("");
-  const [selectedProcurementCategories, setSelectedProcurementCategories] =
-    useState<string[]>([]);
-  const [selectedNoticeTypes, setSelectedNoticeTypes] = useState<string[]>([]);
-  const [selectedStatus, setSelectedStatus] = useState<string[]>([]);
-  const [selectedContractingEntities, setSelectedContractingEntities] =
-    useState<string[]>([]);
-  const [closingDateAfter, setClosingDateAfter] = useState<string>("");
-  const [closingDateBefore, setClosingDateBefore] = useState<string>("");
-  const [publicationDateAfter, setPublicationDateAfter] = useState<string>("");
-  const [publicationDateBefore, setPublicationDateBefore] =
-    useState<string>("");
-
-  const exampleSearches = [
-    "IT services contracts in Ontario under $100K",
-    "Construction projects in Alberta over $500K",
-    "Consulting opportunities closing this month",
-    "Software development with government agencies",
-    "Cybersecurity services for government",
-    "Cloud infrastructure modernization",
-  ];
 
   // Perform search function
-  const performSearch = async (searchQueryParam?: string) => {
-    const queryToSearch = searchQueryParam || searchQuery;
-    if (!queryToSearch.trim()) return;
+  const performSearch = useCallback(
+    async (searchQueryParam?: string) => {
+      const queryToSearch = searchQueryParam || searchQuery;
+      if (!queryToSearch.trim()) return;
 
-    setIsLoading(true);
-    try {
-      const response = await searchTenders({
-        q: queryToSearch,
-        regions: selectedRegions.length > 0 ? selectedRegions : undefined,
-        procurement_method: selectedProcurementMethod || undefined,
-        procurement_category:
-          selectedProcurementCategories.length > 0
-            ? selectedProcurementCategories
-            : undefined,
-        notice_type:
-          selectedNoticeTypes.length > 0 ? selectedNoticeTypes : undefined,
-        status: selectedStatus.length > 0 ? selectedStatus : undefined,
-        contracting_entity_name:
-          selectedContractingEntities.length > 0
-            ? selectedContractingEntities
-            : undefined,
-        closing_date_after: closingDateAfter || undefined,
-        closing_date_before: closingDateBefore || undefined,
-        publication_date_after: publicationDateAfter || undefined,
-        publication_date_before: publicationDateBefore || undefined,
-        limit: undefined,
-      });
+      setIsLoading(true);
+      try {
+        console.log("Searching for:", queryToSearch);
+        const response = await searchTenders({
+          q: queryToSearch,
+          limit: 10,
+        });
 
-      setSearchResponse(response);
-      setSearchResults(response.results);
+        setSearchResponse(response);
+        setSearchResults(response.results);
 
-      // Update URL with search query
-      if (queryToSearch !== searchParams.get("q")) {
-        setSearchParams({ q: queryToSearch });
+        // Update URL with search query
+        if (queryToSearch !== searchParams.get("q")) {
+          setSearchParams({ q: queryToSearch });
+        }
+      } catch (error) {
+        console.error("Error fetching search results:", error);
+        setSearchResults([]);
+      } finally {
+        setIsLoading(false);
       }
-    } catch (error) {
-      console.error("Error fetching search results:", error);
-      setSearchResults([]);
-    } finally {
-      setIsLoading(false);
-    }
-  };
+    },
+    [searchQuery, searchParams, setSearchParams]
+  );
 
   // Initial search effect
   useEffect(() => {
@@ -98,9 +67,18 @@ export default function SearchPage() {
   }, [initialQuery, performSearch]);
 
   // Handle search submission
-  const handleSubmitSearch = () => {
+  const handleSubmitSearch = useCallback(() => {
     performSearch();
-  };
+  }, [performSearch]);
+
+  // Handle search history selection
+  const handleHistorySearchSelect = useCallback(
+    (query: string) => {
+      setSearchQuery(query);
+      performSearch(query);
+    },
+    [performSearch]
+  );
 
   // Handle bookmark toggle
   const handleBookmarkToggle = async (tenderId: string) => {
@@ -136,49 +114,44 @@ export default function SearchPage() {
     }
   };
 
-  // Reset filters
-  const resetFilters = () => {
-    setSelectedRegions([]);
-    setSelectedProcurementMethod("");
-    setSelectedProcurementCategories([]);
-    setSelectedNoticeTypes([]);
-    setSelectedStatus([]);
-    setSelectedContractingEntities([]);
-    setClosingDateAfter("");
-    setClosingDateBefore("");
-    setPublicationDateAfter("");
-    setPublicationDateBefore("");
-  };
-
   return (
-    <div className="h-full flex flex-col space-y-6">
-      {/* Search Section - Full Width */}
-      <SearchSection
-        searchQuery={searchQuery}
-        setSearchQuery={setSearchQuery}
-        onSubmitSearch={handleSubmitSearch}
-        exampleSearches={exampleSearches}
-      />
+    <div className="h-full flex flex-col overflow-hidden">
+      {/* Header Section with Search History - Fixed Height */}
+      <div className="flex-shrink-0 mb-3">
+        <div className="flex items-start justify-between gap-6 mb-3">
+          <PageHeader
+            icon={<MagnifyingGlass className="w-10 h-10 text-primary" />}
+            title="Search"
+            description="Discover opportunities using AI"
+          />
+          {/* Search History - Horizontal beside header */}
 
-      {/* Main Content: 1/3 and 2/3 Layout */}
-      <div className="flex-1 flex gap-6 min-h-0">
-        {/* Left Side - Filters (1/3) */}
-        <div className="w-2/5 flex flex-col">
-          <TenderNoticeFullContent tenderId={selectedTender} />
+          <SearchHistory onSearchSelect={handleHistorySearchSelect} />
         </div>
 
-        {/* Right Side - Search Results (2/3) */}
-        <div className="w-3/5">
+        {/* Search Section - Full Width */}
+        <SearchSection
+          searchQuery={searchQuery}
+          setSearchQuery={setSearchQuery}
+          onSubmitSearch={handleSubmitSearch}
+        />
+      </div>
+
+      {/* Main Content: 2/5 and 3/5 Layout - Takes remaining height */}
+      <div className="flex gap-4 flex-1 min-h-0 overflow-hidden">
+        {/* Left Side - Tender Details (2/5) */}
+        <div className="w-2/5 flex flex-col min-h-0">
+          <TenderNoticeFullContent tenderId={selectedTender} compact={true} />
+        </div>
+
+        {/* Right Side - Search Results (3/5) */}
+        <div className="w-3/5 flex flex-col min-h-0">
           <SearchResultsList
             setSelectedTender={setSelectedTender}
             searchResults={searchResults}
             searchResponse={searchResponse}
             isLoading={isLoading}
             onBookmarkToggle={handleBookmarkToggle}
-            onResetFilters={resetFilters}
-            selectedRegions={selectedRegions}
-            selectedProcurementMethod={selectedProcurementMethod}
-            closingDateAfter={closingDateAfter}
           />
         </div>
       </div>

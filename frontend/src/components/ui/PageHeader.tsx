@@ -7,11 +7,11 @@ interface PageHeaderProps {
   className?: string;
 }
 
-export default function PageHeader({ 
-  icon, 
-  title, 
-  description, 
-  className = "" 
+export default function PageHeader({
+  icon,
+  title,
+  description,
+  className = "",
 }: PageHeaderProps) {
   return (
     <div className={`mb-8 ${className}`}>
@@ -19,9 +19,7 @@ export default function PageHeader({
         {icon}
         {title}
       </h1>
-      <p className="text-xl text-text-light">
-        {description}
-      </p>
+      <p className="text-xl text-text-light">{description}</p>
     </div>
   );
 }

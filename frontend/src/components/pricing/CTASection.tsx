@@ -2,25 +2,25 @@ import { useNavigate } from "react-router-dom";
 import { Lightning, Phone, Leaf } from "@phosphor-icons/react";
 
 interface CTASectionProps {
-  isAuthenticated: boolean;
+  isAuthenticated?: boolean;
 }
 
-export default function CTASection({ isAuthenticated }: CTASectionProps) {
+export default function CTASection({ isAuthenticated = false }: CTASectionProps) {
   const navigate = useNavigate();
 
   return (
-    <section className="py-20 px-6 text-center border-t border-border-warm bg-surface-warm relative overflow-hidden">
+    <section className="py-12 px-6 text-center border-t border-border-warm bg-surface-warm relative overflow-hidden">
       
       <div className="max-w-3xl mx-auto relative z-10">
-        <div className="inline-flex items-center gap-2 px-3 py-1 bg-accent/10 text-accent border border-accent/20 rounded-full text-sm font-medium mb-6">
+        <div className="inline-flex items-center gap-2 px-3 py-1 bg-accent/10 text-accent border border-accent/20 rounded-full text-sm font-medium mb-4">
           <Leaf className="w-3 h-3" />
           Start winning more contracts today
         </div>
         
-        <h2 className="text-3xl md:text-4xl font-bold mb-4 text-text">
+        <h2 className="text-3xl md:text-4xl font-bold mb-3 text-text">
           Ready to grow your government business?
         </h2>
-        <p className="text-lg text-text-muted mb-8 leading-relaxed max-w-2xl mx-auto">
+        <p className="text-lg text-text-muted mb-6 leading-relaxed max-w-2xl mx-auto">
           Join hundreds of Canadian contractors who use Mapletenders to find opportunities, track deadlines, and win more government contracts.
         </p>
         

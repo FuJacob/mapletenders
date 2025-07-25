@@ -14,9 +14,7 @@ interface ViewSwitcherProps {
   className?: string;
 }
 
-const ViewSwitcher: React.FC<ViewSwitcherProps> = ({
-  className = "",
-}) => {
+const ViewSwitcher: React.FC<ViewSwitcherProps> = ({ className = "" }) => {
   const location = useLocation();
 
   const isActive = (path: string) => location.pathname === path;
@@ -26,9 +24,9 @@ const ViewSwitcher: React.FC<ViewSwitcherProps> = ({
       className={`flex gap-1 rounded-lg p-1 bg-background border border-border ${className}`}
     >
       <Link
-        to="/dashboard"
+        to="/home"
         className={`px-3 py-2 rounded-md transition-all duration-200 flex items-center gap-2 text-sm ${
-          isActive("/dashboard")
+          isActive("/home")
             ? "bg-primary text-white"
             : "text-text-light hover:bg-border"
         }`}

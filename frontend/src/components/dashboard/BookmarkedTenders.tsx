@@ -3,7 +3,7 @@ import { Bookmark } from "@phosphor-icons/react";
 import { TenderCard } from "../tenders";
 import { type Database } from "../../../database.types";
 import { useEffect, useState } from "react";
-import type { Tender } from "../../features/tenders/types";
+import type { Tender } from "../../api/types";
 type Bookmark = Database["public"]["Tables"]["bookmarks"]["Row"];
 import { getTendersFromBookmarkIds } from "../../api/tenders";
 interface BookmarkedTendersProps {

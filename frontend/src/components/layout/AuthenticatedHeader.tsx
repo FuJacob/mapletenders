@@ -1,5 +1,11 @@
 import { useLocation, Link } from "react-router-dom";
-import { MagnifyingGlass, GearIcon, CreditCardIcon, Users, SignOut } from "@phosphor-icons/react";
+import {
+  MagnifyingGlass,
+  GearIcon,
+  CreditCardIcon,
+  Users,
+  SignOut,
+} from "@phosphor-icons/react";
 import { NotificationButton } from "./";
 import { useAppDispatch } from "../../app/hooks";
 import { signOut } from "../../features/auth/authThunks";
@@ -26,7 +32,7 @@ export default function AuthenticatedHeader({
 
   // Check if we're on an app page (authenticated pages that show sidebar)
   const isAppPage = [
-    "/dashboard",
+    "/home",
     "/search",
     "/table",
     "/rfp-analysis",
@@ -36,10 +42,7 @@ export default function AuthenticatedHeader({
   ].includes(location.pathname);
 
   return (
-    <header
-      className={`${className} z-50`}
-      role="banner"
-    >
+    <header className={`${className} z-50`} role="banner">
       <div className="flex border-b border-border items-center justify-between p-5 bg-surface">
         {/* Logo/Brand Section */}
         <div className="flex items-center gap-6">
@@ -94,9 +97,12 @@ export default function AuthenticatedHeader({
             className="flex items-center gap-2 px-3 py-2 font-medium text-text-muted hover:text-text hover:bg-background rounded-lg transition-colors"
           >
             <div className="w-8 h-8 bg-primary text-white rounded-full flex items-center justify-center font-medium">
-              {profile?.company_name?.charAt(0).toUpperCase() || user.email?.charAt(0).toUpperCase()}
+              {profile?.company_name?.charAt(0).toUpperCase() ||
+                user.email?.charAt(0).toUpperCase()}
             </div>
-            <span className="hidden md:block">{profile?.company_name || user.email?.split('@')[0]}</span>
+            <span className="hidden md:block">
+              {profile?.company_name || user.email?.split("@")[0]}
+            </span>
           </Link>
 
           {/* Sign Out Button */}

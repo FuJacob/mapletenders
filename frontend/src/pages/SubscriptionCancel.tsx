@@ -20,14 +20,16 @@ export default function SubscriptionCancel() {
           <h1 className="text-3xl font-bold text-text mb-4">
             Subscription Cancelled
           </h1>
-          
+
           <p className="text-text-light mb-6">
-            No worries! Your subscription setup was cancelled and no charges have been made to your account.
+            No worries! Your subscription setup was cancelled and no charges
+            have been made to your account.
           </p>
 
           <div className="bg-background rounded-lg p-4 mb-6">
             <p className="text-sm text-text-light">
-              You can still try MapleBids with our free plan or return to complete your subscription at any time.
+              You can still try MapleBids with our free plan or return to
+              complete your subscription at any time.
             </p>
           </div>
         </div>
@@ -40,9 +42,9 @@ export default function SubscriptionCancel() {
             <Lightning className="w-4 h-4" />
             Try Again
           </Link>
-          
+
           <Link
-            to="/dashboard"
+            to="/home"
             className="w-full px-6 py-3 border border-border text-text rounded-lg font-medium hover:bg-surface transition-colors flex items-center justify-center gap-2"
           >
             <ArrowLeft className="w-4 h-4" />

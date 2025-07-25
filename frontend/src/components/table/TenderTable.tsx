@@ -8,10 +8,8 @@ import {
   type PaginationState,
   type Row,
   getFilteredRowModel,
+  createColumnHelper,
 } from "@tanstack/react-table";
-import { useAppSelector } from "../../app/hooks";
-import { tenderColumns } from "../../features/tenders/tenderColumns.tsx";
-import { selectTenders } from "../../features/tenders/tendersSelectors";
 import {
   Table,
   TableHeader,
@@ -25,13 +23,89 @@ import { useState, useMemo, useCallback } from "react";
 import TablePaginationControls from "./TablePaginationControls";
 import "./tableStyles.css";
 import { QuickFilters } from "../search";
-import type { Tender } from "../../api/types.ts";
+import type { Tender } from "../../api/types";
+import { Link } from "react-router-dom";
+
 interface TenderTableProps {
   isLoading?: boolean;
+  tenders?: Tender[];
 }
+
 const NUMBER_OF_TENDERS_PER_PAGE = 8;
 
-export default function TenderTable({ isLoading = false }: TenderTableProps) {
+// Create column helper
+const columnHelper = createColumnHelper<Tender>();
+
+// Define table columns
+const tenderColumns = [
+  columnHelper.accessor("title", {
+    header: "Tender Title",
+    size: 300,
+    cell: (info) => (
+      <Link
+        to={`/tender-notice/${info.row.original.id}`}
+        className="text-primary hover:text-primary-dark font-medium"
+      >
+        {info.getValue() || "Untitled"}
+      </Link>
+    ),
+  }),
+  columnHelper.accessor("contracting_entity_name", {
+    header: "Entity",
+    size: 200,
+    cell: (info) => info.getValue() || "Unknown",
+  }),
+  columnHelper.accessor("category_primary", {
+    header: "Category",
+    size: 150,
+    cell: (info) => info.getValue() || "N/A",
+  }),
+  columnHelper.accessor("procurement_method", {
+    header: "Method",
+    size: 120,
+    cell: (info) => info.getValue() || "N/A",
+  }),
+  columnHelper.accessor("closing_date", {
+    header: "Closing Date",
+    size: 120,
+    cell: (info) => {
+      const date = info.getValue();
+      if (!date) return "N/A";
+      return new Date(date).toLocaleDateString();
+    },
+  }),
+  columnHelper.accessor("status", {
+    header: "Status",
+    size: 100,
+    cell: (info) => {
+      const status = info.getValue() || "Unknown";
+      const getStatusColor = (status: string) => {
+        switch (status.toLowerCase()) {
+          case "open":
+          case "active":
+            return "bg-success/10 text-success border-success/20";
+          case "closed":
+            return "bg-error/10 text-error border-error/20";
+          case "cancelled":
+            return "bg-text-muted/10 text-text-muted border-text-muted/20";
+          case "awarded":
+            return "bg-info/10 text-info border-info/20";
+          default:
+            return "bg-warning/10 text-warning border-warning/20";
+        }
+      };
+      return (
+        <span
+          className={`px-2 py-1 rounded text-xs font-medium border ${getStatusColor(status)}`}
+        >
+          {status}
+        </span>
+      );
+    },
+  }),
+];
+
+export default function TenderTable({ isLoading = false, tenders = [] }: TenderTableProps) {
   const [globalFilter, setGlobalFilter] = useState("");
   const [filteredTenders, setFilteredTenders] = useState<Tender[]>([]);
 
@@ -62,7 +136,6 @@ export default function TenderTable({ isLoading = false }: TenderTableProps) {
     pageSize: NUMBER_OF_TENDERS_PER_PAGE,
   });
   const [columnResizeMode] = useState<ColumnResizeMode>("onChange");
-  const tenders = useAppSelector(selectTenders);
 
   // Handle filtered data from QuickFilters
   const handleFilteredDataChange = useCallback((filtered: Tender[]) => {
@@ -72,8 +145,7 @@ export default function TenderTable({ isLoading = false }: TenderTableProps) {
 
   // Use filtered data if available, otherwise use all tenders
   const tableData = useMemo(() => {
-    const dataToUse =
-      filteredTenders.length > 0 ? filteredTenders : tenders || [];
+    const dataToUse = filteredTenders.length > 0 ? filteredTenders : tenders || [];
     return dataToUse;
   }, [filteredTenders, tenders]);
 
@@ -125,8 +197,8 @@ export default function TenderTable({ isLoading = false }: TenderTableProps) {
     }
 
     return (
-      <>
-        <div className="rounded-lg bg-surface">
+      <div className="h-full flex flex-col bg-surface rounded-lg border border-border">
+        <div className="flex-1 overflow-auto">
           <Table>
             <TableHeader>
               {table.getHeaderGroups().map((headerGroup) => (
@@ -175,7 +247,7 @@ export default function TenderTable({ isLoading = false }: TenderTableProps) {
                     // Only use truncate for columns that aren't Tender or Dates
                     const useTruncate =
                       cell.column.id !== "title" &&
-                      cell.column.id !== "publication_date";
+                      cell.column.id !== "closing_date";
 
                     return (
                       <TableCell
@@ -197,6 +269,8 @@ export default function TenderTable({ isLoading = false }: TenderTableProps) {
               ))}
             </TableBody>
           </Table>
+        </div>
+        <div className="flex-shrink-0 border-t border-border">
           <TablePaginationControls
             getCanNextPage={table.getCanNextPage}
             getCanPreviousPage={table.getCanPreviousPage}
@@ -209,17 +283,22 @@ export default function TenderTable({ isLoading = false }: TenderTableProps) {
             rowCount={table.getRowCount()}
           />
         </div>
-      </>
+      </div>
     );
   };
+
   return (
-    <>
-      <QuickFilters
-        setGlobalFilter={setGlobalFilter}
-        tenders={tenders || []}
-        onFilteredDataChange={handleFilteredDataChange}
-      />
-      <TenderTableInner />
-    </>
+    <div className="h-full flex flex-col">
+      <div className="flex-shrink-0 mb-4">
+        <QuickFilters
+          setGlobalFilter={setGlobalFilter}
+          tenders={tenders || []}
+          onFilteredDataChange={handleFilteredDataChange}
+        />
+      </div>
+      <div className="flex-1 min-h-0">
+        <TenderTableInner />
+      </div>
+    </div>
   );
 }

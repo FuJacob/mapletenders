@@ -9,10 +9,8 @@ import {
   TenderNoticeSidebar,
   TenderNoticeSummary,
 } from "../components/tenderNotice";
-import { type Tender as TenderData } from "../features/tenders/types";
-import { useAppDispatch } from "../app/hooks";
+import type { Tender as TenderData } from "../api/types";
 import { getTenderById } from "../api";
-import { setTender } from "../features/tenders/tendersSlice";
 
 // Pure utility functions moved outside component
 const formatDate = (dateString: string | null): string => {
@@ -75,7 +73,6 @@ export default function TenderNotice() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [isBookmarked, setIsBookmarked] = useState(false);
-  const dispatch = useAppDispatch();
   useEffect(() => {
     const fetchTender = async () => {
       if (!tenderId) {
@@ -87,18 +84,8 @@ export default function TenderNotice() {
       try {
         console.log("Fetching tender:", tenderId);
         const data = await getTenderNotice(tenderId);
-        if (data === null) {
-          const data = await getTenderById(tenderId);
-          if (data) {
-            dispatch(setTender(data));
-            setSelectedTender(data);
-          }
-        }
         console.log(data);
-        if (error) {
-          console.error("Error fetching tender:", error);
-          setError("Failed to load tender details");
-        } else if (data) {
+        if (data) {
           setSelectedTender(data);
         } else {
           setError("Tender not found");
@@ -112,7 +99,7 @@ export default function TenderNotice() {
     };
 
     fetchTender();
-  }, [tenderId, error, dispatch]);
+  }, [tenderId]);
 
   const handleBookmark = useCallback(() => {
     setIsBookmarked(!isBookmarked);

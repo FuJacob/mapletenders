@@ -121,8 +121,8 @@ export default function Profile() {
   }
 
   return (
-    <div className="min-h-screen bg-background">
-      <div className="max-w-4xl mx-auto p-8">
+    <div className="h-full flex flex-col">
+      <div className="flex-shrink-0">
         <ProfileHeader
           profile={profile ?? null}
           isEditing={isEditing}
@@ -130,9 +130,11 @@ export default function Profile() {
         />
 
         <StatusMessages success={success} error={error} />
+      </div>
 
+      <div className="flex-1 overflow-auto">
         {/* Profile Content */}
-        <div className="space-y-8">
+        <div className="space-y-8 max-w-4xl mx-auto">
           {/* Basic Information */}
           <div className="bg-surface border border-border rounded-xl p-6">
             <h2 className="text-xl font-semibold text-text mb-4 flex items-center gap-2">

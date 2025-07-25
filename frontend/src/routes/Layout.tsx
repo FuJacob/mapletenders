@@ -16,14 +16,30 @@ export default function Layout() {
   const isAppPage =
     isAuthenticated &&
     [
-      "/dashboard",
+      "/home",
       "/search",
       "/table",
       "/rfp-analysis",
       "/calendar",
       "/bookmarks",
       "/analytics",
+      "/profile",
+      "/plans",
     ].includes(location.pathname);
+
+  // Special handling for /plans route
+  if (location.pathname === "/plans" && !isAuthenticated) {
+    // Non-authenticated users see plans as landing page
+    return (
+      <div className="min-h-screen bg-background">
+        <Header />
+        <main>
+          <Outlet />
+        </main>
+        <Footer />
+      </div>
+    );
+  }
 
   if (isLandingPage) {
     return (
@@ -40,30 +56,15 @@ export default function Layout() {
   // For app pages with sidebar
   if (isAppPage) {
     return (
-      <div className="h-screen bg-background overflow-hidden">
-        {/* CSS Grid Layout for precise space allocation */}
-        <div className="h-full grid grid-cols-1 lg:grid-cols-[256px_1fr] grid-rows-[auto_1fr]">
-          {/* Sidebar - spans full height on desktop */}
-          <div className="hidden lg:block lg:row-span-2">
-            <Sidebar />
-          </div>
-          
-          {/* Header - spans remaining width */}
-          <div className="lg:col-start-2">
-            <Header />
-          </div>
-          
-          {/* Main Content - fills remaining space exactly */}
-          <div className="lg:col-start-2 overflow-hidden">
+      <div className="h-screen bg-background flex overflow-hidden">
+        <Sidebar />
+        <div className="flex flex-col flex-1 min-w-0">
+          <Header className="flex-shrink-0" />
+          <main className="flex-1 overflow-hidden">
             <AppPageContainer>
               <Outlet />
             </AppPageContainer>
-          </div>
-        </div>
-        
-        {/* Mobile sidebar overlay */}
-        <div className="lg:hidden">
-          <Sidebar />
+          </main>
         </div>
       </div>
     );
@@ -71,7 +72,7 @@ export default function Layout() {
 
   // For other authenticated pages (no sidebar)
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-background w-full">
       <Header />
       <main>
         <Outlet />

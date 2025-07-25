@@ -11,7 +11,6 @@ import {
   FileText,
 } from "@phosphor-icons/react";
 import { PageHeader } from "../components/ui";
-import { AppContainer } from "../components/layout";
 
 interface UploadedFile {
   file: File;
@@ -54,26 +53,26 @@ export default function RfpAnalysis() {
     if (!files) return;
 
     const newFiles: UploadedFile[] = Array.from(files)
-      .filter(file => file.type === "application/pdf")
-      .map(file => ({
+      .filter((file) => file.type === "application/pdf")
+      .map((file) => ({
         file,
         id: Math.random().toString(36).substr(2, 9),
         status: "uploading",
         progress: 0,
       }));
 
-    setUploadedFiles(prev => [...prev, ...newFiles]);
+    setUploadedFiles((prev) => [...prev, ...newFiles]);
 
     // Simulate upload progress
-    newFiles.forEach(fileObj => {
+    newFiles.forEach((fileObj) => {
       simulateUpload(fileObj.id);
     });
   };
 
   const simulateUpload = (fileId: string) => {
     const interval = setInterval(() => {
-      setUploadedFiles(prev =>
-        prev.map(file => {
+      setUploadedFiles((prev) =>
+        prev.map((file) => {
           if (file.id === fileId && file.status === "uploading") {
             const newProgress = (file.progress || 0) + Math.random() * 20;
             if (newProgress >= 100) {
@@ -89,8 +88,8 @@ export default function RfpAnalysis() {
   };
 
   const analyzeDocument = (fileId: string) => {
-    setUploadedFiles(prev =>
-      prev.map(file =>
+    setUploadedFiles((prev) =>
+      prev.map((file) =>
         file.id === fileId ? { ...file, status: "analyzing" } : file
       )
     );
@@ -98,7 +97,8 @@ export default function RfpAnalysis() {
     // Simulate analysis (replace with actual API call)
     setTimeout(() => {
       const mockAnalysis: RfpAnalysisResult = {
-        summary: "This RFP seeks a comprehensive IT infrastructure upgrade for a government agency, including cloud migration, cybersecurity enhancements, and staff training programs.",
+        summary:
+          "This RFP seeks a comprehensive IT infrastructure upgrade for a government agency, including cloud migration, cybersecurity enhancements, and staff training programs.",
         keyRequirements: [
           "Cloud infrastructure migration (AWS/Azure)",
           "Multi-factor authentication implementation",
@@ -111,7 +111,10 @@ export default function RfpAnalysis() {
           projectStart: "2024-03-01",
           projectEnd: "2024-08-31",
           keyMilestones: [
-            { date: "2024-03-15", description: "Infrastructure assessment complete" },
+            {
+              date: "2024-03-15",
+              description: "Infrastructure assessment complete",
+            },
             { date: "2024-04-30", description: "Cloud migration phase 1" },
             { date: "2024-06-15", description: "Security implementation" },
             { date: "2024-07-31", description: "Staff training completion" },
@@ -119,11 +122,31 @@ export default function RfpAnalysis() {
         },
         evaluation: {
           criteria: [
-            { criterion: "Technical Approach", weight: 30, description: "Quality and feasibility of proposed solution" },
-            { criterion: "Experience", weight: 25, description: "Relevant project experience and references" },
-            { criterion: "Cost", weight: 20, description: "Total cost and value proposition" },
-            { criterion: "Timeline", weight: 15, description: "Realistic project timeline" },
-            { criterion: "Team Qualifications", weight: 10, description: "Team expertise and certifications" },
+            {
+              criterion: "Technical Approach",
+              weight: 30,
+              description: "Quality and feasibility of proposed solution",
+            },
+            {
+              criterion: "Experience",
+              weight: 25,
+              description: "Relevant project experience and references",
+            },
+            {
+              criterion: "Cost",
+              weight: 20,
+              description: "Total cost and value proposition",
+            },
+            {
+              criterion: "Timeline",
+              weight: 15,
+              description: "Realistic project timeline",
+            },
+            {
+              criterion: "Team Qualifications",
+              weight: 10,
+              description: "Team expertise and certifications",
+            },
           ],
           scoringMethod: "Weighted scoring with technical threshold of 70%",
         },
@@ -157,8 +180,8 @@ export default function RfpAnalysis() {
         ],
       };
 
-      setUploadedFiles(prev =>
-        prev.map(file =>
+      setUploadedFiles((prev) =>
+        prev.map((file) =>
           file.id === fileId
             ? { ...file, status: "completed", analysis: mockAnalysis }
             : file
@@ -168,7 +191,7 @@ export default function RfpAnalysis() {
   };
 
   const removeFile = (fileId: string) => {
-    setUploadedFiles(prev => prev.filter(file => file.id !== fileId));
+    setUploadedFiles((prev) => prev.filter((file) => file.id !== fileId));
   };
 
   const downloadReport = (fileId: string) => {
@@ -177,15 +200,18 @@ export default function RfpAnalysis() {
   };
 
   return (
-    <AppContainer>
+    <div className="h-full flex flex-col">
+      <div className="flex-shrink-0">
         <PageHeader
           icon={<FileText className="w-10 h-10 text-primary" />}
           title="RFP Analysis"
           description="Upload RFP documents to get AI-powered analysis and insights to help you craft winning proposals"
         />
+      </div>
 
-      {/* Upload Section */}
-      <div className="mb-8">
+      <div className="flex-1 overflow-auto">
+        {/* Upload Section */}
+        <div className="mb-8">
         <div
           className={`border-2 border-dashed rounded-xl p-8 text-center transition-colors ${
             isDragOver
@@ -233,7 +259,9 @@ export default function RfpAnalysis() {
       {/* Uploaded Files */}
       {uploadedFiles.length > 0 && (
         <div className="space-y-4">
-          <h2 className="text-xl font-semibold text-text">Uploaded Documents</h2>
+          <h2 className="text-xl font-semibold text-text">
+            Uploaded Documents
+          </h2>
           {uploadedFiles.map((fileObj) => (
             <div
               key={fileObj.id}
@@ -243,7 +271,9 @@ export default function RfpAnalysis() {
                 <div className="flex items-center gap-3">
                   <FilePdf className="w-8 h-8 text-error" />
                   <div>
-                    <h3 className="font-medium text-text">{fileObj.file.name}</h3>
+                    <h3 className="font-medium text-text">
+                      {fileObj.file.name}
+                    </h3>
                     <p className="text-sm text-text-muted">
                       {(fileObj.file.size / 1024 / 1024).toFixed(2)} MB
                     </p>
@@ -283,7 +313,9 @@ export default function RfpAnalysis() {
                   <div>
                     <div className="flex items-center gap-2 mb-2">
                       <Clock className="w-4 h-4 text-text-muted" />
-                      <span className="text-sm text-text-muted">Uploading...</span>
+                      <span className="text-sm text-text-muted">
+                        Uploading...
+                      </span>
                     </div>
                     <div className="w-full bg-border rounded-full h-2">
                       <div
@@ -308,7 +340,9 @@ export default function RfpAnalysis() {
                 {fileObj.status === "error" && (
                   <div className="flex items-center gap-2 text-error">
                     <Warning className="w-4 h-4" />
-                    <span className="text-sm">{fileObj.error || "Analysis failed"}</span>
+                    <span className="text-sm">
+                      {fileObj.error || "Analysis failed"}
+                    </span>
                   </div>
                 )}
               </div>
@@ -320,37 +354,54 @@ export default function RfpAnalysis() {
                     <Sparkle className="w-5 h-5 text-primary" />
                     AI Analysis Results
                   </h4>
-                  
+
                   <div className="grid gap-6 md:grid-cols-2">
                     {/* Summary */}
                     <div className="space-y-4">
                       <div>
-                        <h5 className="font-medium text-text mb-2">Executive Summary</h5>
-                        <p className="text-sm text-text-muted">{fileObj.analysis.summary}</p>
+                        <h5 className="font-medium text-text mb-2">
+                          Executive Summary
+                        </h5>
+                        <p className="text-sm text-text-muted">
+                          {fileObj.analysis.summary}
+                        </p>
                       </div>
 
                       {/* Key Requirements */}
                       <div>
-                        <h5 className="font-medium text-text mb-2">Key Requirements</h5>
+                        <h5 className="font-medium text-text mb-2">
+                          Key Requirements
+                        </h5>
                         <ul className="space-y-1">
-                          {fileObj.analysis.keyRequirements.map((req, index) => (
-                            <li key={index} className="text-sm text-text-muted flex items-start gap-2">
-                              <span className="text-primary mt-1">•</span>
-                              {req}
-                            </li>
-                          ))}
+                          {fileObj.analysis.keyRequirements.map(
+                            (req, index) => (
+                              <li
+                                key={index}
+                                className="text-sm text-text-muted flex items-start gap-2"
+                              >
+                                <span className="text-primary mt-1">•</span>
+                                {req}
+                              </li>
+                            )
+                          )}
                         </ul>
                       </div>
 
                       {/* Budget Info */}
                       <div>
-                        <h5 className="font-medium text-text mb-2">Budget Information</h5>
+                        <h5 className="font-medium text-text mb-2">
+                          Budget Information
+                        </h5>
                         <div className="space-y-1">
                           <p className="text-sm text-text-muted">
-                            <span className="font-medium">Estimated Value:</span> {fileObj.analysis.budgetInfo.estimatedValue}
+                            <span className="font-medium">
+                              Estimated Value:
+                            </span>{" "}
+                            {fileObj.analysis.budgetInfo.estimatedValue}
                           </p>
                           <p className="text-sm text-text-muted">
-                            <span className="font-medium">Payment Terms:</span> {fileObj.analysis.budgetInfo.paymentTerms}
+                            <span className="font-medium">Payment Terms:</span>{" "}
+                            {fileObj.analysis.budgetInfo.paymentTerms}
                           </p>
                         </div>
                       </div>
@@ -362,36 +413,60 @@ export default function RfpAnalysis() {
                         <h5 className="font-medium text-text mb-2">Timeline</h5>
                         <div className="space-y-1">
                           <p className="text-sm text-text-muted">
-                            <span className="font-medium">Proposal Deadline:</span> {fileObj.analysis.timeline.proposalDeadline}
+                            <span className="font-medium">
+                              Proposal Deadline:
+                            </span>{" "}
+                            {fileObj.analysis.timeline.proposalDeadline}
                           </p>
                           <p className="text-sm text-text-muted">
-                            <span className="font-medium">Project Duration:</span> {fileObj.analysis.timeline.projectStart} - {fileObj.analysis.timeline.projectEnd}
+                            <span className="font-medium">
+                              Project Duration:
+                            </span>{" "}
+                            {fileObj.analysis.timeline.projectStart} -{" "}
+                            {fileObj.analysis.timeline.projectEnd}
                           </p>
                         </div>
                       </div>
 
                       {/* Evaluation Criteria */}
                       <div>
-                        <h5 className="font-medium text-text mb-2">Evaluation Criteria</h5>
+                        <h5 className="font-medium text-text mb-2">
+                          Evaluation Criteria
+                        </h5>
                         <div className="space-y-1">
-                          {fileObj.analysis.evaluation.criteria.slice(0, 3).map((criterion, index) => (
-                            <p key={index} className="text-sm text-text-muted">
-                              <span className="font-medium">{criterion.criterion}:</span> {criterion.weight}%
-                            </p>
-                          ))}
+                          {fileObj.analysis.evaluation.criteria
+                            .slice(0, 3)
+                            .map((criterion, index) => (
+                              <p
+                                key={index}
+                                className="text-sm text-text-muted"
+                              >
+                                <span className="font-medium">
+                                  {criterion.criterion}:
+                                </span>{" "}
+                                {criterion.weight}%
+                              </p>
+                            ))}
                         </div>
                       </div>
 
                       {/* Recommendations */}
                       <div>
-                        <h5 className="font-medium text-text mb-2">AI Recommendations</h5>
+                        <h5 className="font-medium text-text mb-2">
+                          AI Recommendations
+                        </h5>
                         <ul className="space-y-1">
-                          {fileObj.analysis.recommendations.slice(0, 3).map((rec, index) => (
-                            <li key={index} className="text-sm text-text-muted flex items-start gap-2">
-                              <span className="text-success mt-1">✓</span>
-                              {rec}
-                            </li>
-                          ))}
+                          {fileObj.analysis.recommendations
+                            .slice(0, 3)
+                            .map((rec, index) => (
+                              <li
+                                key={index}
+                                className="text-sm text-text-muted flex items-start gap-2"
+                              >
+                                <span className="text-success mt-1">✓</span>
+                                {rec}
+                              </li>
+                            ))}
                         </ul>
                       </div>
                     </div>
@@ -407,12 +482,16 @@ export default function RfpAnalysis() {
       {uploadedFiles.length === 0 && (
         <div className="text-center py-12">
           <FilePdf className="w-16 h-16 text-text-muted mx-auto mb-4" />
-          <h3 className="text-lg font-medium text-text mb-2">No documents uploaded yet</h3>
+          <h3 className="text-lg font-medium text-text mb-2">
+            No documents uploaded yet
+          </h3>
           <p className="text-text-muted">
-            Upload your first RFP document to get started with AI-powered analysis
+            Upload your first RFP document to get started with AI-powered
+            analysis
           </p>
         </div>
       )}
-    </AppContainer>
+      </div>
+    </div>
   );
 }

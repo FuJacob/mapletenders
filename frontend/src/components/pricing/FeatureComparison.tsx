@@ -66,9 +66,9 @@ const features: PlanFeature[] = [
 
 export default function FeatureComparison() {
   return (
-    <section className="py-20 px-6 bg-bg">
+    <section className="py-12 px-6 bg-bg">
       <div className="max-w-4xl mx-auto">
-        <div className="text-center mb-16">
+        <div className="text-center mb-10">
           <div className="inline-flex items-center gap-2 px-3 py-1 bg-maple/10 text-maple border border-maple/20 rounded-full text-sm font-medium mb-4">
             <Leaf className="w-3 h-3" />
             Everything you need to succeed

@@ -591,7 +591,7 @@ export default function Onboarding() {
         {/* Skip option */}
         <div className="text-center mt-6">
           <button
-            onClick={() => navigate("/dashboard")}
+            onClick={() => navigate("/home")}
             className="text-text-light hover:text-text text-sm transition-colors underline"
           >
             Skip for now, I'll complete this later

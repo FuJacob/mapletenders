@@ -28,7 +28,6 @@ import {
 import TenderEventModal from "../components/calendar/TenderEventModal";
 import CalendarLoadingState from "../components/calendar/CalendarLoadingState";
 import CalendarEmptyState from "../components/calendar/CalendarEmptyState";
-import { AppContainer } from "../components/layout";
 
 const localizer = momentLocalizer(moment);
 
@@ -133,21 +132,21 @@ export default function CalendarPage() {
   // Show loading state
   if (loading) {
     return (
-      <AppContainer>
+      <>
         <PageHeader
           icon={<CalendarIcon className="w-10 h-10 text-primary" />}
           title="Calendar"
           description="Track important dates, deadlines, and procurement events"
         />
         <CalendarLoadingState />
-      </AppContainer>
+      </>
     );
   }
 
   // Show error state
   if (error) {
     return (
-      <AppContainer>
+      <>
         <PageHeader
           icon={<CalendarIcon className="w-10 h-10 text-primary" />}
           title="Calendar"
@@ -163,26 +162,27 @@ export default function CalendarPage() {
             Try Again
           </button>
         </div>
-      </AppContainer>
+      </>
     );
   }
 
   // Show empty state
   if (events.length === 0) {
     return (
-      <AppContainer>
+      <>
         <PageHeader
           icon={<CalendarIcon className="w-10 h-10 text-primary" />}
           title="Calendar"
           description="Track important dates, deadlines, and procurement events"
         />
         <CalendarEmptyState />
-      </AppContainer>
+      </>
     );
   }
 
   return (
-    <AppContainer>
+    <div className="h-full flex flex-col">
+      <div className="flex-shrink-0">
         <PageHeader
           icon={<CalendarIcon className="w-10 h-10 text-primary" />}
           title="Calendar"
@@ -232,105 +232,106 @@ export default function CalendarPage() {
             ))}
           </div>
         </div>
+      </div>
 
-        {/* Calendar Container */}
-        <div className="bg-surface rounded-lg border border-border shadow-sm">
-          <Calendar
-            className="custom-calendar"
-            localizer={localizer}
-            events={filteredEvents}
-            date={currentDate}
-            view={currentView}
-            onNavigate={handleNavigate}
-            onView={handleViewChange}
-            onSelectEvent={handleSelectEvent}
-            onSelectSlot={handleSelectSlot}
-            selectable
-            popup
-            style={{ height: "calc(100vh - 300px)", minHeight: "600px" }}
-            views={["month", "week", "agenda"]}
-            step={60}
-            showMultiDayTimes
-            defaultDate={new Date()}
-            components={{
-              toolbar: ({ label, onNavigate, onView, view }) => (
-                <div className="flex flex-col sm:flex-row items-center justify-between p-6 border-b border-border bg-surface">
-                  <div className="flex items-center gap-4 mb-4 sm:mb-0">
-                    <button
-                      onClick={() => onNavigate("PREV")}
-                      className="flex items-center gap-2 px-4 py-2 text-sm font-medium text-text bg-background border border-border rounded-lg hover:bg-border transition-colors"
-                    >
-                      <CaretLeftIcon className="w-4 h-4" /> Previous
-                    </button>
-                    <button
-                      onClick={() => onNavigate("TODAY")}
-                      className="flex items-center gap-2 px-4 py-2 text-sm font-medium text-white bg-primary border border-primary rounded-lg hover:bg-primary-dark transition-colors"
-                    >
-                      <CalendarDotIcon className="w-4 h-4" /> Today
-                    </button>
-                    <button
-                      onClick={() => onNavigate("NEXT")}
-                      className="flex items-center gap-2 px-4 py-2 text-sm font-medium text-text bg-background border border-border rounded-lg hover:bg-border transition-colors"
-                    >
-                      <CaretRightIcon className="w-4 h-4" /> Next
-                    </button>
-                  </div>
-
-                  <h2 className="text-2xl font-bold text-text mb-4 sm:mb-0">
-                    {label}
-                  </h2>
-
-                  <div className="flex gap-1 bg-background border border-border rounded-lg p-1">
-                    {["month", "week", "agenda"].map((viewName) => (
-                      <button
-                        key={viewName}
-                        onClick={() => onView(viewName as View)}
-                        className={`px-3 py-2 text-sm font-medium rounded-md transition-colors capitalize ${
-                          view === viewName
-                            ? "bg-primary text-white"
-                            : "text-text hover:bg-border"
-                        }`}
-                      >
-                        {viewName}
-                      </button>
-                    ))}
-                  </div>
+      {/* Calendar Container */}
+      <div className="flex-1 bg-surface rounded-lg border border-border shadow-sm min-h-0">
+        <Calendar
+          className="custom-calendar"
+          localizer={localizer}
+          events={filteredEvents}
+          date={currentDate}
+          view={currentView}
+          onNavigate={handleNavigate}
+          onView={handleViewChange}
+          onSelectEvent={handleSelectEvent}
+          onSelectSlot={handleSelectSlot}
+          selectable
+          popup
+          style={{ height: "100%" }}
+          views={["month", "week", "agenda"]}
+          step={60}
+          showMultiDayTimes
+          defaultDate={new Date()}
+          components={{
+            toolbar: ({ label, onNavigate, onView, view }) => (
+              <div className="flex flex-col sm:flex-row items-center justify-between p-6 border-b border-border bg-surface">
+                <div className="flex items-center gap-4 mb-4 sm:mb-0">
+                  <button
+                    onClick={() => onNavigate("PREV")}
+                    className="flex items-center gap-2 px-4 py-2 text-sm font-medium text-text bg-background border border-border rounded-lg hover:bg-border transition-colors"
+                  >
+                    <CaretLeftIcon className="w-4 h-4" /> Previous
+                  </button>
+                  <button
+                    onClick={() => onNavigate("TODAY")}
+                    className="flex items-center gap-2 px-4 py-2 text-sm font-medium text-white bg-primary border border-primary rounded-lg hover:bg-primary-dark transition-colors"
+                  >
+                    <CalendarDotIcon className="w-4 h-4" /> Today
+                  </button>
+                  <button
+                    onClick={() => onNavigate("NEXT")}
+                    className="flex items-center gap-2 px-4 py-2 text-sm font-medium text-text bg-background border border-border rounded-lg hover:bg-border transition-colors"
+                  >
+                    <CaretRightIcon className="w-4 h-4" /> Next
+                  </button>
                 </div>
-              ),
-            }}
-            eventPropGetter={(event) => {
-              const calendarEvent = event as CalendarEvent;
-              return {
-                style: getEventStyle(calendarEvent.resource),
-              };
-            }}
-          />
-        </div>
 
-        {/* Legend */}
-        <div className="mt-6 flex flex-wrap items-center justify-center gap-6">
-          <div className="flex items-center gap-2">
-            <div className="w-4 h-4 bg-error rounded"></div>
-            <span className="text-sm text-text">Due Soon (≤3 days)</span>
-          </div>
-          <div className="flex items-center gap-2">
-            <div className="w-4 h-4 bg-warning rounded"></div>
-            <span className="text-sm text-text">Due This Week (≤7 days)</span>
-          </div>
-          <div className="flex items-center gap-2">
-            <div className="w-4 h-4 bg-primary rounded"></div>
-            <span className="text-sm text-text">Upcoming (&gt;7 days)</span>
-          </div>
-        </div>
+                <h2 className="text-2xl font-bold text-text mb-4 sm:mb-0">
+                  {label}
+                </h2>
 
-        {/* Event Detail Modal */}
-        <TenderEventModal
-          event={selectedEvent}
-          isOpen={isModalOpen}
-          onClose={handleCloseModal}
-          onToggleBookmark={handleToggleBookmark}
-          isBookmarked={true}
+                <div className="flex gap-1 bg-background border border-border rounded-lg p-1">
+                  {["month", "week", "agenda"].map((viewName) => (
+                    <button
+                      key={viewName}
+                      onClick={() => onView(viewName as View)}
+                      className={`px-3 py-2 text-sm font-medium rounded-md transition-colors capitalize ${
+                        view === viewName
+                          ? "bg-primary text-white"
+                          : "text-text hover:bg-border"
+                      }`}
+                    >
+                      {viewName}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            ),
+          }}
+          eventPropGetter={(event) => {
+            const calendarEvent = event as CalendarEvent;
+            return {
+              style: getEventStyle(calendarEvent.resource),
+            };
+          }}
         />
-    </AppContainer>
+      </div>
+
+      {/* Legend */}
+      <div className="flex-shrink-0 mt-6 flex flex-wrap items-center justify-center gap-6">
+        <div className="flex items-center gap-2">
+          <div className="w-4 h-4 bg-error rounded"></div>
+          <span className="text-sm text-text">Due Soon (≤3 days)</span>
+        </div>
+        <div className="flex items-center gap-2">
+          <div className="w-4 h-4 bg-warning rounded"></div>
+          <span className="text-sm text-text">Due This Week (≤7 days)</span>
+        </div>
+        <div className="flex items-center gap-2">
+          <div className="w-4 h-4 bg-primary rounded"></div>
+          <span className="text-sm text-text">Upcoming (&gt;7 days)</span>
+        </div>
+      </div>
+
+      {/* Event Detail Modal */}
+      <TenderEventModal
+        event={selectedEvent}
+        isOpen={isModalOpen}
+        onClose={handleCloseModal}
+        onToggleBookmark={handleToggleBookmark}
+        isBookmarked={true}
+      />
+    </div>
   );
 }

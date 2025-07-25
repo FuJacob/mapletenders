@@ -11,11 +11,11 @@ import Pricing from "./pages/Pricing";
 import About from "./pages/About";
 import Contact from "./pages/Contact";
 import Home from "./pages/Home";
-import SearchResults from "./pages/SearchResults";
 import RfpAnalysis from "./pages/RfpAnalysis";
 import SubscriptionSuccess from "./pages/SubscriptionSuccess";
 import SubscriptionCancel from "./pages/SubscriptionCancel";
-import Plans from "./pages/Plans";
+import PlansAppPage from "./pages/PlansAppPage";
+import AnalyticsPage from "./pages/AnalyticsPage";
 import GuestRoutes from "./routes/GuestRoutes";
 import ProtectedRoutes from "./routes/ProtectedRoutes";
 import OnboardingRequiredRoutes from "./routes/OnboardingRequiredRoutes";
@@ -26,12 +26,11 @@ import TableView from "./pages/TableView";
 import Test from "./pages/Test";
 import Layout from "./routes/Layout";
 import { refreshTenders } from "./api";
-import { loadTenders } from "./features/tenders/tendersThunk";
 import CalendarPage from "./pages/CalendarPage";
 import BookmarksPage from "./pages/BookmarksPage";
 import SearchPage from "./pages/SearchPage";
 import TablePage from "./pages/TablePage";
-import DashboardPage from "./pages/DashboardPage";
+import HomePage from "./pages/HomePage";
 
 import { useAuth } from "./hooks/auth";
 export function App() {
@@ -39,7 +38,6 @@ export function App() {
   const dispatch = useAppDispatch();
   // Memoize initialization logic
   const initializeApp = useCallback(() => {
-    dispatch(loadTenders());
     refreshTenders();
     if (!user) {
       dispatch(loadSession());
@@ -70,7 +68,7 @@ export function App() {
         </Route>
         <Route element={<ProtectedRoutes />}>
           <Route element={<OnboardingRequiredRoutes />}>
-            <Route path="/dashboard" element={<DashboardPage />} />
+            <Route path="/home" element={<HomePage />} />
             <Route path="/table-view" element={<TableView />} />
             <Route path="/home" element={<Home />} />
             <Route path="/search" element={<SearchPage />} />
@@ -78,10 +76,10 @@ export function App() {
             <Route path="/rfp-analysis" element={<RfpAnalysis />} />
             <Route path="/calendar" element={<CalendarPage />} />
             <Route path="/bookmarks" element={<BookmarksPage />} />
+            <Route path="/analytics" element={<AnalyticsPage />} />
             <Route path="/profile" element={<Profile />} />
-            <Route path="/plans" element={<Plans />} />
+            <Route path="/plans" element={<PlansAppPage />} />
             <Route path="/tender-notice/:tenderId" element={<TenderNotice />} />
-            <Route path="/search-results" element={<SearchResults />} />
           </Route>
           <Route path="/onboarding" element={<Onboarding />} />
         </Route>

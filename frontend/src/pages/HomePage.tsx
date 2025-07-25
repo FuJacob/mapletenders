@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import WelcomeSection from "../components/dashboard/WelcomeSection";
+
 import DashboardStatsGrid from "../components/dashboard/DashboardStatsGrid";
 import RecentActivity from "../components/dashboard/RecentActivity";
 import RecommendedTenders from "../components/dashboard/RecommendedTenders";
@@ -10,6 +10,8 @@ import { getNumberOfBookmarks } from "../api/bookmarks";
 import type { Activity } from "../components/dashboard/types";
 import type { TenderSearchResult } from "../api/types";
 import { useAuth } from "../hooks/auth";
+import { HouseIcon } from "@phosphor-icons/react";
+import { PageHeader } from "../components/ui";
 
 // Dashboard view modes
 type DashboardViewMode = "recent" | "recommended";
@@ -90,9 +92,8 @@ const mockDeadlines = [
   },
 ];
 
-export default function DashboardPage() {
+export default function HomePage() {
   const { profile } = useAuth();
-  const companyName = profile?.company_name || "TechFlow Solutions";
   const [viewMode, setViewMode] = useState<DashboardViewMode>("recent");
   const [recommendedTenders, setRecommendedTenders] = useState<
     TenderSearchResult[]
@@ -133,98 +134,64 @@ export default function DashboardPage() {
   }, []);
 
   return (
-    <div className="h-full flex flex-col space-y-6">
-      {/* Welcome Message */}
-      <WelcomeSection
-        companyName={companyName}
-        userName={profile?.company_name || "Sarah"}
-      />
+    <div className="h-full flex flex-col space-y-4">
+      {/* Header Section - Fixed Height */}
+      <div className="flex w-full justify-between items-start gap-6">
+        <PageHeader
+          icon={<HouseIcon className="w-10 h-10 text-primary" />}
+          title="Home"
+          description={`Welcome home, ${profile?.company_name}`}
+        />
+        <DashboardStatsGrid stats={stats} />
+      </div>
 
-      {/* Stats Grid */}
-      <DashboardStatsGrid stats={stats} />
-
-      {/* Main Content Layout */}
-      <div className="grid grid-cols-1 xl:grid-cols-4 gap-6 flex-1 min-h-0">
-        {/* Main Content Area (2/3 width on large screens) */}
-        <div className="xl:col-span-3 space-y-6">
+      {/* Main Content Layout - Flexible Height */}
+      <div className="flex gap-6 flex-1 min-h-0">
+        {/* Main Content Area - 2/3 width */}
+        <div className="flex-1 bg-surface border border-border rounded-xl flex flex-col min-h-0">
           {/* Tab Navigation */}
-          <div className="bg-surface border border-border rounded-xl h-full flex flex-col">
-            <div className="flex border-b border-border">
-              <button
-                onClick={() => setViewMode("recent")}
-                className={`px-6 py-3 text-sm font-medium transition-colors ${
-                  viewMode === "recent"
-                    ? "text-primary bg-primary/5 border-b-2 border-primary"
-                    : "text-text-muted hover:text-text"
-                }`}
-              >
-                Recent Activity
-              </button>
-              <button
-                onClick={() => setViewMode("recommended")}
-                className={`px-6 py-3 text-sm font-medium transition-colors ${
-                  viewMode === "recommended"
-                    ? "text-primary bg-primary/5 border-b-2 border-primary"
-                    : "text-text-muted hover:text-text"
-                }`}
-              >
-                Recommended For You
-              </button>
-            </div>
-
-            {/* Tab Content */}
-            <div className="p-6 flex-1 overflow-hidden">
-              {viewMode === "recent" ? (
-                <div className="h-full overflow-y-auto">
-                  <RecentActivity activities={mockActivities} />
-                </div>
-              ) : (
-                <div className="h-full overflow-y-auto">
-                  <RecommendedTenders tenders={recommendedTenders} />
-                </div>
-              )}
-            </div>
+          <div className="flex border-b border-border flex-shrink-0">
+            <button
+              onClick={() => setViewMode("recent")}
+              className={`px-6 py-3 text-sm font-medium transition-colors ${
+                viewMode === "recent"
+                  ? "text-primary bg-primary/5 border-b-2 border-primary"
+                  : "text-text-muted hover:text-text"
+              }`}
+            >
+              Recent Activity
+            </button>
+            <button
+              onClick={() => setViewMode("recommended")}
+              className={`px-6 py-3 text-sm font-medium transition-colors ${
+                viewMode === "recommended"
+                  ? "text-primary bg-primary/5 border-b-2 border-primary"
+                  : "text-text-muted hover:text-text"
+              }`}
+            >
+              Recommended For You
+            </button>
+          </div>
+          {/* Tab Content - Scrollable */}
+          <div className="flex-1 overflow-y-auto">
+            {viewMode === "recent" ? (
+              <RecentActivity activities={mockActivities} />
+            ) : (
+              <RecommendedTenders tenders={recommendedTenders} />
+            )}
           </div>
         </div>
 
-        {/* Sidebar (1/3 width on large screens) */}
-        <div className="xl:col-span-1 space-y-6">
-          {/* Quick Actions */}
-          <div className="bg-surface border border-border rounded-xl p-6">
+        {/* Sidebar - 1/3 width */}
+        <div className="w-1/3 flex flex-col gap-4 min-h-0">
+          <div className="bg-surface border border-border rounded-xl p-6 flex-shrink-0">
             <h3 className="text-lg font-semibold text-text mb-4">
               Quick Actions
             </h3>
             <QuickActionsSidebar />
           </div>
-
-          {/* Urgent Deadlines */}
-          <UrgentDeadlines deadlines={mockDeadlines} />
-
-          {/* AI Insights Card */}
-          <div className="bg-gradient-to-br from-primary/5 to-maple/5 border border-primary/20 rounded-xl p-6">
-            <div className="flex items-center gap-2 mb-3">
-              <div className="w-8 h-8 bg-primary/10 rounded-full flex items-center justify-center">
-                🤖
-              </div>
-              <h3 className="text-lg font-semibold text-text">AI Insights</h3>
-            </div>
-            <p className="text-sm text-text-muted mb-4">
-              Based on your activity, you might be interested in upcoming IT and
-              cybersecurity opportunities.
-            </p>
-            <div className="space-y-2">
-              <div className="flex items-center justify-between text-sm">
-                <span className="text-text-muted">Match Score Trend</span>
-                <span className="text-success font-medium">↗ +12%</span>
-              </div>
-              <div className="flex items-center justify-between text-sm">
-                <span className="text-text-muted">Weekly Activity</span>
-                <span className="text-info font-medium">8 actions</span>
-              </div>
-            </div>
-            <button className="w-full mt-4 px-4 py-2 bg-primary text-white text-sm font-medium rounded-lg hover:bg-primary-dark transition-colors">
-              View Full Report
-            </button>
+          <div className="flex-1">
+            <UrgentDeadlines deadlines={mockDeadlines} />
           </div>
         </div>
       </div>
