@@ -1,5 +1,7 @@
 import type { ReactNode } from "react";
 
+import GuestHeader from "./GuestHeader";
+
 interface LandingPageContainerProps {
   children: ReactNode;
 }
@@ -7,5 +9,10 @@ interface LandingPageContainerProps {
 export default function LandingPageContainer({
   children,
 }: LandingPageContainerProps) {
-  return <div className="min-h-screen mx-auto">{children}</div>;
+  return (
+    <>
+      <GuestHeader />
+      <div className="min-h-screen mx-auto">{children}</div>
+    </>
+  );
 }

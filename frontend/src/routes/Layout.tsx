@@ -7,25 +7,7 @@ export default function Layout() {
   const location = useLocation();
   const { isAuthenticated } = useAuth();
 
-  // Define which routes are landing pages (no header/footer, different styling)
-  const isLandingPage = ["/", "/about", "/contact", "/pricing"].includes(
-    location.pathname
-  );
-
-  // Define which routes are app pages (show sidebar)
-  const isAppPage =
-    isAuthenticated &&
-    [
-      "/home",
-      "/search",
-      "/table",
-      "/rfp-analysis",
-      "/calendar",
-      "/bookmarks",
-      "/analytics",
-      "/profile",
-      "/plans",
-    ].includes(location.pathname);
+  // Define which routes are
 
   // Special handling for /plans route
   if (location.pathname === "/plans" && !isAuthenticated) {
@@ -41,20 +23,8 @@ export default function Layout() {
     );
   }
 
-  if (isLandingPage) {
-    return (
-      <div className="min-h-screen bg-background">
-        <Header />
-        <main>
-          <Outlet />
-        </main>
-        <Footer />
-      </div>
-    );
-  }
-
   // For app pages with sidebar
-  if (isAppPage) {
+  if (isAuthenticated) {
     return (
       <div className="h-screen bg-background flex overflow-hidden">
         <Sidebar />
