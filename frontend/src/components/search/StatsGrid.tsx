@@ -53,7 +53,7 @@ export default function StatsGrid({ stats }: StatsGridProps) {
       {statItems.map((item, index) => (
         <div
           key={index}
-          className="bg-surface border border-border rounded-xl p-3 text-left"
+          className="bg-surface border border-border rounded-lg p-3 text-left"
         >
           <div className="flex items-center justify-between mb-2">
             <div className={`p-2 ${item.iconBg} rounded-lg`}>{item.icon}</div>

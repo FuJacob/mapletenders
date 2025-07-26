@@ -58,10 +58,10 @@ export default function DashboardStatsGrid({ stats }: DashboardStatsGridProps) {
         <Link
           key={index}
           to={item.to}
-          className="bg-surface border border-border rounded-xl hover:border-primary hover:bg-primary/5 transition-all group"
+          className="bg-surface border border-border rounded-lg hover:border-primary hover:bg-primary/5 transition-all group"
         >
           <div
-            className={`${item.iconBg} flex items-center justify-center flex-1 h-1/3  w-full rounded-t-lg`}
+            className={`${item.iconBg} flex items-center justify-center flex-1 h-1/3  w-full rounded-lg`}
           >
             {item.icon}
           </div>
@@ -69,7 +69,7 @@ export default function DashboardStatsGrid({ stats }: DashboardStatsGridProps) {
             <h3 className="flex items-center gap-2 text-3xl sm:text-4xl font-bold text-text group-hover:text-primary transition-colors">
               {item.badge && (
                 <span
-                  className={`text-xs ${item.badgeColor} font-medium px-2 py-1 bg-surface-muted rounded-full`}
+                  className={`text-xs ${item.badgeColor} font-medium px-2 py-1 bg-surface-muted rounded-lg`}
                 >
                   {item.badge}
                 </span>
