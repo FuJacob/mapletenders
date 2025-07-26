@@ -84,10 +84,10 @@ export default function HeroSection() {
                 <ArrowRight className="w-5 h-5" />
               </button>
               <button
-                onClick={() => navigate("/pricing")}
+                onClick={() => navigate("#pricing")}
                 className="px-6 sm:px-8 py-3 sm:py-4 border-2 border-border-warm text-text font-semibold text-base sm:text-lg rounded-lg hover:bg-surface-warm hover:border-accent transition-colors"
               >
-                View Pricing
+                Watch Demo
               </button>
             </div>
 
