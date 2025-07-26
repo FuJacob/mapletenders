@@ -1,26 +1,11 @@
-import { useEffect, useState } from "react";
-import { useAppSelector, useAppDispatch } from "../app/hooks";
-import {
-  selectBookmarkedTenders,
-} from "../features/bookmarks/bookmarksSelectors";
-import { loadBookmarks } from "../features/bookmarks/bookmarksThunks";
-import { useAuth } from "../hooks/auth";
+import { useState } from "react";
 import { BookmarkIcon } from "@phosphor-icons/react";
 import BookmarkedTenders from "../components/dashboard/BookmarkedTenders";
 import { PageHeader } from "../components/ui";
 import { TenderNoticeFullContent } from "../components/tenderNotice/TenderNoticeFullContent";
 
 export default function BookmarksPage() {
-  const dispatch = useAppDispatch();
-  const { profile } = useAuth();
-  const bookmarkedTenders = useAppSelector(selectBookmarkedTenders);
   const [selectedTender, setSelectedTender] = useState<string | null>("");
-  // Load bookmarks when component mounts
-  useEffect(() => {
-    if (profile?.id) {
-      dispatch(loadBookmarks(profile.id));
-    }
-  }, [dispatch, profile?.id]);
 
   return (
     <div className="h-full flex flex-col overflow-hidden">
@@ -46,7 +31,6 @@ export default function BookmarksPage() {
         {/* Right Side - Search Results (3/5) */}
         <div className="w-3/5 flex flex-col min-h-0">
           <BookmarkedTenders
-            bookmarks={bookmarkedTenders}
             setSelectedTender={setSelectedTender}
           />
         </div>

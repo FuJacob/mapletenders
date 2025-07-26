@@ -70,26 +70,9 @@ const mockActivities: Activity[] = [
   },
 ];
 
-const mockDeadlines = [
-  {
-    title: "Cybersecurity Consulting - DND",
-    daysRemaining: 2,
-    urgencyLevel: "urgent" as const,
-  },
-  {
-    title: "Software Development - CRA",
-    daysRemaining: 5,
-    urgencyLevel: "warning" as const,
-  },
-  {
-    title: "Cloud Infrastructure - Transport Canada",
-    daysRemaining: 7,
-    urgencyLevel: "warning" as const,
-  },
-];
 
 export default function HomePage() {
-  const { profile } = useAuth();
+  const { profile } = useAuth();  
   const [recommendedTenders, setRecommendedTenders] = useState<
     TenderSearchResult[]
   >([]);
@@ -157,7 +140,7 @@ export default function HomePage() {
             <QuickActionsSidebar />
           </div>
           <div className="flex-1">
-            <UrgentDeadlines deadlines={mockDeadlines} />
+            <UrgentDeadlines />
           </div>
         </div>
       </div>

@@ -1,34 +1,48 @@
 import { Bookmark } from "@phosphor-icons/react";
 import { TenderCard } from "../tenders";
-import { type Database } from "../../../database.types";
 import { useEffect, useState } from "react";
 import type { Tender } from "../../api/types";
-type Bookmark = Database["public"]["Tables"]["bookmarks"]["Row"];
-import { getTendersFromBookmarkIds } from "../../api/tenders";
+import { useAuth } from "../../hooks/auth";
+import { getUserBookmarks, type BookmarkWithTender } from "../../api/bookmarks";
+
 interface BookmarkedTendersProps {
-  bookmarks: Bookmark[];
-  loading?: boolean;
   setSelectedTender: (tenderId: string) => void;
 }
 
 export default function BookmarkedTenders({
-  bookmarks,
-  loading = false,
   setSelectedTender,
 }: BookmarkedTendersProps) {
+  const { profile } = useAuth();
   const [tenders, setTenders] = useState<Tender[]>([]);
+  const [loading, setLoading] = useState(false);
 
   useEffect(() => {
-    const fetchTenders = async () => {
-      const tenders = await getTendersFromBookmarkIds(
-        bookmarks
-          .map((bookmark) => bookmark.tender_notice_id)
-          .filter(Boolean) as string[]
-      );
-      setTenders(tenders);
+    const fetchBookmarkTenders = async () => {
+      if (!profile?.id) {
+        setTenders([]);
+        return;
+      }
+
+      setLoading(true);
+      try {
+        const response = await getUserBookmarks(profile.id);
+        
+        if (response.bookmarks) {
+          const tenderData = response.bookmarks.map((bookmark: BookmarkWithTender) => bookmark.tender_notice);
+          setTenders(tenderData);
+        } else {
+          setTenders([]);
+        }
+      } catch (error) {
+        console.error("Error fetching bookmarked tenders:", error);
+        setTenders([]);
+      } finally {
+        setLoading(false);
+      }
     };
-    fetchTenders();
-  }, [bookmarks]);
+
+    fetchBookmarkTenders();
+  }, [profile?.id]);
   return (
     <div className="bg-surface border border-border rounded-lg p-6 flex flex-col h-full overflow-y-auto">
       <h2 className="text-xl font-semibold text-text mb-6">
