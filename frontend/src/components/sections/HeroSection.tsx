@@ -1,17 +1,30 @@
 import { useNavigate } from "react-router-dom";
-import { CheckCircle, ArrowRight, Leaf } from "@phosphor-icons/react";
+import { CheckCircle, ArrowRight } from "@phosphor-icons/react";
 
 export default function HeroSection() {
   const navigate = useNavigate();
+  const stats = [
+    { value: "47,000+", label: "Active Tenders" },
+    { value: "$3.2B", label: "Contract Value" },
+    { value: "2,847", label: "Active Users" },
+    { value: "95%", label: "Time Saved" },
+  ];
 
   return (
-    <section className="relative py-24 overflow-hidden">
+    <section className="relative pt-36">
       <div className=" px-6 max-w-7xl mx-auto relative z-10">
-        <div className="flex flex-col lg:flex-row gap-8 mb-16">
+        <div className="flex flex-col  lg:flex-row gap-8 mb-16">
           <div className="w-full lg:w-3/4">
-            <div className="inline-flex items-center gap-2 px-4 py-2 bg-maple/10 text-maple border border-maple/20 rounded-full text-sm font-medium mb-8">
-              <Leaf className="w-4 h-4" />
-              Canada's #1 Procurement Platform
+            <div className="flex flex-wrap gap-2 mb-4">
+              {stats.map((stat, i) => (
+                <div
+                  key={i}
+                  className="inline-flex items-center gap-2 bg-surface-warm border border-border-warm text-text-warm px-3 py-1.5 rounded-full text-xs font-medium"
+                >
+                  <span className="font-semibold">{stat.value}</span>{" "}
+                  {stat.label}
+                </div>
+              ))}
             </div>
 
             <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold mb-6 text-text leading-tight">
@@ -43,7 +56,7 @@ export default function HeroSection() {
             </div>
 
             {/* Social proof */}
-            <div className="flex flex-col sm:flex-row sm:items-center gap-4 sm:gap-8 text-sm text-text-muted mb-12">
+            <div className="relative flex flex-col sm:flex-row sm:items-center gap-4 sm:gap-8 text-sm text-text-muted mb-12">
               <div className="flex items-center gap-2">
                 <CheckCircle className="w-4 h-4 text-success" />
                 <span>14-day free trial</span>
@@ -58,29 +71,19 @@ export default function HeroSection() {
               </div>
             </div>
           </div>
-          <div className="w-full lg:w-1/4 lg:py-12">
-            <div className="h-64 sm:h-80 lg:h-full overflow-hidden rounded-2xl border-8 lg:border-12 border-border">
-              <img
-                src="/landingPage/1.png"
-                alt="Hero"
-                className="w-full h-full object-cover object-center"
-              />
-            </div>
+          <div className="hidden lg:block absolute right-0 top-[-55px] w-full lg:w-1/2">
+            <img src="/landingPage.png" alt="Hero" />
           </div>
         </div>
       </div>
 
       {/* Trusted by Customers Marquee */}
-      <div className="w-full py-12 bg-surface-warm overflow-hidden">
+      <div className=" w-full py-12 bg-accent">
         <div className="mx-auto">
           <div className="text-center mb-12">
-            <h2 className="text-2xl font-semibold text-accent mb-3">
+            <h2 className="text-2xl font-semibold text-white mb-3">
               Every Canadian Tender, One Powerful Platform.
             </h2>
-            <p className="text-text-muted">
-              We centralize tenders from every Canadian jurisdiction—so you can
-              skip the chaos and focus on winning.
-            </p>
           </div>
           <div className="relative w-full overflow-hidden">
             <div className="flex gap-12 animate-marquee whitespace-nowrap w-max">
@@ -97,12 +100,16 @@ export default function HeroSection() {
                 ])
                 .flat()
                 .map((img, i) => (
-                  <img
+                  <div
                     key={`scroll-logo-${i}`}
-                    src={`/sources/${img}`}
-                    alt={`Partner ${img}`}
-                    className="h-16 object-contain"
-                  />
+                    className="bg-white rounded-lg p-4 shadow-sm flex items-center justify-center"
+                  >
+                    <img
+                      src={`/sources/${img}`}
+                      alt={`Partner ${img}`}
+                      className="h-16 object-contain"
+                    />
+                  </div>
                 ))}
             </div>
           </div>

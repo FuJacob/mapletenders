@@ -42,7 +42,7 @@ const faqs = [
 export default function FAQSection() {
   return (
     <section className="bg-primary">
-      <div className="py-20 px-6 bg-surface rounded-t-[8rem]">
+      <div className="py-20 px-6 bg-surface">
         <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-3 gap-6">
           <div className="flex flex-col gap-4 justify-center text-center lg:text-left">
             <h2 className="text-3xl sm:text-4xl lg:text-5xl font-semibold text-accent mb-2">

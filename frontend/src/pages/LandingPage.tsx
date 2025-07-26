@@ -3,8 +3,6 @@ import { WelcomeBanner } from "../components";
 import { LandingPageContainer } from "../components/layout";
 import {
   HeroSection,
-  TrustStatsSection,
-  ProblemSolutionSection,
   TestimonialsSection,
   FAQSection,
   FinalCTASection,
@@ -25,10 +23,8 @@ export default function LandingPage() {
     <LandingPageContainer>
       {showBanner && <WelcomeBanner closeBanner={handleCloseBanner} />}
       <HeroSection />
-      <TrustStatsSection />
-      <ProblemSolutionSection />
-      <FeaturesSection />
       <TestimonialsSection />
+      <FeaturesSection />
       <FAQSection />
       <FinalCTASection />
     </LandingPageContainer>

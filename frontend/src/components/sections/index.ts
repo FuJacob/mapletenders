@@ -1,8 +1,4 @@
 export { default as HeroSection } from "./HeroSection";
-export { default as TrustStatsSection } from "./TrustStatsSection";
-export { default as ProblemSolutionSection } from "./ProblemSolutionSection";
-export { default as BuiltForSection } from "./BuiltForSection";
-export { default as KeyFeaturesSection } from "./KeyFeaturesSection";
 export { default as TestimonialsSection } from "./TestimonialsSection";
 export { default as FAQSection } from "./FAQSection";
 export { default as FinalCTASection } from "./FinalCTASection";

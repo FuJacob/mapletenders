@@ -1,5 +1,10 @@
 import { useEffect, useRef, useState } from "react";
-import { MagnifyingGlass, Table, FileText, Calendar } from "@phosphor-icons/react";
+import {
+  MagnifyingGlass,
+  Table,
+  FileText,
+  Calendar,
+} from "@phosphor-icons/react";
 
 // Array of feature objects used to render each section dynamically
 const features = [
@@ -14,7 +19,7 @@ const features = [
     bgColor: "bg-primary/10",
   },
   {
-    image: "2.png", 
+    image: "2.png",
     title: "Comprehensive Table View",
     subtitle: "All opportunities in one organized view",
     paragraph:
@@ -63,7 +68,7 @@ export default function Features() {
         // Find the entry with the highest intersection ratio
         let maxRatio = 0;
         let activeIndex = 0;
-        
+
         entries.forEach((entry) => {
           if (entry.isIntersecting && entry.intersectionRatio > maxRatio) {
             const index = refs.current.findIndex((ref) => ref === entry.target);
@@ -73,14 +78,14 @@ export default function Features() {
             }
           }
         });
-        
+
         if (maxRatio > 0) {
           setCurrentFeature(activeIndex);
         }
       },
-      { 
+      {
         threshold: [0.1, 0.3, 0.5, 0.7, 0.9],
-        rootMargin: "-20% 0px -20% 0px"
+        rootMargin: "-20% 0px -20% 0px",
       }
     );
 
@@ -99,45 +104,35 @@ export default function Features() {
 
   // Render split-screen layout with sticky image on the left and scrollable sections on the right
   return (
-    <section className="min-h-screen bg-background">
-      <div className="max-w-7xl mx-auto">
-        <div className="grid lg:grid-cols-2 min-h-screen">
+    <section className="min-h-screen bg-background px-4 sm:px-6 lg:px-12 py-12 sm:py-16 lg:py-20">
+      <div className="">
+        <div className="grid lg:grid-cols-2 min-h-screen mx-auto">
           {/* Left sticky image that updates based on scroll */}
-          <div className="sticky top-0 h-screen flex items-center justify-center bg-surface border-r border-border">
-            <div className="relative w-full h-full flex items-center justify-center p-8">
+          <div className="sticky top-0 h-screen flex items-center justify-center">
+            <div className="relative w-full h-full flex items-center justify-center p-4 sm:p-6 md:p-8">
               {/* Current feature screenshot */}
-              <div className="relative w-full max-w-lg">
-                <div className="relative bg-surface border border-border rounded-2xl shadow-2xl overflow-hidden transition-all duration-500">
+              <div className="relative w-full">
+                <div className="relative border border-border rounded-2xl shadow-2xl overflow-hidden transition-all duration-500">
                   <img
                     src={`/features/${features[currentFeature].image}`}
                     alt={features[currentFeature].title}
                     className="w-full h-auto object-contain"
                   />
-                  
+
                   {/* Overlay with feature icon */}
                   <div className="absolute top-4 left-4">
-                    <div className={`${features[currentFeature].bgColor} rounded-lg p-2 backdrop-blur-sm`}>
+                    <div
+                      className={`${features[currentFeature].bgColor} rounded-lg p-2 backdrop-blur-sm`}
+                    >
                       {(() => {
                         const Icon = features[currentFeature].icon;
-                        return <Icon className={`w-5 h-5 ${features[currentFeature].color}`} />;
+                        return (
+                          <Icon
+                            className={`w-5 h-5 ${features[currentFeature].color}`}
+                          />
+                        );
                       })()}
                     </div>
-                  </div>
-                </div>
-                
-                {/* Feature indicator */}
-                <div className="absolute -bottom-6 left-1/2 transform -translate-x-1/2">
-                  <div className="flex gap-2">
-                    {features.map((_, index) => (
-                      <div
-                        key={index}
-                        className={`w-2 h-2 rounded-full transition-all duration-300 ${
-                          index === currentFeature 
-                            ? 'bg-primary scale-125' 
-                            : 'bg-border'
-                        }`}
-                      />
-                    ))}
                   </div>
                 </div>
               </div>
@@ -154,37 +149,42 @@ export default function Features() {
                   ref={(el: HTMLElement | null) => {
                     refs.current[index] = el;
                   }}
-                  className="min-h-screen flex flex-col justify-center px-12 py-24"
+                  className="min-h-screen flex flex-col justify-center px-4 sm:px-8 md:px-12 py-16 sm:py-20 lg:py-24"
                 >
-                  <div className="flex items-center gap-3 mb-6">
-                    <div className={`${feature.bgColor} p-3 rounded-lg`}>
-                      <Icon className={`w-6 h-6 ${feature.color}`} />
-                    </div>
-                    <span className={`text-sm font-medium ${feature.color} uppercase tracking-wide`}>
+                  <div className="bg-surface border border-border rounded-xl shadow-xl transition-all duration-500 px-5 py-6 sm:px-6 sm:py-12">
+                    <div
+                      className={`text-sm font-medium ${feature.color} uppercase tracking-wide mb-4`}
+                    >
                       {feature.subtitle}
-                    </span>
-                  </div>
-                  
-                  <h2 className="text-4xl lg:text-5xl font-bold mb-6 text-text leading-tight">
-                    {feature.title}
-                  </h2>
-                  
-                  <p className="text-lg text-text-muted leading-relaxed max-w-xl">
-                    {feature.paragraph}
-                  </p>
-                  
-                  {/* Progress indicator for current section */}
-                  <div className="mt-8 flex items-center gap-2">
-                    <span className="text-sm text-text-light">{index + 1} of {features.length}</span>
-                    <div className="flex gap-1">
-                      {features.map((_, i) => (
-                        <div
-                          key={i}
-                          className={`h-1 w-8 rounded transition-all duration-300 ${
-                            i === index ? 'bg-primary' : 'bg-border'
-                          }`}
-                        />
-                      ))}
+                    </div>
+                    <div className="flex items-center gap-6 mb-6">
+                      <div className={`${feature.bgColor} p-4 rounded-lg`}>
+                        <Icon className={`w-8 h-8 ${feature.color}`} />
+                      </div>
+                      <h2 className="text-4xl lg:text-5xl font-bold leading-tight text-text">
+                        {feature.title}
+                      </h2>
+                    </div>
+
+                    <p className="text-lg text-text-light leading-relaxed max-w-xl">
+                      {feature.paragraph}
+                    </p>
+
+                    {/* Progress indicator for current section */}
+                    <div className="mt-8 flex items-center gap-2">
+                      <span className="text-sm text-text">
+                        {index + 1} of {features.length}
+                      </span>
+                      <div className="flex gap-1">
+                        {features.map((_, i) => (
+                          <div
+                            key={i}
+                            className={`h-1 w-8 rounded transition-all duration-300 ${
+                              i === index ? "bg-primary" : "bg-border"
+                            }`}
+                          />
+                        ))}
+                      </div>
                     </div>
                   </div>
                 </section>

@@ -5,7 +5,6 @@ export { default as Footer } from "./Footer";
 export { default as Sidebar } from "./Sidebar";
 export { default as GuestNavigation } from "./GuestNavigation";
 export { default as NotificationButton } from "./NotificationButton";
-export { default as ProfileDropdown } from "./ProfileDropdown";
 export { default as GuestAuthButtons } from "./GuestAuthButtons";
 export { default as LandingPageContainer } from "./LandingPageContainer";
 export { default as AppPageContainer } from "./AppPageContainer";

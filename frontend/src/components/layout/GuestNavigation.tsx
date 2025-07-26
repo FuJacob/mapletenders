@@ -1,11 +1,8 @@
 import { Link, useLocation } from "react-router-dom";
 
 const navigationItems = [
-  { path: "/about", label: "About" },
   { path: "/pricing", label: "Pricing" },
-  { path: "/plans", label: "Plans" },
-  { path: "/contact", label: "Contact" },
-  { path: "/help", label: "Help" },
+  { path: "/about", label: "About" },
 ];
 
 export default function GuestNavigation() {
