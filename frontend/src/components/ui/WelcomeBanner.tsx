@@ -12,7 +12,7 @@ const WelcomeBanner = ({ closeBanner }: { closeBanner: () => void }) => {
           to="/pricing"
           className="ml-4 flex items-center justify-center gap-2 text-sm bg-white text-primary px-3 py-1 rounded"
         >
-          <LightningIcon /> Claim your 14-day free trial
+          <LightningIcon /> Claim your 7-day free trial
         </Link>
       </div>
       <XIcon

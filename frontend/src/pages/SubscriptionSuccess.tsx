@@ -51,13 +51,13 @@ export default function SubscriptionSuccess() {
 
           <p className="text-text-light mb-6">
             Your subscription has been activated successfully. You now have
-            access to all premium features and your 14-day free trial has begun.
+            access to all premium features and your 7-day free trial has begun.
           </p>
 
           <div className="space-y-4 text-sm text-left">
             <div className="flex items-center gap-3">
               <CheckCircle className="w-4 h-4 text-success flex-shrink-0" />
-              <span className="text-text">14-day free trial activated</span>
+              <span className="text-text">7-day free trial activated</span>
             </div>
             <div className="flex items-center gap-3">
               <CheckCircle className="w-4 h-4 text-success flex-shrink-0" />

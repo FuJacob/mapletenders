@@ -48,11 +48,11 @@ export default function HeroSection() {
   const shuffled = [...reviews, ...images].sort(() => Math.random() - 0.5);
 
   return (
-    <section className="relative pt-36">
-      <div className=" px-6 max-w-7xl mx-auto relative z-10">
-        <div className="flex flex-col  lg:flex-row gap-8 mb-16">
-          <div className="w-full lg:w-3/4">
-            <div className="flex flex-wrap gap-2 mb-4">
+    <section className="relative pt-36 text-center">
+      <div className="px-6 max-w-4xl mx-auto relative z-10 flex flex-col items-center text-center">
+        <div className="flex flex-col gap-8 items-center">
+          <div className="w-full">
+            <div className="flex flex-wrap gap-2 mb-6 justify-center items-center ">
               {stats.map((stat, i) => (
                 <div
                   key={i}
@@ -67,15 +67,15 @@ export default function HeroSection() {
             <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold mb-6 text-text leading-tight">
               The #1 Procurement Portal
               <br />
+              <span className="text-primary">for Canadian Businesses</span>
             </h1>
 
             <p className="text-lg sm:text-xl text-text-muted mb-8 max-w-3xl leading-relaxed">
-              Stop searching dozens of procurement sites. Our AI finds
-              opportunities across all Canadian jurisdictions that perfectly
-              match your business capabilities.
+              Stop searching dozens of procurement sites, and let MapleTenders
+              do the work.
             </p>
 
-            <div className="flex flex-col sm:flex-row gap-4 mb-12">
+            <div className="flex flex-col sm:flex-row gap-4 mb-12 justify-center items-center">
               <button
                 onClick={() => navigate("/sign-up")}
                 className="px-6 sm:px-8 py-3 sm:py-4 bg-accent text-white font-semibold text-base sm:text-lg rounded-lg hover:bg-accent/90 transition-colors flex items-center justify-center gap-2 shadow-lg"
@@ -92,37 +92,25 @@ export default function HeroSection() {
             </div>
 
             {/* Social proof */}
-            <div className="relative flex flex-col sm:flex-row sm:items-center gap-4 sm:gap-8 text-sm text-text-muted mb-12">
+            <div className="relative flex flex-col sm:flex-row sm:items-center gap-4 sm:gap-8 text-sm text-text-muted mb-12 justify-center items-center">
               <div className="flex items-center gap-2">
                 <CheckCircle className="w-4 h-4 text-success" />
-                <span>14-day free trial</span>
+                <span>7-day free trial</span>
               </div>
               <div className="flex items-center gap-2">
                 <CheckCircle className="w-4 h-4 text-success" />
                 <span>No credit card required</span>
               </div>
-              <div className="flex items-center gap-2">
-                <CheckCircle className="w-4 h-4 text-success" />
-                <span>Used by 50+ Canadian businesses</span>
-              </div>
             </div>
-          </div>
-          <div className="hidden lg:block absolute right-0 top-[-55px] w-full lg:w-1/2">
-            <img src="/landingPage.png" alt="Hero" />
           </div>
         </div>
       </div>
 
       {/* Trusted by Customers Marquee */}
-      <div className=" w-full py-12 bg-accent">
+      <div className=" w-full py-12 mb-12">
         <div className="mx-auto">
-          <div className="text-center mb-12">
-            <h2 className="text-2xl font-semibold text-white mb-3">
-              Every Canadian Tender, One Powerful Platform.
-            </h2>
-          </div>
           <div className="relative w-full overflow-hidden">
-            <div className="flex gap-12 animate-marquee w-max">
+            <div className="flex gap-12 animate-marquee w-max py-2">
               {Array(2)
                 .fill([...shuffled, ...shuffled])
                 .flat()

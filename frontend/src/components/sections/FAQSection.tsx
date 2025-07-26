@@ -38,48 +38,50 @@ const faqs = [
   {
     question: "Is there a free trial?",
     answer:
-      "Yes, we offer a 14-day free trial with full access—no credit card required. It’s the easiest way to see the impact on your workflow.",
+      "Yes, we offer a 7-day free trial with full access—no credit card required. It’s the easiest way to see the impact on your workflow.",
   },
 ];
 
 export default function FAQSection() {
   return (
-    <section className="bg-primary">
-      <div className="py-20 px-6 bg-surface">
-        <div className="max-w-4xl mx-auto flex flex-col gap-6">
-          <div className="flex flex-col gap-4 justify-center text-center lg:text-left">
-            <h2 className="text-3xl sm:text-4xl lg:text-5xl font-semibold text-accent mb-2">
-              Frequently Asked Questions
-            </h2>
-            <p className="text-sm sm:text-base text-text-muted">
-              Everything you need to know about MapleTenders
-            </p>
-          </div>
-          <div className="lg:col-span-2 lg:col-start-2 flex flex-col gap-4">
-            {faqs.map((faq, index) => (
-              <Disclosure key={index}>
-                {({ open }) => (
-                  <div
-                    className={`border border-border rounded-lg overflow-hidden transition-all ${
-                      open ? "bg-surface-muted" : "bg-surface"
-                    }`}
-                  >
-                    <DisclosureButton className="w-full text-left px-4 py-3 sm:px-6 sm:py-4 text-base sm:text-lg font-medium text-text focus:outline-none focus-visible:ring focus-visible:ring-primary">
-                      <div className="flex items-center justify-between">
-                        <span>{faq.question}</span>
-                        <CaretDown className="w-4 h-4" />
-                      </div>
-                    </DisclosureButton>
-                    <DisclosurePanel className="px-4 pb-4 sm:px-6 sm:pb-6 text-sm sm:text-base text-text-muted leading-relaxed">
-                      {faq.answer}
-                    </DisclosurePanel>
-                  </div>
-                )}
-              </Disclosure>
-            ))}
-          </div>
+    <div className="py-20 px-6">
+      <div className="max-w-7xl mx-auto flex flex-col gap-6">
+        <div className="text-center mb-16">
+          <h2 className="text-4xl lg:text-5xl font-bold text-text mb-6">
+            So you've got questions?
+          </h2>
+          <p className="text-lg text-text-muted max-w-3xl mx-auto">
+            Let’s clear them up. If you don't see your question here, feel free
+            to reach out to us at{" "}
+            <a href="mailto:support@mapletenders.com" className="text-text">
+              support@mapletenders.com
+            </a>
+          </p>
+        </div>
+        <div className="lg:col-span-2 lg:col-start-2 flex flex-col gap-4">
+          {faqs.map((faq, index) => (
+            <Disclosure key={index}>
+              {({ open }) => (
+                <div
+                  className={`border border-border rounded-lg overflow-hidden transition-all ${
+                    open ? "bg-surface-muted" : "bg-surface"
+                  }`}
+                >
+                  <DisclosureButton className="w-full text-left px-4 py-3 sm:px-6 sm:py-4 text-xl sm:text-2xl font-medium text-text focus:outline-none focus-visible:ring focus-visible:ring-primary">
+                    <div className="flex items-center justify-between">
+                      <span>{faq.question}</span>
+                      <CaretDown className="w-4 h-4" />
+                    </div>
+                  </DisclosureButton>
+                  <DisclosurePanel className="px-4 pb-4 sm:px-6 sm:pb-6 text-sm sm:text-base text-text-muted leading-relaxed">
+                    {faq.answer}
+                  </DisclosurePanel>
+                </div>
+              )}
+            </Disclosure>
+          ))}
         </div>
       </div>
-    </section>
+    </div>
   );
 }

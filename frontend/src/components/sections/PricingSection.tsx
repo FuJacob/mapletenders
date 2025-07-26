@@ -52,19 +52,21 @@ export default function PricingSection() {
   const [isYearly, setIsYearly] = useState(false);
 
   return (
-    <section className="py-24 bg-background">
+    <section className="py-24 bg-background " id="pricing">
       <div className="max-w-7xl mx-auto px-6">
         {/* Header */}
         <div className="text-center mb-16">
-          <h2 className="text-4xl font-bold text-text mb-4">
-            Transparent, affordable pricing for procurement teams
-          </h2>
-          <p className="text-lg text-text-muted max-w-2xl mx-auto mb-8">
-            Everything you need to find, track, and win Canadian government contracts.
-            <br />
-            Launch special — get 20% off annual plans.
-          </p>
-
+          <div className="text-center mb-16">
+            <h2 className="text-4xl lg:text-5xl font-bold text-text mb-6">
+              We're not here to <span className="text-primary">nickel</span>{" "}
+              and <span className="text-primary">dime</span> you either.
+            </h2>
+            <p className="text-lg text-text-muted max-w-3xl mx-auto">
+              Unlike other procurement portals, we believe businesses should be
+              able to get the information they need to win contracts, without
+              breaking the bank.
+            </p>
+          </div>
           {/* Billing Toggle */}
           <div className="flex items-center justify-center gap-4">
             <span
@@ -95,7 +97,7 @@ export default function PricingSection() {
               Yearly
             </span>
             <span className="bg-primary text-white px-3 py-1 rounded-lg text-xs font-medium shadow-md text-text-muted">
-             20% off
+              20% off
             </span>
           </div>
         </div>
@@ -142,9 +144,7 @@ export default function PricingSection() {
                 {/* Billing Info */}
                 <p className="text-sm text-text-muted">
                   {isYearly ? (
-                    <>
-                      Billed annually (${plan.yearlyPrice}/year)
-                    </>
+                    <>Billed annually (${plan.yearlyPrice}/year)</>
                   ) : (
                     "Billed monthly"
                   )}

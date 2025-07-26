@@ -8,7 +8,9 @@ interface GuestHeaderProps {
 
 export default function GuestHeader({ className = "" }: GuestHeaderProps) {
   return (
-    <div className={`${className} max-w-7xl mx-auto flex items-center justify-between px-6 pt-10`}>
+    <div
+      className={`${className} max-w-7xl mx-auto flex items-center justify-between px-6 pt-10`}
+    >
       {/* Logo/Brand Section */}
       <div className="flex-shrink-0">
         <Link
@@ -24,7 +26,6 @@ export default function GuestHeader({ className = "" }: GuestHeaderProps) {
       {/* Right Section - Navigation & Auth */}
       <div className="flex items-center gap-8">
         <GuestNavigation />
-        <span className="text-accent">|</span>
         <GuestAuthButtons />
       </div>
     </div>

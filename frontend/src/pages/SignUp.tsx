@@ -83,196 +83,195 @@ export default function SignUp() {
     isPasswordMatch &&
     agreedToTerms;
 
-
   return (
-    <div className="min-h-screen bg-gradient-to-br from-bg via-surface to-surface-muted flex items-center justify-center p-8">
+    <div className="min-h-screen flex items-center justify-center p-8">
       <div className="w-full max-w-md space-y-8">
-          {/* Header */}
-          <div className="text-center">
-            <div className="inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-maple/10 to-maple/5 text-maple border border-maple/20 rounded-lg text-sm font-medium mb-6">
-              <Leaf className="w-4 h-4" />
-              <Sparkle className="w-3 h-3 animate-pulse" />
-              The #1 Procurement Portal for Canadian Businesses
-            </div>
+        {/* Header */}
+        <div className="text-center">
+          <div className="inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-maple/10 to-maple/5 text-maple border border-maple/20 rounded-lg text-sm font-medium mb-6">
+            <Leaf className="w-4 h-4" />
+            <Sparkle className="w-3 h-3 animate-pulse" />
+            The #1 Procurement Portal for Canadian Businesses
+          </div>
 
-            <Link
-              to="/"
-              className="inline-block mb-8 hover:opacity-80 transition-opacity"
+          <Link
+            to="/"
+            className="inline-block mb-8 hover:opacity-80 transition-opacity"
+          >
+            <LogoTitle />
+          </Link>
+
+          <h1 className="text-2xl font-bold text-text mb-2">
+            Start winning contracts today
+          </h1>
+          <p className="text-text-muted">
+            Join thousands of Canadian businesses discovering opportunities with
+            AI
+          </p>
+        </div>
+
+        {/* Trust badges */}
+        <div className="flex items-center justify-center gap-6 text-sm text-text-muted">
+          <span className="flex items-center gap-2">
+            <CheckCircle className="w-4 h-4 text-success" />
+            Free 7-day trial
+          </span>
+          <span className="flex items-center gap-2">
+            <CheckCircle className="w-4 h-4 text-success" />
+            No credit card required
+          </span>
+        </div>
+
+        {/* Error Message */}
+        {authError && (
+          <div className="p-4 bg-error/10 border border-error/20 rounded-lg text-error">
+            {authError}
+          </div>
+        )}
+
+        {/* Form */}
+        <form onSubmit={handleSubmit} className="space-y-6">
+          <div>
+            <label
+              htmlFor="email"
+              className="block text-sm font-medium text-text mb-2"
             >
-              <LogoTitle />
-            </Link>
-
-            <h1 className="text-2xl font-bold text-text mb-2">
-              Start winning contracts today
-            </h1>
-            <p className="text-text-muted">
-              Join thousands of Canadian businesses discovering opportunities
-              with AI
-            </p>
+              Email address
+            </label>
+            <input
+              id="email"
+              name="email"
+              type="email"
+              value={formData.email}
+              onChange={handleInputChange}
+              placeholder="you@company.com"
+              className="w-full px-4 py-3 border border-border rounded-lg focus:outline-none focus:border-primary bg-surface text-text placeholder-text-muted"
+              required
+            />
           </div>
 
-          {/* Trust badges */}
-          <div className="flex items-center justify-center gap-6 text-sm text-text-muted">
-            <span className="flex items-center gap-2">
-              <CheckCircle className="w-4 h-4 text-success" />
-              Free 14-day trial
-            </span>
-            <span className="flex items-center gap-2">
-              <CheckCircle className="w-4 h-4 text-success" />
-              No credit card required
-            </span>
-          </div>
-
-          {/* Error Message */}
-          {authError && (
-            <div className="p-4 bg-error/10 border border-error/20 rounded-lg text-error">
-              {authError}
-            </div>
-          )}
-
-          {/* Form */}
-          <form onSubmit={handleSubmit} className="space-y-6">
-            <div>
-              <label
-                htmlFor="email"
-                className="block text-sm font-medium text-text mb-2"
-              >
-                Email address
-              </label>
+          <div>
+            <label
+              htmlFor="password"
+              className="block text-sm font-medium text-text mb-2"
+            >
+              Password
+            </label>
+            <div className="relative">
               <input
-                id="email"
-                name="email"
-                type="email"
-                value={formData.email}
+                id="password"
+                name="password"
+                type={showPassword ? "text" : "password"}
+                value={formData.password}
                 onChange={handleInputChange}
-                placeholder="you@company.com"
-                className="w-full px-4 py-3 border border-border rounded-lg focus:outline-none focus:border-primary bg-surface text-text placeholder-text-muted"
+                placeholder="Create a strong password"
+                className="w-full px-4 py-3 border border-border rounded-lg focus:outline-none focus:border-primary bg-surface text-text placeholder-text-muted pr-12"
                 required
               />
-            </div>
-
-            <div>
-              <label
-                htmlFor="password"
-                className="block text-sm font-medium text-text mb-2"
+              <button
+                type="button"
+                onClick={() => setShowPassword(!showPassword)}
+                className="absolute right-3 top-1/2 transform -translate-y-1/2 text-text-muted hover:text-text"
               >
-                Password
-              </label>
-              <div className="relative">
-                <input
-                  id="password"
-                  name="password"
-                  type={showPassword ? "text" : "password"}
-                  value={formData.password}
-                  onChange={handleInputChange}
-                  placeholder="Create a strong password"
-                  className="w-full px-4 py-3 border border-border rounded-lg focus:outline-none focus:border-primary bg-surface text-text placeholder-text-muted pr-12"
-                  required
-                />
-                <button
-                  type="button"
-                  onClick={() => setShowPassword(!showPassword)}
-                  className="absolute right-3 top-1/2 transform -translate-y-1/2 text-text-muted hover:text-text"
-                >
-                  {showPassword ? (
-                    <EyeSlash className="w-5 h-5" />
-                  ) : (
-                    <Eye className="w-5 h-5" />
-                  )}
-                </button>
-              </div>
+                {showPassword ? (
+                  <EyeSlash className="w-5 h-5" />
+                ) : (
+                  <Eye className="w-5 h-5" />
+                )}
+              </button>
             </div>
-
-            <div>
-              <label
-                htmlFor="confirmPassword"
-                className="block text-sm font-medium text-text mb-2"
-              >
-                Confirm password
-              </label>
-              <div className="relative">
-                <input
-                  id="confirmPassword"
-                  name="confirmPassword"
-                  type={showConfirmPassword ? "text" : "password"}
-                  value={formData.confirmPassword}
-                  onChange={handleInputChange}
-                  placeholder="Confirm your password"
-                  className={`w-full px-4 py-3 border rounded-lg focus:outline-none bg-surface text-text placeholder-text-muted pr-12 ${
-                    formData.confirmPassword && !isPasswordMatch
-                      ? "border-error focus:border-error"
-                      : "border-border focus:border-primary"
-                  }`}
-                  required
-                />
-                <button
-                  type="button"
-                  onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                  className="absolute right-3 top-1/2 transform -translate-y-1/2 text-text-muted hover:text-text"
-                >
-                  {showConfirmPassword ? (
-                    <EyeSlash className="w-5 h-5" />
-                  ) : (
-                    <Eye className="w-5 h-5" />
-                  )}
-                </button>
-              </div>
-              {formData.confirmPassword && !isPasswordMatch && (
-                <p className="text-error text-sm mt-1">Passwords don't match</p>
-              )}
-            </div>
-
-            <div className="flex items-start gap-3 pt-2">
-              <input
-                id="terms"
-                type="checkbox"
-                checked={agreedToTerms}
-                onChange={(e) => setAgreedToTerms(e.target.checked)}
-                className="w-4 h-4 text-primary border-border rounded focus:ring-primary mt-0.5"
-              />
-              <label htmlFor="terms" className="text-sm text-text-muted">
-                I agree to Mapletenders{" "}
-                <Link to="/terms" className="text-primary hover:opacity-80">
-                  Terms of Service
-                </Link>{" "}
-                and{" "}
-                <Link to="/privacy" className="text-primary hover:opacity-80">
-                  Privacy Policy
-                </Link>
-              </label>
-            </div>
-
-            <button
-              type="submit"
-              disabled={!isFormValid || isAuthLoading}
-              className="w-full px-4 py-3 bg-primary text-white rounded-lg font-semibold hover:bg-primary-dark transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 shadow-lg hover:shadow-xl"
-            >
-              {isAuthLoading ? (
-                <>
-                  <Lightning className="w-4 h-4 animate-pulse" />
-                  Creating your account...
-                </>
-              ) : (
-                <>
-                  <Leaf className="w-4 h-4" />
-                  Start Your Free Trial
-                </>
-              )}
-            </button>
-          </form>
-
-          {/* Footer */}
-          <div className="text-center">
-            <p className="text-sm text-text-muted">
-              Already have an account?{" "}
-              <Link
-                to="/sign-in"
-                className="text-primary hover:opacity-80 font-semibold"
-              >
-                Sign in here
-              </Link>
-            </p>
           </div>
+
+          <div>
+            <label
+              htmlFor="confirmPassword"
+              className="block text-sm font-medium text-text mb-2"
+            >
+              Confirm password
+            </label>
+            <div className="relative">
+              <input
+                id="confirmPassword"
+                name="confirmPassword"
+                type={showConfirmPassword ? "text" : "password"}
+                value={formData.confirmPassword}
+                onChange={handleInputChange}
+                placeholder="Confirm your password"
+                className={`w-full px-4 py-3 border rounded-lg focus:outline-none bg-surface text-text placeholder-text-muted pr-12 ${
+                  formData.confirmPassword && !isPasswordMatch
+                    ? "border-error focus:border-error"
+                    : "border-border focus:border-primary"
+                }`}
+                required
+              />
+              <button
+                type="button"
+                onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                className="absolute right-3 top-1/2 transform -translate-y-1/2 text-text-muted hover:text-text"
+              >
+                {showConfirmPassword ? (
+                  <EyeSlash className="w-5 h-5" />
+                ) : (
+                  <Eye className="w-5 h-5" />
+                )}
+              </button>
+            </div>
+            {formData.confirmPassword && !isPasswordMatch && (
+              <p className="text-error text-sm mt-1">Passwords don't match</p>
+            )}
+          </div>
+
+          <div className="flex items-start gap-3 pt-2">
+            <input
+              id="terms"
+              type="checkbox"
+              checked={agreedToTerms}
+              onChange={(e) => setAgreedToTerms(e.target.checked)}
+              className="w-4 h-4 text-primary border-border rounded focus:ring-primary mt-0.5"
+            />
+            <label htmlFor="terms" className="text-sm text-text-muted">
+              I agree to Mapletenders{" "}
+              <Link to="/terms" className="text-primary hover:opacity-80">
+                Terms of Service
+              </Link>{" "}
+              and{" "}
+              <Link to="/privacy" className="text-primary hover:opacity-80">
+                Privacy Policy
+              </Link>
+            </label>
+          </div>
+
+          <button
+            type="submit"
+            disabled={!isFormValid || isAuthLoading}
+            className="w-full px-4 py-3 bg-primary text-white rounded-lg font-semibold hover:bg-primary-dark transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-2 shadow-lg hover:shadow-xl"
+          >
+            {isAuthLoading ? (
+              <>
+                <Lightning className="w-4 h-4 animate-pulse" />
+                Creating your account...
+              </>
+            ) : (
+              <>
+                <Leaf className="w-4 h-4" />
+                Start Your Free Trial
+              </>
+            )}
+          </button>
+        </form>
+
+        {/* Footer */}
+        <div className="text-center">
+          <p className="text-sm text-text-muted">
+            Already have an account?{" "}
+            <Link
+              to="/sign-in"
+              className="text-primary hover:opacity-80 font-semibold"
+            >
+              Sign in here
+            </Link>
+          </p>
+        </div>
       </div>
     </div>
   );

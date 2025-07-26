@@ -1,5 +1,5 @@
 import { Outlet, useLocation } from "react-router-dom";
-import { Footer, Header, Sidebar } from "../components";
+import { Footer, Header, LandingPageContainer, Sidebar } from "../components";
 import AppPageContainer from "../components/layout/AppPageContainer";
 import { useAuth } from "../hooks/auth";
 
@@ -16,7 +16,9 @@ export default function Layout() {
       <div className="min-h-screen bg-background">
         <Header />
         <main>
-          <Outlet />
+          <LandingPageContainer>
+            <Outlet />
+          </LandingPageContainer>
         </main>
         <Footer />
       </div>
@@ -35,7 +37,7 @@ export default function Layout() {
               <Outlet />
             </AppPageContainer>
           </main>
-        </div>  
+        </div>
       </div>
     );
   }

@@ -1,77 +1,42 @@
-import { Star } from "@phosphor-icons/react";
+import React from "react";
 
-const testimonials = [
-  {
-    quote:
-      "MapleTenders helped us find $1.2M worth of relevant contracts in our first month. The AI understands our business better than we expected.",
-    author: "Sarah Chen",
-    title: "Business Development, TechFlow Solutions",
-    avatar: "SC",
-  },
-  {
-    quote:
-      "Finally stopped wasting time on irrelevant tenders. The platform's accuracy is impressive for government procurement.",
-    author: "Marcus Rodriguez",
-    title: "CEO, Infrastructure Plus",
-    avatar: "MR",
-  },
-  {
-    quote:
-      "The deadline alerts alone have saved us from missing opportunities. ROI was clear within 30 days.",
-    author: "Jennifer Walsh",
-    title: "VP Sales, DataSecure Inc.",
-    avatar: "JW",
-  },
+const competitors = [
+  "biddingo.png",
+  "canada.png",
+  "merx.png",
+  "mississauga.png",
+  "ontario.png",
+  "toronto.png",
 ];
 
 export default function TestimonialsSection() {
   return (
-    <section className="py-20 px-6 bg-primary">
-      <div className="max-w-6xl mx-auto">
-        <div className="text-center mb-12 lg:mb-16">
-          <h2 className="text-2xl sm:text-3xl font-semibold text-white mb-4">
-            Trusted by Canadian contractors
-          </h2>
-          <p className="text-sm sm:text-base text-white/90 max-w-2xl mx-auto">
-            See how businesses are winning more contracts with AI-powered
-            procurement intelligence
-          </p>
-        </div>
-
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 lg:gap-8">
-          {testimonials.map((testimonial, index) => (
-            <div
-              key={index}
-              className="bg-white border border-white/20 rounded-lg p-6 lg:p-8"
-            >
-              <div className="flex items-center gap-1 mb-4 lg:mb-6">
-                {[...Array(5)].map((_, i) => (
-                  <Star
-                    key={i}
-                    className="w-4 sm:w-5 h-4 sm:h-5 text-primary"
-                    weight="fill"
-                  />
-                ))}
-              </div>
-              <p className="text-sm sm:text-base text-text-muted mb-4 lg:mb-6 leading-relaxed">
-                "{testimonial.quote}"
-              </p>
-              <div className="flex items-center gap-3 sm:gap-4">
-                <div className="w-10 sm:w-12 h-10 sm:h-12 bg-primary rounded-lg flex items-center justify-center text-white font-semibold text-sm sm:text-base">
-                  {testimonial.avatar}
-                </div>
-                <div>
-                  <div className="font-semibold text-text text-sm sm:text-base">
-                    {testimonial.author}
-                  </div>
-                  <div className="text-xs sm:text-sm text-text-muted">
-                    {testimonial.title}
-                  </div>
-                </div>
-              </div>
-            </div>
-          ))}
-        </div>
+    <section className="py-16 text-center">
+      <div className="mb-8 flex flex-col items-center">
+        <h2 className="text-4xl font-bold mb-6 text-text max-w-4xl">
+          We know businesses are tired of looking for opportunities on sites
+          like these.
+        </h2>
+        <p className="text-text-muted mb-12 text-xl">
+          They're outdated, slow, ugly, and don't work.
+        </p>
+      </div>
+      <div className="relative flex justify-center items-center -space-x-42 px-4 py-12">
+        {competitors.map((file, idx) => (
+          <div
+            key={file}
+            className={`relative w-96 h-96 rounded-lg border-4 border-white shadow-md overflow-hidden z-10 ${
+              idx % 2 === 0 ? "translate-y-12" : "-translate-y-12"
+            }`}
+            style={{ zIndex: competitors.length - idx }}
+          >
+            <img
+              src={`/competitors/${file}`}
+              alt={file.replace(".png", "")}
+              className="w-full h-full scale-200 object-cover"
+            />
+          </div>
+        ))}
       </div>
     </section>
   );

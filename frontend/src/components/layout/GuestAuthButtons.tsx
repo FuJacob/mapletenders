@@ -9,7 +9,7 @@ export default function GuestAuthButtons() {
         <li>
           <button
             onClick={() => navigate("/sign-in")}
-            className="px-4 py-2 text-sm text-text hover:text-primary transition-colors font-medium"
+            className="px-4 py-2 text-text hover:text-primary transition-colors font-medium"
           >
             Sign In
           </button>
@@ -17,7 +17,7 @@ export default function GuestAuthButtons() {
         <li>
           <button
             onClick={() => navigate("/sign-up")}
-            className="px-6 py-2 bg-primary text-white rounded-lg text-sm font-medium hover:bg-primary-dark transition-colors shadow-sm"
+            className="px-6 py-2 bg-primary text-white rounded-lg font-medium hover:bg-primary-dark transition-colors shadow-sm"
           >
             Sign Up
           </button>
