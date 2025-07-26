@@ -31,7 +31,7 @@ interface TenderTableProps {
   tenders?: Tender[];
 }
 
-const NUMBER_OF_TENDERS_PER_PAGE = 8;
+const NUMBER_OF_TENDERS_PER_PAGE = 10;
 
 // Create column helper
 const columnHelper = createColumnHelper<Tender>();
@@ -39,7 +39,7 @@ const columnHelper = createColumnHelper<Tender>();
 // Define table columns
 const tenderColumns = [
   columnHelper.accessor("title", {
-    header: "Tender Title",
+    header: "Tender",
     size: 300,
     cell: (info) => (
       <Link
@@ -50,28 +50,40 @@ const tenderColumns = [
       </Link>
     ),
   }),
-  columnHelper.accessor("contracting_entity_name", {
-    header: "Entity",
-    size: 200,
-    cell: (info) => info.getValue() || "Unknown",
+  columnHelper.display({
+    id: "entity_info",
+    header: "Entity Info",
+    size: 220,
+    cell: (info) => {
+      const tender = info.row.original;
+      const parts = [
+        tender.contracting_entity_name || "Unknown",
+        tender.contracting_entity_city,
+        tender.contracting_entity_province,
+        tender.contracting_entity_country,
+      ].filter(Boolean);
+      return parts.join(" — ");
+    },
   }),
   columnHelper.accessor("category_primary", {
     header: "Category",
-    size: 150,
+    size: 130,
     cell: (info) => info.getValue() || "N/A",
   }),
-  columnHelper.accessor("procurement_method", {
-    header: "Method",
-    size: 120,
-    cell: (info) => info.getValue() || "N/A",
-  }),
-  columnHelper.accessor("closing_date", {
-    header: "Closing Date",
-    size: 120,
+  // Combined Date Range column instead of separate closing_date
+  columnHelper.display({
+    id: "date_range",
+    header: "Date Range",
+    size: 180,
     cell: (info) => {
-      const date = info.getValue();
-      if (!date) return "N/A";
-      return new Date(date).toLocaleDateString();
+      const tender = info.row.original;
+      const published = tender.published_date
+        ? new Date(tender.published_date).toLocaleDateString()
+        : "N/A";
+      const closing = tender.closing_date
+        ? new Date(tender.closing_date).toLocaleDateString()
+        : "N/A";
+      return `Published: ${published} — Closes: ${closing}`;
     },
   }),
   columnHelper.accessor("status", {
@@ -105,8 +117,15 @@ const tenderColumns = [
       );
     },
   }),
+  columnHelper.accessor("estimated_value_min", {
+    header: "Est. Value",
+    size: 120,
+    cell: (info) =>
+      info.getValue() !== null
+        ? `$${info.getValue()?.toLocaleString()}`
+        : "N/A",
+  }),
 ];
-
 export default function TenderTable({
   isLoading = false,
   tenders = [],
@@ -150,10 +169,9 @@ export default function TenderTable({
 
   // Use filtered data if available, otherwise use all tenders
   const tableData = useMemo(() => {
-    const dataToUse =
-      filteredTenders.length > 0 ? filteredTenders : tenders || [];
+    const dataToUse = filteredTenders.length > 0 ? filteredTenders : [];
     return dataToUse;
-  }, [filteredTenders, tenders]);
+  }, [filteredTenders]);
 
   // Memoize pagination change handler
   const onPaginationChange = useCallback(
@@ -299,6 +317,7 @@ export default function TenderTable({
         <QuickFilters
           setGlobalFilter={setGlobalFilter}
           tenders={tenders || []}
+          rowCount={filteredTenders.length}
           onFilteredDataChange={handleFilteredDataChange}
         />
       </div>

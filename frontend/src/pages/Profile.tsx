@@ -5,6 +5,7 @@ import {
   Crown,
   CheckCircle,
   Clock,
+  PersonIcon,
 } from "@phosphor-icons/react";
 import { useAuth } from "../hooks/auth";
 import { useAppDispatch } from "../app/hooks";
@@ -13,7 +14,6 @@ import { useSubscription } from "../hooks/useSubscription";
 
 import LoadingSpinner from "../components/common/LoadingSpinner";
 import {
-  StatusMessages,
   companySizes,
   industries,
   services,
@@ -25,6 +25,7 @@ import {
   getContractSizeDisplay,
   getCompanySizeDisplay,
 } from "../components/profile";
+import { PageHeader } from "../components/ui";
 
 export default function Profile() {
   const { user, profile } = useAuth();
@@ -33,8 +34,6 @@ export default function Profile() {
 
   const [isEditing, setIsEditing] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState("");
-  const [success, setSuccess] = useState("");
 
   // Form data initialized with profile data
   const [formData, setFormData] = useState({
@@ -82,24 +81,16 @@ export default function Profile() {
 
   const handleSave = async () => {
     setLoading(true);
-    setError("");
-    setSuccess("");
 
     try {
       // Dispatch the update profile thunk
       const result = await dispatch(updateProfile(formData));
 
       if (result.type === "auth/updateProfile/fulfilled") {
-        setSuccess("Profile updated successfully!");
         setIsEditing(false);
-        // Clear success message after 3 seconds
-        setTimeout(() => setSuccess(""), 3000);
-      } else {
-        setError("Failed to update profile. Please try again.");
-      }
-    } catch (err) {
-      console.error("Profile update error:", err);
-      setError("An unexpected error occurred. Please try again.");
+      } 
+    } catch (error) {
+      console.error("Profile update error:", error);
     } finally {
       setLoading(false);
     }
@@ -119,35 +110,45 @@ export default function Profile() {
       });
     }
     setIsEditing(false);
-    setError("");
-    setSuccess("");
   };
 
   // Helper functions for plan display
   const getPlanDisplayName = (planId: string) => {
     switch (planId) {
-      case "starter": return "Starter";
-      case "professional": return "Professional";
-      case "enterprise": return "Enterprise";
-      default: return planId;
+      case "starter":
+        return "Starter";
+      case "professional":
+        return "Professional";
+      case "enterprise":
+        return "Enterprise";
+      default:
+        return planId;
     }
   };
 
   const getStatusColor = (status: string) => {
     switch (status) {
-      case "active": return "text-green-600";
-      case "trialing": return "text-blue-600";
-      case "past_due": return "text-yellow-600";
-      case "canceled": return "text-red-600";
-      default: return "text-text-light";
+      case "active":
+        return "text-green-600";
+      case "trialing":
+        return "text-blue-600";
+      case "past_due":
+        return "text-yellow-600";
+      case "canceled":
+        return "text-red-600";
+      default:
+        return "text-text-light";
     }
   };
 
   const getStatusIcon = (status: string) => {
     switch (status) {
-      case "active": return <CheckCircle className="w-4 h-4 text-green-600" />;
-      case "trialing": return <Clock className="w-4 h-4 text-blue-600" />;
-      default: return <Clock className="w-4 h-4 text-text-light" />;
+      case "active":
+        return <CheckCircle className="w-4 h-4 text-green-600" />;
+      case "trialing":
+        return <Clock className="w-4 h-4 text-blue-600" />;
+      default:
+        return <Clock className="w-4 h-4 text-text-light" />;
     }
   };
 
@@ -163,46 +164,44 @@ export default function Profile() {
   return (
     <div className="h-full flex flex-col">
       {/* Header */}
-      <div className="flex-shrink-0 mb-4 px-6">
-        <div className="flex items-center justify-between">
-          <div>
-            <h1 className="text-2xl font-bold text-text">Profile</h1>
-            <p className="text-text-light">Manage your profile and preferences</p>
-          </div>
-          <div className="flex gap-3">
-            {!isEditing ? (
+
+      <div className="flex items-center justify-between">
+        <PageHeader
+          icon={<PersonIcon className="w-10 h-10 text-primary" />}
+          title="Profile"
+          description="Manage your profile and preferences"
+        />
+        <div className="flex gap-3">
+          {!isEditing ? (
+            <button
+              onClick={() => setIsEditing(true)}
+              className="px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary-dark transition-colors"
+            >
+              Edit Profile
+            </button>
+          ) : (
+            <>
               <button
-                onClick={() => setIsEditing(true)}
-                className="px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary-dark transition-colors"
+                onClick={handleCancel}
+                className="px-4 py-2 border border-border text-text rounded-lg hover:bg-border transition-colors"
               >
-                Edit Profile
+                Cancel
               </button>
-            ) : (
-              <>
-                <button
-                  onClick={handleCancel}
-                  className="px-4 py-2 border border-border text-text rounded-lg hover:bg-border transition-colors"
-                >
-                  Cancel
-                </button>
-                <button
-                  onClick={handleSave}
-                  disabled={loading}
-                  className="px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary-dark transition-colors disabled:opacity-50"
-                >
-                  {loading ? "Saving..." : "Save Changes"}
-                </button>
-              </>
-            )}
-          </div>
+              <button
+                onClick={handleSave}
+                disabled={loading}
+                className="px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary-dark transition-colors disabled:opacity-50"
+              >
+                {loading ? "Saving..." : "Save Changes"}
+              </button>
+            </>
+          )}
         </div>
-        <StatusMessages success={success} error={error} />
       </div>
 
       {/* Dashboard Grid */}
-      <div className="flex-1 px-6 pb-6">
+      <div className="flex-1 pb-6">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 h-full">
-          
           {/* Current Plan Box */}
           <div className="bg-surface border border-border rounded-lg p-4">
             <div className="flex items-center gap-2 mb-3">
@@ -215,7 +214,9 @@ export default function Profile() {
               </div>
             ) : !subscription ? (
               <div className="text-center py-4">
-                <p className="text-text-light text-sm mb-3">No active subscription</p>
+                <p className="text-text-light text-sm mb-3">
+                  No active subscription
+                </p>
                 <a
                   href="/plans"
                   className="inline-flex items-center gap-1 px-3 py-1.5 bg-primary text-white rounded text-sm hover:bg-primary-dark transition-colors"
@@ -227,21 +228,32 @@ export default function Profile() {
               <div className="space-y-3">
                 <div className="flex justify-between">
                   <span className="text-text-light text-sm">Plan:</span>
-                  <span className="font-medium text-sm">{getPlanDisplayName(subscription.plan_id)}</span>
+                  <span className="font-medium text-sm">
+                    {getPlanDisplayName(subscription.plan_id)}
+                  </span>
                 </div>
                 <div className="flex justify-between items-center">
                   <span className="text-text-light text-sm">Status:</span>
                   <div className="flex items-center gap-1">
                     {getStatusIcon(subscription.status)}
-                    <span className={`text-sm ${getStatusColor(subscription.status)}`}>
-                      {subscription.status.charAt(0).toUpperCase() + subscription.status.slice(1)}
+                    <span
+                      className={`text-sm ${getStatusColor(
+                        subscription.status
+                      )}`}
+                    >
+                      {subscription.status.charAt(0).toUpperCase() +
+                        subscription.status.slice(1)}
                     </span>
                   </div>
                 </div>
                 {subscription.current_period_end && (
                   <div className="flex justify-between">
-                    <span className="text-text-light text-sm">Next Billing:</span>
-                    <span className="text-sm">{formatDate(subscription.current_period_end)}</span>
+                    <span className="text-text-light text-sm">
+                      Next Billing:
+                    </span>
+                    <span className="text-sm">
+                      {formatDate(subscription.current_period_end)}
+                    </span>
                   </div>
                 )}
               </div>
@@ -256,51 +268,86 @@ export default function Profile() {
             </div>
             <div className="space-y-3">
               <div>
-                <label className="block text-xs text-text-light mb-1">Company Name</label>
+                <label className="block text-xs text-text-light mb-1">
+                  Company Name
+                </label>
                 {isEditing ? (
                   <input
                     type="text"
                     value={formData.company_name}
-                    onChange={(e) => setFormData(prev => ({ ...prev, company_name: e.target.value }))}
+                    onChange={(e) =>
+                      setFormData((prev) => ({
+                        ...prev,
+                        company_name: e.target.value,
+                      }))
+                    }
                     className="w-full px-2 py-1.5 border border-border rounded text-sm bg-background focus:border-primary focus:outline-none"
                     placeholder="Enter company name"
                   />
                 ) : (
-                  <p className="text-sm">{profile?.company_name || "Not set"}</p>
+                  <p className="text-sm">
+                    {profile?.company_name || "Not set"}
+                  </p>
                 )}
               </div>
               <div>
-                <label className="block text-xs text-text-light mb-1">Industry</label>
+                <label className="block text-xs text-text-light mb-1">
+                  Industry
+                </label>
                 {isEditing ? (
                   <select
                     value={formData.industry}
-                    onChange={(e) => setFormData(prev => ({ ...prev, industry: e.target.value }))}
+                    onChange={(e) =>
+                      setFormData((prev) => ({
+                        ...prev,
+                        industry: e.target.value,
+                      }))
+                    }
                     className="w-full px-2 py-1.5 border border-border rounded text-sm bg-background focus:border-primary focus:outline-none"
                   >
                     <option value="">Select industry</option>
                     {industries.map((industry) => (
-                      <option key={industry.value} value={industry.value}>{industry.label}</option>
+                      <option key={industry.value} value={industry.value}>
+                        {industry.label}
+                      </option>
                     ))}
                   </select>
                 ) : (
-                  <p className="text-sm">{profile?.industry ? getIndustryDisplay(profile.industry) : "Not set"}</p>
+                  <p className="text-sm">
+                    {profile?.industry
+                      ? getIndustryDisplay(profile.industry)
+                      : "Not set"}
+                  </p>
                 )}
               </div>
               <div>
-                <label className="block text-xs text-text-light mb-1">Company Size</label>
+                <label className="block text-xs text-text-light mb-1">
+                  Company Size
+                </label>
                 {isEditing ? (
                   <select
                     value={formData.company_size}
-                    onChange={(e) => setFormData(prev => ({ ...prev, company_size: e.target.value }))}
+                    onChange={(e) =>
+                      setFormData((prev) => ({
+                        ...prev,
+                        company_size: e.target.value,
+                      }))
+                    }
                     className="w-full px-2 py-1.5 border border-border rounded text-sm bg-background focus:border-primary focus:outline-none"
                   >
                     <option value="">Select company size</option>
                     {companySizes.map((size) => (
-                      <option key={size.value} value={size.value}>{size.label}</option>
+                      <option key={size.value} value={size.value}>
+                        {size.label}
+                      </option>
                     ))}
                   </select>
                 ) : (
-                  <p className="text-sm">{profile?.company_size ? getCompanySizeDisplay(profile.company_size) : "Not set"}</p>
+                  <p className="text-sm">
+                    {profile?.company_size
+                      ? getCompanySizeDisplay(profile.company_size)
+                      : "Not set"}
+                  </p>
                 )}
               </div>
             </div>
@@ -331,14 +378,20 @@ export default function Profile() {
               </div>
             ) : (
               <div className="flex flex-wrap gap-1">
-                {profile?.primary_services && profile.primary_services.length > 0 ? (
+                {profile?.primary_services &&
+                profile.primary_services.length > 0 ? (
                   profile.primary_services.map((service: string) => (
-                    <span key={service} className="px-2 py-1 bg-primary/10 text-primary rounded text-xs">
+                    <span
+                      key={service}
+                      className="px-2 py-1 bg-primary/10 text-primary rounded text-xs"
+                    >
                       {service}
                     </span>
                   ))
                 ) : (
-                  <p className="text-text-light text-sm">No services selected</p>
+                  <p className="text-text-light text-sm">
+                    No services selected
+                  </p>
                 )}
               </div>
             )}
@@ -369,9 +422,13 @@ export default function Profile() {
               </div>
             ) : (
               <div className="flex flex-wrap gap-1">
-                {profile?.service_regions && profile.service_regions.length > 0 ? (
+                {profile?.service_regions &&
+                profile.service_regions.length > 0 ? (
                   profile.service_regions.map((region: string) => (
-                    <span key={region} className="px-2 py-1 bg-accent/10 text-accent rounded text-xs">
+                    <span
+                      key={region}
+                      className="px-2 py-1 bg-accent/10 text-accent rounded text-xs"
+                    >
                       {region}
                     </span>
                   ))
@@ -390,37 +447,63 @@ export default function Profile() {
             </div>
             <div className="space-y-3">
               <div>
-                <label className="block text-xs text-text-light mb-1">Government Experience</label>
+                <label className="block text-xs text-text-light mb-1">
+                  Government Experience
+                </label>
                 {isEditing ? (
                   <select
                     value={formData.government_experience}
-                    onChange={(e) => setFormData(prev => ({ ...prev, government_experience: e.target.value }))}
+                    onChange={(e) =>
+                      setFormData((prev) => ({
+                        ...prev,
+                        government_experience: e.target.value,
+                      }))
+                    }
                     className="w-full px-2 py-1.5 border border-border rounded text-sm bg-background focus:border-primary focus:outline-none"
                   >
                     <option value="">Select experience level</option>
                     {experienceLevels.map((level) => (
-                      <option key={level.value} value={level.value}>{level.label}</option>
+                      <option key={level.value} value={level.value}>
+                        {level.label}
+                      </option>
                     ))}
                   </select>
                 ) : (
-                  <p className="text-sm">{profile?.government_experience ? getExperienceDisplay(profile.government_experience) : "Not set"}</p>
+                  <p className="text-sm">
+                    {profile?.government_experience
+                      ? getExperienceDisplay(profile.government_experience)
+                      : "Not set"}
+                  </p>
                 )}
               </div>
               <div>
-                <label className="block text-xs text-text-light mb-1">Typical Contract Size</label>
+                <label className="block text-xs text-text-light mb-1">
+                  Typical Contract Size
+                </label>
                 {isEditing ? (
                   <select
                     value={formData.typical_contract_size}
-                    onChange={(e) => setFormData(prev => ({ ...prev, typical_contract_size: e.target.value }))}
+                    onChange={(e) =>
+                      setFormData((prev) => ({
+                        ...prev,
+                        typical_contract_size: e.target.value,
+                      }))
+                    }
                     className="w-full px-2 py-1.5 border border-border rounded text-sm bg-background focus:border-primary focus:outline-none"
                   >
                     <option value="">Select contract size</option>
                     {contractSizes.map((size) => (
-                      <option key={size.value} value={size.value}>{size.label}</option>
+                      <option key={size.value} value={size.value}>
+                        {size.label}
+                      </option>
                     ))}
                   </select>
                 ) : (
-                  <p className="text-sm">{profile?.typical_contract_size ? getContractSizeDisplay(profile.typical_contract_size) : "Not set"}</p>
+                  <p className="text-sm">
+                    {profile?.typical_contract_size
+                      ? getContractSizeDisplay(profile.typical_contract_size)
+                      : "Not set"}
+                  </p>
                 )}
               </div>
             </div>
@@ -434,7 +517,9 @@ export default function Profile() {
             </div>
             <div className="space-y-3">
               <div>
-                <label className="block text-xs text-text-light mb-1">Email Address</label>
+                <label className="block text-xs text-text-light mb-1">
+                  Email Address
+                </label>
                 <div className="flex gap-2">
                   <input
                     type="email"
@@ -448,7 +533,9 @@ export default function Profile() {
                 </div>
               </div>
               <div>
-                <label className="block text-xs text-text-light mb-1">Password</label>
+                <label className="block text-xs text-text-light mb-1">
+                  Password
+                </label>
                 <div className="flex gap-2">
                   <input
                     type="password"
@@ -463,7 +550,6 @@ export default function Profile() {
               </div>
             </div>
           </div>
-
         </div>
       </div>
     </div>

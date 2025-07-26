@@ -1,5 +1,5 @@
 from fastapi import FastAPI
-from routers import embeddings, data, elasticsearch,
+from routers import embeddings, data, elasticsearch
 import uvicorn
 
 app = FastAPI(

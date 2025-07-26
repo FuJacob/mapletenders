@@ -6,5 +6,10 @@ interface TableHeaderProps {
 }
 
 export function TableHeader({ children, className = "" }: TableHeaderProps) {
-  return <thead className={`bg-surface-muted ${className}`}>{children}</thead>;
+  return (
+    <thead className={`bg-surface-muted border-b border-border sticky top-0 z-10 ${className}`}
+    >
+      {children}
+    </thead>
+  );
 }

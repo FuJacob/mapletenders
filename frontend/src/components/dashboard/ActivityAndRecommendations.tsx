@@ -23,16 +23,6 @@ export default function ActivityAndRecommendations({
       {/* Tab Navigation */}
       <div className="flex border-b border-border flex-shrink-0">
         <button
-          onClick={() => setViewMode("recent")}
-          className={`px-6 py-3 text-sm font-medium transition-colors ${
-            viewMode === "recent"
-              ? "text-primary bg-primary/5 border-b-2 border-primary"
-              : "text-text-muted hover:text-text"
-          }`}
-        >
-          Recent Activity
-        </button>
-        <button
           onClick={() => setViewMode("recommended")}
           className={`px-6 py-3 text-sm font-medium transition-colors ${
             viewMode === "recommended"
@@ -41,6 +31,16 @@ export default function ActivityAndRecommendations({
           }`}
         >
           Recommended For You
+        </button>
+        <button
+          onClick={() => setViewMode("recent")}
+          className={`px-6 py-3 text-sm font-medium transition-colors ${
+            viewMode === "recent"
+              ? "text-primary bg-primary/5 border-b-2 border-primary"
+              : "text-text-muted hover:text-text"
+          }`}
+        >
+          Recent Activity
         </button>
       </div>
 

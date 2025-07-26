@@ -15,6 +15,7 @@ interface QuickFiltersProps {
   setGlobalFilter: (filter: string) => void;
   tenders?: Tender[];
   onFilteredDataChange?: (filteredData: Tender[]) => void;
+  rowCount: number;
 }
 
 interface FilterOption {
@@ -26,6 +27,7 @@ interface FilterOption {
 const QuickFilters = ({
   setGlobalFilter,
   tenders = [],
+  rowCount,
   onFilteredDataChange,
 }: QuickFiltersProps) => {
   const [searchQuery, setSearchQuery] = useState("");
@@ -288,12 +290,10 @@ const QuickFilters = ({
 
       {/* Results Summary */}
       <div className="text-sm text-text-muted">
-        {tenders.length > 0 && (
           <span>
-            Showing {tenders.length} tender{tenders.length !== 1 ? "s" : ""}
-            {activeFilters.length > 0 && " with active filters"}
-          </span>
-        )}
+            Showing {rowCount} tender{rowCount !== 1 ? "s" : ""}
+          {activeFilters.length > 0 && " with active filters"}
+        </span>
       </div>
     </div>
   );

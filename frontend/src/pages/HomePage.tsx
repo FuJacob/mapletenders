@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 
-import DashboardStatsGrid from "../components/dashboard/DashboardStatsGrid";
+import { DashboardStatsGrid } from "../components/dashboard";
 import ActivityAndRecommendations from "../components/dashboard/ActivityAndRecommendations";
 import QuickActionsSidebar from "../components/search/QuickActionsSidebar";
 import UrgentDeadlines from "../components/search/UrgentDeadlines";
