@@ -55,7 +55,7 @@ export function TenderNoticeHeader({
           <h1 className="text-lg font-semibold text-text">{tender.title}</h1>
           <button
             onClick={onBookmark}
-            className={`p-1 rounded-md transition-colors ${
+            className={`p-1 rounded-lg transition-colors ${
               isBookmarked ? "text-primary" : "text-text-light hover:text-text"
             }`}
             aria-label={isBookmarked ? "Remove bookmark" : "Add bookmark"}
@@ -121,21 +121,21 @@ export function TenderNoticeHeader({
       </div>
 
       {/* Header Section */}
-      <div className="bg-surface border border-border rounded-xl p-6 mb-6">
+      <div className="bg-surface border border-border rounded-lg p-6 mb-6">
         <div className="flex items-start justify-between mb-4">
           <div className="flex-1">
             <div className="flex items-center gap-3 mb-3">
               <h1 className="text-2xl font-bold text-text">{tender.title}</h1>
               <div className="flex items-center gap-2">
                 <span
-                  className={`px-3 py-1 rounded-full text-sm font-medium border ${getStatusColor(
+                  className={`px-3 py-1 rounded-lg text-sm font-medium border ${getStatusColor(
                     tender.status
                   )}`}
                 >
                   {tender.status || "Status Unknown"}
                 </span>
                 {tender.procurement_type && (
-                  <span className="px-3 py-1 bg-info/10 text-info rounded-full text-sm font-medium">
+                  <span className="px-3 py-1 bg-info/10 text-info rounded-lg text-sm font-medium">
                     {tender.procurement_type}
                   </span>
                 )}
@@ -171,7 +171,7 @@ export function TenderNoticeHeader({
                 <span>Closes: {formatDateTime(tender.closing_date)}</span>
                 {closingDays && (
                   <span
-                    className={`ml-2 px-2 py-1 rounded-full text-xs font-medium ${
+                    className={`ml-2 px-2 py-1 rounded-lg text-xs font-medium ${
                       isUrgent
                         ? "bg-error/10 text-error"
                         : "bg-success/10 text-success"

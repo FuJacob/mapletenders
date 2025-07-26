@@ -19,7 +19,7 @@ export default function HeroSection() {
               {stats.map((stat, i) => (
                 <div
                   key={i}
-                  className="inline-flex items-center gap-2 bg-surface-warm border border-border-warm text-text-warm px-3 py-1.5 rounded-full text-xs font-medium"
+                  className="inline-flex items-center gap-2 bg-surface-warm border border-border-warm text-text-warm px-3 py-1.5 rounded-lg text-xs font-medium"
                 >
                   <span className="font-semibold">{stat.value}</span>{" "}
                   {stat.label}

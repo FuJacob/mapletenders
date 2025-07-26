@@ -209,7 +209,7 @@ export default function AnalyticsPage() {
                 <button
                   key={range}
                   onClick={() => handleTimeRangeChange(range)}
-                  className={`px-3 py-2 text-sm font-medium rounded-md transition-colors ${
+                  className={`px-3 py-2 text-sm font-medium rounded-lg transition-colors ${
                     timeRange === range
                       ? "bg-primary text-white"
                       : "text-text hover:bg-border"
@@ -242,7 +242,7 @@ export default function AnalyticsPage() {
             {analyticsData.keyMetrics.map((metric, index) => (
               <div
                 key={index}
-                className="bg-surface border border-border rounded-xl p-6"
+                className="bg-surface border border-border rounded-lg p-6"
               >
                 <div className="flex items-center justify-between mb-4">
                   <div
@@ -277,7 +277,7 @@ export default function AnalyticsPage() {
           {/* Performance Overview */}
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
             {/* Monthly Trends */}
-            <div className="bg-surface border border-border rounded-xl p-6">
+            <div className="bg-surface border border-border rounded-lg p-6">
               <h3 className="text-lg font-semibold text-text mb-6 flex items-center gap-2">
                 <TrendUp className="w-5 h-5 text-primary" />
                 Monthly Performance Trends
@@ -329,7 +329,7 @@ export default function AnalyticsPage() {
             </div>
 
             {/* Top Performing Categories */}
-            <div className="bg-surface border border-border rounded-xl p-6">
+            <div className="bg-surface border border-border rounded-lg p-6">
               <h3 className="text-lg font-semibold text-text mb-6 flex items-center gap-2">
                 <Target className="w-5 h-5 text-primary" />
                 Top Performing Categories
@@ -371,7 +371,7 @@ export default function AnalyticsPage() {
           </div>
 
           {/* Regional Performance */}
-          <div className="bg-surface border border-border rounded-xl p-6">
+          <div className="bg-surface border border-border rounded-lg p-6">
             <h3 className="text-lg font-semibold text-text mb-6 flex items-center gap-2">
               <MapPin className="w-5 h-5 text-primary" />
               Regional Performance Analysis
@@ -448,7 +448,7 @@ export default function AnalyticsPage() {
           </div>
 
           {/* Insights & Recommendations */}
-          <div className="bg-surface border border-border rounded-xl p-6">
+          <div className="bg-surface border border-border rounded-lg p-6">
             <h3 className="text-lg font-semibold text-text mb-6 flex items-center gap-2">
               <Users className="w-5 h-5 text-primary" />
               AI-Powered Insights & Recommendations

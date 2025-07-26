@@ -1,6 +1,17 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import { CheckCircle, Lightning, Eye, EyeSlash, Leaf, Sparkle, TrendUp, Target, Star, ArrowRight } from "@phosphor-icons/react";
+import {
+  CheckCircle,
+  Lightning,
+  Eye,
+  EyeSlash,
+  Leaf,
+  Sparkle,
+  TrendUp,
+  Target,
+  Star,
+  ArrowRight,
+} from "@phosphor-icons/react";
 
 import { useSelector } from "react-redux";
 import { selectAuthLoading } from "../features/auth/authSelectors";
@@ -44,18 +55,19 @@ export default function SignIn() {
     {
       icon: <Target className="w-6 h-6 text-success" />,
       title: "$1.2M in contracts discovered",
-      description: "Average value of opportunities found per user in their first year"
+      description:
+        "Average value of opportunities found per user in their first year",
     },
     {
       icon: <TrendUp className="w-6 h-6 text-primary" />,
       title: "95% time saved on search",
-      description: "Focus on winnable contracts instead of endless browsing"
+      description: "Focus on winnable contracts instead of endless browsing",
     },
     {
       icon: <Lightning className="w-6 h-6 text-maple" />,
       title: "Real-time alerts",
-      description: "Never miss another deadline with smart notifications"
-    }
+      description: "Never miss another deadline with smart notifications",
+    },
   ];
 
   return (
@@ -64,8 +76,8 @@ export default function SignIn() {
       <div className="hidden lg:flex flex-1 bg-gradient-to-br from-primary/5 via-maple/5 to-success/5 items-center justify-center p-12 relative overflow-hidden">
         {/* Background decorations */}
         <div className="absolute inset-0 overflow-hidden pointer-events-none">
-          <div className="absolute top-20 right-20 w-32 h-32 bg-gradient-to-r from-primary/20 to-accent/20 rounded-full blur-2xl" />
-          <div className="absolute bottom-20 left-20 w-40 h-40 bg-gradient-to-l from-success/20 to-maple/20 rounded-full blur-2xl" />
+          <div className="absolute top-20 right-20 w-32 h-32 bg-gradient-to-r from-primary/20 to-accent/20 rounded-lg blur-2xl" />
+          <div className="absolute bottom-20 left-20 w-40 h-40 bg-gradient-to-l from-success/20 to-maple/20 rounded-lg blur-2xl" />
         </div>
 
         <div className="max-w-lg relative z-10">
@@ -84,7 +96,8 @@ export default function SignIn() {
               Welcome back to Canada's #1 procurement platform
             </h2>
             <p className="text-lg text-text-muted leading-relaxed">
-              Join thousands of Canadian businesses already winning government contracts with AI-powered discovery.
+              Join thousands of Canadian businesses already winning government
+              contracts with AI-powered discovery.
             </p>
           </div>
 
@@ -92,9 +105,9 @@ export default function SignIn() {
             {benefits.map((benefit, index) => (
               <div
                 key={index}
-                className="group flex items-start gap-4 p-4 rounded-xl hover:bg-surface/30 transition-all duration-300"
+                className="group flex items-start gap-4 p-4 rounded-lg hover:bg-surface/30 transition-all duration-300"
               >
-                <div className="flex-shrink-0 w-12 h-12 bg-surface/50 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
+                <div className="flex-shrink-0 w-12 h-12 bg-surface/50 rounded-lg flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
                   {benefit.icon}
                 </div>
                 <div className="flex-1">
@@ -110,9 +123,10 @@ export default function SignIn() {
             ))}
           </div>
 
-          <div className="mt-8 p-6 bg-surface/30 backdrop-blur-sm border border-border/50 rounded-2xl">
+          <div className="mt-8 p-6 bg-surface/30 backdrop-blur-sm border border-border/50 rounded-lg">
             <div className="text-text-muted text-sm italic mb-2">
-              "Mapletenders helped us discover and win our first $500K government contract within 30 days."
+              "Mapletenders helped us discover and win our first $500K
+              government contract within 30 days."
             </div>
             <div className="text-xs text-text-muted font-medium">
               — Sarah Chen, CEO at BuildTech Solutions
@@ -126,19 +140,20 @@ export default function SignIn() {
         <div className="w-full max-w-md space-y-8">
           {/* Header */}
           <div className="text-center">
-            <div className="inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-maple/10 to-maple/5 text-maple border border-maple/20 rounded-full text-sm font-medium mb-6">
+            <div className="inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-maple/10 to-maple/5 text-maple border border-maple/20 rounded-lg text-sm font-medium mb-6">
               <Leaf className="w-4 h-4" />
               <Sparkle className="w-3 h-3 animate-pulse" />
               Trusted by 2,000+ Canadian businesses
             </div>
-            
-            <Link to="/" className="inline-block mb-8 hover:opacity-80 transition-opacity">
+
+            <Link
+              to="/"
+              className="inline-block mb-8 hover:opacity-80 transition-opacity"
+            >
               <LogoTitle />
             </Link>
 
-            <h1 className="text-2xl font-bold text-text mb-2">
-              Welcome back
-            </h1>
+            <h1 className="text-2xl font-bold text-text mb-2">Welcome back</h1>
             <p className="text-text-muted">
               Continue discovering opportunities that match your business
             </p>
@@ -154,7 +169,8 @@ export default function SignIn() {
                 </span>
               </div>
               <p className="text-sm text-text-muted mt-1">
-                Please check your inbox and click the confirmation link to activate your account.
+                Please check your inbox and click the confirmation link to
+                activate your account.
               </p>
             </div>
           )}
@@ -169,7 +185,10 @@ export default function SignIn() {
           {/* Form */}
           <form onSubmit={handleSubmit} className="space-y-6">
             <div>
-              <label htmlFor="email" className="block text-sm font-medium text-text mb-2">
+              <label
+                htmlFor="email"
+                className="block text-sm font-medium text-text mb-2"
+              >
                 Email address
               </label>
               <input
@@ -184,7 +203,10 @@ export default function SignIn() {
             </div>
 
             <div>
-              <label htmlFor="password" className="block text-sm font-medium text-text mb-2">
+              <label
+                htmlFor="password"
+                className="block text-sm font-medium text-text mb-2"
+              >
                 Password
               </label>
               <div className="relative">
@@ -213,7 +235,10 @@ export default function SignIn() {
 
             <div className="flex items-center justify-between">
               <label className="flex items-center gap-2">
-                <input type="checkbox" className="w-4 h-4 text-primary border-border rounded focus:ring-primary" />
+                <input
+                  type="checkbox"
+                  className="w-4 h-4 text-primary border-border rounded focus:ring-primary"
+                />
                 <span className="text-sm text-text-muted">Remember me</span>
               </label>
               <Link

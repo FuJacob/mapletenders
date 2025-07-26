@@ -80,30 +80,43 @@ export default function Plans() {
   return (
     <LandingPageContainer>
       {/* Hero Section */}
-      <PricingHero billingCycle={billingCycle} onBillingCycleChange={setBillingCycle} />
+      <PricingHero
+        billingCycle={billingCycle}
+        onBillingCycleChange={setBillingCycle}
+      />
 
       {/* Billing Toggle */}
       <div className="flex items-center justify-center gap-4 mb-12">
-        <span className={`text-sm font-medium ${billingCycle === 'monthly' ? 'text-primary' : 'text-text-light'}`}>
+        <span
+          className={`text-sm font-medium ${
+            billingCycle === "monthly" ? "text-primary" : "text-text-light"
+          }`}
+        >
           Monthly
         </span>
         <button
-          onClick={() => setBillingCycle(billingCycle === 'monthly' ? 'yearly' : 'monthly')}
-          className={`relative w-14 h-7 rounded-full transition-colors ${
-            billingCycle === 'yearly' ? 'bg-primary' : 'bg-border'
+          onClick={() =>
+            setBillingCycle(billingCycle === "monthly" ? "yearly" : "monthly")
+          }
+          className={`relative w-14 h-7 rounded-lg transition-colors ${
+            billingCycle === "yearly" ? "bg-primary" : "bg-border"
           }`}
         >
           <div
-            className={`absolute w-5 h-5 bg-white rounded-full top-1 transition-transform ${
-              billingCycle === 'yearly' ? 'translate-x-8' : 'translate-x-1'
+            className={`absolute w-5 h-5 bg-white rounded-lg top-1 transition-transform ${
+              billingCycle === "yearly" ? "translate-x-8" : "translate-x-1"
             }`}
           />
         </button>
-        <span className={`text-sm font-medium ${billingCycle === 'yearly' ? 'text-primary' : 'text-text-light'}`}>
+        <span
+          className={`text-sm font-medium ${
+            billingCycle === "yearly" ? "text-primary" : "text-text-light"
+          }`}
+        >
           Yearly
         </span>
-        {billingCycle === 'yearly' && (
-          <span className="bg-primary text-white text-xs px-2 py-1 rounded-full ml-2">
+        {billingCycle === "yearly" && (
+          <span className="bg-primary text-white text-xs px-2 py-1 rounded-lg ml-2">
             Save 20%
           </span>
         )}

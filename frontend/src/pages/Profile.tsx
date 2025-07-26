@@ -136,7 +136,7 @@ export default function Profile() {
         {/* Profile Content */}
         <div className="space-y-8 max-w-4xl mx-auto">
           {/* Basic Information */}
-          <div className="bg-surface border border-border rounded-xl p-6">
+          <div className="bg-surface border border-border rounded-lg p-6">
             <h2 className="text-xl font-semibold text-text mb-4 flex items-center gap-2">
               <User className="w-5 h-5" />
               Basic Information
@@ -232,7 +232,7 @@ export default function Profile() {
           </div>
 
           {/* Services & Regions */}
-          <div className="bg-surface border border-border rounded-xl p-6">
+          <div className="bg-surface border border-border rounded-lg p-6">
             <h2 className="text-xl font-semibold text-text mb-4 flex items-center gap-2">
               <Briefcase className="w-5 h-5" />
               Services & Regions
@@ -267,7 +267,7 @@ export default function Profile() {
                     profile.primary_services.map((service: string) => (
                       <span
                         key={service}
-                        className="px-3 py-1 bg-primary/10 text-primary rounded-full text-sm"
+                        className="px-3 py-1 bg-primary/10 text-primary rounded-lg text-sm"
                       >
                         {service}
                       </span>
@@ -308,7 +308,7 @@ export default function Profile() {
                     profile.service_regions.map((region: string) => (
                       <span
                         key={region}
-                        className="px-3 py-1 bg-accent/10 text-accent rounded-full text-sm"
+                        className="px-3 py-1 bg-accent/10 text-accent rounded-lg text-sm"
                       >
                         {region}
                       </span>
@@ -322,7 +322,7 @@ export default function Profile() {
           </div>
 
           {/* Experience & Preferences */}
-          <div className="bg-surface border border-border rounded-xl p-6">
+          <div className="bg-surface border border-border rounded-lg p-6">
             <h2 className="text-xl font-semibold text-text mb-4 flex items-center gap-2">
               <Crown className="w-5 h-5" />
               Experience & Preferences

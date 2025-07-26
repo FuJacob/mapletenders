@@ -122,7 +122,7 @@ export function TenderCard({
         <div className="flex items-start gap-3 mb-3">
           {/* Compact Match Score */}
           <div
-            className={`flex items-center gap-1 px-2 py-1 rounded-md font-bold text-xs ${scoreColorClass} flex-shrink-0`}
+            className={`flex items-center gap-1 px-2 py-1 rounded-lg font-bold text-xs ${scoreColorClass} flex-shrink-0`}
           >
             {getScoreIcon(matchScore)}
             <span>{matchScore.toFixed(0)}%</span>
@@ -141,7 +141,7 @@ export function TenderCard({
           {onBookmarkToggle && (
             <button
               onClick={() => onBookmarkToggle(TenderAccessors.getId(tender))}
-              className={`p-1.5 rounded-md transition-all duration-200 flex-shrink-0 ${
+              className={`p-1.5 rounded-lg transition-all duration-200 flex-shrink-0 ${
                 isBookmarked
                   ? "text-primary bg-primary/10 hover:bg-primary/20"
                   : "text-text-muted hover:text-primary hover:bg-primary/10"
@@ -212,12 +212,12 @@ export function TenderCard({
         {/* Compact Tags */}
         <div className="flex items-center gap-1.5 mt-2">
           {procurementMethod && (
-            <span className="text-xs bg-primary/10 text-primary px-2 py-0.5 rounded-full font-medium">
+            <span className="text-xs bg-primary/10 text-primary px-2 py-0.5 rounded-lg font-medium">
               {procurementMethod}
             </span>
           )}
           {TenderAccessors.getProcurementType(tender) && (
-            <span className="text-xs bg-surface-muted text-text-muted px-2 py-0.5 rounded-full">
+            <span className="text-xs bg-surface-muted text-text-muted px-2 py-0.5 rounded-lg">
               {TenderAccessors.getProcurementType(tender)}
             </span>
           )}
@@ -396,17 +396,17 @@ export function TenderCard({
         {/* Procurement Details */}
         <div className="flex items-center gap-3">
           {procurementMethod && (
-            <span className="text-xs bg-primary/10 text-primary px-3 py-1 rounded-full font-medium border border-primary/20">
+            <span className="text-xs bg-primary/10 text-primary px-3 py-1 rounded-lg font-medium border border-primary/20">
               {procurementMethod}
             </span>
           )}
           {TenderAccessors.getProcurementType(tender) && (
-            <span className="text-xs bg-surface-muted text-text-muted px-3 py-1 rounded-full font-medium">
+            <span className="text-xs bg-surface-muted text-text-muted px-3 py-1 rounded-lg font-medium">
               {TenderAccessors.getProcurementType(tender)}
             </span>
           )}
           {TenderAccessors.getCategoryPrimary(tender) && (
-            <span className="text-xs bg-surface-muted text-text-muted px-3 py-1 rounded-full font-medium">
+            <span className="text-xs bg-surface-muted text-text-muted px-3 py-1 rounded-lg font-medium">
               {TenderAccessors.getCategoryPrimary(tender)!.length > 20
                 ? `${TenderAccessors.getCategoryPrimary(tender)!.substring(
                     0,

@@ -96,7 +96,9 @@ const tenderColumns = [
       };
       return (
         <span
-          className={`px-2 py-1 rounded text-xs font-medium border ${getStatusColor(status)}`}
+          className={`px-2 py-1 rounded text-xs font-medium border ${getStatusColor(
+            status
+          )}`}
         >
           {status}
         </span>
@@ -105,7 +107,10 @@ const tenderColumns = [
   }),
 ];
 
-export default function TenderTable({ isLoading = false, tenders = [] }: TenderTableProps) {
+export default function TenderTable({
+  isLoading = false,
+  tenders = [],
+}: TenderTableProps) {
   const [globalFilter, setGlobalFilter] = useState("");
   const [filteredTenders, setFilteredTenders] = useState<Tender[]>([]);
 
@@ -145,7 +150,8 @@ export default function TenderTable({ isLoading = false, tenders = [] }: TenderT
 
   // Use filtered data if available, otherwise use all tenders
   const tableData = useMemo(() => {
-    const dataToUse = filteredTenders.length > 0 ? filteredTenders : tenders || [];
+    const dataToUse =
+      filteredTenders.length > 0 ? filteredTenders : tenders || [];
     return dataToUse;
   }, [filteredTenders, tenders]);
 

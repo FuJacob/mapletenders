@@ -16,7 +16,9 @@ export default function UpdatePassword() {
 
   useEffect(() => {
     // Extract access token from URL parameters (Supabase redirects with these)
-    const token = searchParams.get("access_token") || window.location.hash.match(/access_token=([^&]+)/)?.[1];
+    const token =
+      searchParams.get("access_token") ||
+      window.location.hash.match(/access_token=([^&]+)/)?.[1];
     if (token) {
       setAccessToken(token);
     } else {
@@ -27,17 +29,17 @@ export default function UpdatePassword() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
-    
+
     if (!accessToken) {
       setError("Invalid reset link. Please request a new password reset.");
       return;
     }
-    
+
     if (password !== confirm) {
       setError("Passwords do not match");
       return;
     }
-    
+
     setLoading(true);
     try {
       const response = await updatePassword(password, accessToken);
@@ -69,10 +71,10 @@ export default function UpdatePassword() {
             <div className="mb-4">
               <LogoTitle size="text-3xl" />
             </div>
-            <h1 className="text-2xl font-bold text-text mb-2">Set a new password</h1>
-            <p className="text-text-light">
-              Enter your new password below.
-            </p>
+            <h1 className="text-2xl font-bold text-text mb-2">
+              Set a new password
+            </h1>
+            <p className="text-text-light">Enter your new password below.</p>
           </div>
           {success ? (
             <div className="p-4 bg-success/10 border border-success rounded-lg text-success text-center">
@@ -86,28 +88,34 @@ export default function UpdatePassword() {
                 </div>
               )}
               <div>
-                <label htmlFor="password" className="block text-sm font-medium text-text mb-2">
+                <label
+                  htmlFor="password"
+                  className="block text-sm font-medium text-text mb-2"
+                >
                   New password
                 </label>
                 <input
                   id="password"
                   type="password"
                   value={password}
-                  onChange={e => setPassword(e.target.value)}
+                  onChange={(e) => setPassword(e.target.value)}
                   placeholder="••••••••"
                   className="w-full px-4 py-3 border border-border rounded-lg focus:outline-none focus:border-primary bg-surface text-text placeholder-text-light"
                   required
                 />
               </div>
               <div>
-                <label htmlFor="confirm" className="block text-sm font-medium text-text mb-2">
+                <label
+                  htmlFor="confirm"
+                  className="block text-sm font-medium text-text mb-2"
+                >
                   Confirm new password
                 </label>
                 <input
                   id="confirm"
                   type="password"
                   value={confirm}
-                  onChange={e => setConfirm(e.target.value)}
+                  onChange={(e) => setConfirm(e.target.value)}
                   placeholder="••••••••"
                   className="w-full px-4 py-3 border border-border rounded-lg focus:outline-none focus:border-primary bg-surface text-text placeholder-text-light"
                   required

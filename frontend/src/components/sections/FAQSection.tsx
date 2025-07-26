@@ -67,7 +67,9 @@ export default function FAQSection() {
               <h3 className="text-base sm:text-lg font-semibold text-text mb-2 sm:mb-3">
                 {faq.question}
               </h3>
-              <p className="text-sm sm:text-base text-text-muted leading-relaxed">{faq.answer}</p>
+              <p className="text-sm sm:text-base text-text-muted leading-relaxed">
+                {faq.answer}
+              </p>
             </div>
           ))}
         </div>

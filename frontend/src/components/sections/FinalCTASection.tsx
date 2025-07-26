@@ -40,7 +40,7 @@ export default function FinalCTASection() {
 
         {/* Right side - Form box */}
         <div className="flex-1 w-full max-w-md">
-          <div className="bg-surface rounded-2xl p-6 sm:p-8">
+          <div className="bg-surface rounded-lg p-6 sm:p-8">
             <form className="space-y-4" onSubmit={handleSubmit}>
               <div>
                 <input

@@ -5,7 +5,10 @@ interface StatusMessagesProps {
   error: string;
 }
 
-export default function StatusMessages({ success, error }: StatusMessagesProps) {
+export default function StatusMessages({
+  success,
+  error,
+}: StatusMessagesProps) {
   if (!success && !error) return null;
 
   return (

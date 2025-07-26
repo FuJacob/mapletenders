@@ -1,15 +1,19 @@
 import { useState } from "react";
-import { 
-  X, 
-  ArrowSquareOut, 
-  MapPin, 
-  Building, 
+import {
+  X,
+  ArrowSquareOut,
+  MapPin,
+  Building,
   Tag,
   Clock,
-  BookmarkSimple
+  BookmarkSimple,
 } from "@phosphor-icons/react";
 import type { CalendarEvent } from "../../utils/calendarHelpers";
-import { formatClosingDate, formatTenderLocation, getUrgencyInfo } from "../../utils/calendarHelpers";
+import {
+  formatClosingDate,
+  formatTenderLocation,
+  getUrgencyInfo,
+} from "../../utils/calendarHelpers";
 
 interface TenderEventModalProps {
   event: CalendarEvent | null;
@@ -19,12 +23,12 @@ interface TenderEventModalProps {
   isBookmarked?: boolean;
 }
 
-export default function TenderEventModal({ 
-  event, 
-  isOpen, 
-  onClose, 
+export default function TenderEventModal({
+  event,
+  isOpen,
+  onClose,
   onToggleBookmark,
-  isBookmarked = true // Since we're showing bookmarked tenders
+  isBookmarked = true, // Since we're showing bookmarked tenders
 }: TenderEventModalProps) {
   const [isTogglingBookmark, setIsTogglingBookmark] = useState(false);
 
@@ -39,7 +43,7 @@ export default function TenderEventModal({
 
   const handleToggleBookmark = async () => {
     if (!onToggleBookmark) return;
-    
+
     setIsTogglingBookmark(true);
     try {
       await onToggleBookmark(tender.id, isBookmarked);
@@ -50,32 +54,32 @@ export default function TenderEventModal({
 
   const handleOpenTender = () => {
     if (tender.source_url) {
-      window.open(tender.source_url, '_blank', 'noopener,noreferrer');
+      window.open(tender.source_url, "_blank", "noopener,noreferrer");
     } else {
       // Navigate to internal tender page
-      window.open(`/tender/${tender.id}`, '_blank');
+      window.open(`/tender/${tender.id}`, "_blank");
     }
   };
 
   return (
     <div className="fixed inset-0 bg-text/50 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-      <div className="bg-surface rounded-2xl shadow-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto">
+      <div className="bg-surface rounded-lg shadow-2xl w-full max-w-2xl max-h-[90vh] overflow-y-auto">
         {/* Header */}
         <div className="flex items-start justify-between p-6 border-b border-border">
           <div className="flex-1 mr-4">
             <div className="flex items-center gap-3 mb-2">
-              <span className={`px-3 py-1 rounded-full text-sm font-medium ${urgencyInfo.bg} ${urgencyInfo.color}`}>
+              <span
+                className={`px-3 py-1 rounded-lg text-sm font-medium ${urgencyInfo.bg} ${urgencyInfo.color}`}
+              >
                 {urgencyInfo.label}
               </span>
               {tender.procurement_type && (
-                <span className="px-3 py-1 bg-surface-muted text-text-muted rounded-full text-sm">
+                <span className="px-3 py-1 bg-surface-muted text-text-muted rounded-lg text-sm">
                   {tender.procurement_type}
                 </span>
               )}
             </div>
-            <h2 className="text-xl font-bold text-text mb-2">
-              {tender.title}
-            </h2>
+            <h2 className="text-xl font-bold text-text mb-2">{tender.title}</h2>
             {tender.contracting_entity_name && (
               <p className="text-text-muted">
                 {tender.contracting_entity_name}
@@ -98,7 +102,13 @@ export default function TenderEventModal({
               <Clock className="w-5 h-5 text-text-light" />
               <div>
                 <p className="text-sm font-medium text-text">Closing Date</p>
-                <p className={`text-sm ${event.resource === 'urgent' ? 'text-error font-medium' : 'text-text-muted'}`}>
+                <p
+                  className={`text-sm ${
+                    event.resource === "urgent"
+                      ? "text-error font-medium"
+                      : "text-text-muted"
+                  }`}
+                >
                   {closingDateFormatted}
                 </p>
               </div>
@@ -117,7 +127,9 @@ export default function TenderEventModal({
                 <Tag className="w-5 h-5 text-text-light" />
                 <div>
                   <p className="text-sm font-medium text-text">Category</p>
-                  <p className="text-sm text-text-muted">{tender.category_primary}</p>
+                  <p className="text-sm text-text-muted">
+                    {tender.category_primary}
+                  </p>
                 </div>
               </div>
             )}
@@ -127,7 +139,9 @@ export default function TenderEventModal({
                 <Building className="w-5 h-5 text-text-light" />
                 <div>
                   <p className="text-sm font-medium text-text">Reference</p>
-                  <p className="text-sm text-text-muted font-mono">{tender.source_reference}</p>
+                  <p className="text-sm text-text-muted font-mono">
+                    {tender.source_reference}
+                  </p>
                 </div>
               </div>
             )}
@@ -136,13 +150,14 @@ export default function TenderEventModal({
           {/* Description */}
           {tender.description && (
             <div>
-              <h3 className="text-lg font-semibold text-text mb-3">Description</h3>
+              <h3 className="text-lg font-semibold text-text mb-3">
+                Description
+              </h3>
               <div className="bg-surface-muted rounded-lg p-4">
                 <p className="text-sm text-text whitespace-pre-wrap">
-                  {tender.description.length > 500 
+                  {tender.description.length > 500
                     ? `${tender.description.substring(0, 500)}...`
-                    : tender.description
-                  }
+                    : tender.description}
                 </p>
               </div>
             </div>
@@ -157,7 +172,7 @@ export default function TenderEventModal({
               <ArrowSquareOut className="w-5 h-5" />
               View Full Tender
             </button>
-            
+
             {onToggleBookmark && (
               <button
                 onClick={handleToggleBookmark}
@@ -168,11 +183,16 @@ export default function TenderEventModal({
                     : "bg-primary text-white border-primary hover:bg-primary-dark"
                 }`}
               >
-                <BookmarkSimple className={`w-5 h-5 ${isBookmarked ? 'fill-current' : ''}`} />
-                {isBookmarked 
-                  ? (isTogglingBookmark ? "Removing..." : "Remove Bookmark")
-                  : (isTogglingBookmark ? "Adding..." : "Add Bookmark")
-                }
+                <BookmarkSimple
+                  className={`w-5 h-5 ${isBookmarked ? "fill-current" : ""}`}
+                />
+                {isBookmarked
+                  ? isTogglingBookmark
+                    ? "Removing..."
+                    : "Remove Bookmark"
+                  : isTogglingBookmark
+                  ? "Adding..."
+                  : "Add Bookmark"}
               </button>
             )}
           </div>

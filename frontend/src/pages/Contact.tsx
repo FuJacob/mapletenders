@@ -110,7 +110,7 @@ export default function Contact() {
       <LandingPageContainer>
         <div className="flex items-center justify-center min-h-[80vh] px-6">
           <div className="max-w-md text-center">
-            <div className="w-16 h-16 bg-success/10 rounded-full flex items-center justify-center mx-auto mb-6">
+            <div className="w-16 h-16 bg-success/10 rounded-lg flex items-center justify-center mx-auto mb-6">
               <CheckCircle className="w-8 h-8 text-success" />
             </div>
             <h1 className="text-2xl font-bold text-text mb-4">
@@ -150,7 +150,7 @@ export default function Contact() {
       <section className="relative py-20 px-6 bg-surface overflow-hidden">
         <div className="max-w-4xl mx-auto relative z-10">
           <div className="text-center">
-            <div className="inline-flex items-center gap-2 px-3 py-1 bg-maple/10 text-maple border border-maple/20 rounded-full text-sm font-medium mb-6">
+            <div className="inline-flex items-center gap-2 px-3 py-1 bg-maple/10 text-maple border border-maple/20 rounded-lg text-sm font-medium mb-6">
               <Leaf className="w-3 h-3" />
               Canadian support team
             </div>
@@ -165,21 +165,21 @@ export default function Contact() {
 
             {/* Quick Stats */}
             <div className="grid md:grid-cols-3 gap-6 max-w-2xl mx-auto">
-              <div className="text-center p-4 bg-surface-warm rounded-xl border border-border-warm">
+              <div className="text-center p-4 bg-surface-warm rounded-lg border border-border-warm">
                 <Clock className="w-8 h-8 text-accent mx-auto mb-2" />
                 <div className="font-semibold text-text">4 hour response</div>
                 <div className="text-sm text-text-muted">
                   for sales inquiries
                 </div>
               </div>
-              <div className="text-center p-4 bg-surface-warm rounded-xl border border-border-warm">
+              <div className="text-center p-4 bg-surface-warm rounded-lg border border-border-warm">
                 <Users className="w-8 h-8 text-success mx-auto mb-2" />
                 <div className="font-semibold text-text">500+ businesses</div>
                 <div className="text-sm text-text-muted">
                   trust Mapletenders
                 </div>
               </div>
-              <div className="text-center p-4 bg-surface-warm rounded-xl border border-border-warm">
+              <div className="text-center p-4 bg-surface-warm rounded-lg border border-border-warm">
                 <CheckCircle className="w-8 h-8 text-maple mx-auto mb-2" />
                 <div className="font-semibold text-text">Canadian focused</div>
                 <div className="text-sm text-text-muted">support team</div>
@@ -200,9 +200,9 @@ export default function Contact() {
             {contactMethods.map((method, index) => (
               <div
                 key={index}
-                className="bg-background rounded-xl p-6 border border-border text-center"
+                className="bg-background rounded-lg p-6 border border-border text-center"
               >
-                <div className="w-12 h-12 bg-primary/10 rounded-full flex items-center justify-center mx-auto mb-4 text-primary">
+                <div className="w-12 h-12 bg-primary/10 rounded-lg flex items-center justify-center mx-auto mb-4 text-primary">
                   {method.icon}
                 </div>
                 <h3 className="text-lg font-semibold text-text mb-2">
@@ -410,7 +410,7 @@ export default function Contact() {
             </div>
 
             {/* Contact Info */}
-            <div className="bg-background rounded-xl p-8 border border-border">
+            <div className="bg-background rounded-lg p-8 border border-border">
               <h3 className="text-xl font-semibold mb-6 text-text">
                 Other ways to reach us
               </h3>

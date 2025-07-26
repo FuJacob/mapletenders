@@ -57,7 +57,7 @@ export default function TestimonialsSection() {
                 "{testimonial.quote}"
               </p>
               <div className="flex items-center gap-3 sm:gap-4">
-                <div className="w-10 sm:w-12 h-10 sm:h-12 bg-primary rounded-full flex items-center justify-center text-white font-semibold text-sm sm:text-base">
+                <div className="w-10 sm:w-12 h-10 sm:h-12 bg-primary rounded-lg flex items-center justify-center text-white font-semibold text-sm sm:text-base">
                   {testimonial.avatar}
                 </div>
                 <div>

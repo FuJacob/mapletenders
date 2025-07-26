@@ -221,7 +221,7 @@ export default function CalendarPage() {
               <button
                 key={filter.value}
                 onClick={() => setUrgencyFilter(filter.value as UrgencyFilter)}
-                className={`px-3 py-1 text-sm rounded-full transition-colors ${
+                className={`px-3 py-1 text-sm rounded-lg transition-colors ${
                   urgencyFilter === filter.value
                     ? "bg-primary text-white"
                     : "bg-surface-muted text-text-muted hover:bg-border"
@@ -286,7 +286,7 @@ export default function CalendarPage() {
                     <button
                       key={viewName}
                       onClick={() => onView(viewName as View)}
-                      className={`px-3 py-2 text-sm font-medium rounded-md transition-colors capitalize ${
+                      className={`px-3 py-2 text-sm font-medium rounded-lg transition-colors capitalize ${
                         view === viewName
                           ? "bg-primary text-white"
                           : "text-text hover:bg-border"

@@ -219,7 +219,7 @@ export function TenderNoticeFullContent({
                 <p className="line-clamp-3">{tender.summary}</p>
               ) : (
                 <div className="flex items-center gap-1">
-                  <div className="animate-spin rounded-full h-3 w-3 border border-primary border-t-transparent"></div>
+                  <div className="animate-spin rounded-lg h-3 w-3 border border-primary border-t-transparent"></div>
                   <span>Analyzing...</span>
                 </div>
               )}

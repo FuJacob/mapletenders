@@ -30,7 +30,7 @@ export default function QuickActionsSidebar() {
         <button
           key={index}
           onClick={action.onClick}
-          className="w-full flex items-center gap-3 p-4 bg-surface border border-border rounded-xl hover:border-primary hover:bg-primary/5 transition-colors text-left"
+          className="w-full flex items-center gap-3 p-4 bg-surface border border-border rounded-lg hover:border-primary hover:bg-primary/5 transition-colors text-left"
         >
           {action.icon}
           <span className="text-text font-medium">{action.label}</span>

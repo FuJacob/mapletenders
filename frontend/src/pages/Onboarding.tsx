@@ -287,9 +287,9 @@ export default function Onboarding() {
             <span className="text-sm text-text-light">
               Step {step} of 3: {getStepTitle()}
             </span>
-            <div className="w-40 bg-border rounded-full h-2">
+            <div className="w-40 bg-border rounded-lg h-2">
               <div
-                className="bg-primary h-2 rounded-full transition-all duration-300"
+                className="bg-primary h-2 rounded-lg transition-all duration-300"
                 style={{ width: `${(step / 3) * 100}%` }}
               />
             </div>
@@ -330,7 +330,7 @@ export default function Onboarding() {
                     company_name: e.target.value,
                   }))
                 }
-                className="w-full px-4 py-4 border border-border rounded-xl bg-surface focus:border-primary focus:outline-none text-lg"
+                className="w-full px-4 py-4 border border-border rounded-lg bg-surface focus:border-primary focus:outline-none text-lg"
                 placeholder="Enter your company name"
               />
             </div>
@@ -350,7 +350,7 @@ export default function Onboarding() {
                         company_size: size.value,
                       }))
                     }
-                    className={`p-4 border rounded-xl text-left transition-all hover:scale-[1.02] ${
+                    className={`p-4 border rounded-lg text-left transition-all hover:scale-[1.02] ${
                       formData.company_size === size.value
                         ? "border-primary bg-primary/10 text-primary shadow-md"
                         : "border-border hover:border-primary hover:bg-surface"
@@ -395,7 +395,7 @@ export default function Onboarding() {
                         industry: industry.value,
                       }))
                     }
-                    className={`p-4 border rounded-xl text-center transition-all hover:scale-[1.02] ${
+                    className={`p-4 border rounded-lg text-center transition-all hover:scale-[1.02] ${
                       formData.industry === industry.value
                         ? "border-primary bg-primary/10 text-primary shadow-md"
                         : "border-border hover:border-primary hover:bg-surface"
@@ -439,7 +439,7 @@ export default function Onboarding() {
               <label className="block text-sm font-semibold text-text mb-3">
                 Service Regions * (Where can you deliver services?)
               </label>
-              <div className="grid grid-cols-2 md:grid-cols-3 gap-2 max-h-48 overflow-y-auto border border-border rounded-xl p-4">
+              <div className="grid grid-cols-2 md:grid-cols-3 gap-2 max-h-48 overflow-y-auto border border-border rounded-lg p-4">
                 {[
                   "Alberta",
                   "British Columbia",
@@ -504,7 +504,7 @@ export default function Onboarding() {
                         government_experience: level.value,
                       }))
                     }
-                    className={`w-full p-4 border rounded-xl text-left transition-all hover:scale-[1.01] ${
+                    className={`w-full p-4 border rounded-lg text-left transition-all hover:scale-[1.01] ${
                       formData.government_experience === level.value
                         ? "border-primary bg-primary/10 text-primary shadow-md"
                         : "border-border hover:border-primary hover:bg-surface"
@@ -539,7 +539,7 @@ export default function Onboarding() {
                         typical_contract_size: size.value,
                       }))
                     }
-                    className={`p-4 border rounded-xl text-left transition-all hover:scale-[1.02] ${
+                    className={`p-4 border rounded-lg text-left transition-all hover:scale-[1.02] ${
                       formData.typical_contract_size === size.value
                         ? "border-primary bg-primary/10 text-primary shadow-md"
                         : "border-border hover:border-primary hover:bg-surface"
@@ -570,7 +570,7 @@ export default function Onboarding() {
           <button
             onClick={handleNext}
             disabled={!canProceed() || loading}
-            className="bg-primary text-white px-8 py-3 rounded-xl font-semibold hover:bg-primary-dark transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2 text-lg"
+            className="bg-primary text-white px-8 py-3 rounded-lg font-semibold hover:bg-primary-dark transition-colors disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2 text-lg"
           >
             {loading ? (
               "Saving..."

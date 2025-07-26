@@ -131,7 +131,7 @@ export function TenderNoticeSidebar({
   return (
     <div className="space-y-6">
       {/* Important Dates */}
-      <div className="bg-surface border border-border rounded-xl p-6">
+      <div className="bg-surface border border-border rounded-lg p-6">
         <h3 className="text-lg font-semibold text-text mb-4 flex items-center gap-2">
           <Calendar className="w-5 h-5" />
           Important Dates
@@ -171,7 +171,7 @@ export function TenderNoticeSidebar({
       </div>
 
       {/* Contact Information */}
-      <div className="bg-surface border border-border rounded-xl p-6">
+      <div className="bg-surface border border-border rounded-lg p-6">
         <h3 className="text-lg font-semibold text-text mb-4 flex items-center gap-2">
           <User className="w-5 h-5" />
           Contact Information
@@ -213,7 +213,7 @@ export function TenderNoticeSidebar({
       </div>
 
       {/* Contracting Entity */}
-      <div className="bg-surface border border-border rounded-xl p-6">
+      <div className="bg-surface border border-border rounded-lg p-6">
         <h3 className="text-lg font-semibold text-text mb-4 flex items-center gap-2">
           <Building className="w-5 h-5" />
           Contracting Entity
@@ -247,7 +247,7 @@ export function TenderNoticeSidebar({
       </div>
 
       {/* Actions */}
-      <div className="bg-surface border border-border rounded-xl p-6">
+      <div className="bg-surface border border-border rounded-lg p-6">
         <h3 className="text-lg font-semibold text-text mb-4">Actions</h3>
         <div className="space-y-3">
           {tender.source_url && (

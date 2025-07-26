@@ -14,24 +14,31 @@ export default function CalendarLoadingState() {
 
         <div className="flex gap-1 bg-background border border-border rounded-lg p-1">
           {["month", "week", "day", "agenda"].map((_, index) => (
-            <div key={index} className="w-16 h-8 bg-surface-muted rounded-md animate-pulse"></div>
+            <div
+              key={index}
+              className="w-16 h-8 bg-surface-muted rounded-lg animate-pulse"
+            ></div>
           ))}
         </div>
       </div>
-      
+
       <div className="p-8 text-center" style={{ height: "600px" }}>
         <div className="flex flex-col items-center justify-center h-full">
-          <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mb-4">
+          <div className="w-16 h-16 bg-primary/10 rounded-lg flex items-center justify-center mb-4">
             <CalendarIcon className="w-8 h-8 text-primary animate-pulse" />
           </div>
-          <h3 className="text-lg font-semibold text-text mb-2">Loading Calendar</h3>
-          <p className="text-text-muted">Fetching your bookmarked tender deadlines...</p>
-          
+          <h3 className="text-lg font-semibold text-text mb-2">
+            Loading Calendar
+          </h3>
+          <p className="text-text-muted">
+            Fetching your bookmarked tender deadlines...
+          </p>
+
           {/* Mock calendar grid */}
           <div className="mt-8 grid grid-cols-7 gap-2 w-full max-w-lg">
             {Array.from({ length: 35 }).map((_, index) => (
-              <div 
-                key={index} 
+              <div
+                key={index}
                 className="aspect-square bg-surface-muted rounded animate-pulse"
                 style={{ animationDelay: `${index * 50}ms` }}
               ></div>

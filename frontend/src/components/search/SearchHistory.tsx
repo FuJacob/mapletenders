@@ -42,14 +42,14 @@ export default function SearchHistory({
               onClick={() => handleSearchSelect(query)}
               className="bg-surface border border-border rounded-lg hover:border-primary hover:bg-primary/5 transition-all group relative"
             >
-              <div className="bg-primary/10 flex items-center justify-center h-12 w-full rounded-t-lg">
+              <div className="bg-primary/10 flex items-center justify-center h-12 w-full rounded-lg">
                 <MagnifyingGlass className="w-4 h-4 text-primary" />
               </div>
 
               <div className="p-3 text-left">
                 <p className="text-xs font-medium text-text group-hover:text-primary transition-colors line-clamp-2 leading-tight mb-1">
                   {query}
-                </p>  
+                </p>
               </div>
 
               <button

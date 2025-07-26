@@ -41,7 +41,7 @@ export default function UrgentDeadlines({ deadlines }: UrgentDeadlinesProps) {
   };
 
   return (
-    <div className="bg-surface border border-border rounded-xl p-6">
+    <div className="bg-surface border border-border rounded-lg p-6">
       <h3 className="text-lg font-semibold text-text mb-4 flex items-center gap-2">
         <Clock className="w-5 h-5 text-error" />
         Urgent Deadlines

@@ -209,7 +209,7 @@ const QuickFilters = ({
   );
 
   return (
-    <div className="bg-surface border border-border rounded-xl p-6 mb-6">
+    <div className="bg-surface border border-border rounded-lg p-6 mb-6">
       {/* Search Bar Row */}
       <div className="mb-4">
         <div className="relative">
@@ -271,12 +271,12 @@ const QuickFilters = ({
             {activeFilters.map((filter) => (
               <div
                 key={filter.id}
-                className="flex items-center gap-2 px-3 py-1 bg-primary/10 text-primary text-sm rounded-full border border-primary/20"
+                className="flex items-center gap-2 px-3 py-1 bg-primary/10 text-primary text-sm rounded-lg border border-primary/20"
               >
                 <span>{filter.label}</span>
                 <button
                   onClick={() => removeFilter(filter.id)}
-                  className="hover:bg-primary/20 rounded-full p-0.5 transition-colors"
+                  className="hover:bg-primary/20 rounded-lg p-0.5 transition-colors"
                 >
                   <X className="w-3 h-3" />
                 </button>

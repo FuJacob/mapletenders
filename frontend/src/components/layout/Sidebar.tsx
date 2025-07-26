@@ -91,7 +91,7 @@ export default function Sidebar() {
         {/* Sidebar Header */}
         <div className="p-6 border-b border-border">
           <div className="flex items-center justify-between">
-            <LogoTitle size="text-xl"   />
+            <LogoTitle size="text-xl" />
             <button
               onClick={() => setIsMobileMenuOpen(false)}
               className="lg:hidden p-1 hover:bg-background rounded"

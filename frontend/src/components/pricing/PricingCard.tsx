@@ -20,7 +20,7 @@ export default function PricingCard({
 }: PricingCardProps) {
   return (
     <div
-      className={`relative rounded-2xl border-2 p-8 transition-all duration-300 hover:shadow-lg ${
+      className={`relative rounded-lg border-2 p-8 transition-all duration-300 hover:shadow-lg ${
         tier.popular
           ? "border-accent bg-gradient-to-br from-accent/5 to-maple/5 shadow-lg hover:shadow-xl transform hover:scale-[1.02]"
           : "border-border-warm bg-surface hover:border-accent/30 hover:scale-[1.01]"
@@ -28,7 +28,7 @@ export default function PricingCard({
     >
       {tier.popular && (
         <div className="absolute -top-4 left-1/2 transform -translate-x-1/2">
-          <span className="px-4 py-1 bg-gradient-to-r from-accent to-maple text-white text-sm font-medium rounded-full flex items-center gap-1 shadow-sm">
+          <span className="px-4 py-1 bg-gradient-to-r from-accent to-maple text-white text-sm font-medium rounded-lg flex items-center gap-1 shadow-sm">
             <Leaf className="w-3 h-3" />
             Most Popular
           </span>
@@ -38,7 +38,7 @@ export default function PricingCard({
       {/* Plan Header */}
       <div className="text-center mb-8">
         <div className="flex items-center justify-center mb-4">
-          <div className="p-4 rounded-xl bg-surface-warm border border-border-warm">
+          <div className="p-4 rounded-lg bg-surface-warm border border-border-warm">
             {tier.id === "starter" && (
               <Lightning className="w-8 h-8 text-maple" />
             )}
@@ -61,7 +61,7 @@ export default function PricingCard({
               <span className="text-lg text-text-light line-through">
                 ${tier.originalPrice}
               </span>
-              <span className="px-2 py-1 bg-maple/10 text-maple text-xs rounded-full font-medium border border-maple/20">
+              <span className="px-2 py-1 bg-maple/10 text-maple text-xs rounded-lg font-medium border border-maple/20">
                 Save{" "}
                 {Math.round(
                   ((tier.originalPrice - tier.price) / tier.originalPrice) * 100

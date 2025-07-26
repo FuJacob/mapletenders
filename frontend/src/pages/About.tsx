@@ -88,7 +88,8 @@ export default function About() {
       icon: <TrendUp className="w-8 h-8 text-secondary" />,
       number: "$2.8B",
       label: "Contract Value",
-      description: "Total value of opportunities discovered through Mapletenders",
+      description:
+        "Total value of opportunities discovered through Mapletenders",
     },
   ];
 
@@ -96,36 +97,42 @@ export default function About() {
     <LandingPageContainer>
       {/* Hero Section */}
       <section className="relative py-20 px-6 bg-surface overflow-hidden">
-
         <div className="max-w-5xl mx-auto text-center relative z-10">
-
-          <div className="inline-flex items-center gap-2 px-3 py-1 bg-maple/10 text-maple border border-maple/20 rounded-full text-sm font-medium mb-8">
+          <div className="inline-flex items-center gap-2 px-3 py-1 bg-maple/10 text-maple border border-maple/20 rounded-lg text-sm font-medium mb-8">
             <Leaf className="w-3 h-3" />
             Built by Canadians, for Canadians
           </div>
-          
+
           <h1 className="text-4xl md:text-5xl font-bold mb-6 text-text">
             Democratizing Canadian government contracts
           </h1>
           <p className="text-xl text-text-muted mb-12 max-w-3xl mx-auto">
-            Mapletenders was born from a simple frustration: why should finding government opportunities be so hard? We're building AI that makes contract discovery as easy as asking a question.
+            Mapletenders was born from a simple frustration: why should finding
+            government opportunities be so hard? We're building AI that makes
+            contract discovery as easy as asking a question.
           </p>
-          
+
           <div className="grid md:grid-cols-3 gap-6 max-w-3xl mx-auto">
-            <div className="text-center p-4 bg-surface-warm rounded-xl border border-border-warm">
+            <div className="text-center p-4 bg-surface-warm rounded-lg border border-border-warm">
               <MapPin className="w-8 h-8 text-accent mx-auto mb-2" />
               <div className="font-semibold text-text">Toronto, Canada</div>
-              <div className="text-sm text-text-muted">Founded & headquartered</div>
+              <div className="text-sm text-text-muted">
+                Founded & headquartered
+              </div>
             </div>
-            <div className="text-center p-4 bg-surface-warm rounded-xl border border-border-warm">
+            <div className="text-center p-4 bg-surface-warm rounded-lg border border-border-warm">
               <Clock className="w-8 h-8 text-success mx-auto mb-2" />
               <div className="font-semibold text-text">Since 2023</div>
-              <div className="text-sm text-text-muted">Serving Canadian businesses</div>
+              <div className="text-sm text-text-muted">
+                Serving Canadian businesses
+              </div>
             </div>
-            <div className="text-center p-4 bg-surface-warm rounded-xl border border-border-warm">
+            <div className="text-center p-4 bg-surface-warm rounded-lg border border-border-warm">
               <Users className="w-8 h-8 text-maple mx-auto mb-2" />
               <div className="font-semibold text-text">500+ companies</div>
-              <div className="text-sm text-text-muted">Active users across Canada</div>
+              <div className="text-sm text-text-muted">
+                Active users across Canada
+              </div>
             </div>
           </div>
         </div>
@@ -172,7 +179,7 @@ export default function About() {
                 </div>
               </div>
             </div>
-            <div className="bg-background rounded-2xl p-8 border border-border">
+            <div className="bg-background rounded-lg p-8 border border-border">
               <div className="text-center">
                 <Robot className="w-16 h-16 text-primary mx-auto mb-4" />
                 <h3 className="text-xl font-semibold mb-4 text-text">
@@ -228,9 +235,9 @@ export default function About() {
             {teamMembers.map((member, index) => (
               <div
                 key={index}
-                className="bg-background rounded-xl p-6 border border-border"
+                className="bg-background rounded-lg p-6 border border-border"
               >
-                <div className="w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center mb-4">
+                <div className="w-16 h-16 bg-primary/10 rounded-lg flex items-center justify-center mb-4">
                   <Crown className="w-8 h-8 text-primary" />
                 </div>
                 <h3 className="text-lg font-semibold text-text mb-1">
@@ -261,7 +268,7 @@ export default function About() {
           <div className="space-y-8">
             {milestones.map((milestone, index) => (
               <div key={index} className="flex gap-6 items-start">
-                <div className="flex-shrink-0 w-16 h-16 bg-primary/10 rounded-full flex items-center justify-center">
+                <div className="flex-shrink-0 w-16 h-16 bg-primary/10 rounded-lg flex items-center justify-center">
                   <span className="text-primary font-bold text-sm">
                     {milestone.year}
                   </span>
@@ -286,7 +293,7 @@ export default function About() {
           </h2>
 
           <div className="grid md:grid-cols-3 gap-8">
-            <div className="bg-background rounded-xl p-6 border border-border">
+            <div className="bg-background rounded-lg p-6 border border-border">
               <Star className="w-12 h-12 text-accent mx-auto mb-4" />
               <h3 className="font-semibold text-text mb-2">
                 TechStars Toronto 2024
@@ -296,7 +303,7 @@ export default function About() {
               </p>
             </div>
 
-            <div className="bg-background rounded-xl p-6 border border-border">
+            <div className="bg-background rounded-lg p-6 border border-border">
               <ChartBar className="w-12 h-12 text-primary mx-auto mb-4" />
               <h3 className="font-semibold text-text mb-2">Product Hunt #3</h3>
               <p className="text-sm text-text-light">
@@ -304,7 +311,7 @@ export default function About() {
               </p>
             </div>
 
-            <div className="bg-background rounded-xl p-6 border border-border">
+            <div className="bg-background rounded-lg p-6 border border-border">
               <Shield className="w-12 h-12 text-success mx-auto mb-4" />
               <h3 className="font-semibold text-text mb-2">SOC 2 Type II</h3>
               <p className="text-sm text-text-light">

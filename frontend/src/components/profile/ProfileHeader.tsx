@@ -32,7 +32,7 @@ export default function ProfileHeader({
   return (
     <div className="flex items-center justify-between mb-8">
       <div className="flex items-center gap-4">
-        <div className="w-16 h-16 bg-primary text-white rounded-full flex items-center justify-center text-2xl font-bold">
+        <div className="w-16 h-16 bg-primary text-white rounded-lg flex items-center justify-center text-2xl font-bold">
           {profile?.company_name?.charAt(0)?.toUpperCase() || "U"}
         </div>
         <div>

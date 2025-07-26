@@ -12,7 +12,10 @@ interface TenderNoticeBodyProps {
   compact?: boolean;
 }
 
-export function TenderNoticeBody({ tender, compact = false }: TenderNoticeBodyProps) {
+export function TenderNoticeBody({
+  tender,
+  compact = false,
+}: TenderNoticeBodyProps) {
   if (compact) {
     return (
       <div className="w-full bg-surface border border-border rounded-lg p-4">
@@ -29,7 +32,7 @@ export function TenderNoticeBody({ tender, compact = false }: TenderNoticeBodyPr
             <p className="italic">No description provided</p>
           )}
         </div>
-        
+
         <div className="grid grid-cols-2 gap-3 text-xs">
           <div>
             <span className="font-medium text-text">Method:</span>
@@ -61,7 +64,7 @@ export function TenderNoticeBody({ tender, compact = false }: TenderNoticeBodyPr
   return (
     <>
       {/* Description */}
-      <div className="bg-surface border border-border rounded-xl p-6">
+      <div className="bg-surface border border-border rounded-lg p-6">
         <h2 className="text-xl font-semibold text-text mb-4 flex items-center gap-2">
           <FileText className="w-5 h-5" />
           Tender Description
@@ -76,7 +79,7 @@ export function TenderNoticeBody({ tender, compact = false }: TenderNoticeBodyPr
       </div>
 
       {/* Procurement Details */}
-      <div className="bg-surface border border-border rounded-xl p-6">
+      <div className="bg-surface border border-border rounded-lg p-6">
         <h2 className="text-xl font-semibold text-text mb-4 flex items-center gap-2">
           <Tag className="w-5 h-5" />
           Procurement Details

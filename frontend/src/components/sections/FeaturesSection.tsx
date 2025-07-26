@@ -112,7 +112,7 @@ export default function Features() {
             <div className="relative w-full h-full flex items-center justify-center p-4 sm:p-6 md:p-8">
               {/* Current feature screenshot */}
               <div className="relative w-full">
-                <div className="relative border border-border rounded-2xl shadow-2xl overflow-hidden transition-all duration-500">
+                <div className="relative border border-border rounded-lg shadow-2xl overflow-hidden transition-all duration-500">
                   <img
                     src={`/features/${features[currentFeature].image}`}
                     alt={features[currentFeature].title}
@@ -151,7 +151,7 @@ export default function Features() {
                   }}
                   className="min-h-screen flex flex-col justify-center px-4 sm:px-8 md:px-12 py-16 sm:py-20 lg:py-24"
                 >
-                  <div className="bg-surface border border-border rounded-xl shadow-xl transition-all duration-500 px-5 py-6 sm:px-6 sm:py-12">
+                  <div className="bg-surface border border-border rounded-lg shadow-xl transition-all duration-500 px-5 py-6 sm:px-6 sm:py-12">
                     <div
                       className={`text-sm font-medium ${feature.color} uppercase tracking-wide mb-4`}
                     >

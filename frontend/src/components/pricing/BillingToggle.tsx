@@ -3,10 +3,13 @@ interface BillingToggleProps {
   onBillingCycleChange: (cycle: "monthly" | "yearly") => void;
 }
 
-export default function BillingToggle({ billingCycle, onBillingCycleChange }: BillingToggleProps) {
+export default function BillingToggle({
+  billingCycle,
+  onBillingCycleChange,
+}: BillingToggleProps) {
   return (
     <div className="flex items-center justify-center">
-      <div className="relative p-1 bg-surface-warm rounded-xl border border-border-warm">
+      <div className="relative p-1 bg-surface-warm rounded-lg border border-border-warm">
         <div className="flex items-center gap-1">
           {/* Monthly Button */}
           <button
@@ -19,7 +22,7 @@ export default function BillingToggle({ billingCycle, onBillingCycleChange }: Bi
           >
             Monthly
           </button>
-          
+
           {/* Yearly Button */}
           <button
             onClick={() => onBillingCycleChange("yearly")}
@@ -30,11 +33,13 @@ export default function BillingToggle({ billingCycle, onBillingCycleChange }: Bi
             }`}
           >
             Yearly
-            <span className={`px-2 py-1 rounded-full text-xs font-semibold transition-all duration-200 border ${
-              billingCycle === "yearly"
-                ? "bg-white/20 text-white border-white/30"
-                : "bg-maple/10 text-maple border-maple/20"
-            }`}>
+            <span
+              className={`px-2 py-1 rounded-lg text-xs font-semibold transition-all duration-200 border ${
+                billingCycle === "yearly"
+                  ? "bg-white/20 text-white border-white/30"
+                  : "bg-maple/10 text-maple border-maple/20"
+              }`}
+            >
               Save 20%
             </span>
           </button>

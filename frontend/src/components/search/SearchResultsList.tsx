@@ -38,15 +38,14 @@ export default function SearchResultsList({
         <div className="flex items-center justify-between mb-3">
           <div className="flex items-center gap-3">
             <h2 className="text-base font-semibold text-text">
-              {isLoading
-                ? "Searching..."
-                : `${searchResults.length} results`}
+              {isLoading ? "Searching..." : `${searchResults.length} results`}
             </h2>
             {searchResponse?.search_metadata?.max_score && (
               <div className="flex items-center gap-1 text-xs text-text-muted">
                 <Star className="w-3 h-3 text-primary" />
                 <span>
-                  Best: {(searchResponse.search_metadata.max_score * 10).toFixed(1)}%
+                  Best:{" "}
+                  {(searchResponse.search_metadata.max_score * 10).toFixed(1)}%
                 </span>
               </div>
             )}
@@ -103,7 +102,7 @@ export default function SearchResultsList({
         {/* Loading State */}
         {isLoading && (
           <div className="text-center py-8">
-            <div className="inline-block animate-spin rounded-full h-6 w-6 border-b-2 border-primary"></div>
+            <div className="inline-block animate-spin rounded-lg h-6 w-6 border-b-2 border-primary"></div>
             <p className="mt-3 text-text-muted text-sm">
               Searching contracts...
             </p>

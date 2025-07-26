@@ -69,7 +69,7 @@ export default function FeatureComparison() {
     <section className="py-12 px-6 bg-bg">
       <div className="max-w-4xl mx-auto">
         <div className="text-center mb-10">
-          <div className="inline-flex items-center gap-2 px-3 py-1 bg-maple/10 text-maple border border-maple/20 rounded-full text-sm font-medium mb-4">
+          <div className="inline-flex items-center gap-2 px-3 py-1 bg-maple/10 text-maple border border-maple/20 rounded-lg text-sm font-medium mb-4">
             <Leaf className="w-3 h-3" />
             Everything you need to succeed
           </div>
@@ -77,24 +77,38 @@ export default function FeatureComparison() {
             Compare plan features
           </h2>
           <p className="text-lg text-text-muted max-w-2xl mx-auto">
-            Both plans include access to all Canadian procurement opportunities. Choose Pro for advanced features and team collaboration.
+            Both plans include access to all Canadian procurement opportunities.
+            Choose Pro for advanced features and team collaboration.
           </p>
         </div>
 
-        <div className="bg-surface rounded-2xl shadow-sm border border-border-warm overflow-hidden">
+        <div className="bg-surface rounded-lg shadow-sm border border-border-warm overflow-hidden">
           <div className="overflow-x-auto">
             <table className="w-full">
               <thead className="bg-surface-warm">
                 <tr>
-                  <th className="text-left py-6 px-6 text-text font-semibold">Features</th>
-                  <th className="text-center py-6 px-4 text-text font-semibold">Starter</th>
-                  <th className="text-center py-6 px-4 text-text font-semibold">Pro</th>
+                  <th className="text-left py-6 px-6 text-text font-semibold">
+                    Features
+                  </th>
+                  <th className="text-center py-6 px-4 text-text font-semibold">
+                    Starter
+                  </th>
+                  <th className="text-center py-6 px-4 text-text font-semibold">
+                    Pro
+                  </th>
                 </tr>
               </thead>
               <tbody>
                 {features.map((row, index) => (
-                  <tr key={index} className={`border-t border-border-warm ${index % 2 === 0 ? 'bg-surface' : 'bg-surface-warm/30'}`}>
-                    <td className="py-4 px-6 text-text font-medium">{row.feature}</td>
+                  <tr
+                    key={index}
+                    className={`border-t border-border-warm ${
+                      index % 2 === 0 ? "bg-surface" : "bg-surface-warm/30"
+                    }`}
+                  >
+                    <td className="py-4 px-6 text-text font-medium">
+                      {row.feature}
+                    </td>
                     <td className="text-center py-4 px-4">
                       {row.starter ? (
                         <CheckCircle className="w-5 h-5 text-success mx-auto" />
@@ -118,7 +132,8 @@ export default function FeatureComparison() {
 
         <div className="text-center mt-12">
           <p className="text-sm text-text-muted">
-            All plans include a 14-day free trial • No setup fees • Cancel anytime
+            All plans include a 14-day free trial • No setup fees • Cancel
+            anytime
           </p>
         </div>
       </div>

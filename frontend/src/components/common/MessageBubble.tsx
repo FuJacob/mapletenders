@@ -22,14 +22,14 @@ const MessageBubble: React.FC<MessageBubbleProps> = ({
       className={`flex gap-3 mb-4 ${isUser ? "justify-end" : "justify-start"}`}
     >
       {!isUser && (
-        <div className="flex-shrink-0 w-8 h-8 bg-primary rounded-full flex items-center justify-center">
+        <div className="flex-shrink-0 w-8 h-8 bg-primary rounded-lg flex items-center justify-center">
           <Robot className="w-4 h-4 text-white" />
         </div>
       )}
 
       <div className={`max-w-[70%] ${isUser ? "order-1" : "order-2"}`}>
         <div
-          className={`px-4 py-2 rounded-2xl ${
+          className={`px-4 py-2 rounded-lg ${
             isUser
               ? "bg-primary text-white ml-auto"
               : "bg-surface border border-border text-text"
@@ -49,7 +49,7 @@ const MessageBubble: React.FC<MessageBubbleProps> = ({
       </div>
 
       {isUser && (
-        <div className="flex-shrink-0 w-8 h-8 bg-accent rounded-full flex items-center justify-center order-2">
+        <div className="flex-shrink-0 w-8 h-8 bg-accent rounded-lg flex items-center justify-center order-2">
           <User className="w-4 h-4 text-white" />
         </div>
       )}

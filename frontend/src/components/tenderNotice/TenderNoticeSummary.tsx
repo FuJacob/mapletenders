@@ -15,7 +15,10 @@ interface TenderNoticeBodyProps {
   compact?: boolean;
 }
 
-export function TenderNoticeSummary({ tender, compact = false }: TenderNoticeBodyProps) {
+export function TenderNoticeSummary({
+  tender,
+  compact = false,
+}: TenderNoticeBodyProps) {
   const [tenderSummary, setTenderSummary] = useState<TenderSummaryData | null>(
     null
   );
@@ -105,7 +108,7 @@ Delivery Location: ${tender.delivery_location || "Not specified"}
           ) : (
             <div className="flex items-center justify-center py-4">
               <div className="text-center">
-                <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-white mx-auto mb-1"></div>
+                <div className="animate-spin rounded-lg h-6 w-6 border-b-2 border-white mx-auto mb-1"></div>
                 <p className="text-xs">Analyzing...</p>
               </div>
             </div>
@@ -116,7 +119,7 @@ Delivery Location: ${tender.delivery_location || "Not specified"}
   }
 
   return (
-    <div className="w-full bg-primary border border-primary rounded-xl p-6">
+    <div className="w-full bg-primary border border-primary rounded-lg p-6">
       <h2 className="text-xl font-semibold text-white mb-4 flex items-center gap-2">
         <Sparkle className="w-5 h-5" />
         Tender Notice Summary by BreezeAI
@@ -202,7 +205,7 @@ Delivery Location: ${tender.delivery_location || "Not specified"}
         ) : (
           <div className="flex items-center justify-center py-8">
             <div className="text-center">
-              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-white mx-auto mb-2"></div>
+              <div className="animate-spin rounded-lg h-8 w-8 border-b-2 border-white mx-auto mb-2"></div>
               <p className="text-sm">BreezeAI is analyzing this tender...</p>
             </div>
           </div>

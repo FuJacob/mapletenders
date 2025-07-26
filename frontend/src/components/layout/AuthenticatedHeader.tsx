@@ -96,7 +96,7 @@ export default function AuthenticatedHeader({
             to="/profile"
             className="flex items-center gap-2 px-3 py-2 font-medium text-text-muted hover:text-text hover:bg-background rounded-lg transition-colors"
           >
-            <div className="w-8 h-8 bg-primary text-white rounded-full flex items-center justify-center font-medium">
+            <div className="w-8 h-8 bg-primary text-white rounded-lg flex items-center justify-center font-medium">
               {profile?.company_name?.charAt(0).toUpperCase() ||
                 user.email?.charAt(0).toUpperCase()}
             </div>

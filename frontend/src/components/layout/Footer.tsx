@@ -1,4 +1,4 @@
-import { EnvelopeSimple, Leaf } from "@phosphor-icons/react";
+import { EnvelopeSimple } from "@phosphor-icons/react";
 import { Link } from "react-router-dom";
 import { LogoTitle } from "../ui/LogoTitle";
 
@@ -26,14 +26,24 @@ export default function Footer() {
         <div className="flex flex-col md:flex-row gap-8 text-center md:text-right">
           <div>
             <h3 className="font-semibold text-text mb-2">Quick Links</h3>
-            <Link to="/about" className="block hover:text-primary">About</Link>
-            <Link to="/pricing" className="block hover:text-primary">Pricing</Link>
-            <Link to="/contact" className="block hover:text-primary">Contact</Link>
+            <Link to="/about" className="block hover:text-primary">
+              About
+            </Link>
+            <Link to="/pricing" className="block hover:text-primary">
+              Pricing
+            </Link>
+            <Link to="/contact" className="block hover:text-primary">
+              Contact
+            </Link>
           </div>
           <div>
             <h3 className="font-semibold text-text mb-2">Legal</h3>
-            <Link to="/privacy" className="block hover:text-primary">Privacy</Link>
-            <Link to="/terms" className="block hover:text-primary">Terms</Link>
+            <Link to="/privacy" className="block hover:text-primary">
+              Privacy
+            </Link>
+            <Link to="/terms" className="block hover:text-primary">
+              Terms
+            </Link>
           </div>
         </div>
       </div>
