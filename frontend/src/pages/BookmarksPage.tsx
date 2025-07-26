@@ -2,7 +2,6 @@ import { useEffect, useState } from "react";
 import { useAppSelector, useAppDispatch } from "../app/hooks";
 import {
   selectBookmarkedTenders,
-  selectBookmarksLoading,
 } from "../features/bookmarks/bookmarksSelectors";
 import { loadBookmarks } from "../features/bookmarks/bookmarksThunks";
 import { useAuth } from "../hooks/auth";
@@ -15,7 +14,6 @@ export default function BookmarksPage() {
   const dispatch = useAppDispatch();
   const { profile } = useAuth();
   const bookmarkedTenders = useAppSelector(selectBookmarkedTenders);
-  const bookmarksLoading = useAppSelector(selectBookmarksLoading);
   const [selectedTender, setSelectedTender] = useState<string | null>("");
   // Load bookmarks when component mounts
   useEffect(() => {
