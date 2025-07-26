@@ -7,7 +7,7 @@ import "jsr:@supabase/functions-js/edge-runtime.d.ts";
 
 console.log("Hello from Functions!");
 
-const REFRESH_URL = "http://localhost:4000/api/tenders/refreshTenders";
+const REFRESH_URL = "http://localhost:4000/tenders/refreshTenders";
 Deno.serve(async () => {
   const response = await fetch(REFRESH_URL);
   const data = await response.json();

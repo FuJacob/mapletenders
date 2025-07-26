@@ -35,7 +35,7 @@ export default function Layout() {
               <Outlet />
             </AppPageContainer>
           </main>
-        </div>
+        </div>  
       </div>
     );
   }
