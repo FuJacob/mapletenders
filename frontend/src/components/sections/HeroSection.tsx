@@ -1,5 +1,5 @@
 import { useNavigate } from "react-router-dom";
-import { CheckCircle, ArrowRight } from "@phosphor-icons/react";
+import { CheckCircle, ArrowRight, Star } from "@phosphor-icons/react";
 
 export default function HeroSection() {
   const navigate = useNavigate();
@@ -9,6 +9,43 @@ export default function HeroSection() {
     { value: "2,847", label: "Active Users" },
     { value: "95%", label: "Time Saved" },
   ];
+  const reviews = [
+    {
+      name: "Amanpreet S., Waterloo",
+      review:
+        "The AI recommendations are uncannily accurate. We've won bids I would miss before.",
+    },
+    {
+      name: "Jared M., Hamilton",
+      review:
+        "Fast, clean, and actually helps you filter out the noise. MapleTenders feels like cheating.",
+    },
+    {
+      name: "Rajiv P., Toronto",
+      review:
+        "Love the alerts and the smart tags. I find relevant contracts faster than with any other platform.",
+    },
+    {
+      name: "Mike D., Ottawa",
+      review:
+        "Switching from spreadsheets to MapleTenders was a no-brainer. Our team collaboration skyrocketed.",
+    },
+    {
+      name: "Steve K., Mississauga",
+      review: "MapleTenders doesn't just show bids, it helps us win them.",
+    },
+  ];
+  const images = [
+    "brampton.jpg",
+    "canada.svg",
+    "hamilton.png",
+    "london.jpg",
+    "mississauga.png",
+    "ontario.png",
+    "quebec.svg",
+    "toronto.jpg",
+  ];
+  const shuffled = [...reviews, ...images].sort(() => Math.random() - 0.5);
 
   return (
     <section className="relative pt-36">
@@ -30,7 +67,6 @@ export default function HeroSection() {
             <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold mb-6 text-text leading-tight">
               The #1 Procurement Portal
               <br />
-              <span className="text-accent">for Canadian Businesses</span>
             </h1>
 
             <p className="text-lg sm:text-xl text-text-muted mb-8 max-w-3xl leading-relaxed">
@@ -86,31 +122,55 @@ export default function HeroSection() {
             </h2>
           </div>
           <div className="relative w-full overflow-hidden">
-            <div className="flex gap-12 animate-marquee whitespace-nowrap w-max">
+            <div className="flex gap-12 animate-marquee w-max">
               {Array(2)
-                .fill([
-                  "brampton.jpg",
-                  "canada.svg",
-                  "hamilton.png",
-                  "london.jpg",
-                  "mississauga.png",
-                  "ontario.png",
-                  "quebec.svg",
-                  "toronto.jpg",
-                ])
+                .fill([...shuffled, ...shuffled])
                 .flat()
-                .map((img, i) => (
-                  <div
-                    key={`scroll-logo-${i}`}
-                    className="bg-white rounded-lg p-4 shadow-sm flex items-center justify-center"
-                  >
-                    <img
-                      src={`/sources/${img}`}
-                      alt={`Partner ${img}`}
-                      className="h-16 object-contain"
-                    />
-                  </div>
-                ))}
+                .map((item, i) => {
+                  if (typeof item === "string") {
+                    return (
+                      <div
+                        key={`scroll-logo-${i}`}
+                        className="bg-white rounded-lg p-4 shadow-sm flex items-center justify-center"
+                      >
+                        <img
+                          src={`/sources/${item}`}
+                          alt={`Partner ${item}`}
+                          className="h-16 object-contain"
+                        />
+                      </div>
+                    );
+                  } else {
+                    return (
+                      <div
+                        key={`scroll-review-${i}`}
+                        className="bg-white rounded-lg p-4 shadow-sm flex flex-col justify-center max-w-xs"
+                      >
+                        <div className="flex justify-between items-center mb-2">
+                          <div className="flex items-center">
+                            {[...Array(5)].map((_, i) => (
+                              <Star
+                                key={i}
+                                className="w-4 sm:w-5 h-4 sm:h-5 text-primary"
+                                weight="fill"
+                              />
+                            ))}
+                          </div>
+                          <div className="text-xs text-text-muted font-semibold">
+                            {item.name}
+                          </div>
+                        </div>
+                        <div className="text-sm text-text-muted font-medium italic mb-2 text-wrap">
+                          "
+                          {item.review.length > 65
+                            ? item.review.slice(0, 65) + ". . ."
+                            : item.review}
+                          "
+                        </div>
+                      </div>
+                    );
+                  }
+                })}
             </div>
           </div>
         </div>

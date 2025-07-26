@@ -6,6 +6,7 @@ import {
   Bookmark,
   Sparkle,
 } from "@phosphor-icons/react";
+import LoadingSpinner from "../common/LoadingSpinner";
 import {
   TenderNoticeHeader,
   TenderNoticeBody,
@@ -218,10 +219,12 @@ export function TenderNoticeFullContent({
               {tender?.summary ? (
                 <p className="line-clamp-3">{tender.summary}</p>
               ) : (
-                <div className="flex items-center gap-1">
-                  <div className="animate-spin rounded-lg h-3 w-3 border border-primary border-t-transparent"></div>
-                  <span>Analyzing...</span>
-                </div>
+                <LoadingSpinner 
+                  variant="inline" 
+                  message="Analyzing..." 
+                  size="sm" 
+                  showLogo={false}
+                />
               )}
             </div>
           </div>

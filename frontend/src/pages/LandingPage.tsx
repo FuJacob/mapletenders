@@ -6,7 +6,8 @@ import {
   TestimonialsSection,
   FAQSection,
   FinalCTASection,
-  FeaturesSection,
+  PricingSection,
+  FeaturesListSection,
 } from "../components/sections";
 
 export default function LandingPage() {
@@ -24,7 +25,8 @@ export default function LandingPage() {
       {showBanner && <WelcomeBanner closeBanner={handleCloseBanner} />}
       <HeroSection />
       <TestimonialsSection />
-      <FeaturesSection />
+      <FeaturesListSection />
+      <PricingSection />
       <FAQSection />
       <FinalCTASection />
     </LandingPageContainer>

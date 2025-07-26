@@ -11,7 +11,7 @@ export default function RecommendedTenders({
 }: RecommendedTendersProps) {
   console.log("tenders", tenders);
   return (
-    <>
+    <div className="p-6">
       <div className="flex items-center justify-between mb-6">
         <h2 className="text-xl font-semibold text-text">Recommended for You</h2>
         <Link
@@ -21,11 +21,20 @@ export default function RecommendedTenders({
           View all →
         </Link>
       </div>
-      <div className="flex-1 overflow-y-auto space-y-4">
-        {tenders.map((tender) => (
-          <TenderCard key={tender.id} tender={tender} compact={true} />
-        ))}
+      <div className="space-y-4">
+        {tenders.length > 0 ? (
+          tenders.map((tender) => (
+            <TenderCard key={tender.id} tender={tender} />
+          ))
+        ) : (
+          <div className="text-center py-12">
+            <div className="text-text-muted mb-2">No recommendations available</div>
+            <div className="text-sm text-text-light">
+              Check back later for personalized tender recommendations
+            </div>
+          </div>
+        )}
       </div>
-    </>
+    </div>
   );
 }

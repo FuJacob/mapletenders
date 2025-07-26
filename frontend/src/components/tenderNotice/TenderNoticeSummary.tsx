@@ -1,6 +1,7 @@
 import { Sparkle } from "@phosphor-icons/react";
 import { useEffect, useState, useMemo, useCallback } from "react";
 import { generateTenderSummary, type TenderSummaryData } from "../../api";
+import LoadingSpinner from "../common/LoadingSpinner";
 
 interface TenderNoticeBodyProps {
   tender: {
@@ -106,11 +107,13 @@ Delivery Location: ${tender.delivery_location || "Not specified"}
               )}
             </div>
           ) : (
-            <div className="flex items-center justify-center py-4">
-              <div className="text-center">
-                <div className="animate-spin rounded-lg h-6 w-6 border-b-2 border-white mx-auto mb-1"></div>
-                <p className="text-xs">Analyzing...</p>
-              </div>
+            <div className="py-4">
+              <LoadingSpinner 
+                variant="inline" 
+                message="Analyzing..." 
+                size="sm" 
+                showLogo={false}
+              />
             </div>
           )}
         </div>
@@ -203,11 +206,13 @@ Delivery Location: ${tender.delivery_location || "Not specified"}
             )}
           </div>
         ) : (
-          <div className="flex items-center justify-center py-8">
-            <div className="text-center">
-              <div className="animate-spin rounded-lg h-8 w-8 border-b-2 border-white mx-auto mb-2"></div>
-              <p className="text-sm">BreezeAI is analyzing this tender...</p>
-            </div>
+          <div className="py-8">
+            <LoadingSpinner 
+              variant="inline" 
+              message="BreezeAI is analyzing this tender..." 
+              size="md" 
+              showLogo={false}
+            />
           </div>
         )}
       </div>

@@ -19,7 +19,7 @@ export default function GuestAuthButtons() {
             onClick={() => navigate("/sign-up")}
             className="px-6 py-2 bg-primary text-white rounded-lg text-sm font-medium hover:bg-primary-dark transition-colors shadow-sm"
           >
-            Start Free Trial
+            Sign Up
           </button>
         </li>
       </ul>

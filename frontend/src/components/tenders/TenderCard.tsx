@@ -5,7 +5,6 @@ import {
   Building,
   Clock,
   MapPin,
-  ArrowSquareOut,
   Trophy,
   Star,
   Leaf,
@@ -112,39 +111,43 @@ export function TenderCard({
   const sourceReference = TenderAccessors.getSourceReference(tender);
   const matchExplanation = TenderAccessors.getMatchExplanation(tender);
 
-  // Compact mode - for recommended tenders
+  // Compact mode - Apple-inspired minimal design for smaller contexts
   if (compact) {
     return (
       <div
-        className={`bg-surface border border-border rounded-lg p-4 hover:shadow-md hover:border-primary/30 transition-all duration-200 group ${className}`}
+        className={`bg-surface border border-border rounded-xl p-5 hover:shadow-lg hover:border-primary/20 transition-all duration-300 group ${className}`}
       >
-        {/* Compact Header */}
-        <div className="flex items-start gap-3 mb-3">
-          {/* Compact Match Score */}
+        {/* Header - Match Score + Title */}
+        <div className="flex items-start gap-3 mb-4">
+          {/* Refined Match Score */}
           <div
-            className={`flex items-center gap-1 px-2 py-1 rounded-lg font-bold text-xs ${scoreColorClass} flex-shrink-0`}
+            className={`inline-flex items-center gap-1 px-2.5 py-1 rounded-full font-semibold text-xs ${scoreColorClass} shadow-sm flex-shrink-0`}
           >
             {getScoreIcon(matchScore)}
             <span>{matchScore.toFixed(0)}%</span>
           </div>
 
-          {/* Title */}
-          <div className="flex-1 min-w-0">
-            <button onClick={handleTitleClick} className="group/link block">
-              <h3 className="text-base font-bold text-text group-hover/link:text-primary cursor-pointer transition-colors line-clamp-2 leading-tight">
-                {TenderAccessors.getTitle(tender)}
-              </h3>
-            </button>
+          {/* Title with Clean Typography */}
+          <div className="flex-1 min-w-0 pr-2">
+            <h3 
+              className="text-lg font-bold text-text hover:text-primary cursor-pointer transition-colors line-clamp-2 leading-tight"
+              onClick={handleTitleClick}
+            >
+              {TenderAccessors.getTitle(tender)}
+            </h3>
           </div>
 
-          {/* Bookmark */}
+          {/* Minimal Bookmark */}
           {onBookmarkToggle && (
             <button
-              onClick={() => onBookmarkToggle(TenderAccessors.getId(tender))}
-              className={`p-1.5 rounded-lg transition-all duration-200 flex-shrink-0 ${
+              onClick={(e) => {
+                e.stopPropagation();
+                onBookmarkToggle(TenderAccessors.getId(tender));
+              }}
+              className={`p-2 rounded-full transition-all duration-200 hover:scale-110 flex-shrink-0 ${
                 isBookmarked
-                  ? "text-primary bg-primary/10 hover:bg-primary/20"
-                  : "text-text-muted hover:text-primary hover:bg-primary/10"
+                  ? "text-primary bg-primary/10 shadow-sm"
+                  : "text-text-light hover:text-primary hover:bg-primary/10"
               }`}
             >
               <Bookmark className="w-4 h-4" />
@@ -152,33 +155,39 @@ export function TenderCard({
           )}
         </div>
 
-        {/* Compact Info Row */}
-        <div className="flex items-center justify-between text-xs text-text-muted">
-          <div className="flex items-center gap-3">
-            <span className="flex items-center gap-1">
-              <Building className="w-3 h-3" />
-              <span className="truncate max-w-[120px]">
-                {entityName || "Unknown"}
+        {/* Essential Information - Streamlined */}
+        <div className="flex items-center justify-between text-xs mb-4">
+          <div className="flex items-center gap-4 min-w-0 flex-1">
+            <div className="flex items-center gap-1.5 min-w-0">
+              <Building className="w-3.5 h-3.5 text-text-light flex-shrink-0" />
+              <span className="truncate font-medium text-text max-w-[120px]">
+                {entityName || "Government Entity"}
               </span>
-            </span>
-            <span className="flex items-center gap-1">
-              <MapPin className="w-3 h-3" />
-              {entityProvince || deliveryLocation || "Canada"}
-            </span>
+            </div>
+            <div className="flex items-center gap-1.5">
+              <MapPin className="w-3.5 h-3.5 text-text-light flex-shrink-0" />
+              <span className="font-medium text-text">
+                {entityProvince || deliveryLocation || "Canada"}
+              </span>
+            </div>
           </div>
-          <div
-            className={`flex items-center gap-1 font-medium ${urgencyClass}`}
-          >
-            <Clock className="w-3 h-3" />
-            {daysUntilDeadline !== null &&
-            daysUntilDeadline <= 14 &&
-            daysUntilDeadline >= 0
-              ? `${daysUntilDeadline}d left`
-              : formatDate(TenderAccessors.getClosingDate(tender))}
+          
+          {/* Deadline - Clean and Urgent When Needed */}
+          <div className={`flex items-center gap-1.5 font-bold text-xs ${urgencyClass} flex-shrink-0`}>
+            <Clock className="w-3.5 h-3.5" />
+            <span>
+              {daysUntilDeadline !== null &&
+              daysUntilDeadline <= 14 &&
+              daysUntilDeadline >= 0
+                ? daysUntilDeadline === 0 
+                  ? "Today"
+                  : `${daysUntilDeadline}d left`
+                : formatDate(TenderAccessors.getClosingDate(tender))}
+            </span>
           </div>
         </div>
 
-        {/* Description Section with Expand/Collapse */}
+        {/* Description - Minimal but Readable */}
         {description && (
           <div className="mb-4">
             <div
@@ -188,20 +197,23 @@ export function TenderCard({
             >
               {description}
             </div>
-            {description.length > 150 && (
+            {description.length > 120 && (
               <button
-                onClick={() => setIsDescriptionExpanded(!isDescriptionExpanded)}
-                className="mt-2 flex items-center gap-1 text-xs text-primary hover:text-primary/80 transition-colors font-medium"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setIsDescriptionExpanded(!isDescriptionExpanded);
+                }}
+                className="mt-2 inline-flex items-center gap-1 text-xs text-primary hover:text-primary/80 transition-colors font-medium"
               >
                 {isDescriptionExpanded ? (
                   <>
                     <CaretUp className="w-3 h-3" />
-                    Show less
+                    Less
                   </>
                 ) : (
                   <>
                     <CaretDown className="w-3 h-3" />
-                    Show more
+                    More
                   </>
                 )}
               </button>
@@ -209,60 +221,78 @@ export function TenderCard({
           </div>
         )}
 
-        {/* Compact Tags */}
-        <div className="flex items-center gap-1.5 mt-2">
-          {procurementMethod && (
-            <span className="text-xs bg-primary/10 text-primary px-2 py-0.5 rounded-lg font-medium">
-              {procurementMethod}
-            </span>
-          )}
-          {TenderAccessors.getProcurementType(tender) && (
-            <span className="text-xs bg-surface-muted text-text-muted px-2 py-0.5 rounded-lg">
-              {TenderAccessors.getProcurementType(tender)}
-            </span>
-          )}
+        {/* Footer - Minimal Tags */}
+        <div className="flex items-center justify-between pt-3 border-t border-border/30">
+          <div className="flex items-center gap-2">
+            {procurementMethod && (
+              <span className="text-xs bg-primary/10 text-primary px-2.5 py-1 rounded-full font-medium">
+                {procurementMethod}
+              </span>
+            )}
+            {TenderAccessors.getProcurementType(tender) && (
+              <span className="text-xs bg-surface-muted text-text-muted px-2.5 py-1 rounded-full font-medium">
+                {TenderAccessors.getProcurementType(tender)}
+              </span>
+            )}
+          </div>
+          
+          <div className="text-xs text-text-light font-mono">
+            {sourceReference?.slice(-6) || TenderAccessors.getId(tender)?.slice(-6) || "N/A"}
+          </div>
         </div>
       </div>
     );
   }
 
-  // Normal mode - full information layout
+  // Normal mode - Apple-inspired clean layout
   return (
     <div
-      className={`bg-surface border border-border rounded-lg p-5 hover:shadow-lg hover:border-primary/30 transition-all duration-200 group ${className}`}
+      className={`bg-surface border border-border rounded-xl p-8 hover:shadow-xl hover:border-primary/20 transition-all duration-300 group ${className}`}
     >
-      {/* Header Row: Match Score + Title + Action */}
-      <div className="flex items-start gap-4 mb-4">
-        {/* Match Score Badge */}
-        <div
-          className={`flex items-center gap-2 px-3 py-2 rounded-lg font-bold text-sm ${scoreColorClass} flex-shrink-0`}
-        >
-          {getScoreIcon(matchScore)}
-          <span>{matchScore.toFixed(0)}%</span>
-        </div>
+      {/* Header - Clean and Spacious */}
+      <div className="flex items-start justify-between mb-8">
+        <div className="flex-1 min-w-0 pr-6">
+          {/* Match Score - Subtle and Elegant */}
+          <div className="flex items-center gap-3 mb-4">
+            <div
+              className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full font-semibold text-sm ${scoreColorClass} shadow-sm`}
+            >
+              {getScoreIcon(matchScore)}
+              <span>{matchScore.toFixed(0)}% Match</span>
+            </div>
+            <div className="text-xs text-text-light tracking-wide">
+              AI-Powered Recommendation
+            </div>
+          </div>
 
-        {/* Title and Canadian Badge */}
-        <div className="flex-1 min-w-0">
-          <button onClick={handleTitleClick} className="group/link block">
-            <h3 className="text-xl font-bold text-text group-hover/link:text-primary cursor-pointer transition-colors line-clamp-2 mb-1 leading-tight">
-              {TenderAccessors.getTitle(tender)}
-            </h3>
-          </button>
-          <div className="flex items-center gap-2 text-sm text-text-muted">
+          {/* Title - Hero Typography */}
+          <h2 
+            className="text-2xl font-bold text-text leading-tight mb-3 hover:text-primary cursor-pointer transition-colors"
+            onClick={handleTitleClick}
+          >
+            {TenderAccessors.getTitle(tender)}
+          </h2>
+
+          {/* Subtitle - Clean and Minimal */}
+          <div className="flex items-center gap-2 text-text-muted">
             <Leaf className="w-4 h-4 text-maple" />
-            <span>Canadian Government Opportunity</span>
-            <ArrowSquareOut className="w-4 h-4 text-primary opacity-0 group-hover:opacity-100 transition-opacity" />
+            <span className="text-sm font-medium">
+              Canadian Government Opportunity
+            </span>
           </div>
         </div>
 
-        {/* Bookmark Action */}
+        {/* Bookmark - Floating Action */}
         {onBookmarkToggle && (
           <button
-            onClick={() => onBookmarkToggle(TenderAccessors.getId(tender))}
-            className={`p-2 rounded-lg transition-all duration-200 flex-shrink-0 ${
+            onClick={(e) => {
+              e.stopPropagation();
+              onBookmarkToggle(TenderAccessors.getId(tender));
+            }}
+            className={`p-3 rounded-full transition-all duration-200 hover:scale-110 ${
               isBookmarked
-                ? "text-primary bg-primary/10 hover:bg-primary/20"
-                : "text-text-muted bg-surface-muted/30 hover:text-primary hover:bg-primary/10"
+                ? "text-primary bg-primary/10 shadow-sm"
+                : "text-text-light hover:text-primary hover:bg-primary/10"
             }`}
           >
             <Bookmark className="w-5 h-5" />
@@ -270,110 +300,84 @@ export function TenderCard({
         )}
       </div>
 
-      {/* Critical Business Information Bar */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 mb-4 p-4 bg-surface-muted/30 rounded-lg">
-        {/* Government Entity */}
-        <div className="flex items-center gap-3">
-          <div className="p-2 bg-primary/10 rounded-lg">
-            <Building className="w-5 h-5 text-primary" />
+      {/* Key Information - Clean Grid */}
+      <div className="grid grid-cols-3 gap-8 mb-8">
+        {/* Entity */}
+        <div className="space-y-2">
+          <div className="text-xs font-semibold text-text-light uppercase tracking-wide">
+            Contracting Entity
           </div>
-          <div className="min-w-0 flex-1">
-            <div className="text-xs text-text-muted font-medium uppercase tracking-wide">
-              Entity
-            </div>
-            <div
-              className="font-semibold text-text truncate"
-              title={entityName || "Unknown"}
-            >
-              {entityName || "Unknown Entity"}
-            </div>
+          <div className="font-semibold text-text leading-tight">
+            {entityName || "Government Entity"}
           </div>
         </div>
 
         {/* Location */}
-        <div className="flex items-center gap-3">
-          <div className="p-2 bg-maple/10 rounded-lg">
-            <MapPin className="w-5 h-5 text-maple" />
+        <div className="space-y-2">
+          <div className="text-xs font-semibold text-text-light uppercase tracking-wide">
+            Location
           </div>
-          <div className="min-w-0 flex-1">
-            <div className="text-xs text-text-muted font-medium uppercase tracking-wide">
-              Location
-            </div>
-            <div className="font-semibold text-text truncate">
-              {entityCity || deliveryLocation || "Unknown"},{" "}
-              {entityProvince || "Canada"}
-            </div>
+          <div className="font-semibold text-text leading-tight">
+            {entityCity || deliveryLocation || "Unknown"},{" "}
+            {entityProvince || "Canada"}
           </div>
         </div>
 
-        {/* Deadline with Urgency */}
-        <div className="flex items-center gap-3">
-          <div
-            className={`p-2 rounded-lg ${
-              daysUntilDeadline !== null && daysUntilDeadline <= 14
-                ? "bg-error/10"
-                : "bg-accent/10"
-            }`}
-          >
-            <Clock
-              className={`w-5 h-5 ${
-                daysUntilDeadline !== null && daysUntilDeadline <= 14
-                  ? "text-error"
-                  : "text-accent"
-              }`}
-            />
+        {/* Deadline */}
+        <div className="space-y-2">
+          <div className="text-xs font-semibold text-text-light uppercase tracking-wide">
+            Closing Date
           </div>
-          <div className="min-w-0 flex-1">
-            <div className="text-xs text-text-muted font-medium uppercase tracking-wide">
-              Deadline
-            </div>
-            <div className={`font-bold ${urgencyClass}`}>
-              {formatDate(TenderAccessors.getClosingDate(tender))}
-              {daysUntilDeadline !== null && (
-                <span className="ml-2 text-xs">
-                  (
-                  {daysUntilDeadline < 0
-                    ? "Expired"
-                    : daysUntilDeadline === 0
-                    ? "Today"
-                    : `${daysUntilDeadline}d left`}
-                  )
-                </span>
+          <div className={`font-bold leading-tight ${urgencyClass}`}>
+            {formatDate(TenderAccessors.getClosingDate(tender))}
+            {daysUntilDeadline !== null &&
+              daysUntilDeadline >= 0 &&
+              daysUntilDeadline <= 14 && (
+                <div className="text-xs font-medium mt-1">
+                  {daysUntilDeadline === 0
+                    ? "Closes Today"
+                    : `${daysUntilDeadline} days remaining`}
+                </div>
               )}
-            </div>
           </div>
         </div>
       </div>
 
-      {/* AI Match Analysis - Only for search results */}
+      {/* AI Match Analysis - When Available */}
       {matchExplanation && (
-        <div className="mb-4 p-3 bg-surface-muted rounded-lg border border-border">
-          <div className="flex items-center gap-2 mb-2">
+        <div className="mb-8 p-6 bg-primary/5 border border-primary/10 rounded-xl">
+          <div className="flex items-center gap-2 mb-3">
             <Lightning className="w-4 h-4 text-primary" />
-            <span className="text-sm font-semibold text-text">
-              AI Match Analysis
+            <span className="text-sm font-semibold text-primary">
+              Why This Matches
             </span>
           </div>
-          <p className="text-sm text-text-muted leading-relaxed">
+          <p className="text-sm text-text leading-relaxed">
             {matchExplanation}
           </p>
         </div>
       )}
 
-      {/* Description Section with Expand/Collapse */}
+      {/* Description - Clean Typography */}
       {description && (
-        <div className="mb-4">
+        <div className="mb-8">
+          <div className="text-xs font-semibold text-text-light uppercase tracking-wide mb-3">
+            Project Description
+          </div>
           <div
-            className={`text-sm text-text-muted leading-relaxed ${
-              isDescriptionExpanded ? "" : "line-clamp-2"
+            className={`text-text leading-relaxed ${
+              isDescriptionExpanded ? "" : "line-clamp-3"
             }`}
           >
             {description}
           </div>
-          {description.length > 150 && (
+          {description.length > 200 && (
             <button
-              onClick={() => setIsDescriptionExpanded(!isDescriptionExpanded)}
-              className="mt-2 flex items-center gap-1 text-xs text-primary hover:text-primary/80 transition-colors font-medium"
+              onClick={(e) => {
+                e.stopPropagation();
+                setIsDescriptionExpanded(!isDescriptionExpanded);
+              }}
+              className="mt-3 inline-flex items-center gap-1.5 text-sm text-primary hover:text-primary/80 transition-colors font-medium"
             >
               {isDescriptionExpanded ? (
                 <>
@@ -383,7 +387,7 @@ export function TenderCard({
               ) : (
                 <>
                   <CaretDown className="w-3 h-3" />
-                  Show more
+                  Read more
                 </>
               )}
             </button>
@@ -391,35 +395,23 @@ export function TenderCard({
         </div>
       )}
 
-      {/* Secondary Information Row */}
-      <div className="flex items-center justify-between">
-        {/* Procurement Details */}
-        <div className="flex items-center gap-3">
+      {/* Footer - Minimal Metadata */}
+      <div className="flex items-center justify-between pt-6 border-t border-border/50">
+        <div className="flex items-center gap-4">
           {procurementMethod && (
-            <span className="text-xs bg-primary/10 text-primary px-3 py-1 rounded-lg font-medium border border-primary/20">
+            <span className="text-xs bg-primary/10 text-primary px-3 py-1.5 rounded-full font-medium">
               {procurementMethod}
             </span>
           )}
           {TenderAccessors.getProcurementType(tender) && (
-            <span className="text-xs bg-surface-muted text-text-muted px-3 py-1 rounded-lg font-medium">
+            <span className="text-xs bg-surface-muted text-text-muted px-3 py-1.5 rounded-full font-medium">
               {TenderAccessors.getProcurementType(tender)}
-            </span>
-          )}
-          {TenderAccessors.getCategoryPrimary(tender) && (
-            <span className="text-xs bg-surface-muted text-text-muted px-3 py-1 rounded-lg font-medium">
-              {TenderAccessors.getCategoryPrimary(tender)!.length > 20
-                ? `${TenderAccessors.getCategoryPrimary(tender)!.substring(
-                    0,
-                    20
-                  )}...`
-                : TenderAccessors.getCategoryPrimary(tender)}
             </span>
           )}
         </div>
 
-        {/* Full Reference ID - No truncation */}
-        <div className="text-xs text-text-muted font-mono">
-          {sourceReference || TenderAccessors.getId(tender) || "No ID"}
+        <div className="text-xs text-text-light font-mono">
+          {sourceReference || TenderAccessors.getId(tender)?.slice(-8) || "N/A"}
         </div>
       </div>
     </div>

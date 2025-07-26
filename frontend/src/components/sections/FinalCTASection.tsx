@@ -1,10 +1,9 @@
-import { useNavigate } from "react-router-dom";
+
 import { ArrowRight, CheckCircle } from "@phosphor-icons/react";
 import { useState } from "react";
 import { requestLiveDemo } from "../../api/request";
 
 export default function FinalCTASection() {
-  const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [submitted, setSubmitted] = useState(false);
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -29,11 +28,11 @@ export default function FinalCTASection() {
     }
   };
   return (
-    <section className="py-24 px-6 bg-primary">
+    <section className="py-12 px-6 bg-primary">
       <div className="max-w-7xl mx-auto flex flex-col lg:flex-row gap-8 lg:gap-12 items-center">
         {/* Left side - Text content */}
         <div className="flex-1 text-center lg:text-left">
-          <h2 className="text-3xl sm:text-4xl lg:text-5xl xl:text-6xl font-semibold text-white mb-6">
+          <h2 className="text-2xl sm:text-3xl lg:text-4xl font-semibold text-white mb-4">
             Ready to see <span>MapleTenders in action?</span>
           </h2>
         </div>
@@ -51,7 +50,7 @@ export default function FinalCTASection() {
                   placeholder={
                     submitted ? "We'll be in touch soon." : "Enter your email"
                   }
-                  className={`w-full px-4 py-3 text-sm sm:text-base border border-border rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent ${
+                  className={`w-full px-4 py-2 text-sm border border-border rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent ${
                     submitted ? "cursor-not-allowed opacity-60" : ""
                   }`}
                   required
@@ -61,7 +60,7 @@ export default function FinalCTASection() {
               </div>
               <button
                 type="submit"
-                className="w-full px-6 sm:px-8 py-3 sm:py-4 bg-primary text-white font-medium text-sm sm:text-base rounded-lg hover:bg-primary-dark transition-colors flex items-center justify-center gap-2"
+                className="w-full px-6 sm:px-8 py-2 bg-primary text-white font-medium text-sm rounded-lg hover:bg-primary-dark transition-colors flex items-center justify-center gap-2"
               >
                 {submitted ? (
                   <>
@@ -78,14 +77,6 @@ export default function FinalCTASection() {
                 )}
               </button>
             </form>
-            <div className="mt-4 sm:mt-6 text-center">
-              <button
-                onClick={() => navigate("/sign-up")}
-                className="text-sm sm:text-base text-primary hover:text-primary-dark font-medium transition-colors"
-              >
-                Or start your free trial →
-              </button>
-            </div>
           </div>
         </div>
       </div>

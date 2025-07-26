@@ -7,10 +7,6 @@ import {
   EyeSlash,
   Leaf,
   Sparkle,
-  TrendUp,
-  Target,
-  Star,
-  ArrowRight,
 } from "@phosphor-icons/react";
 
 import { useSelector } from "react-redux";
@@ -51,93 +47,9 @@ export default function SignIn() {
     }));
   };
 
-  const benefits = [
-    {
-      icon: <Target className="w-6 h-6 text-success" />,
-      title: "$1.2M in contracts discovered",
-      description:
-        "Average value of opportunities found per user in their first year",
-    },
-    {
-      icon: <TrendUp className="w-6 h-6 text-primary" />,
-      title: "95% time saved on search",
-      description: "Focus on winnable contracts instead of endless browsing",
-    },
-    {
-      icon: <Lightning className="w-6 h-6 text-maple" />,
-      title: "Real-time alerts",
-      description: "Never miss another deadline with smart notifications",
-    },
-  ];
-
   return (
-    <div className="min-h-screen bg-gradient-to-br from-bg via-surface to-surface-muted flex">
-      {/* Left Side - Benefits */}
-      <div className="hidden lg:flex flex-1 bg-gradient-to-br from-primary/5 via-maple/5 to-success/5 items-center justify-center p-12 relative overflow-hidden">
-        {/* Background decorations */}
-        <div className="absolute inset-0 overflow-hidden pointer-events-none">
-          <div className="absolute top-20 right-20 w-32 h-32 bg-gradient-to-r from-primary/20 to-accent/20 rounded-lg blur-2xl" />
-          <div className="absolute bottom-20 left-20 w-40 h-40 bg-gradient-to-l from-success/20 to-maple/20 rounded-lg blur-2xl" />
-        </div>
-
-        <div className="max-w-lg relative z-10">
-          <div className="mb-8">
-            <div className="flex items-center gap-2 mb-4">
-              <div className="flex items-center gap-1">
-                {[...Array(5)].map((_, i) => (
-                  <Star key={i} className="w-4 h-4 text-warning fill-current" />
-                ))}
-              </div>
-              <span className="text-sm text-text-muted font-medium">
-                4.9/5 from 2,000+ businesses
-              </span>
-            </div>
-            <h2 className="text-3xl lg:text-4xl font-bold text-text mb-4 leading-tight">
-              Welcome back to Canada's #1 procurement platform
-            </h2>
-            <p className="text-lg text-text-muted leading-relaxed">
-              Join thousands of Canadian businesses already winning government
-              contracts with AI-powered discovery.
-            </p>
-          </div>
-
-          <div className="space-y-6">
-            {benefits.map((benefit, index) => (
-              <div
-                key={index}
-                className="group flex items-start gap-4 p-4 rounded-lg hover:bg-surface/30 transition-all duration-300"
-              >
-                <div className="flex-shrink-0 w-12 h-12 bg-surface/50 rounded-lg flex items-center justify-center group-hover:scale-110 transition-transform duration-300">
-                  {benefit.icon}
-                </div>
-                <div className="flex-1">
-                  <div className="font-semibold text-text mb-1 group-hover:text-primary transition-colors">
-                    {benefit.title}
-                  </div>
-                  <div className="text-sm text-text-muted leading-relaxed">
-                    {benefit.description}
-                  </div>
-                </div>
-                <ArrowRight className="w-4 h-4 text-text-muted opacity-0 group-hover:opacity-100 transition-opacity" />
-              </div>
-            ))}
-          </div>
-
-          <div className="mt-8 p-6 bg-surface/30 backdrop-blur-sm border border-border/50 rounded-lg">
-            <div className="text-text-muted text-sm italic mb-2">
-              "Mapletenders helped us discover and win our first $500K
-              government contract within 30 days."
-            </div>
-            <div className="text-xs text-text-muted font-medium">
-              — Sarah Chen, CEO at BuildTech Solutions
-            </div>
-          </div>
-        </div>
-      </div>
-
-      {/* Right Side - Form */}
-      <div className="flex-1 lg:max-w-md xl:max-w-lg flex items-center justify-center p-8">
-        <div className="w-full max-w-md space-y-8">
+    <div className="min-h-screen bg-gradient-to-br from-bg via-surface to-surface-muted flex items-center justify-center p-8">
+      <div className="w-full max-w-md space-y-8">
           {/* Header */}
           <div className="text-center">
             <div className="inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-maple/10 to-maple/5 text-maple border border-maple/20 rounded-lg text-sm font-medium mb-6">
@@ -277,7 +189,6 @@ export default function SignIn() {
               </Link>
             </p>
           </div>
-        </div>
       </div>
     </div>
   );

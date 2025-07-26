@@ -8,27 +8,25 @@ interface GuestHeaderProps {
 
 export default function GuestHeader({ className = "" }: GuestHeaderProps) {
   return (
-    <header className={`${className} sticky top-4 z-50`} role="banner">
-      <div className="max-w-7xl mx-auto flex items-center justify-between px-6 py-4 bg-surface rounded-lg shadow-sm">
-        {/* Logo/Brand Section */}
-        <div className="flex-shrink-0">
-          <Link
-            to="/"
-            aria-label="Home"
-            className="flex items-center hover:opacity-80 transition-opacity"
-          >
-            <span className="sr-only">Mapletenders Home</span>
-            <LogoTitle />
-          </Link>
-        </div>
-
-        {/* Right Section - Navigation & Auth */}
-        <div className="flex items-center gap-8">
-          <GuestNavigation />
-          <span className="text-accent">|</span>
-          <GuestAuthButtons />
-        </div>
+    <div className={`${className} max-w-7xl mx-auto flex items-center justify-between px-6 pt-10`}>
+      {/* Logo/Brand Section */}
+      <div className="flex-shrink-0">
+        <Link
+          to="/"
+          aria-label="Home"
+          className="flex items-center hover:opacity-80 transition-opacity"
+        >
+          <span className="sr-only">Mapletenders Home</span>
+          <LogoTitle />
+        </Link>
       </div>
-    </header>
+
+      {/* Right Section - Navigation & Auth */}
+      <div className="flex items-center gap-8">
+        <GuestNavigation />
+        <span className="text-accent">|</span>
+        <GuestAuthButtons />
+      </div>
+    </div>
   );
 }

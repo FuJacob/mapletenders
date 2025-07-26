@@ -6,6 +6,7 @@ import {
   ListBullets,
 } from "@phosphor-icons/react";
 import { TenderCard } from "../";
+import LoadingSpinner from "../common/LoadingSpinner";
 import type {
   TenderSearchResult,
   SearchTendersResponse,
@@ -101,12 +102,12 @@ export default function SearchResultsList({
       <div className="flex-1 overflow-y-auto p-4">
         {/* Loading State */}
         {isLoading && (
-          <div className="text-center py-8">
-            <div className="inline-block animate-spin rounded-lg h-6 w-6 border-b-2 border-primary"></div>
-            <p className="mt-3 text-text-muted text-sm">
-              Searching contracts...
-            </p>
-          </div>
+          <LoadingSpinner 
+            variant="inline" 
+            message="Searching contracts..." 
+            size="sm" 
+            showLogo={false}
+          />
         )}
 
         {/* Search Results */}

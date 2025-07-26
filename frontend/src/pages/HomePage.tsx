@@ -1,8 +1,7 @@
 import { useState, useEffect } from "react";
 
 import DashboardStatsGrid from "../components/dashboard/DashboardStatsGrid";
-import RecentActivity from "../components/dashboard/RecentActivity";
-import RecommendedTenders from "../components/dashboard/RecommendedTenders";
+import ActivityAndRecommendations from "../components/dashboard/ActivityAndRecommendations";
 import QuickActionsSidebar from "../components/search/QuickActionsSidebar";
 import UrgentDeadlines from "../components/search/UrgentDeadlines";
 import { getRecommendedTenders } from "../api/tenders";
@@ -12,9 +11,6 @@ import type { TenderSearchResult } from "../api/types";
 import { useAuth } from "../hooks/auth";
 import { HouseIcon } from "@phosphor-icons/react";
 import { PageHeader } from "../components/ui";
-
-// Dashboard view modes
-type DashboardViewMode = "recent" | "recommended";
 
 const mockActivities: Activity[] = [
   {
@@ -94,7 +90,6 @@ const mockDeadlines = [
 
 export default function HomePage() {
   const { profile } = useAuth();
-  const [viewMode, setViewMode] = useState<DashboardViewMode>("recent");
   const [recommendedTenders, setRecommendedTenders] = useState<
     TenderSearchResult[]
   >([]);
@@ -148,39 +143,10 @@ export default function HomePage() {
       {/* Main Content Layout - Flexible Height */}
       <div className="flex gap-6 flex-1 min-h-0">
         {/* Main Content Area - 2/3 width */}
-        <div className="flex-1 bg-surface border border-border rounded-lg flex flex-col min-h-0">
-          {/* Tab Navigation */}
-          <div className="flex border-b border-border flex-shrink-0">
-            <button
-              onClick={() => setViewMode("recent")}
-              className={`px-6 py-3 text-sm font-medium transition-colors ${
-                viewMode === "recent"
-                  ? "text-primary bg-primary/5 border-b-2 border-primary"
-                  : "text-text-muted hover:text-text"
-              }`}
-            >
-              Recent Activity
-            </button>
-            <button
-              onClick={() => setViewMode("recommended")}
-              className={`px-6 py-3 text-sm font-medium transition-colors ${
-                viewMode === "recommended"
-                  ? "text-primary bg-primary/5 border-b-2 border-primary"
-                  : "text-text-muted hover:text-text"
-              }`}
-            >
-              Recommended For You
-            </button>
-          </div>
-          {/* Tab Content - Scrollable */}
-          <div className="flex-1 overflow-y-auto">
-            {viewMode === "recent" ? (
-              <RecentActivity activities={mockActivities} />
-            ) : (
-              <RecommendedTenders tenders={recommendedTenders} />
-            )}
-          </div>
-        </div>
+        <ActivityAndRecommendations
+          activities={mockActivities}
+          tenders={recommendedTenders}
+        />
 
         {/* Sidebar - 1/3 width */}
         <div className="w-1/3 flex flex-col gap-4 min-h-0">

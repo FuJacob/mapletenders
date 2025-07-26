@@ -1,41 +1,44 @@
+import {
+  Disclosure,
+  DisclosureButton,
+  DisclosurePanel,
+} from "@headlessui/react";
+import { CaretDown } from "@phosphor-icons/react";
 const faqs = [
   {
-    question: "How accurate is the AI matching?",
+    question: "How is MapleTenders different from free government sites?",
     answer:
-      "Our AI achieves 95%+ accuracy by analyzing your business capabilities against contract requirements. It understands industry context and technical specifications.",
+      "While government sites list tenders, MapleTenders aggregates everything nationwide and enhances it with AI-powered search, fit scoring, and smart summaries—cutting research time drastically.",
   },
   {
-    question: "Do you cover all Canadian jurisdictions?",
+    question: "What types of businesses benefit most from MapleTenders?",
     answer:
-      "Yes, we monitor federal, provincial, territorial, and municipal opportunities across all of Canada, from major cities to rural communities.",
+      "We’re built for Canadian SMEs across industries—construction, IT, consulting, logistics—who regularly or occasionally bid on government work and want a smarter, faster way to find and assess opportunities.",
   },
   {
-    question: "How quickly are new contracts added?",
+    question: "How does the AI determine fit or relevance?",
     answer:
-      "We scan for new opportunities every hour. Most contracts appear in your results within 2-4 hours of government posting.",
+      "Our AI analyzes tender documents using natural language understanding and compares them to your saved business profile—skills, certifications, past projects—to score relevance and risk level.",
   },
   {
-    question: "Can I try before purchasing?",
+    question: "Is this compliant with federal procurement regulations?",
     answer:
-      "Yes, start with a 14-day free trial - no credit card required. Experience the full platform and measure the impact on your procurement process.",
-    grow: 2,
+      "Yes. MapleTenders only indexes publicly available data and respects all Canadian privacy and procurement data handling requirements.",
   },
   {
-    question: "Can I try before purchasing?",
+    question: "How frequently is the data updated?",
     answer:
-      "Yes, start with a 14-day free trial - no credit card required. Experience the full platform and measure the impact on your procurement process.",
-    grow: 3,
+      "Every 30 minutes. We scan federal, provincial, and municipal portals and update listings so you never miss a window.",
   },
   {
-    question: "Can I try before purchasing?",
+    question: "Do I need technical expertise to use it?",
     answer:
-      "Yes, start with a 14-day free trial - no credit card required. Experience the full platform and measure the impact on your procurement process.",
-    grow: 2,
+      "No. MapleTenders is designed for non-technical users. You get intuitive search, filters, and dashboards without needing to understand procurement jargon.",
   },
   {
-    question: "Can I try before purchasing?",
+    question: "Is there a free trial?",
     answer:
-      "Yes, start with a 14-day free trial - no credit card required. Experience the full platform and measure the impact on your procurement process.",
+      "Yes, we offer a 14-day free trial with full access—no credit card required. It’s the easiest way to see the impact on your workflow.",
   },
 ];
 
@@ -43,7 +46,7 @@ export default function FAQSection() {
   return (
     <section className="bg-primary">
       <div className="py-20 px-6 bg-surface">
-        <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-3 gap-6">
+        <div className="max-w-4xl mx-auto flex flex-col gap-6">
           <div className="flex flex-col gap-4 justify-center text-center lg:text-left">
             <h2 className="text-3xl sm:text-4xl lg:text-5xl font-semibold text-accent mb-2">
               Frequently Asked Questions
@@ -52,26 +55,29 @@ export default function FAQSection() {
               Everything you need to know about MapleTenders
             </p>
           </div>
-
-          {faqs.map((faq, index) => (
-            <div
-              key={index}
-              className={`border border-border rounded-lg p-4 sm:p-6 ${
-                faq.grow && faq.grow === 2
-                  ? "lg:col-span-2"
-                  : faq.grow === 3
-                  ? "lg:col-span-3"
-                  : "lg:col-span-1"
-              }`}
-            >
-              <h3 className="text-base sm:text-lg font-semibold text-text mb-2 sm:mb-3">
-                {faq.question}
-              </h3>
-              <p className="text-sm sm:text-base text-text-muted leading-relaxed">
-                {faq.answer}
-              </p>
-            </div>
-          ))}
+          <div className="lg:col-span-2 lg:col-start-2 flex flex-col gap-4">
+            {faqs.map((faq, index) => (
+              <Disclosure key={index}>
+                {({ open }) => (
+                  <div
+                    className={`border border-border rounded-lg overflow-hidden transition-all ${
+                      open ? "bg-surface-muted" : "bg-surface"
+                    }`}
+                  >
+                    <DisclosureButton className="w-full text-left px-4 py-3 sm:px-6 sm:py-4 text-base sm:text-lg font-medium text-text focus:outline-none focus-visible:ring focus-visible:ring-primary">
+                      <div className="flex items-center justify-between">
+                        <span>{faq.question}</span>
+                        <CaretDown className="w-4 h-4" />
+                      </div>
+                    </DisclosureButton>
+                    <DisclosurePanel className="px-4 pb-4 sm:px-6 sm:pb-6 text-sm sm:text-base text-text-muted leading-relaxed">
+                      {faq.answer}
+                    </DisclosurePanel>
+                  </div>
+                )}
+              </Disclosure>
+            ))}
+          </div>
         </div>
       </div>
     </section>

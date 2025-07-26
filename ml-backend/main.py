@@ -1,5 +1,5 @@
 from fastapi import FastAPI
-from routers import embeddings, recommendations, data, rfp, elasticsearch
+from routers import embeddings, data, rfp, elasticsearch, format
 import uvicorn
 
 app = FastAPI(
@@ -10,7 +10,7 @@ app = FastAPI(
 
 # Include routers
 app.include_router(embeddings.router)
-app.include_router(recommendations.router)
+app.include_router(format.router)
 app.include_router(data.router)
 app.include_router(rfp.router)
 app.include_router(elasticsearch.router)

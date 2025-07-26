@@ -1,4 +1,3 @@
-import { Link } from "react-router-dom";
 import { Bookmark } from "@phosphor-icons/react";
 import { TenderCard } from "../tenders";
 import { type Database } from "../../../database.types";
@@ -9,11 +8,13 @@ import { getTendersFromBookmarkIds } from "../../api/tenders";
 interface BookmarkedTendersProps {
   bookmarks: Bookmark[];
   loading?: boolean;
+  setSelectedTender: (tenderId: string) => void;
 }
 
 export default function BookmarkedTenders({
   bookmarks,
   loading = false,
+  setSelectedTender,
 }: BookmarkedTendersProps) {
   const [tenders, setTenders] = useState<Tender[]>([]);
 
@@ -29,16 +30,10 @@ export default function BookmarkedTenders({
     fetchTenders();
   }, [bookmarks]);
   return (
-    <div className="bg-surface border border-border rounded-lg p-6 h-[1200px] flex flex-col">
-      <div className="flex items-center justify-between mb-6">
-        <h2 className="text-xl font-semibold text-text">Bookmarked Tenders</h2>
-        <Link
-          to="/bookmarks"
-          className="text-primary hover:text-primary-dark text-sm font-medium"
-        >
-          View all →
-        </Link>
-      </div>
+    <div className="bg-surface border border-border rounded-lg p-6 flex flex-col h-full overflow-y-auto">
+      <h2 className="text-xl font-semibold text-text mb-6">
+        Bookmarked Tenders
+      </h2>
       <div className="flex-1 overflow-y-auto space-y-4">
         {loading ? (
           <div className="flex flex-col items-center justify-center h-full text-center">
@@ -49,7 +44,11 @@ export default function BookmarkedTenders({
           </div>
         ) : tenders.length > 0 ? (
           tenders.map((tender) => (
-            <TenderCard key={tender.id} tender={tender} />
+            <TenderCard
+              key={tender.id}
+              tender={tender}
+              setSelectedTender={() => setSelectedTender(tender.id)}
+            />
           ))
         ) : (
           <div className="flex flex-col items-center justify-center h-full text-center">

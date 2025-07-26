@@ -7,14 +7,12 @@ import UpdatePassword from "./pages/UpdatePassword";
 import Onboarding from "./pages/Onboarding";
 import Profile from "./pages/Profile";
 import TenderNotice from "./pages/TenderNoticePage";
-import Pricing from "./pages/Pricing";
 import About from "./pages/About";
 import Contact from "./pages/Contact";
 import Home from "./pages/Home";
 import RfpAnalysis from "./pages/RfpAnalysis";
 import SubscriptionSuccess from "./pages/SubscriptionSuccess";
 import SubscriptionCancel from "./pages/SubscriptionCancel";
-import PlansAppPage from "./pages/PlansAppPage";
 import AnalyticsPage from "./pages/AnalyticsPage";
 import GuestRoutes from "./routes/GuestRoutes";
 import ProtectedRoutes from "./routes/ProtectedRoutes";
@@ -59,7 +57,6 @@ export function App() {
           <Route path="/update-password" element={<UpdatePassword />} />
           <Route path="/about" element={<About />} />
           <Route path="/contact" element={<Contact />} />
-          <Route path="/pricing" element={<Pricing />} />
           <Route
             path="/subscription/success"
             element={<SubscriptionSuccess />}
@@ -77,8 +74,7 @@ export function App() {
             <Route path="/calendar" element={<CalendarPage />} />
             <Route path="/bookmarks" element={<BookmarksPage />} />
             <Route path="/analytics" element={<AnalyticsPage />} />
-            <Route path="/profile" element={<Profile />} />
-            <Route path="/plans" element={<PlansAppPage />} />
+            <Route path="/profile" element={<Profile />} /> 
             <Route path="/tender-notice/:tenderId" element={<TenderNotice />} />
           </Route>
           <Route path="/onboarding" element={<Onboarding />} />
