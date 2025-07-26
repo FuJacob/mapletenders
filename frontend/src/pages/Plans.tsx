@@ -1,11 +1,12 @@
 import { LandingPageContainer } from "../components/layout";
-import PricingSection from "../components/pricing/PricingSection";
 
 export default function Plans() {
 
   return (
     <LandingPageContainer>
-      <PricingSection />
+      <div className="flex flex-col items-center justify-center h-full">
+        <h1 className="text-4xl font-bold">Plans</h1>
+      </div>
     </LandingPageContainer>
   );
 }
