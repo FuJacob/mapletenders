@@ -10,15 +10,15 @@ services:
       - ./backend:/app
       - backend_node_modules:/app/node_modules
     command: node dist/server.js
-    develop:
-      watch:
-        - path: ./backend/src
-          target: /app/src
-          ignore:
-            - node_modules/
-          action: sync
-        - path: ./backend/package.json
-          action: rebuild
+    # develop:
+    #   watch:
+    #     - path: ./backend/src
+    #       target: /app/src
+    #       ignore:
+    #         - node_modules/
+    #       action: sync
+    #     - path: ./backend/package.json
+    #       action: rebuild
 
   ml-backend:
     build: ./ml-backend
@@ -29,15 +29,15 @@ services:
     volumes:
       - ./ml-backend:/app
       - ml_backend_node_modules:/app/node_modules
-    develop:
-      watch:
-        - path: ./ml-backend/src
-          target: /app/src
-          ignore:
-            - node_modules/
-          action: sync
-        - path: ./ml-backend/package.json
-          action: rebuild
+    # develop:
+    #   watch:
+    #     - path: ./ml-backend/src
+    #       target: /app/src
+    #       ignore:
+    #         - node_modules/
+    #       action: sync
+    #     - path: ./ml-backend/package.json
+    #       action: rebuild
 
 
   # frontend:
