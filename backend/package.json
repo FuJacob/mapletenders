@@ -12,6 +12,7 @@
     "puppeteer": "^24.12.1",
     "puppeteer-extra": "^3.3.6",
     "puppeteer-extra-plugin-stealth": "^2.11.2",
+    "resend": "^4.7.0",
     "stripe": "^18.3.0",
     "xlsx": "^0.18.5"
   },

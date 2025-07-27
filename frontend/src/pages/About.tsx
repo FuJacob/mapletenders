@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom";
 import { LandingPageContainer } from "../components/layout";
+import { SEOHead } from "../components/ui/SEOHead";
 import {
   Lightning,
   Target,
@@ -17,6 +18,20 @@ import {
 } from "@phosphor-icons/react";
 
 export default function About() {
+  return (
+    <>
+      <SEOHead
+        title="About Mapletenders - Canada's Premier Procurement Intelligence Platform"
+        description="Learn about Mapletenders, the AI-powered platform helping Canadian businesses discover and win government contracts. Our mission is to democratize access to public sector opportunities across federal, provincial, and municipal levels."
+        canonicalUrl="https://mapletenders.ca/about"
+        keywords="about mapletenders, canadian procurement platform, government tender discovery, public sector contracts, AI procurement intelligence, canadian business opportunities"
+      />
+      <AboutContent />
+    </>
+  );
+}
+
+function AboutContent() {
   const teamMembers = [
     {
       name: "Sarah Chen",

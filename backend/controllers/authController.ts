@@ -1,5 +1,6 @@
 import { Request, Response } from "express";
 import { DatabaseService } from "../services";
+import emailService from "../services/emailService";
 
 export class AuthController {
   constructor(private databaseService: DatabaseService) {}
@@ -15,6 +16,16 @@ export class AuthController {
       }
 
       const data = await this.databaseService.signUpUser(email, password);
+      
+      // Send welcome email
+      try {
+        const userName = data.user?.user_metadata?.full_name || email.split('@')[0];
+        await emailService.sendWelcomeEmail(email, userName);
+      } catch (emailError) {
+        console.error('Failed to send welcome email:', emailError);
+        // Don't fail the signup if email fails
+      }
+      
       res.json(data);
     } catch (error: any) {
       console.error("Error in signUp:", error);
@@ -75,6 +86,15 @@ export class AuthController {
         `${process.env.FRONTEND_URL}/update-password`
       );
 
+      // Send custom password reset email via Resend
+      try {
+        // Use the frontend URL for password reset (Supabase handles the token via email)
+        const resetLink = `${process.env.FRONTEND_URL}/update-password`;
+        await emailService.sendPasswordResetEmail(email, resetLink);
+      } catch (emailError) {
+        console.error('Failed to send password reset email via Resend:', emailError);
+      }
+
       res.json({
         message: "Password reset email sent successfully",
         data,
@@ -116,6 +136,43 @@ export class AuthController {
       console.error("Error in updatePassword:", error);
       res.status(400).json({
         error: error.message || "Failed to update password",
+      });
+    }
+  };
+
+  changePassword = async (req: Request, res: Response) => {
+    try {
+      const { currentPassword, newPassword } = req.body;
+      const authHeader = req.headers.authorization;
+
+      if (!currentPassword || !newPassword) {
+        return res.status(400).json({
+          error: "Current password and new password are required",
+        });
+      }
+
+      if (!authHeader || !authHeader.startsWith("Bearer ")) {
+        return res.status(401).json({
+          error: "Authentication required",
+        });
+      }
+
+      const token = authHeader.split(" ")[1];
+      
+      const data = await this.databaseService.changeUserPassword(
+        token,
+        currentPassword,
+        newPassword
+      );
+
+      res.json({
+        message: "Password changed successfully",
+        data,
+      });
+    } catch (error: any) {
+      console.error("Error in changePassword:", error);
+      res.status(400).json({
+        error: error.message || "Failed to change password",
       });
     }
   };

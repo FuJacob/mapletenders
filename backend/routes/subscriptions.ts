@@ -4,7 +4,7 @@ import express from "express";
 import { authenticateUser } from "../middleware/authenticateUser";
 
 const router = Router();
-router.use(authenticateUser);
+
 /**
  * Create checkout session for subscription
  * @route POST /subscriptions/checkout
@@ -14,8 +14,9 @@ router.use(authenticateUser);
  * @param {string} req.body.email - User email
  * @param {string} req.body.name - User name (optional)
  * @returns {Object} Checkout session ID and URL
+ * @access Private - requires authentication
  */
-router.post("/checkout", (req, res) => {
+router.post("/checkout", authenticateUser, (req, res) => {
   subscriptionController.createCheckoutSession(req, res);
 });
 
@@ -24,8 +25,9 @@ router.post("/checkout", (req, res) => {
  * @route GET /subscriptions/user/:userId
  * @param {string} req.params.userId - User ID
  * @returns {Object} User subscription data
+ * @access Private - requires authentication
  */
-router.get("/user/:userId", (req, res) => {
+router.get("/user/:userId", authenticateUser, (req, res) => {
   subscriptionController.getUserSubscription(req, res);
 });
 
@@ -34,8 +36,9 @@ router.get("/user/:userId", (req, res) => {
  * @route GET /subscriptions/status/:userId
  * @param {string} req.params.userId - User ID
  * @returns {Object} Subscription status and details
+ * @access Private - requires authentication
  */
-router.get("/status/:userId", (req, res) => {
+router.get("/status/:userId", authenticateUser, (req, res) => {
   subscriptionController.checkSubscriptionStatus(req, res);
 });
 
@@ -44,8 +47,9 @@ router.get("/status/:userId", (req, res) => {
  * @route DELETE /subscriptions/user/:userId
  * @param {string} req.params.userId - User ID
  * @returns {Object} Cancellation confirmation
+ * @access Private - requires authentication
  */
-router.delete("/user/:userId", (req, res) => {
+router.delete("/user/:userId", authenticateUser, (req, res) => {
   subscriptionController.cancelSubscription(req, res);
 });
 
@@ -54,8 +58,9 @@ router.delete("/user/:userId", (req, res) => {
  * @route POST /subscriptions/billing-portal/:userId
  * @param {string} req.params.userId - User ID
  * @returns {Object} Billing portal URL
+ * @access Private - requires authentication
  */
-router.post("/billing-portal/:userId", (req, res) => {
+router.post("/billing-portal/:userId", authenticateUser, (req, res) => {
   subscriptionController.createBillingPortalSession(req, res);
 });
 
@@ -63,6 +68,7 @@ router.post("/billing-portal/:userId", (req, res) => {
  * Get all available plans
  * @route GET /subscriptions/plans
  * @returns {Array} List of subscription plans
+ * @access Public - Available to all users for pricing display
  */
 router.get("/plans", (req, res) => {
   subscriptionController.getPlans(req, res);
@@ -74,8 +80,12 @@ router.get("/plans", (req, res) => {
  * @param {Object} req.body - Stripe webhook event
  * @returns {Object} Webhook processing confirmation
  */
-router.post("/webhook", express.raw({ type: "application/json" }), (req, res) => {
-  subscriptionController.handleWebhook(req, res);
-});
+router.post(
+  "/webhook",
+  express.raw({ type: "application/json" }),
+  (req, res) => {
+    subscriptionController.handleWebhook(req, res);
+  }
+);
 
 export default router;

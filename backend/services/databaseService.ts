@@ -518,6 +518,56 @@ export class DatabaseService {
     }
   }
 
+  async changeUserPassword(accessToken: string, currentPassword: string, newPassword: string) {
+    try {
+      // Set the session with the access token first
+      const { data: sessionData, error: sessionError } =
+        await this.supabase.auth.setSession({
+          access_token: accessToken,
+          refresh_token: "", // Will be handled by Supabase
+        });
+
+      if (sessionError) {
+        console.error("Error setting session for password change:", sessionError);
+        throw sessionError;
+      }
+
+      // Get the current user
+      const { data: user, error: userError } = await this.supabase.auth.getUser();
+      
+      if (userError || !user.user) {
+        console.error("Error getting user:", userError);
+        throw new Error("User not found or session invalid");
+      }
+
+      // Verify current password by attempting to sign in with it
+      const { error: verifyError } = await this.supabase.auth.signInWithPassword({
+        email: user.user.email!,
+        password: currentPassword,
+      });
+
+      if (verifyError) {
+        console.error("Current password verification failed:", verifyError);
+        throw new Error("Current password is incorrect");
+      }
+
+      // Update the password
+      const { data, error } = await this.supabase.auth.updateUser({
+        password: newPassword,
+      });
+
+      if (error) {
+        console.error("Error changing password:", error);
+        throw error;
+      }
+
+      return data;
+    } catch (error) {
+      console.error("Failed to change password:", error);
+      throw error;
+    }
+  }
+
   // Profile methods
   async createOrUpdateProfile(
     profileData:

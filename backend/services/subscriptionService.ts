@@ -1,5 +1,6 @@
 import Stripe from "stripe";
 import { DatabaseService } from "./databaseService";
+import emailService from "./emailService";
 import type { Database } from "../database.types";
 
 type SubscriptionRow = Database["public"]["Tables"]["subscriptions"]["Row"];
@@ -292,6 +293,29 @@ export class SubscriptionService {
         (subscription as any).current_period_start,
         (subscription as any).current_period_end
       );
+
+      // Send subscription confirmation email if it's a new active subscription
+      if (subscription.status === 'active' && subscription.metadata.user_id) {
+        try {
+          const customer = await this.stripe.customers.retrieve(subscription.customer as string) as Stripe.Customer;
+          const plan = await this.getPlan(subscription.metadata.plan_id || '');
+          
+          if (customer.email && plan) {
+            const billingCycle = subscription.items.data[0]?.price?.recurring?.interval === 'year' ? 'yearly' : 'monthly';
+            const amount = billingCycle === 'yearly' ? plan.price_yearly : plan.price_monthly;
+            
+            await emailService.sendSubscriptionConfirmationEmail(
+              customer.email,
+              customer.name || customer.email.split('@')[0],
+              plan.name,
+              billingCycle,
+              amount
+            );
+          }
+        } catch (emailError) {
+          console.error('Failed to send subscription confirmation email:', emailError);
+        }
+      }
     } catch (error) {
       console.error("Error handling subscription updated webhook:", error);
       throw error;
@@ -318,6 +342,23 @@ export class SubscriptionService {
           (invoice as any).subscription as string
         );
         await this.handleSubscriptionUpdated(stripeSubscription);
+
+        // Send invoice email
+        try {
+          const customer = await this.stripe.customers.retrieve(invoice.customer as string) as Stripe.Customer;
+          
+          if (customer.email && invoice.invoice_pdf && invoice.number) {
+            await emailService.sendInvoiceEmail(
+              customer.email,
+              customer.name || customer.email.split('@')[0],
+              invoice.invoice_pdf,
+              invoice.amount_paid / 100, // Convert from cents
+              invoice.number
+            );
+          }
+        } catch (emailError) {
+          console.error('Failed to send invoice email:', emailError);
+        }
       }
     } catch (error) {
       console.error("Error handling invoice payment succeeded webhook:", error);

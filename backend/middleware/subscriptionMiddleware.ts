@@ -3,9 +3,8 @@ import { SubscriptionService } from "../services/subscriptionService";
 import { DatabaseService } from "../services/databaseService";
 
 interface AuthenticatedRequest extends Request {
-  user?: {
-    id: string;
-    email: string;
+  headers: Request["headers"] & {
+    userId?: string;
   };
 }
 
@@ -68,10 +67,10 @@ export class SubscriptionMiddleware {
     next: NextFunction
   ) => {
     try {
-      const userId = req.user?.id || req.body.userId || req.params.userId;
+      const userId = req.headers.userId || req.body.userId || req.params.userId;
 
       if (!userId) {
-        return res.status(401).json({
+        res.status(401).json({
           error: "User authentication required",
           code: "AUTH_REQUIRED",
         });
@@ -81,7 +80,7 @@ export class SubscriptionMiddleware {
         await this.subscriptionService.hasActiveSubscription(userId);
 
       if (!hasActiveSubscription) {
-        return res.status(403).json({
+        res.status(403).json({
           error: "Active subscription required",
           code: "SUBSCRIPTION_REQUIRED",
           message:
@@ -107,10 +106,11 @@ export class SubscriptionMiddleware {
       next: NextFunction
     ) => {
       try {
-        const userId = req.user?.id || req.body.userId || req.params.userId;
+        const userId =
+          req.headers.userId || req.body.userId || req.params.userId;
 
         if (!userId) {
-          return res.status(401).json({
+          res.status(401).json({
             error: "User authentication required",
             code: "AUTH_REQUIRED",
           });
@@ -121,22 +121,24 @@ export class SubscriptionMiddleware {
         );
 
         if (!subscription) {
-          return res.status(403).json({
+          res.status(403).json({
             error: "Subscription required",
             code: "SUBSCRIPTION_REQUIRED",
             message:
               "This feature requires a subscription. Please choose a plan.",
           });
+          return;
         }
 
         // Check if subscription is active
         if (!["active", "trialing"].includes(subscription.status)) {
-          return res.status(403).json({
+          res.status(403).json({
             error: "Active subscription required",
             code: "SUBSCRIPTION_INACTIVE",
             message:
               "Your subscription is not active. Please update your payment method.",
           });
+          return;
         }
 
         // Get plan limits based on plan name
@@ -145,20 +147,22 @@ export class SubscriptionMiddleware {
           : null;
 
         if (!planLimits) {
-          return res.status(500).json({
+          res.status(500).json({
             error: "Unable to determine plan limits",
             code: "PLAN_LIMITS_ERROR",
           });
+          return;
         }
 
         // Check if feature is available in this plan
         if (planLimits[feature as keyof typeof planLimits] === false) {
-          return res.status(403).json({
+          res.status(403).json({
             error: "Feature not available in your plan",
             code: "FEATURE_NOT_AVAILABLE",
             message: `This feature is not available in your current plan. Please upgrade to access ${feature}.`,
             feature,
           });
+          return;
         }
 
         // Add plan limits to request for usage tracking
@@ -184,13 +188,15 @@ export class SubscriptionMiddleware {
       next: NextFunction
     ) => {
       try {
-        const userId = req.user?.id || req.body.userId || req.params.userId;
+        const userId =
+          req.headers.userId || req.body.userId || req.params.userId;
 
         if (!userId) {
-          return res.status(401).json({
+          res.status(401).json({
             error: "User authentication required",
             code: "AUTH_REQUIRED",
           });
+          return;
         }
 
         const subscription = await this.subscriptionService.getUserSubscription(
@@ -198,10 +204,11 @@ export class SubscriptionMiddleware {
         );
 
         if (!subscription) {
-          return res.status(403).json({
+          res.status(403).json({
             error: "Subscription required",
             code: "SUBSCRIPTION_REQUIRED",
           });
+          return;
         }
 
         const planLimits = subscription.plan_id
@@ -251,10 +258,10 @@ export class SubscriptionMiddleware {
     next: NextFunction
   ) => {
     try {
-      const userId = req.user?.id || req.body.userId || req.params.userId;
+      const userId = req.headers.userId || req.body.userId || req.params.userId;
 
       if (!userId) {
-        return res.status(401).json({
+        res.status(401).json({
           error: "User authentication required",
           code: "AUTH_REQUIRED",
         });

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, memo } from "react";
 import { useNavigate } from "react-router-dom";
 import {
   Bookmark,
@@ -23,7 +23,7 @@ interface TenderCardProps {
   setSelectedTender?: (tenderId: string) => void;
 }
 
-export function TenderCard({
+const TenderCard = memo(function TenderCard({
   tender,
   compact = false,
   onBookmarkToggle,
@@ -420,4 +420,6 @@ export function TenderCard({
       </div>
     </div>
   );
-}
+});
+
+export { TenderCard };

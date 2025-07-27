@@ -49,7 +49,7 @@ export class AiController {
       const { tenderId, tenderData } = req.body;
 
       if (!tenderId || !tenderData) {
-        return res.status(400).json({
+        res.status(400).json({
           error: "tenderId and tenderData are required",
         });
       }
@@ -61,7 +61,7 @@ export class AiController {
       if (existingSummary) {
         console.log(`Using cached summary for tender ${tenderId}`);
         console.log("Existing summary:", existingSummary);
-        return res.json({ summary: existingSummary });
+        res.json({ summary: existingSummary });
       }
 
       // Generate new summaryw
@@ -80,7 +80,7 @@ export class AiController {
         parsedSummary = JSON.parse(result.summary);
       } catch (error) {
         console.error("Failed to parse AI summary JSON:", error);
-        return res.status(500).json({ error: "Failed to parse AI summary" });
+        res.status(500).json({ error: "Failed to parse AI summary" });
       }
 
       // Save to database

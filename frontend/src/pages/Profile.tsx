@@ -6,11 +6,22 @@ import {
   CheckCircle,
   Clock,
   PersonIcon,
+  Lightning,
+  ArrowUp,
+  ArrowDown,
+  GearSix,
 } from "@phosphor-icons/react";
 import { useAuth } from "../hooks/auth";
 import { useAppDispatch } from "../app/hooks";
 import { updateProfile } from "../features/auth/authThunks";
 import { useSubscription } from "../hooks/useSubscription";
+import { 
+  getPlans, 
+  createCheckoutSession, 
+  createBillingPortalSession,
+  type Plan 
+} from "../api/subscriptions";
+import { changePassword, resetPassword } from "../api/auth";
 
 import LoadingSpinner from "../components/common/LoadingSpinner";
 import {
@@ -34,6 +45,19 @@ export default function Profile() {
 
   const [isEditing, setIsEditing] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [plans, setPlans] = useState<Plan[]>([]);
+  const [plansLoading, setPlansLoading] = useState(true);
+  const [upgradeLoading, setUpgradeLoading] = useState<string | null>(null);
+  const [billingLoading, setBillingLoading] = useState(false);
+  const [passwordLoading, setPasswordLoading] = useState(false);
+  const [showPasswordChange, setShowPasswordChange] = useState(false);
+  const [passwordData, setPasswordData] = useState({
+    currentPassword: "",
+    newPassword: "",
+    confirmPassword: "",
+  });
+  const [passwordError, setPasswordError] = useState("");
+  const [passwordSuccess, setPasswordSuccess] = useState("");
 
   // Form data initialized with profile data
   const [formData, setFormData] = useState({
@@ -60,6 +84,21 @@ export default function Profile() {
       });
     }
   }, [profile]);
+
+  // Fetch available plans
+  useEffect(() => {
+    const fetchPlans = async () => {
+      try {
+        const fetchedPlans = await getPlans();
+        setPlans(fetchedPlans);
+      } catch (error) {
+        console.error("Error fetching plans:", error);
+      } finally {
+        setPlansLoading(false);
+      }
+    };
+    fetchPlans();
+  }, []);
 
   const handleServiceToggle = (service: string) => {
     setFormData((prev) => ({
@@ -110,6 +149,116 @@ export default function Profile() {
       });
     }
     setIsEditing(false);
+  };
+
+  // Handle plan upgrade/downgrade
+  const handlePlanChange = async (newPlan: Plan, billingCycle: "monthly" | "yearly") => {
+    if (!user) return;
+
+    setUpgradeLoading(newPlan.id);
+    try {
+      const response = await createCheckoutSession(
+        newPlan.id,
+        billingCycle,
+        user.id,
+        user.email || "",
+        user.user_metadata?.full_name || ""
+      );
+
+      if (response.error) {
+        console.error("Checkout error:", response.error);
+        alert("Something went wrong. Please try again.");
+      } else if (response.url) {
+        window.location.href = response.url;
+      }
+    } catch (error) {
+      console.error("Plan change error:", error);
+      alert("Something went wrong. Please try again.");
+    } finally {
+      setUpgradeLoading(null);
+    }
+  };
+
+  // Handle billing portal
+  const handleManageBilling = async () => {
+    if (!user) return;
+
+    setBillingLoading(true);
+    try {
+      const response = await createBillingPortalSession(user.id);
+      
+      if (response.error) {
+        console.error("Billing portal error:", response.error);
+        alert("Something went wrong. Please try again.");
+      } else if (response.url) {
+        window.location.href = response.url;
+      }
+    } catch (error) {
+      console.error("Billing portal error:", error);
+      alert("Something went wrong. Please try again.");
+    } finally {
+      setBillingLoading(false);
+    }
+  };
+
+  // Handle password change
+  const handlePasswordChange = async () => {
+    if (!passwordData.currentPassword || !passwordData.newPassword || !passwordData.confirmPassword) {
+      setPasswordError("All password fields are required");
+      return;
+    }
+
+    if (passwordData.newPassword !== passwordData.confirmPassword) {
+      setPasswordError("New passwords do not match");
+      return;
+    }
+
+    if (passwordData.newPassword.length < 6) {
+      setPasswordError("New password must be at least 6 characters");
+      return;
+    }
+
+    setPasswordLoading(true);
+    setPasswordError("");
+    setPasswordSuccess("");
+
+    try {
+      const response = await changePassword(passwordData.currentPassword, passwordData.newPassword);
+      
+      if (response.error) {
+        setPasswordError(response.error);
+      } else {
+        setPasswordSuccess("Password changed successfully!");
+        setPasswordData({
+          currentPassword: "",
+          newPassword: "",
+          confirmPassword: "",
+        });
+        setShowPasswordChange(false);
+      }
+    } catch (error) {
+      console.error("Password change error:", error);
+      setPasswordError("Something went wrong. Please try again.");
+    } finally {
+      setPasswordLoading(false);
+    }
+  };
+
+  // Handle password reset
+  const handlePasswordReset = async () => {
+    if (!user?.email) return;
+
+    try {
+      const response = await resetPassword(user.email);
+      if (response.error) {
+        setPasswordError(response.error);
+      } else {
+        setPasswordSuccess("Password reset email sent! Check your inbox.");
+      }
+    } catch (error) {
+      console.error("Password reset error:", error);
+      setPasswordError("Something went wrong. Please try again.");
+    }
   };
 
   // Helper functions for plan display
@@ -252,8 +401,14 @@ export default function Profile() {
                       </span>
                     </div>
                   </div>
+                  <div className="flex justify-between items-center py-3 border-b border-border">
+                    <span className="text-text-muted font-medium">Billing Cycle</span>
+                    <span className="font-medium text-text capitalize">
+                      {subscription.billing_cycle}
+                    </span>
+                  </div>
                   {subscription.current_period_end && (
-                    <div className="flex justify-between items-center py-3">
+                    <div className="flex justify-between items-center py-3 border-b border-border">
                       <span className="text-text-muted font-medium">
                         Next Billing
                       </span>
@@ -262,6 +417,73 @@ export default function Profile() {
                       </span>
                     </div>
                   )}
+                  
+                  {/* Plan Management Actions */}
+                  <div className="pt-4 space-y-3">
+                    <button
+                      onClick={handleManageBilling}
+                      disabled={billingLoading}
+                      className="w-full flex items-center justify-center gap-2 px-4 py-3 border border-border rounded-lg hover:bg-surface-muted transition-colors disabled:opacity-50"
+                    >
+                      {billingLoading ? (
+                        <>
+                          <Lightning className="w-4 h-4 animate-pulse" />
+                          Loading...
+                        </>
+                      ) : (
+                        <>
+                          <GearSix className="w-4 h-4" />
+                          Manage Billing
+                        </>
+                      )}
+                    </button>
+                    
+                    {/* Show upgrade options if not on highest plan */}
+                    {!plansLoading && plans.length > 0 && (
+                      <div className="space-y-2">
+                        <p className="text-sm font-medium text-text-muted">Available Plans:</p>
+                        {plans
+                          .filter(plan => plan.id !== subscription.plan_id)
+                          .map((plan) => {
+                            const currentPlan = plans.find(p => p.id === subscription.plan_id);
+                            const isUpgrade = currentPlan && plan.price_monthly > currentPlan.price_monthly;
+                            const isProcessing = upgradeLoading === plan.id;
+                            
+                            return (
+                              <button
+                                key={plan.id}
+                                onClick={() => handlePlanChange(plan, subscription.billing_cycle as "monthly" | "yearly")}
+                                disabled={isProcessing}
+                                className="w-full flex items-center justify-between p-3 border border-border rounded-lg hover:border-primary/20 transition-colors disabled:opacity-50"
+                              >
+                                <div className="flex items-center gap-3">
+                                  {isUpgrade ? (
+                                    <ArrowUp className="w-4 h-4 text-success" />
+                                  ) : (
+                                    <ArrowDown className="w-4 h-4 text-warning" />
+                                  )}
+                                  <div className="text-left">
+                                    <div className="font-medium text-text">{plan.name}</div>
+                                    <div className="text-sm text-text-muted">
+                                      ${subscription.billing_cycle === "yearly" 
+                                        ? Math.round(plan.price_yearly / 12) 
+                                        : plan.price_monthly}/month
+                                    </div>
+                                  </div>
+                                </div>
+                                {isProcessing ? (
+                                  <Lightning className="w-4 h-4 animate-pulse text-primary" />
+                                ) : (
+                                  <span className="text-sm text-primary font-medium">
+                                    {isUpgrade ? "Upgrade" : "Downgrade"}
+                                  </span>
+                                )}
+                              </button>
+                            );
+                          })}
+                      </div>
+                    )}
+                  </div>
                 </div>
               )}
             </div>
@@ -589,16 +811,123 @@ export default function Profile() {
                 <label className="block text-sm font-medium text-text-muted mb-3">
                   Password
                 </label>
-                <div className="flex gap-3">
-                  <input
-                    type="password"
-                    value="••••••••"
-                    disabled
-                    className="flex-1 px-4 py-3 border border-border rounded-lg bg-surface-muted text-text-muted"
-                  />
-                  <button className="px-6 py-3 text-sm border border-border rounded-lg hover:bg-surface-muted transition-colors font-medium">
-                    Change
-                  </button>
+                <div className="space-y-3">
+                  <div className="flex gap-3">
+                    <input
+                      type="password"
+                      value="••••••••"
+                      disabled
+                      className="flex-1 px-4 py-3 border border-border rounded-lg bg-surface-muted text-text-muted"
+                    />
+                    <button
+                      onClick={() => setShowPasswordChange(!showPasswordChange)}
+                      className="px-6 py-3 text-sm border border-border rounded-lg hover:bg-surface-muted transition-colors font-medium"
+                    >
+                      Change
+                    </button>
+                    <button
+                      onClick={handlePasswordReset}
+                      className="px-6 py-3 text-sm border border-border rounded-lg hover:bg-surface-muted transition-colors font-medium text-primary"
+                    >
+                      Reset
+                    </button>
+                  </div>
+                  
+                  {/* Password Change Form */}
+                  {showPasswordChange && (
+                    <div className="border border-border rounded-lg p-4 space-y-4 bg-surface-muted">
+                      <h4 className="font-medium text-text">Change Password</h4>
+                      
+                      {passwordError && (
+                        <div className="p-3 bg-error/10 border border-error/20 text-error rounded-lg text-sm">
+                          {passwordError}
+                        </div>
+                      )}
+                      
+                      {passwordSuccess && (
+                        <div className="p-3 bg-success/10 border border-success/20 text-success rounded-lg text-sm">
+                          {passwordSuccess}
+                        </div>
+                      )}
+                      
+                      <div>
+                        <label className="block text-sm font-medium text-text-muted mb-2">
+                          Current Password
+                        </label>
+                        <input
+                          type="password"
+                          value={passwordData.currentPassword}
+                          onChange={(e) =>
+                            setPasswordData((prev) => ({
+                              ...prev,
+                              currentPassword: e.target.value,
+                            }))
+                          }
+                          className="w-full px-4 py-3 border border-border rounded-lg bg-background focus:border-primary focus:outline-none transition-colors"
+                          placeholder="Enter current password"
+                        />
+                      </div>
+                      
+                      <div>
+                        <label className="block text-sm font-medium text-text-muted mb-2">
+                          New Password
+                        </label>
+                        <input
+                          type="password"
+                          value={passwordData.newPassword}
+                          onChange={(e) =>
+                            setPasswordData((prev) => ({
+                              ...prev,
+                              newPassword: e.target.value,
+                            }))
+                          }
+                          className="w-full px-4 py-3 border border-border rounded-lg bg-background focus:border-primary focus:outline-none transition-colors"
+                          placeholder="Enter new password"
+                        />
+                      </div>
+                      
+                      <div>
+                        <label className="block text-sm font-medium text-text-muted mb-2">
+                          Confirm New Password
+                        </label>
+                        <input
+                          type="password"
+                          value={passwordData.confirmPassword}
+                          onChange={(e) =>
+                            setPasswordData((prev) => ({
+                              ...prev,
+                              confirmPassword: e.target.value,
+                            }))
+                          }
+                          className="w-full px-4 py-3 border border-border rounded-lg bg-background focus:border-primary focus:outline-none transition-colors"
+                          placeholder="Confirm new password"
+                        />
+                      </div>
+                      
+                      <div className="flex gap-3 pt-2">
+                        <button
+                          onClick={() => setShowPasswordChange(false)}
+                          className="px-4 py-2 text-sm border border-border rounded-lg hover:bg-surface-muted transition-colors"
+                        >
+                          Cancel
+                        </button>
+                        <button
+                          onClick={handlePasswordChange}
+                          disabled={passwordLoading}
+                          className="px-4 py-2 text-sm bg-primary text-white rounded-lg hover:bg-primary-dark transition-colors disabled:opacity-50 flex items-center gap-2"
+                        >
+                          {passwordLoading ? (
+                            <>
+                              <Lightning className="w-4 h-4 animate-pulse" />
+                              Changing...
+                            </>
+                          ) : (
+                            "Change Password"
+                          )}
+                        </button>
+                      </div>
+                    </div>
+                  )}
                 </div>
               </div>
             </div>

@@ -1,12 +1,18 @@
 import { Router } from "express";
 import { aiController } from "../container";
+import { authenticateUser } from "../middleware/authenticateUser";
+import { 
+  requireActiveSubscription, 
+  requireFeature, 
+  checkUsageLimit 
+} from "../middleware/subscriptionMiddleware";
 
 const router = Router();
 
 /**
  * @route POST /ai/generateLeads
  * @desc Generate AI-powered lead suggestions based on user prompt
- * @access Public
+ * @access Private - requires active subscription and advanced search feature
  * @param {Object} req.body - Lead generation request data
  * @param {string} req.body.prompt - The prompt describing what type of leads to generate
  * @returns {Object} res.json - AI generated lead suggestions and recommendations
@@ -19,14 +25,17 @@ const router = Router();
  *   "leads": "Based on current tender data, here are relevant IT consulting opportunities..."
  * }
  */
-router.post("/generateLeads", (req, res) =>
-  aiController.generateLeads(req, res)
+router.post("/generateLeads", 
+  authenticateUser,
+  requireActiveSubscription,
+  requireFeature("advanced_search"),
+  (req, res) => aiController.generateLeads(req, res)
 );
 
 /**
  * @route POST /ai/getRfpAnalysis
  * @desc Analyze RFP (Request for Proposal) data using AI for insights and recommendations
- * @access Public
+ * @access Private - requires active subscription and win probability feature
  * @param {Object} req.body - RFP data to analyze
  * @param {string} req.body.title - RFP title
  * @param {string} req.body.description - RFP description content
@@ -44,14 +53,17 @@ router.post("/generateLeads", (req, res) =>
  *   "analysis": "This RFP presents a strong opportunity for established software firms..."
  * }
  */
-router.post("/getRfpAnalysis", (req, res) =>
-  aiController.getRfpAnalysis(req, res)
+router.post("/getRfpAnalysis", 
+  authenticateUser,
+  requireActiveSubscription,
+  requireFeature("win_probability"),
+  (req, res) => aiController.getRfpAnalysis(req, res)
 );
 
 /**
  * @route POST /ai/filterTendersWithAI
  * @desc Filter and match tenders using AI based on specific criteria or requirements
- * @access Public
+ * @access Private - requires active subscription and advanced search feature with usage limits
  * @param {Object} req.body - Tender filtering request
  * @param {string} req.body.prompt - The filtering criteria or requirements to match against
  * @param {Array} req.body.tenderData - Array of tender objects to filter through
@@ -71,14 +83,18 @@ router.post("/getRfpAnalysis", (req, res) =>
  *   "matches": ["REF123", "REF456"]
  * }
  */
-router.post("/filterTendersWithAI", (req, res) =>
-  aiController.filterTendersWithAI(req, res)
+router.post("/filterTendersWithAI", 
+  authenticateUser,
+  requireActiveSubscription,
+  requireFeature("advanced_search"),
+  checkUsageLimit("searches_per_month"),
+  (req, res) => aiController.filterTendersWithAI(req, res)
 );
 
 /**
  * @route POST /ai/generateTenderSummary
  * @desc Generate comprehensive AI-powered summary for a specific tender
- * @access Public
+ * @access Public - Basic feature available to all users
  * @param {Object} req.body - Tender summary request data
  * @param {string} req.body.tenderId - Unique identifier for the tender
  * @param {string} req.body.tenderData - Structured tender data as formatted text
@@ -105,8 +121,9 @@ router.post("/filterTendersWithAI", (req, res) =>
  *   }
  * }
  */
-router.post("/generateTenderSummary", (req, res) => {
-  aiController.generateTenderSummary(req, res);
-});
+router.post("/generateTenderSummary", 
+  authenticateUser,
+  (req, res) => aiController.generateTenderSummary(req, res)
+);
 
 export default router;

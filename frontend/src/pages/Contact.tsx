@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
 import { LandingPageContainer } from "../components/layout";
+import { SEOHead } from "../components/ui/SEOHead";
 import {
   Lightning,
   Phone,
@@ -17,6 +18,20 @@ import {
 } from "@phosphor-icons/react";
 
 export default function Contact() {
+  return (
+    <>
+      <SEOHead
+        title="Contact Mapletenders - Get Help with Government Procurement"
+        description="Contact Mapletenders for support with our Canadian government procurement platform. Get help finding tenders, using AI features, or technical support. Email us at info@mapletenders.ca or use our contact form."
+        canonicalUrl="https://mapletenders.ca/contact"
+        keywords="contact mapletenders, procurement support, government tender help, customer service, mapletenders support, canadian procurement assistance"
+      />
+      <ContactContent />
+    </>
+  );
+}
+
+function ContactContent() {
   const [formData, setFormData] = useState({
     name: "",
     email: "",

@@ -146,4 +146,28 @@ router.post("/update-password", (req, res) => {
   authController.updatePassword(req, res);
 });
 
+/**
+ * @route POST /auth/change-password
+ * @desc Change password for authenticated user
+ * @access Private
+ * @param {Object} req.body - Password change data
+ * @param {string} req.body.currentPassword - Current password
+ * @param {string} req.body.newPassword - New password (minimum 6 characters)
+ * @param {string} req.headers.authorization - Bearer token for authentication
+ * @returns {Object} res.json - Success confirmation message
+ * @example
+ * POST /auth/change-password
+ * Headers: { "Authorization": "Bearer jwt-token" }
+ * {
+ *   "currentPassword": "currentpassword123",
+ *   "newPassword": "newsecurepassword123"
+ * }
+ * Response: {
+ *   "message": "Password changed successfully"
+ * }
+ */
+router.post("/change-password", (req, res) => {
+  authController.changePassword(req, res);
+});
+
 export default router;

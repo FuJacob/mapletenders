@@ -1,3 +1,4 @@
+import { memo } from "react";
 import { Lightning, Bookmark, Bell, Clock } from "@phosphor-icons/react";
 import { Link } from "react-router-dom";
 
@@ -12,7 +13,7 @@ interface DashboardStatsGridProps {
   stats: StatsData;
 }
 
-export default function DashboardStatsGrid({ stats }: DashboardStatsGridProps) {
+const DashboardStatsGrid = memo(function DashboardStatsGrid({ stats }: DashboardStatsGridProps) {
   const statItems = [
     {
       value: stats.newTenders,
@@ -85,4 +86,6 @@ export default function DashboardStatsGrid({ stats }: DashboardStatsGridProps) {
       ))}
     </div>
   );
-}
+});
+
+export default DashboardStatsGrid;

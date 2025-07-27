@@ -92,7 +92,7 @@ export const resetPassword = async (
 };
 
 /**
- * Update user pa,sword
+ * Update user password
  * @param {string} password - New password
  * @param {string} accessToken - Access token from reset link
  * @returns {Promise<{message?: string, error?: string}>} Update response
@@ -109,5 +109,26 @@ export const updatePassword = async (
     return response.data;
   } catch (error) {
     return handleApiError(error, "Update password");
+  }
+};
+
+/**
+ * Change password for authenticated user
+ * @param {string} currentPassword - Current password
+ * @param {string} newPassword - New password
+ * @returns {Promise<{message?: string, error?: string}>} Change response
+ */
+export const changePassword = async (
+  currentPassword: string,
+  newPassword: string
+): Promise<{ message?: string; error?: string }> => {
+  try {
+    const response = await axios.post("/auth/change-password", {
+      currentPassword,
+      newPassword,
+    });
+    return response.data;
+  } catch (error) {
+    return handleApiError(error, "Change password");
   }
 };

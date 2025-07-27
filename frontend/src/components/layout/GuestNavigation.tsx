@@ -1,6 +1,9 @@
-import { useLocation } from "react-router-dom";
+import { useLocation, Link } from "react-router-dom";
 
-const navigationItems = [{ path: "#pricing", label: "Pricing" }];
+const navigationItems = [
+  { path: "#pricing", label: "Pricing", type: "anchor" },
+  { path: "/careers", label: "Careers", type: "link" }
+];
 
 export default function GuestNavigation() {
   const location = useLocation();
@@ -10,16 +13,29 @@ export default function GuestNavigation() {
       <ul className="flex items-center gap-8">
         {navigationItems.map((item) => (
           <li key={item.path}>
-            <a
-              href={item.path}
-              className={`font-medium transition-colors ${
-                location.pathname === item.path
-                  ? "text-primary"
-                  : "text-text hover:text-primary"
-              }`}
-            >
-              {item.label}
-            </a>
+            {item.type === "link" ? (
+              <Link
+                to={item.path}
+                className={`font-medium transition-colors ${
+                  location.pathname === item.path
+                    ? "text-primary"
+                    : "text-text hover:text-primary"
+                }`}
+              >
+                {item.label}
+              </Link>
+            ) : (
+              <a
+                href={item.path}
+                className={`font-medium transition-colors ${
+                  location.pathname === item.path
+                    ? "text-primary"
+                    : "text-text hover:text-primary"
+                }`}
+              >
+                {item.label}
+              </a>
+            )}
           </li>
         ))}
       </ul>

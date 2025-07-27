@@ -4,9 +4,15 @@ import {
   selectIsAuthenticated,
   selectAuthLoading,
 } from "../features/auth/authSelectors";
+import { refreshTenders } from "../api";
+import { useEffect } from "react";
 export default function ProtectedRoutes() {
   const isAuthenticated = useSelector(selectIsAuthenticated);
   const loading = useSelector(selectAuthLoading);
+
+  useEffect(() => {
+    refreshTenders();
+  }, []);
 
   if (loading) {
     // If the session is still loading, you can return a loading state or null
