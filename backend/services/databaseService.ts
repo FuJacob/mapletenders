@@ -216,6 +216,171 @@ export class DatabaseService {
     return await this.supabase.from("tenders").select("*");
   }
 
+  async getTendersPaginated(params: {
+    offset: number;
+    limit: number;
+    search: string;
+    sortBy: string;
+    sortOrder: string;
+    filters: {
+      status?: string;
+      category?: string;
+      region?: string;
+      entity?: string;
+    };
+  }) {
+    let query = this.supabase.from("tenders").select("*", { count: "exact" });
+
+    // Apply search filter
+    if (params.search) {
+      query = query.or(
+        `title.ilike.%${params.search}%,description.ilike.%${params.search}%,contracting_entity_name.ilike.%${params.search}%`
+      );
+    }
+
+    // Apply status filter
+    if (params.filters.status) {
+      query = query.eq("status", params.filters.status);
+    }
+
+    // Apply category filter
+    if (params.filters.category) {
+      query = query.eq("category_primary", params.filters.category);
+    }
+
+    // Apply region filter
+    if (params.filters.region) {
+      query = query.or(
+        `contracting_entity_province.ilike.%${params.filters.region}%,contracting_entity_city.ilike.%${params.filters.region}%,delivery_location.ilike.%${params.filters.region}%`
+      );
+    }
+
+    // Apply entity filter
+    if (params.filters.entity) {
+      query = query.ilike(
+        "contracting_entity_name",
+        `%${params.filters.entity}%`
+      );
+    }
+
+    // Apply sorting
+    query = query.order(params.sortBy, {
+      ascending: params.sortOrder === "asc",
+    });
+
+    // Apply pagination
+    query = query.range(params.offset, params.offset + params.limit - 1);
+
+    const { data, error, count } = await query;
+
+    if (error) {
+      return { data: null, error };
+    }
+
+    return {
+      data: {
+        data: data || [],
+        total: count || 0,
+      },
+      error: null,
+    };
+  }
+
+  async getTenderStatistics() {
+    try {
+      // Get total counts by source
+      const { data: sourceStats, error: sourceError } = await this.supabase
+        .from("tenders")
+        .select("source")
+        .then(async ({ data, error }) => {
+          if (error) return { data: null, error };
+
+          // Group by source and count
+          const sourceGroups =
+            data?.reduce((acc: Record<string, number>, tender) => {
+              const source = tender.source || "unknown";
+              acc[source] = (acc[source] || 0) + 1;
+              return acc;
+            }, {}) || {};
+
+          return { data: sourceGroups, error: null };
+        });
+
+      if (sourceError) {
+        return { data: null, error: sourceError };
+      }
+
+      // Get tenders added in last 24 hours by source
+      const yesterday = new Date();
+      yesterday.setDate(yesterday.getDate() - 1);
+
+      const { data: recentStats, error: recentError } = await this.supabase
+        .from("tenders")
+        .select("source, last_scraped_at")
+        .gte("last_scraped_at", yesterday.toISOString())
+        .then(async ({ data, error }) => {
+          if (error) return { data: null, error };
+
+          // Group by source and count recent additions
+          const recentGroups =
+            data?.reduce((acc: Record<string, number>, tender) => {
+              const source = tender.source || "unknown";
+              acc[source] = (acc[source] || 0) + 1;
+              return acc;
+            }, {}) || {};
+
+          return { data: recentGroups, error: null };
+        });
+
+      if (recentError) {
+        return { data: null, error: recentError };
+      }
+
+      // Map sources to display names
+      const sourceMapping: Record<string, string> = {
+        canadian: "Government of Canada",
+        ontario: "Ontario Province", 
+        toronto: "City of Toronto",
+        quebec: "Quebec Province",
+        mississauga: "City of Mississauga",
+        brampton: "City of Brampton",
+        hamilton: "City of Hamilton", 
+        london: "City of London",
+        unknown: "Other Sources",
+      };
+
+      // Build statistics array from all sources that have data
+      const allSources = new Set([
+        ...Object.keys(sourceStats || {}),
+        ...Object.keys(recentStats || {}),
+      ]);
+
+      const statistics = Array.from(allSources)
+        .map((sourceKey) => {
+          const displayName =
+            sourceMapping[sourceKey] ||
+            sourceKey.charAt(0).toUpperCase() + sourceKey.slice(1);
+          const totalCount = sourceStats?.[sourceKey] || 0;
+          const recentCount = recentStats?.[sourceKey] || 0;
+
+          return {
+            source: displayName,
+            numberOfTendersAddedDaily: recentCount,
+            numberOfTendersAvailable: totalCount,
+          };
+        })
+        .filter((stat) => stat.numberOfTendersAvailable > 0) // Only show sources with data
+        .sort(
+          (a, b) => b.numberOfTendersAvailable - a.numberOfTendersAvailable
+        ); // Sort by total count descending
+
+      return { data: statistics, error: null };
+    } catch (error) {
+      console.error("Error calculating tender statistics:", error);
+      return { data: null, error };
+    }
+  }
+
   async getTendersForAiFiltering(limit: number = 5) {
     return await this.supabase
       .from("tenders")

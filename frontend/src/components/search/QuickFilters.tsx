@@ -16,6 +16,10 @@ interface QuickFiltersProps {
   tenders?: Tender[];
   onFilteredDataChange?: (filteredData: Tender[]) => void;
   rowCount: number;
+  // New props for server-side pagination
+  usePagination?: boolean;
+  onSearchChange?: (search: string) => void;
+  onFilterChange?: (filters: Record<string, string>) => void;
 }
 
 interface FilterOption {
@@ -29,6 +33,9 @@ const QuickFilters = ({
   tenders = [],
   rowCount,
   onFilteredDataChange,
+  usePagination = false,
+  onSearchChange,
+  onFilterChange,
 }: QuickFiltersProps) => {
   const [searchQuery, setSearchQuery] = useState("");
   const [activeFilters, setActiveFilters] = useState<FilterOption[]>([]);
@@ -168,23 +175,71 @@ const QuickFilters = ({
   const addFilter = (type: string, value: string, label: string) => {
     const filterId = `${type}-${value}`;
     if (!activeFilters.find((f) => f.id === filterId)) {
-      setActiveFilters([...activeFilters, { id: filterId, label, type }]);
+      const newFilters = [...activeFilters, { id: filterId, label, type }];
+      setActiveFilters(newFilters);
+      
+      // Update server-side filters if using pagination
+      if (usePagination && onFilterChange) {
+        const filterParams: Record<string, string> = {};
+        newFilters.forEach(filter => {
+          const [filterType, filterValue] = filter.id.split('-');
+          if (filterType === 'regions') {
+            filterParams.region = filterValue;
+          } else if (filterType === 'categories') {
+            filterParams.category = filterValue;
+          } else if (filterType === 'statuses') {
+            filterParams.status = filterValue;
+          } else if (filterType === 'entities') {
+            filterParams.entity = filterValue;
+          }
+        });
+        onFilterChange(filterParams);
+      }
     }
     setShowDropdown(null);
   };
 
   const removeFilter = (filterId: string) => {
-    setActiveFilters(activeFilters.filter((f) => f.id !== filterId));
+    const newFilters = activeFilters.filter((f) => f.id !== filterId);
+    setActiveFilters(newFilters);
+    
+    // Update server-side filters if using pagination
+    if (usePagination && onFilterChange) {
+      const filterParams: Record<string, string> = {};
+      newFilters.forEach(filter => {
+        const [filterType, filterValue] = filter.id.split('-');
+        if (filterType === 'regions') {
+          filterParams.region = filterValue;
+        } else if (filterType === 'categories') {
+          filterParams.category = filterValue;
+        } else if (filterType === 'statuses') {
+          filterParams.status = filterValue;
+        } else if (filterType === 'entities') {
+          filterParams.entity = filterValue;
+        }
+      });
+      onFilterChange(filterParams);
+    }
   };
 
   const clearAllFilters = () => {
     setActiveFilters([]);
     setSearchQuery("");
-    setGlobalFilter("");
+    
+    if (usePagination && onSearchChange && onFilterChange) {
+      onSearchChange("");
+      onFilterChange({});
+    } else {
+      setGlobalFilter("");
+    }
   };
 
   const handleSearch = () => {
-    setGlobalFilter(searchQuery);
+    if (usePagination && onSearchChange) {
+      onSearchChange(searchQuery);
+    } else {
+      setGlobalFilter(searchQuery);
+    }
   };
 
   const FilterDropdown = ({

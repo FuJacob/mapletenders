@@ -16,7 +16,7 @@ export default function ActivityAndRecommendations({
   activities,
   tenders,
 }: ActivityAndRecommendationsProps) {
-  const [viewMode, setViewMode] = useState<DashboardViewMode>("recent");
+  const [viewMode, setViewMode] = useState<DashboardViewMode>("recommended");
 
   return (
     <div className="flex-1 bg-surface border border-border rounded-lg flex flex-col min-h-0">

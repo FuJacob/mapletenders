@@ -78,7 +78,7 @@ function mapCanadianTender(row: any): any {
 
 export class TenderService {
   constructor(
-    private dbService: DatabaseService, 
+    private dbService: DatabaseService,
     private mlService: MlService,
     private aiService: AiService,
     private scrapingService: ScrapingService
@@ -107,6 +107,34 @@ export class TenderService {
     const { data, error } = await this.dbService.getAllTenders();
     if (error) {
       throw new Error(`Failed to fetch tender notices: ${error.message}`);
+    }
+    return data;
+  }
+
+  async getTendersPaginated(params: {
+    offset: number;
+    limit: number;
+    search: string;
+    sortBy: string;
+    sortOrder: string;
+    filters: {
+      status?: string;
+      category?: string;
+      region?: string;
+      entity?: string;
+    };
+  }) {
+    const { data, error } = await this.dbService.getTendersPaginated(params);
+    if (error) {
+      throw new Error(`Failed to fetch paginated tenders: ${error.message}`);
+    }
+    return data;
+  }
+
+  async getTenderStatistics() {
+    const { data, error } = await this.dbService.getTenderStatistics();
+    if (error) {
+      throw new Error(`Failed to fetch tender statistics: ${error}`);
     }
     return data;
   }
@@ -217,6 +245,10 @@ export class TenderService {
         this.scrapingService.importTorontoTenders(),
         this.scrapingService.importOntarioTenders(),
         this.scrapingService.importMississaugaTenders(),
+        this.scrapingService.importBramptonTenders(),
+        this.scrapingService.importHamiltonTenders(),
+        this.scrapingService.importLondonTenders(),
+        this.scrapingService.importQuebecTenders(),
       ];
 
       const importResult = await Promise.allSettled(scrapers);

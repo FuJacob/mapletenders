@@ -9,6 +9,8 @@ import {
   type Row,
   getFilteredRowModel,
   createColumnHelper,
+  getSortedRowModel,
+  type SortingState,
 } from "@tanstack/react-table";
 import {
   Table,
@@ -19,19 +21,37 @@ import {
   TableEmptyState,
   TableLoadingState,
 } from "./";
-import { useState, useMemo, useCallback } from "react";
+import { useState, useMemo, useCallback, useEffect } from "react";
 import TablePaginationControls from "./TablePaginationControls";
 import "./tableStyles.css";
 import { QuickFilters } from "../search";
 import type { Tender } from "../../api/types";
 import { Link } from "react-router-dom";
+import {
+  getTendersPaginated,
+  type PaginatedTendersResponse,
+  type PaginatedTendersParams,
+} from "../../api/tenders";
 
 interface TenderTableProps {
+  // Legacy props for backward compatibility
   isLoading?: boolean;
   tenders?: Tender[];
+  // New pagination props
+  usePagination?: boolean;
+  initialPage?: number;
+  initialLimit?: number;
+  initialSearch?: string;
+  initialFilters?: {
+    status?: string;
+    category?: string;
+    region?: string;
+    entity?: string;
+  };
+  onDataChange?: (data: PaginatedTendersResponse) => void;
 }
 
-const NUMBER_OF_TENDERS_PER_PAGE = 10;
+const NUMBER_OF_TENDERS_PER_PAGE = 25;
 
 // Create column helper
 const columnHelper = createColumnHelper<Tender>();
@@ -41,6 +61,7 @@ const tenderColumns = [
   columnHelper.accessor("title", {
     header: "Tender",
     size: 300,
+    enableSorting: true,
     cell: (info) => (
       <Link
         to={`/tender-notice/${info.row.original.id}`}
@@ -50,10 +71,11 @@ const tenderColumns = [
       </Link>
     ),
   }),
-  columnHelper.display({
+  columnHelper.accessor("contracting_entity_name", {
     id: "entity_info",
     header: "Entity Info",
     size: 220,
+    enableSorting: true,
     cell: (info) => {
       const tender = info.row.original;
       const parts = [
@@ -68,13 +90,15 @@ const tenderColumns = [
   columnHelper.accessor("category_primary", {
     header: "Category",
     size: 130,
+    enableSorting: true,
     cell: (info) => info.getValue() || "N/A",
   }),
   // Combined Date Range column instead of separate closing_date
-  columnHelper.display({
+  columnHelper.accessor("published_date", {
     id: "date_range",
     header: "Date Range",
     size: 180,
+    enableSorting: true,
     cell: (info) => {
       const tender = info.row.original;
       const published = tender.published_date
@@ -89,6 +113,7 @@ const tenderColumns = [
   columnHelper.accessor("status", {
     header: "Status",
     size: 100,
+    enableSorting: true,
     cell: (info) => {
       const status = info.getValue() || "Unknown";
       const getStatusColor = (status: string) => {
@@ -120,6 +145,7 @@ const tenderColumns = [
   columnHelper.accessor("estimated_value_min", {
     header: "Est. Value",
     size: 120,
+    enableSorting: true,
     cell: (info) =>
       info.getValue() !== null
         ? `$${info.getValue()?.toLocaleString()}`
@@ -129,9 +155,29 @@ const tenderColumns = [
 export default function TenderTable({
   isLoading = false,
   tenders = [],
+  usePagination = false,
+  initialPage = 1,
+  initialLimit = NUMBER_OF_TENDERS_PER_PAGE,
+  initialSearch = "",
+  initialFilters = {},
+  onDataChange,
 }: TenderTableProps) {
   const [globalFilter, setGlobalFilter] = useState("");
   const [filteredTenders, setFilteredTenders] = useState<Tender[]>([]);
+
+  // Server-side pagination state
+  const [paginatedData, setPaginatedData] =
+    useState<PaginatedTendersResponse | null>(null);
+  const [paginationLoading, setPaginationLoading] = useState(false);
+  const [paginationParams, setPaginationParams] =
+    useState<PaginatedTendersParams>({
+      page: initialPage,
+      limit: initialLimit,
+      search: initialSearch,
+      sortBy: "published_date",
+      sortOrder: "desc",
+      ...initialFilters,
+    });
 
   const globalTenderFilter = useCallback(
     (row: Row<Tender>, _columnId: string, filterValue: string) => {
@@ -156,9 +202,10 @@ export default function TenderTable({
   );
 
   const [pagination, setPagination] = useState({
-    pageIndex: 0,
-    pageSize: NUMBER_OF_TENDERS_PER_PAGE,
+    pageIndex: usePagination ? initialPage - 1 : 0,
+    pageSize: usePagination ? initialLimit : NUMBER_OF_TENDERS_PER_PAGE,
   });
+  const [sorting, setSorting] = useState<SortingState>([]);
   const [columnResizeMode] = useState<ColumnResizeMode>("onChange");
 
   // Handle filtered data from QuickFilters
@@ -167,40 +214,119 @@ export default function TenderTable({
     setPagination((prev) => ({ ...prev, pageIndex: 0 })); // Reset to first page when filters change
   }, []);
 
+  // Fetch paginated data when using server-side pagination
+  const fetchPaginatedData = useCallback(
+    async (params: PaginatedTendersParams) => {
+      if (!usePagination) return;
+
+      setPaginationLoading(true);
+      try {
+        const response = await getTendersPaginated(params);
+        setPaginatedData(response);
+        onDataChange?.(response);
+      } catch (error) {
+        console.error("Failed to fetch paginated tenders:", error);
+      } finally {
+        setPaginationLoading(false);
+      }
+    },
+    [usePagination, onDataChange]
+  ); // onDataChange intentionally excluded to prevent infinite loop
+
+  // Effect to fetch data when params change
+  useEffect(() => {
+    if (usePagination) {
+      fetchPaginatedData(paginationParams);
+    }
+  }, [paginationParams, usePagination, fetchPaginatedData]);
+
+  // Update pagination params
+  const updatePaginationParams = useCallback(
+    (updates: Partial<PaginatedTendersParams>) => {
+      setPaginationParams((prev) => ({
+        ...prev,
+        ...updates,
+        // Reset to page 1 when changing search or filters
+        ...(updates.search !== undefined ||
+        Object.keys(updates).some((key) =>
+          ["status", "category", "region", "entity"].includes(key)
+        )
+          ? { page: 1 }
+          : {}),
+      }));
+    },
+    []
+  );
+
   // Use filtered data if available, otherwise use all tenders
   const tableData = useMemo(() => {
-    const dataToUse = filteredTenders.length > 0 ? filteredTenders : [];
-    return dataToUse;
-  }, [filteredTenders]);
+    if (usePagination && paginatedData) {
+      return paginatedData.data;
+    }
+    return filteredTenders.length > 0 ? filteredTenders : [];
+  }, [usePagination, paginatedData, filteredTenders]);
 
   // Memoize pagination change handler
   const onPaginationChange = useCallback(
     (updater: Updater<PaginationState>) => {
+      if (usePagination) {
+        // For server-side pagination, update the API params
+        const newPagination =
+          typeof updater === "function" ? updater(pagination) : updater;
+        const newPage = newPagination.pageIndex + 1;
+        updatePaginationParams({
+          page: newPage,
+          limit: newPagination.pageSize,
+        });
+      }
       setPagination(updater);
     },
-    []
+    [usePagination, pagination, updatePaginationParams]
   );
 
   const table = useReactTable({
     data: tableData,
     columns: tenderColumns,
     getCoreRowModel: getCoreRowModel(),
-    getPaginationRowModel: getPaginationRowModel(),
+    getPaginationRowModel: usePagination ? undefined : getPaginationRowModel(),
+    getSortedRowModel: usePagination ? undefined : getSortedRowModel(),
     columnResizeMode,
     state: {
       pagination,
+      sorting,
       globalFilter,
     },
     onPaginationChange,
-    rowCount: tableData.length,
+    onSortingChange: (updater) => {
+      setSorting(updater);
+      if (usePagination) {
+        const newSorting =
+          typeof updater === "function" ? updater(sorting) : updater;
+        if (newSorting.length > 0) {
+          const sort = newSorting[0];
+          updatePaginationParams({
+            sortBy: sort.id,
+            sortOrder: sort.desc ? "desc" : "asc",
+            page: 1, // Reset to first page when sorting changes
+          });
+        }
+      }
+    },
+    rowCount: usePagination
+      ? paginatedData?.pagination.total || 0
+      : tableData.length,
+    manualPagination: usePagination,
+    manualSorting: usePagination,
+    pageCount: usePagination ? paginatedData?.pagination.totalPages || 1 : -1,
     enableColumnResizing: true,
+    enableSorting: true,
     globalFilterFn: globalTenderFilter,
-    getFilteredRowModel: getFilteredRowModel(),
+    getFilteredRowModel: usePagination ? undefined : getFilteredRowModel(),
   });
 
   const TenderTableInner = () => {
     // Show loading state
-    if (isLoading) {
+    if (isLoading || (usePagination && paginationLoading)) {
       return (
         <div className="w-full bg-surface rounded-lg border border-border">
           <TableLoadingState message="Finding relevant tenders..." />
@@ -239,11 +365,29 @@ export default function TenderTable({
                         className="relative select-none"
                       >
                         {header.isPlaceholder ? null : (
-                          <div className="flex items-center justify-between">
-                            {flexRender(
-                              header.column.columnDef.header,
-                              header.getContext()
-                            )}
+                          <div
+                            className="flex items-center justify-between cursor-pointer hover:bg-surface-muted/50 p-1 rounded"
+                            onClick={
+                              header.column.getCanSort()
+                                ? header.column.getToggleSortingHandler()
+                                : undefined
+                            }
+                          >
+                            <div className="flex items-center gap-2">
+                              {flexRender(
+                                header.column.columnDef.header,
+                                header.getContext()
+                              )}
+                              {header.column.getCanSort() && (
+                                <span className="text-text-light">
+                                  {{
+                                    asc: "↑",
+                                    desc: "↓",
+                                  }[header.column.getIsSorted() as string] ??
+                                    "↕"}
+                                </span>
+                              )}
+                            </div>
                           </div>
                         )}
                         {header.column.getCanResize() && (
@@ -296,15 +440,63 @@ export default function TenderTable({
         </div>
         <div className="flex-shrink-0 border-t border-border">
           <TablePaginationControls
-            getCanNextPage={table.getCanNextPage}
-            getCanPreviousPage={table.getCanPreviousPage}
-            nextPage={table.nextPage}
-            previousPage={table.previousPage}
-            pageIndex={pagination.pageIndex}
-            pageSize={pagination.pageSize}
-            pageCount={table.getPageCount()}
-            setPageIndex={table.setPageIndex}
-            rowCount={table.getRowCount()}
+            getCanNextPage={
+              usePagination
+                ? () => paginatedData?.pagination.hasNext || false
+                : table.getCanNextPage
+            }
+            getCanPreviousPage={
+              usePagination
+                ? () => paginatedData?.pagination.hasPrev || false
+                : table.getCanPreviousPage
+            }
+            nextPage={
+              usePagination
+                ? () =>
+                    updatePaginationParams({
+                      page: (paginationParams.page || 1) + 1,
+                    })
+                : table.nextPage
+            }
+            previousPage={
+              usePagination
+                ? () =>
+                    updatePaginationParams({
+                      page: Math.max(1, (paginationParams.page || 1) - 1),
+                    })
+                : table.previousPage
+            }
+            pageIndex={
+              usePagination
+                ? (paginationParams.page || 1) - 1
+                : pagination.pageIndex
+            }
+            pageSize={
+              usePagination
+                ? paginationParams.limit || NUMBER_OF_TENDERS_PER_PAGE
+                : pagination.pageSize
+            }
+            pageCount={
+              usePagination
+                ? paginatedData?.pagination.totalPages || 1
+                : table.getPageCount()
+            }
+            setPageIndex={
+              usePagination
+                ? (updater: number | ((prev: number) => number)) => {
+                    const newIndex =
+                      typeof updater === "function"
+                        ? updater(pagination.pageIndex)
+                        : updater;
+                    updatePaginationParams({ page: newIndex + 1 });
+                  }
+                : table.setPageIndex
+            }
+            rowCount={
+              usePagination
+                ? paginatedData?.pagination.total || 0
+                : table.getRowCount()
+            }
           />
         </div>
       </div>
@@ -316,9 +508,27 @@ export default function TenderTable({
       <div className="flex-shrink-0 mb-4">
         <QuickFilters
           setGlobalFilter={setGlobalFilter}
-          tenders={tenders || []}
-          rowCount={filteredTenders.length}
-          onFilteredDataChange={handleFilteredDataChange}
+          tenders={usePagination ? [] : tenders || []}
+          rowCount={
+            usePagination
+              ? paginatedData?.pagination.total || 0
+              : filteredTenders.length
+          }
+          onFilteredDataChange={
+            usePagination ? undefined : handleFilteredDataChange
+          }
+          usePagination={usePagination}
+          onSearchChange={
+            usePagination
+              ? (search: string) => updatePaginationParams({ search })
+              : undefined
+          }
+          onFilterChange={
+            usePagination
+              ? (filters: Record<string, string>) =>
+                  updatePaginationParams(filters)
+              : undefined
+          }
         />
       </div>
       <div className="flex-1 min-h-0">

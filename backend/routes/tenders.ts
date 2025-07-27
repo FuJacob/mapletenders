@@ -39,6 +39,33 @@ router.get("/getAllTenders", (req, res) =>
   tenderController.getAllTenders(req, res)
 );
 
+/**
+ * Get tender statistics by source
+ * @route GET /statistics
+ * @returns {Object} Statistics grouped by tender source
+ */
+router.get("/statistics", (req, res) =>
+  tenderController.getTenderStatistics(req, res)
+);
+
+/**
+ * Get paginated tenders with search, filtering, and sorting
+ * @route GET /paginated
+ * @param {number} page - Page number (default: 1)
+ * @param {number} limit - Items per page (default: 25, max: 100)
+ * @param {string} search - Search query for title, description, entity
+ * @param {string} sortBy - Field to sort by (published_date, closing_date, title, etc.)
+ * @param {string} sortOrder - Sort direction (asc, desc)
+ * @param {string} status - Filter by status
+ * @param {string} category - Filter by category
+ * @param {string} region - Filter by region
+ * @param {string} entity - Filter by contracting entity
+ * @returns {Object} Paginated tenders with metadata
+ */
+router.get("/paginated", (req, res) =>
+  tenderController.getTendersPaginated(req, res)
+);
+
 router.post("/getTendersFromBookmarkIds", (req, res) =>
   tenderController.getTendersFromBookmarkIds(req, res)
 );

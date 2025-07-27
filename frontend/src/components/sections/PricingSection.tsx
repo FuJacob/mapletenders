@@ -96,7 +96,7 @@ export default function PricingSection() {
             >
               Yearly
             </span>
-            <span className="bg-primary text-white px-3 py-1 rounded-lg text-xs font-medium shadow-md text-text-muted">
+            <span className="bg-primary px-3 py-1 rounded-lg text-xs font-medium shadow-md text-text-muted">
               20% off
             </span>
           </div>

@@ -171,6 +171,87 @@ export class TenderController {
     }
   };
 
+  getTenderStatistics = async (req: Request, res: Response) => {
+    try {
+      const stats = await this.tenderService.getTenderStatistics();
+      res.json(stats);
+    } catch (error: any) {
+      console.error("Error fetching tender statistics:", error);
+      res.status(500).json({ error: error.message });
+    }
+  };
+
+  getTendersPaginated = async (req: Request, res: Response) => {
+    try {
+      const {
+        page = 1,
+        limit = 25,
+        search = "",
+        sortBy = "published_date",
+        sortOrder = "desc",
+        status,
+        category,
+        region,
+        entity
+      } = req.query;
+
+      // Validate pagination parameters
+      const pageNum = Math.max(1, parseInt(page as string, 10) || 1);
+      const limitNum = Math.min(100, Math.max(1, parseInt(limit as string, 10) || 25));
+      const offset = (pageNum - 1) * limitNum;
+
+      // Validate sort parameters
+      const validSortFields = [
+        'published_date', 
+        'closing_date', 
+        'title', 
+        'estimated_value_min',
+        'contracting_entity_name',
+        'status'
+      ];
+      const sortField = validSortFields.includes(sortBy as string) ? sortBy as string : 'published_date';
+      const sortDirection = (sortOrder as string)?.toLowerCase() === 'asc' ? 'asc' : 'desc';
+
+      const result = await this.tenderService.getTendersPaginated({
+        offset,
+        limit: limitNum,
+        search: search as string,
+        sortBy: sortField,
+        sortOrder: sortDirection,
+        filters: {
+          status: status as string,
+          category: category as string,
+          region: region as string,
+          entity: entity as string
+        }
+      });
+
+      res.json({
+        data: result.data,
+        pagination: {
+          page: pageNum,
+          limit: limitNum,
+          total: result.total,
+          totalPages: Math.ceil(result.total / limitNum),
+          hasNext: pageNum < Math.ceil(result.total / limitNum),
+          hasPrev: pageNum > 1
+        },
+        filters: {
+          search: search as string,
+          sortBy: sortField,
+          sortOrder: sortDirection,
+          status: status as string,
+          category: category as string,
+          region: region as string,
+          entity: entity as string
+        }
+      });
+    } catch (error: any) {
+      console.error("Error fetching paginated tenders:", error);
+      res.status(500).json({ error: error.message });
+    }
+  };
+
   searchTenders = async (req: Request, res: Response) => {
     const requestStartTime = Date.now();
     const requestId = Math.random().toString(36).substr(2, 9);

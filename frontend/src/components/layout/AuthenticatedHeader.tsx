@@ -1,6 +1,6 @@
-import { useLocation, Link } from "react-router-dom";
+  import { Link } from "react-router-dom";
 import {
-  MagnifyingGlass,
+
   GearIcon,
   CreditCardIcon,
   Users,
@@ -23,23 +23,12 @@ export default function AuthenticatedHeader({
   user,
   profile,
 }: AuthenticatedHeaderProps) {
-  const location = useLocation();
   const dispatch = useAppDispatch();
 
   const handleSignOut = () => {
     dispatch(signOut());
   };
 
-  // Check if we're on an app page (authenticated pages that show sidebar)
-  const isAppPage = [
-    "/home",
-    "/search",
-    "/table",
-    "/rfp-analysis",
-    "/calendar",
-    "/bookmarks",
-    "/analytics",
-  ].includes(location.pathname);
 
   return (
     <header className={`${className} z-50`} role="banner">
@@ -47,7 +36,7 @@ export default function AuthenticatedHeader({
         {/* Logo/Brand Section */}
         <div className="flex items-center gap-6">
           {/* Search Bar for App Pages */}
-          {isAppPage && (
+          {/* {isAppPage && (
             <div className="relative hidden md:block">
               <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                 <MagnifyingGlass className="h-5 w-5 text-text-muted" />
@@ -58,7 +47,7 @@ export default function AuthenticatedHeader({
                 className="block w-[500px] pl-10 pr-3 py-2 border border-border rounded-lg bg-background text-text placeholder-text-muted focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
               />
             </div>
-          )}
+          )} */}
         </div>
 
         {/* Right Section */}

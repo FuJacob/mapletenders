@@ -82,14 +82,14 @@ export default function Sidebar() {
 
       {/* Sidebar */}
       <aside
-        className={`fixed left-0 top-0 z-40 w-64 h-screen bg-surface border-r border-border transform transition-transform duration-300 ease-in-out lg:relative lg:transform-none lg:h-full ${
+        className={`fixed left-0 top-0 z-40 w-64 h-screen bg-surface border-border transform transition-transform duration-300 ease-in-out lg:relative lg:transform-none lg:h-full ${
           isMobileMenuOpen
             ? "translate-x-0"
             : "-translate-x-full lg:translate-x-0"
         }`}
       >
         {/* Sidebar Header */}
-        <div className="p-6 border-b border-border">
+        <div className="p-7.5 border-b border-border ">
           <div className="flex items-center justify-between">
             <LogoTitle size="text-xl" />
             <button
@@ -100,74 +100,75 @@ export default function Sidebar() {
             </button>
           </div>
         </div>
-
-        {/* Navigation */}
-        <nav className="p-4 space-y-2">
-          {/* Bookmarks - First Item */}
-          <Link
-            to={bookmarkItem.path}
-            onClick={() => setIsMobileMenuOpen(false)}
-            className={`flex items-center gap-3 px-4 py-3 rounded-lg transition-all duration-200 group ${
-              isActive(bookmarkItem.path)
-                ? "bg-primary text-white shadow-sm"
-                : "text-text-muted hover:text-text hover:bg-background"
-            }`}
-          >
-            <Bookmark
-              className={`w-5 h-5 ${
-                isActive(bookmarkItem.path)
-                  ? "text-white"
-                  : "text-text-muted group-hover:text-primary"
-              }`}
-            />
-            <span className="font-medium">{bookmarkItem.label}</span>
-          </Link>
-
-          {/* Divider */}
-          <div className="border-t border-border mx-2 my-3" />
-
-          {/* Main Navigation Items */}
-          {navigationItems.map((item) => {
-            const Icon = item.icon;
-            return (
-              <Link
-                key={item.path}
-                to={item.path}
-                onClick={() => setIsMobileMenuOpen(false)}
-                className={`flex items-center gap-6 px-4 py-5 rounded-lg transition-all duration-200 group ${
-                  isActive(item.path)
-                    ? "bg-primary text-white shadow-sm"
-                    : "text-text-muted hover:text-text hover:bg-background"
-                }`}
-              >
-                <Icon
-                  className={`w-5 h-5 ${
-                    isActive(item.path)
-                      ? "text-white"
-                      : "text-text-muted group-hover:text-primary"
-                  }`}
-                />
-                <span className="font-medium">{item.label}</span>
-              </Link>
-            );
-          })}
-        </nav>
-
-        {/* Bottom Section */}
-        <div className="absolute bottom-0 left-0 right-0 p-4 border-t border-border">
-          <div className="bg-gradient-to-r from-primary/10 to-accent/10 border border-primary/20 rounded-lg p-3">
-            <div className="text-sm font-medium text-text mb-1">
-              Pro Features
-            </div>
-            <div className="text-xs text-text-muted mb-2">
-              Unlock advanced analytics and AI insights
-            </div>
+        <div className="border-r border-border">
+          {/* Navigation */}
+          <nav className="p-4 space-y-2">
+            {/* Bookmarks - First Item */}
             <Link
-              to="/plans"
-              className="inline-flex items-center gap-1 text-xs font-medium text-primary hover:text-primary/80 transition-colors"
+              to={bookmarkItem.path}
+              onClick={() => setIsMobileMenuOpen(false)}
+              className={`flex items-center gap-3 px-4 py-3 rounded-lg transition-all duration-200 group ${
+                isActive(bookmarkItem.path)
+                  ? "bg-primary text-white shadow-sm"
+                  : "text-text-muted hover:text-text hover:bg-background"
+              }`}
             >
-              Upgrade Now
+              <Bookmark
+                className={`w-5 h-5 ${
+                  isActive(bookmarkItem.path)
+                    ? "text-white"
+                    : "text-text-muted group-hover:text-primary"
+                }`}
+              />
+              <span className="font-medium">{bookmarkItem.label}</span>
             </Link>
+
+            {/* Divider */}
+            <div className="border-t border-border mx-2 my-3" />
+
+            {/* Main Navigation Items */}
+            {navigationItems.map((item) => {
+              const Icon = item.icon;
+              return (
+                <Link
+                  key={item.path}
+                  to={item.path}
+                  onClick={() => setIsMobileMenuOpen(false)}
+                  className={`flex items-center gap-6 px-4 py-5 rounded-lg transition-all duration-200 group ${
+                    isActive(item.path)
+                      ? "bg-primary text-white shadow-sm"
+                      : "text-text-muted hover:text-text hover:bg-background"
+                  }`}
+                >
+                  <Icon
+                    className={`w-5 h-5 ${
+                      isActive(item.path)
+                        ? "text-white"
+                        : "text-text-muted group-hover:text-primary"
+                    }`}
+                  />
+                  <span className="font-medium">{item.label}</span>
+                </Link>
+              );
+            })}
+          </nav>
+
+          {/* Bottom Section */}
+          <div className="absolute bottom-0 left-0 right-0 p-4 border-t border-border">
+            <div className="bg-gradient-to-r from-primary/10 to-accent/10 border border-primary/20 rounded-lg p-3">
+              <div className="text-sm font-medium text-text mb-1">
+                Pro Features
+              </div>
+              <div className="text-xs text-text-muted mb-2">
+                Unlock advanced analytics and AI insights
+              </div>
+              <Link
+                to="/plans"
+                className="inline-flex items-center gap-1 text-xs font-medium text-primary hover:text-primary/80 transition-colors"
+              >
+                Upgrade Now
+              </Link>
+            </div>
           </div>
         </div>
       </aside>

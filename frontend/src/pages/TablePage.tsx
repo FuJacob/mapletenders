@@ -1,51 +1,61 @@
 import { TenderTable } from "../components";
 import { Table } from "@phosphor-icons/react";
 import { PageHeader } from "../components/ui";
-import { useEffect, useState } from "react";
-import { getAllTenders } from "../api/tenders";
-import type { Tender } from "../api/types";
+import { useState, useCallback, useEffect } from "react";
+import type {
+  PaginatedTendersResponse,
+  TenderStatistics,
+} from "../api/tenders";
+import { getTenderStatistics } from "../api/tenders";
 import TableStatsGrid from "../components/dashboard/TableStatsGrid";
 
 export default function TablePage() {
-  const [tenders, setTenders] = useState<Tender[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
-  
-  const stats = [
-    {
-      source: "Government of Canada",
-      numberOfTendersAddedDaily: 12,
-      numberOfTendersAvailable: 100,
-    },
-    {
-      source: "Ontario Province",
-      numberOfTendersAddedDaily: 8,
-      numberOfTendersAvailable: 100,
-    },
-    {
-      source: "BC Government",
-      numberOfTendersAddedDaily: 5,
-      numberOfTendersAvailable: 100,
-    },
-    {
-      source: "Municipalities",
-      numberOfTendersAddedDaily: 15,
-      numberOfTendersAvailable: 100,
-    },
-  ];
+  const [, setPaginationData] = useState<PaginatedTendersResponse | null>(null);
+  const [statistics, setStatistics] = useState<TenderStatistics[]>([]);
+  const [statsLoading, setStatsLoading] = useState(true);
+
+  // Fetch real statistics from the backend
   useEffect(() => {
-    const fetchTenders = async () => {
+    const fetchStatistics = async () => {
       try {
-        setIsLoading(true);
-        const data = await getAllTenders();
-        setTenders(data);
+        setStatsLoading(true);
+        const stats = await getTenderStatistics();
+        setStatistics(stats);
       } catch (error) {
-        console.error("Error fetching tenders:", error);
+        console.error("Failed to fetch tender statistics:", error);
+        // Fallback to default stats
+        setStatistics([
+          {
+            source: "Government of Canada",
+            numberOfTendersAddedDaily: 0,
+            numberOfTendersAvailable: 0,
+          },
+          {
+            source: "Ontario Province",
+            numberOfTendersAddedDaily: 0,
+            numberOfTendersAvailable: 0,
+          },
+          {
+            source: "BC Government",
+            numberOfTendersAddedDaily: 0,
+            numberOfTendersAvailable: 0,
+          },
+          {
+            source: "Municipalities",
+            numberOfTendersAddedDaily: 0,
+            numberOfTendersAvailable: 0,
+          },
+        ]);
       } finally {
-        setIsLoading(false);
+        setStatsLoading(false);
       }
     };
 
-    fetchTenders();
+    fetchStatistics();
+  }, []);
+
+  const handleDataChange = useCallback((data: PaginatedTendersResponse) => {
+    setPaginationData(data);
   }, []);
 
   return (
@@ -56,11 +66,15 @@ export default function TablePage() {
           title="Tender Table"
           description="Browse all procurement opportunities in a comprehensive table view"
         />
-        <TableStatsGrid stats={stats} />
+        <TableStatsGrid stats={statistics} loading={statsLoading} />
       </div>
 
       <div className="flex-1 min-h-0">
-        <TenderTable isLoading={isLoading} tenders={tenders} />
+        <TenderTable
+          usePagination={true}
+          onDataChange={handleDataChange}
+          initialLimit={25}
+        />
       </div>
     </div>
   );

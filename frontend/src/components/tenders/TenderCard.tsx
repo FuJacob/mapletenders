@@ -109,7 +109,7 @@ export function TenderCard({
   const procurementMethod = TenderAccessors.getProcurementMethod(tender);
   const description = TenderAccessors.getDescription(tender);
   const sourceReference = TenderAccessors.getSourceReference(tender);
-  const matchExplanation = TenderAccessors.getMatchExplanation(tender);
+  // const _matchExplanation = TenderAccessors.getMatchExplanation(tender);
 
   // Compact mode - Apple-inspired minimal design for smaller contexts
   if (compact) {
@@ -129,7 +129,7 @@ export function TenderCard({
 
           {/* Title with Clean Typography */}
           <div className="flex-1 min-w-0 pr-2">
-            <h3 
+            <h3
               className="text-lg font-bold text-text hover:text-primary cursor-pointer transition-colors line-clamp-2 leading-tight"
               onClick={handleTitleClick}
             >
@@ -171,15 +171,17 @@ export function TenderCard({
               </span>
             </div>
           </div>
-          
+
           {/* Deadline - Clean and Urgent When Needed */}
-          <div className={`flex items-center gap-1.5 font-bold text-xs ${urgencyClass} flex-shrink-0`}>
+          <div
+            className={`flex items-center gap-1.5 font-bold text-xs ${urgencyClass} flex-shrink-0`}
+          >
             <Clock className="w-3.5 h-3.5" />
             <span>
               {daysUntilDeadline !== null &&
               daysUntilDeadline <= 14 &&
               daysUntilDeadline >= 0
-                ? daysUntilDeadline === 0 
+                ? daysUntilDeadline === 0
                   ? "Today"
                   : `${daysUntilDeadline}d left`
                 : formatDate(TenderAccessors.getClosingDate(tender))}
@@ -235,9 +237,11 @@ export function TenderCard({
               </span>
             )}
           </div>
-          
+
           <div className="text-xs text-text-light font-mono">
-            {sourceReference?.slice(-6) || TenderAccessors.getId(tender)?.slice(-6) || "N/A"}
+            {sourceReference?.slice(-6) ||
+              TenderAccessors.getId(tender)?.slice(-6) ||
+              "N/A"}
           </div>
         </div>
       </div>
@@ -266,7 +270,7 @@ export function TenderCard({
           </div>
 
           {/* Title - Hero Typography */}
-          <h2 
+          <h2
             className="text-2xl font-bold text-text leading-tight mb-3 hover:text-primary cursor-pointer transition-colors"
             onClick={handleTitleClick}
           >
@@ -343,7 +347,7 @@ export function TenderCard({
         </div>
       </div>
 
-      {/* AI Match Analysis - When Available */}
+      {/* AI Match Analysis - When Available
       {matchExplanation && (
         <div className="mb-8 p-6 bg-primary/5 border border-primary/10 rounded-xl">
           <div className="flex items-center gap-2 mb-3">
@@ -356,7 +360,7 @@ export function TenderCard({
             {matchExplanation}
           </p>
         </div>
-      )}
+      )} */}
 
       {/* Description - Clean Typography */}
       {description && (

@@ -88,7 +88,7 @@ export default function Profile() {
 
       if (result.type === "auth/updateProfile/fulfilled") {
         setIsEditing(false);
-      } 
+      }
     } catch (error) {
       console.error("Profile update error:", error);
     } finally {
@@ -129,13 +129,13 @@ export default function Profile() {
   const getStatusColor = (status: string) => {
     switch (status) {
       case "active":
-        return "text-green-600";
+        return "text-success";
       case "trialing":
-        return "text-blue-600";
+        return "text-info";
       case "past_due":
-        return "text-yellow-600";
+        return "text-warning";
       case "canceled":
-        return "text-red-600";
+        return "text-error";
       default:
         return "text-text-light";
     }
@@ -144,11 +144,11 @@ export default function Profile() {
   const getStatusIcon = (status: string) => {
     switch (status) {
       case "active":
-        return <CheckCircle className="w-4 h-4 text-green-600" />;
+        return <CheckCircle className="w-5 h-5 text-success" />;
       case "trialing":
-        return <Clock className="w-4 h-4 text-blue-600" />;
+        return <Clock className="w-5 h-5 text-info" />;
       default:
-        return <Clock className="w-4 h-4 text-text-light" />;
+        return <Clock className="w-5 h-5 text-text-light" />;
     }
   };
 
@@ -162,20 +162,18 @@ export default function Profile() {
   }
 
   return (
-    <div className="h-full flex flex-col">
-      {/* Header */}
-
+    <div className="min-h-full bg-background">
       <div className="flex items-center justify-between">
         <PageHeader
-          icon={<PersonIcon className="w-10 h-10 text-primary" />}
-          title="Profile"
-          description="Manage your profile and preferences"
+          title="Profile Settings"
+          description="Manage your company information and account preferences"
+          icon={<PersonIcon className="w-8 h-8 text-primary" />}
         />
         <div className="flex gap-3">
           {!isEditing ? (
             <button
               onClick={() => setIsEditing(true)}
-              className="px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary-dark transition-colors"
+              className="px-6 py-3 bg-primary text-white rounded-lg hover:bg-primary-dark transition-colors font-medium"
             >
               Edit Profile
             </button>
@@ -183,14 +181,14 @@ export default function Profile() {
             <>
               <button
                 onClick={handleCancel}
-                className="px-4 py-2 border border-border text-text rounded-lg hover:bg-border transition-colors"
+                className="px-6 py-3 border border-border text-text rounded-lg hover:bg-surface-muted transition-colors font-medium"
               >
                 Cancel
               </button>
               <button
                 onClick={handleSave}
                 disabled={loading}
-                className="px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary-dark transition-colors disabled:opacity-50"
+                className="px-6 py-3 bg-primary text-white rounded-lg hover:bg-primary-dark transition-colors disabled:opacity-50 font-medium"
               >
                 {loading ? "Saving..." : "Save Changes"}
               </button>
@@ -199,351 +197,406 @@ export default function Profile() {
         </div>
       </div>
 
-      {/* Dashboard Grid */}
-      <div className="flex-1 pb-6">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 h-full">
-          {/* Current Plan Box */}
-          <div className="bg-surface border border-border rounded-lg p-4">
-            <div className="flex items-center gap-2 mb-3">
-              <Crown className="w-5 h-5 text-primary" />
-              <h3 className="font-semibold text-text">Current Plan</h3>
-            </div>
-            {subscriptionLoading ? (
-              <div className="text-center py-4">
-                <LoadingSpinner variant="inline" size="sm" showLogo={false} />
-              </div>
-            ) : !subscription ? (
-              <div className="text-center py-4">
-                <p className="text-text-light text-sm mb-3">
-                  No active subscription
-                </p>
-                <a
-                  href="/plans"
-                  className="inline-flex items-center gap-1 px-3 py-1.5 bg-primary text-white rounded text-sm hover:bg-primary-dark transition-colors"
-                >
-                  Choose Plan
-                </a>
-              </div>
-            ) : (
-              <div className="space-y-3">
-                <div className="flex justify-between">
-                  <span className="text-text-light text-sm">Plan:</span>
-                  <span className="font-medium text-sm">
-                    {getPlanDisplayName(subscription.plan_id)}
-                  </span>
+      {/* Main Content */}
+      <div className=" py-8">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+          {/* Left Column */}
+          <div className="space-y-8">
+            {/* Current Plan Card */}
+            <div className="bg-surface border border-border rounded-xl p-6 shadow-sm">
+              <div className="flex items-center gap-3 mb-6">
+                <div className="w-12 h-12 bg-maple/10 rounded-xl flex items-center justify-center">
+                  <Crown className="w-6 h-6 text-maple" />
                 </div>
-                <div className="flex justify-between items-center">
-                  <span className="text-text-light text-sm">Status:</span>
-                  <div className="flex items-center gap-1">
-                    {getStatusIcon(subscription.status)}
-                    <span
-                      className={`text-sm ${getStatusColor(
-                        subscription.status
-                      )}`}
+                <div>
+                  <h2 className="text-xl font-semibold text-text">
+                    Current Plan
+                  </h2>
+                  <p className="text-text-muted text-sm">
+                    Your subscription details
+                  </p>
+                </div>
+              </div>
+              {subscriptionLoading ? (
+                <div className="text-center py-8">
+                  <LoadingSpinner variant="inline" size="sm" showLogo={false} />
+                </div>
+              ) : !subscription ? (
+                <div className="bg-surface-warm rounded-lg p-6 text-center">
+                  <p className="text-text-muted mb-4">No active subscription</p>
+                  <a
+                    href="/plans"
+                    className="inline-flex items-center gap-2 px-6 py-3 bg-primary text-white rounded-lg hover:bg-primary-dark transition-colors font-medium"
+                  >
+                    Choose Plan
+                  </a>
+                </div>
+              ) : (
+                <div className="space-y-4">
+                  <div className="flex justify-between items-center py-3 border-b border-border">
+                    <span className="text-text-muted font-medium">Plan</span>
+                    <span className="font-semibold text-lg text-text">
+                      {getPlanDisplayName(subscription.plan_id)}
+                    </span>
+                  </div>
+                  <div className="flex justify-between items-center py-3 border-b border-border">
+                    <span className="text-text-muted font-medium">Status</span>
+                    <div className="flex items-center gap-2">
+                      {getStatusIcon(subscription.status)}
+                      <span
+                        className={`font-medium capitalize ${getStatusColor(
+                          subscription.status
+                        )}`}
+                      >
+                        {subscription.status}
+                      </span>
+                    </div>
+                  </div>
+                  {subscription.current_period_end && (
+                    <div className="flex justify-between items-center py-3">
+                      <span className="text-text-muted font-medium">
+                        Next Billing
+                      </span>
+                      <span className="font-medium text-text">
+                        {formatDate(subscription.current_period_end)}
+                      </span>
+                    </div>
+                  )}
+                </div>
+              )}
+            </div>
+
+            {/* Company Information Card */}
+            <div className="bg-surface border border-border rounded-xl p-6 shadow-sm">
+              <div className="flex items-center gap-3 mb-6">
+                <div className="w-12 h-12 bg-primary/10 rounded-xl flex items-center justify-center">
+                  <User className="w-6 h-6 text-primary" />
+                </div>
+                <div>
+                  <h2 className="text-xl font-semibold text-text">
+                    Company Information
+                  </h2>
+                  <p className="text-text-muted text-sm">
+                    Basic company details
+                  </p>
+                </div>
+              </div>
+              <div className="space-y-6">
+                <div>
+                  <label className="block text-sm font-medium text-text-muted mb-3">
+                    Company Name
+                  </label>
+                  {isEditing ? (
+                    <input
+                      type="text"
+                      value={formData.company_name}
+                      onChange={(e) =>
+                        setFormData((prev) => ({
+                          ...prev,
+                          company_name: e.target.value,
+                        }))
+                      }
+                      className="w-full px-4 py-3 border border-border rounded-lg bg-background focus:border-primary focus:outline-none transition-colors"
+                      placeholder="Enter company name"
+                    />
+                  ) : (
+                    <p className="text-base font-medium text-text">
+                      {profile?.company_name || "Not set"}
+                    </p>
+                  )}
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-text-muted mb-3">
+                    Industry
+                  </label>
+                  {isEditing ? (
+                    <select
+                      value={formData.industry}
+                      onChange={(e) =>
+                        setFormData((prev) => ({
+                          ...prev,
+                          industry: e.target.value,
+                        }))
+                      }
+                      className="w-full px-4 py-3 border border-border rounded-lg bg-background focus:border-primary focus:outline-none transition-colors"
                     >
-                      {subscription.status.charAt(0).toUpperCase() +
-                        subscription.status.slice(1)}
-                    </span>
-                  </div>
+                      <option value="">Select industry</option>
+                      {industries.map((industry) => (
+                        <option key={industry.value} value={industry.value}>
+                          {industry.label}
+                        </option>
+                      ))}
+                    </select>
+                  ) : (
+                    <p className="text-base font-medium text-text">
+                      {profile?.industry
+                        ? getIndustryDisplay(profile.industry)
+                        : "Not set"}
+                    </p>
+                  )}
                 </div>
-                {subscription.current_period_end && (
-                  <div className="flex justify-between">
-                    <span className="text-text-light text-sm">
-                      Next Billing:
-                    </span>
-                    <span className="text-sm">
-                      {formatDate(subscription.current_period_end)}
-                    </span>
-                  </div>
-                )}
-              </div>
-            )}
-          </div>
-
-          {/* Company Information Box */}
-          <div className="bg-surface border border-border rounded-lg p-4">
-            <div className="flex items-center gap-2 mb-3">
-              <User className="w-5 h-5 text-primary" />
-              <h3 className="font-semibold text-text">Company Information</h3>
-            </div>
-            <div className="space-y-3">
-              <div>
-                <label className="block text-xs text-text-light mb-1">
-                  Company Name
-                </label>
-                {isEditing ? (
-                  <input
-                    type="text"
-                    value={formData.company_name}
-                    onChange={(e) =>
-                      setFormData((prev) => ({
-                        ...prev,
-                        company_name: e.target.value,
-                      }))
-                    }
-                    className="w-full px-2 py-1.5 border border-border rounded text-sm bg-background focus:border-primary focus:outline-none"
-                    placeholder="Enter company name"
-                  />
-                ) : (
-                  <p className="text-sm">
-                    {profile?.company_name || "Not set"}
-                  </p>
-                )}
-              </div>
-              <div>
-                <label className="block text-xs text-text-light mb-1">
-                  Industry
-                </label>
-                {isEditing ? (
-                  <select
-                    value={formData.industry}
-                    onChange={(e) =>
-                      setFormData((prev) => ({
-                        ...prev,
-                        industry: e.target.value,
-                      }))
-                    }
-                    className="w-full px-2 py-1.5 border border-border rounded text-sm bg-background focus:border-primary focus:outline-none"
-                  >
-                    <option value="">Select industry</option>
-                    {industries.map((industry) => (
-                      <option key={industry.value} value={industry.value}>
-                        {industry.label}
-                      </option>
-                    ))}
-                  </select>
-                ) : (
-                  <p className="text-sm">
-                    {profile?.industry
-                      ? getIndustryDisplay(profile.industry)
-                      : "Not set"}
-                  </p>
-                )}
-              </div>
-              <div>
-                <label className="block text-xs text-text-light mb-1">
-                  Company Size
-                </label>
-                {isEditing ? (
-                  <select
-                    value={formData.company_size}
-                    onChange={(e) =>
-                      setFormData((prev) => ({
-                        ...prev,
-                        company_size: e.target.value,
-                      }))
-                    }
-                    className="w-full px-2 py-1.5 border border-border rounded text-sm bg-background focus:border-primary focus:outline-none"
-                  >
-                    <option value="">Select company size</option>
-                    {companySizes.map((size) => (
-                      <option key={size.value} value={size.value}>
-                        {size.label}
-                      </option>
-                    ))}
-                  </select>
-                ) : (
-                  <p className="text-sm">
-                    {profile?.company_size
-                      ? getCompanySizeDisplay(profile.company_size)
-                      : "Not set"}
-                  </p>
-                )}
+                <div>
+                  <label className="block text-sm font-medium text-text-muted mb-3">
+                    Company Size
+                  </label>
+                  {isEditing ? (
+                    <select
+                      value={formData.company_size}
+                      onChange={(e) =>
+                        setFormData((prev) => ({
+                          ...prev,
+                          company_size: e.target.value,
+                        }))
+                      }
+                      className="w-full px-4 py-3 border border-border rounded-lg bg-background focus:border-primary focus:outline-none transition-colors"
+                    >
+                      <option value="">Select company size</option>
+                      {companySizes.map((size) => (
+                        <option key={size.value} value={size.value}>
+                          {size.label}
+                        </option>
+                      ))}
+                    </select>
+                  ) : (
+                    <p className="text-base font-medium text-text">
+                      {profile?.company_size
+                        ? getCompanySizeDisplay(profile.company_size)
+                        : "Not set"}
+                    </p>
+                  )}
+                </div>
               </div>
             </div>
           </div>
 
-          {/* Primary Services Box */}
-          <div className="bg-surface border border-border rounded-lg p-4">
-            <div className="flex items-center gap-2 mb-3">
-              <Briefcase className="w-5 h-5 text-primary" />
-              <h3 className="font-semibold text-text">Primary Services</h3>
-            </div>
-            {isEditing ? (
-              <div className="grid grid-cols-1 gap-1 max-h-32 overflow-y-auto border border-border rounded p-2">
-                {services.slice(0, 8).map((service) => (
-                  <button
-                    key={service}
-                    type="button"
-                    onClick={() => handleServiceToggle(service)}
-                    className={`p-1.5 border rounded text-xs text-left transition-all ${
-                      formData.primary_services.includes(service)
-                        ? "border-primary bg-primary/10 text-primary"
-                        : "border-border hover:border-primary"
-                    }`}
-                  >
-                    {service}
-                  </button>
-                ))}
+          {/* Right Column */}
+          <div className="space-y-8">
+            {/* Primary Services Card */}
+            <div className="bg-surface border border-border rounded-xl p-6 shadow-sm">
+              <div className="flex items-center gap-3 mb-6">
+                <div className="w-12 h-12 bg-info/10 rounded-xl flex items-center justify-center">
+                  <Briefcase className="w-6 h-6 text-info" />
+                </div>
+                <div>
+                  <h2 className="text-xl font-semibold text-text">
+                    Primary Services
+                  </h2>
+                  <p className="text-text-muted text-sm">
+                    Services you provide
+                  </p>
+                </div>
               </div>
-            ) : (
-              <div className="flex flex-wrap gap-1">
-                {profile?.primary_services &&
-                profile.primary_services.length > 0 ? (
-                  profile.primary_services.map((service: string) => (
-                    <span
+              {isEditing ? (
+                <div className="grid grid-cols-1 gap-3 max-h-64 overflow-y-auto border border-border rounded-lg p-4">
+                  {services.slice(0, 8).map((service) => (
+                    <button
                       key={service}
-                      className="px-2 py-1 bg-primary/10 text-primary rounded text-xs"
+                      type="button"
+                      onClick={() => handleServiceToggle(service)}
+                      className={`p-3 border rounded-lg text-sm text-left transition-all ${
+                        formData.primary_services.includes(service)
+                          ? "border-primary bg-primary/10 text-primary font-medium"
+                          : "border-border hover:border-primary hover:bg-surface-muted"
+                      }`}
                     >
                       {service}
-                    </span>
-                  ))
-                ) : (
-                  <p className="text-text-light text-sm">
-                    No services selected
-                  </p>
-                )}
-              </div>
-            )}
-          </div>
-
-          {/* Service Regions Box */}
-          <div className="bg-surface border border-border rounded-lg p-4">
-            <div className="flex items-center gap-2 mb-3">
-              <User className="w-5 h-5 text-primary" />
-              <h3 className="font-semibold text-text">Service Regions</h3>
+                    </button>
+                  ))}
+                </div>
+              ) : (
+                <div className="flex flex-wrap gap-2">
+                  {profile?.primary_services &&
+                  profile.primary_services.length > 0 ? (
+                    profile.primary_services.map((service: string) => (
+                      <span
+                        key={service}
+                        className="px-3 py-2 bg-primary/10 text-primary rounded-lg text-sm font-medium"
+                      >
+                        {service}
+                      </span>
+                    ))
+                  ) : (
+                    <p className="text-text-muted">No services selected</p>
+                  )}
+                </div>
+              )}
             </div>
-            {isEditing ? (
-              <div className="grid grid-cols-2 gap-1 max-h-32 overflow-y-auto border border-border rounded p-2">
-                {canadianProvinces.map((province) => (
-                  <button
-                    key={province}
-                    type="button"
-                    onClick={() => handleRegionToggle(province)}
-                    className={`p-1 border rounded text-xs text-left transition-all ${
-                      formData.service_regions.includes(province)
-                        ? "border-primary bg-primary/10 text-primary"
-                        : "border-border hover:border-primary"
-                    }`}
-                  >
-                    {province}
-                  </button>
-                ))}
+
+            {/* Service Regions Card */}
+            <div className="bg-surface border border-border rounded-xl p-6 shadow-sm">
+              <div className="flex items-center gap-3 mb-6">
+                <div className="w-12 h-12 bg-accent/10 rounded-xl flex items-center justify-center">
+                  <User className="w-6 h-6 text-accent" />
+                </div>
+                <div>
+                  <h2 className="text-xl font-semibold text-text">
+                    Service Regions
+                  </h2>
+                  <p className="text-text-muted text-sm">Areas you serve</p>
+                </div>
               </div>
-            ) : (
-              <div className="flex flex-wrap gap-1">
-                {profile?.service_regions &&
-                profile.service_regions.length > 0 ? (
-                  profile.service_regions.map((region: string) => (
-                    <span
-                      key={region}
-                      className="px-2 py-1 bg-accent/10 text-accent rounded text-xs"
+              {isEditing ? (
+                <div className="grid grid-cols-2 gap-2 max-h-64 overflow-y-auto border border-border rounded-lg p-4">
+                  {canadianProvinces.map((province) => (
+                    <button
+                      key={province}
+                      type="button"
+                      onClick={() => handleRegionToggle(province)}
+                      className={`p-3 border rounded-lg text-sm text-left transition-all ${
+                        formData.service_regions.includes(province)
+                          ? "border-accent bg-accent/10 text-accent font-medium"
+                          : "border-border hover:border-accent hover:bg-surface-muted"
+                      }`}
                     >
-                      {region}
-                    </span>
-                  ))
-                ) : (
-                  <p className="text-text-light text-sm">No regions selected</p>
-                )}
-              </div>
-            )}
-          </div>
+                      {province}
+                    </button>
+                  ))}
+                </div>
+              ) : (
+                <div className="flex flex-wrap gap-2">
+                  {profile?.service_regions &&
+                  profile.service_regions.length > 0 ? (
+                    profile.service_regions.map((region: string) => (
+                      <span
+                        key={region}
+                        className="px-3 py-2 bg-accent/10 text-accent rounded-lg text-sm font-medium"
+                      >
+                        {region}
+                      </span>
+                    ))
+                  ) : (
+                    <p className="text-text-muted">No regions selected</p>
+                  )}
+                </div>
+              )}
+            </div>
 
-          {/* Experience Box */}
-          <div className="bg-surface border border-border rounded-lg p-4">
-            <div className="flex items-center gap-2 mb-3">
-              <Crown className="w-5 h-5 text-primary" />
-              <h3 className="font-semibold text-text">Experience</h3>
-            </div>
-            <div className="space-y-3">
-              <div>
-                <label className="block text-xs text-text-light mb-1">
-                  Government Experience
-                </label>
-                {isEditing ? (
-                  <select
-                    value={formData.government_experience}
-                    onChange={(e) =>
-                      setFormData((prev) => ({
-                        ...prev,
-                        government_experience: e.target.value,
-                      }))
-                    }
-                    className="w-full px-2 py-1.5 border border-border rounded text-sm bg-background focus:border-primary focus:outline-none"
-                  >
-                    <option value="">Select experience level</option>
-                    {experienceLevels.map((level) => (
-                      <option key={level.value} value={level.value}>
-                        {level.label}
-                      </option>
-                    ))}
-                  </select>
-                ) : (
-                  <p className="text-sm">
-                    {profile?.government_experience
-                      ? getExperienceDisplay(profile.government_experience)
-                      : "Not set"}
+            {/* Experience Card */}
+            <div className="bg-surface border border-border rounded-xl p-6 shadow-sm">
+              <div className="flex items-center gap-3 mb-6">
+                <div className="w-12 h-12 bg-success/10 rounded-xl flex items-center justify-center">
+                  <Crown className="w-6 h-6 text-success" />
+                </div>
+                <div>
+                  <h2 className="text-xl font-semibold text-text">
+                    Experience
+                  </h2>
+                  <p className="text-text-muted text-sm">
+                    Your expertise level
                   </p>
-                )}
+                </div>
               </div>
-              <div>
-                <label className="block text-xs text-text-light mb-1">
-                  Typical Contract Size
-                </label>
-                {isEditing ? (
-                  <select
-                    value={formData.typical_contract_size}
-                    onChange={(e) =>
-                      setFormData((prev) => ({
-                        ...prev,
-                        typical_contract_size: e.target.value,
-                      }))
-                    }
-                    className="w-full px-2 py-1.5 border border-border rounded text-sm bg-background focus:border-primary focus:outline-none"
-                  >
-                    <option value="">Select contract size</option>
-                    {contractSizes.map((size) => (
-                      <option key={size.value} value={size.value}>
-                        {size.label}
-                      </option>
-                    ))}
-                  </select>
-                ) : (
-                  <p className="text-sm">
-                    {profile?.typical_contract_size
-                      ? getContractSizeDisplay(profile.typical_contract_size)
-                      : "Not set"}
-                  </p>
-                )}
+              <div className="space-y-6">
+                <div>
+                  <label className="block text-sm font-medium text-text-muted mb-3">
+                    Government Experience
+                  </label>
+                  {isEditing ? (
+                    <select
+                      value={formData.government_experience}
+                      onChange={(e) =>
+                        setFormData((prev) => ({
+                          ...prev,
+                          government_experience: e.target.value,
+                        }))
+                      }
+                      className="w-full px-4 py-3 border border-border rounded-lg bg-background focus:border-primary focus:outline-none transition-colors"
+                    >
+                      <option value="">Select experience level</option>
+                      {experienceLevels.map((level) => (
+                        <option key={level.value} value={level.value}>
+                          {level.label}
+                        </option>
+                      ))}
+                    </select>
+                  ) : (
+                    <p className="text-base font-medium text-text">
+                      {profile?.government_experience
+                        ? getExperienceDisplay(profile.government_experience)
+                        : "Not set"}
+                    </p>
+                  )}
+                </div>
+                <div>
+                  <label className="block text-sm font-medium text-text-muted mb-3">
+                    Typical Contract Size
+                  </label>
+                  {isEditing ? (
+                    <select
+                      value={formData.typical_contract_size}
+                      onChange={(e) =>
+                        setFormData((prev) => ({
+                          ...prev,
+                          typical_contract_size: e.target.value,
+                        }))
+                      }
+                      className="w-full px-4 py-3 border border-border rounded-lg bg-background focus:border-primary focus:outline-none transition-colors"
+                    >
+                      <option value="">Select contract size</option>
+                      {contractSizes.map((size) => (
+                        <option key={size.value} value={size.value}>
+                          {size.label}
+                        </option>
+                      ))}
+                    </select>
+                  ) : (
+                    <p className="text-base font-medium text-text">
+                      {profile?.typical_contract_size
+                        ? getContractSizeDisplay(profile.typical_contract_size)
+                        : "Not set"}
+                    </p>
+                  )}
+                </div>
               </div>
             </div>
           </div>
+        </div>
 
-          {/* Account Settings Box */}
-          <div className="bg-surface border border-border rounded-lg p-4">
-            <div className="flex items-center gap-2 mb-3">
-              <User className="w-5 h-5 text-primary" />
-              <h3 className="font-semibold text-text">Account Settings</h3>
-            </div>
-            <div className="space-y-3">
+        {/* Account Settings - Full Width */}
+        <div className="mt-8">
+          <div className="bg-surface border border-border rounded-xl p-6 shadow-sm">
+            <div className="flex items-center gap-3 mb-6">
+              <div className="w-12 h-12 bg-warning/10 rounded-xl flex items-center justify-center">
+                <User className="w-6 h-6 text-warning" />
+              </div>
               <div>
-                <label className="block text-xs text-text-light mb-1">
+                <h2 className="text-xl font-semibold text-text">
+                  Account Settings
+                </h2>
+                <p className="text-text-muted text-sm">
+                  Manage your login credentials
+                </p>
+              </div>
+            </div>
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div>
+                <label className="block text-sm font-medium text-text-muted mb-3">
                   Email Address
                 </label>
-                <div className="flex gap-2">
+                <div className="flex gap-3">
                   <input
                     type="email"
                     value={user?.email || ""}
                     disabled
-                    className="flex-1 px-2 py-1.5 border border-border rounded bg-surface-muted text-text-muted text-sm"
+                    className="flex-1 px-4 py-3 border border-border rounded-lg bg-surface-muted text-text-muted"
                   />
-                  <button className="px-2 py-1.5 text-xs border border-border rounded hover:bg-border transition-colors">
+                  <button className="px-6 py-3 text-sm border border-border rounded-lg hover:bg-surface-muted transition-colors font-medium">
                     Change
                   </button>
                 </div>
               </div>
               <div>
-                <label className="block text-xs text-text-light mb-1">
+                <label className="block text-sm font-medium text-text-muted mb-3">
                   Password
                 </label>
-                <div className="flex gap-2">
+                <div className="flex gap-3">
                   <input
                     type="password"
                     value="••••••••"
                     disabled
-                    className="flex-1 px-2 py-1.5 border border-border rounded bg-surface-muted text-text-muted text-sm"
+                    className="flex-1 px-4 py-3 border border-border rounded-lg bg-surface-muted text-text-muted"
                   />
-                  <button className="px-2 py-1.5 text-xs border border-border rounded hover:bg-border transition-colors">
+                  <button className="px-6 py-3 text-sm border border-border rounded-lg hover:bg-surface-muted transition-colors font-medium">
                     Change
                   </button>
                 </div>

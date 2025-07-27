@@ -25,6 +25,77 @@ export const getAllTenders = async (): Promise<Tender[]> => {
   }
 };
 
+export interface PaginatedTendersParams {
+  page?: number;
+  limit?: number;
+  search?: string;
+  sortBy?: string;
+  sortOrder?: 'asc' | 'desc';
+  status?: string;
+  category?: string;
+  region?: string;
+  entity?: string;
+}
+
+export interface PaginatedTendersResponse {
+  data: Tender[];
+  pagination: {
+    page: number;
+    limit: number;
+    total: number;
+    totalPages: number;
+    hasNext: boolean;
+    hasPrev: boolean;
+  };
+  filters: {
+    search: string;
+    sortBy: string;
+    sortOrder: string;
+    status?: string;
+    category?: string;
+    region?: string;
+    entity?: string;
+  };
+}
+
+export const getTendersPaginated = async (
+  params: PaginatedTendersParams = {}
+): Promise<PaginatedTendersResponse> => {
+  try {
+    const searchParams = new URLSearchParams();
+    
+    if (params.page) searchParams.append('page', params.page.toString());
+    if (params.limit) searchParams.append('limit', params.limit.toString());
+    if (params.search) searchParams.append('search', params.search);
+    if (params.sortBy) searchParams.append('sortBy', params.sortBy);
+    if (params.sortOrder) searchParams.append('sortOrder', params.sortOrder);
+    if (params.status) searchParams.append('status', params.status);
+    if (params.category) searchParams.append('category', params.category);
+    if (params.region) searchParams.append('region', params.region);
+    if (params.entity) searchParams.append('entity', params.entity);
+
+    const response = await apiClient.get(`/tenders/paginated?${searchParams.toString()}`);
+    return response.data;
+  } catch (error) {
+    return handleApiError(error, "Fetch paginated tenders");
+  }
+};
+
+export interface TenderStatistics {
+  source: string;
+  numberOfTendersAddedDaily: number;
+  numberOfTendersAvailable: number;
+}
+
+export const getTenderStatistics = async (): Promise<TenderStatistics[]> => {
+  try {
+    const response = await apiClient.get("/tenders/statistics");
+    return response.data;
+  } catch (error) {
+    return handleApiError(error, "Fetch tender statistics");
+  }
+};
+
 export const getTendersFromBookmarkIds = async (
   bookmarkIds: string[]
 ): Promise<Tender[]> => {
