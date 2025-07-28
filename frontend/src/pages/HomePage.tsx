@@ -5,10 +5,10 @@ import ActivityAndRecommendations from "../components/dashboard/ActivityAndRecom
 import ROICalculator from "../components/dashboard/ROICalculator";
 import OpportunityTimeline from "../components/dashboard/OpportunityTimeline";
 import QuickActions from "../components/dashboard/QuickActions";
-import QuickActionsSidebar from "../components/search/QuickActionsSidebar";
-import UrgentDeadlines from "../components/search/UrgentDeadlines";
+// import QuickActionsSidebar from "../components/search/QuickActionsSidebar";
+// import UrgentDeadlines from "../components/search/UrgentDeadlines";
 import { getRecommendedTenders } from "../api/tenders";
-import { getNumberOfBookmarks } from "../api/bookmarks";
+// import { getNumberOfBookmarks } from "../api/bookmarks";
 import { analyticsAPI, type DashboardData } from "../api/analytics";
 import type { Activity } from "../components/dashboard/types";
 import type { TenderSearchResult } from "../api/types";

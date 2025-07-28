@@ -89,14 +89,14 @@ const PROCUREMENT_TYPES = [
   'Call-up Against Standing Offer',
 ];
 
-const PROCUREMENT_METHODS = [
-  'Open Competition',
-  'Invitational Competition',
-  'Sole Source',
-  'Limited Tendering',
-  'Electronic Tendering',
-  'Two-Stage Tendering',
-];
+// const PROCUREMENT_METHODS = [
+//   'Open Competition',
+//   'Invitational Competition',
+//   'Sole Source',
+//   'Limited Tendering',
+//   'Electronic Tendering',
+//   'Two-Stage Tendering',
+// ];
 
 const AdvancedSearchForm = memo(function AdvancedSearchForm({
   initialFilters,
@@ -165,7 +165,7 @@ const AdvancedSearchForm = memo(function AdvancedSearchForm({
     setFilters(prev => ({
       ...prev,
       [section]: {
-        ...prev[section],
+        ...(prev[section] as Record<string, any>),
         [field]: value,
       },
     }));
@@ -181,7 +181,7 @@ const AdvancedSearchForm = memo(function AdvancedSearchForm({
       return {
         ...prev,
         [section]: {
-          ...prev[section],
+          ...(prev[section] as Record<string, any>),
           [field]: newArray,
         },
       };
@@ -240,15 +240,15 @@ const AdvancedSearchForm = memo(function AdvancedSearchForm({
     });
   };
 
-  const formatCurrency = (value: number | null) => {
-    if (!value) return '';
-    return new Intl.NumberFormat('en-CA', {
-      style: 'currency',
-      currency: 'CAD',
-      minimumFractionDigits: 0,
-      maximumFractionDigits: 0,
-    }).format(value);
-  };
+  // const formatCurrency = (value: number | null) => {
+  //   if (!value) return '';
+  //   return new Intl.NumberFormat('en-CA', {
+  //     style: 'currency',
+  //     currency: 'CAD',
+  //     minimumFractionDigits: 0,
+  //     maximumFractionDigits: 0,
+  //   }).format(value);
+  // };
 
   return (
     <div className={`bg-surface border border-border rounded-lg ${className}`}>

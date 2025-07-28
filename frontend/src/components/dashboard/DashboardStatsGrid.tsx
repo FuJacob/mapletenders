@@ -1,5 +1,5 @@
 import { memo } from "react";
-import { Lightning, Bookmark, Bell, Clock, TrendUp, Target } from "@phosphor-icons/react";
+import { Lightning, Bookmark, Clock, TrendUp, Target } from "@phosphor-icons/react";
 import { Link } from "react-router-dom";
 import type { DashboardData } from "../../api/analytics";
 

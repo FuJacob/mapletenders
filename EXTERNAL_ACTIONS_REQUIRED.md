@@ -20,6 +20,9 @@ psql -h [your-db-host] -U [username] -d [database-name] -f backend/sql/create_sa
 
 # 3. Notifications schema (NEW)
 psql -h [your-db-host] -U [username] -d [database-name] -f backend/sql/create_notifications_tables.sql
+
+# 4. Calendar integration schema (NEW)
+psql -h [your-db-host] -U [username] -d [database-name] -f backend/sql/create_calendar_tables.sql
 ```
 
 **What this does:**
@@ -28,12 +31,14 @@ psql -h [your-db-host] -U [username] -d [database-name] -f backend/sql/create_no
 - 🆕 Creates saved searches (`saved_searches`, `search_performance`)
 - 🆕 Creates notification system (`notifications`, `notification_preferences`, `deadline_alerts`)
 - 🆕 Sets up multi-channel notification framework
+- 🆕 Creates calendar integration (`calendar_connections`, `calendar_events`, `calendar_sync_log`)
 
 **Verification:**
 - Check that all tables exist: `\dt` in psql
 - Test ROI function: `SELECT * FROM calculate_user_roi('user-id', '2024-01-01', '2024-12-31');`
 - Test saved searches: `SELECT * FROM saved_searches LIMIT 1;`
 - Test notifications: `SELECT * FROM notification_channels;`
+- Test calendar functions: `SELECT * FROM get_user_calendar_sync_status('user-id');`
 
 ---
 
@@ -54,6 +59,11 @@ STRIPE_SECRET_KEY=your_stripe_secret_key
 STRIPE_WEBHOOK_SECRET=your_stripe_webhook_secret
 ELASTICSEARCH_URL=your_elasticsearch_cluster_url
 FRONTEND_URL=https://your-frontend-domain.com
+
+# Calendar Integration (NEW)
+GOOGLE_CLIENT_ID=your_google_oauth_client_id
+GOOGLE_CLIENT_SECRET=your_google_oauth_client_secret
+GOOGLE_REDIRECT_URI=https://your-backend-api.com/calendar/google/callback
 
 # Frontend Environment Variables
 VITE_API_BASE_URL=https://your-backend-api.com
@@ -96,6 +106,40 @@ VITE_SUPABASE_ANON_KEY=your_supabase_anon_key
   }
 }
 ```
+
+---
+
+## 📅 GOOGLE CALENDAR INTEGRATION
+
+### 3. Set Up Google Calendar OAuth
+**Priority: HIGH - Required for calendar sync features**
+
+**Google Cloud Console Setup:**
+1. Go to https://console.cloud.google.com/
+2. Create a new project or select existing project
+3. Enable Google Calendar API
+4. Go to "Credentials" and create OAuth 2.0 Client IDs
+5. Set authorized redirect URIs:
+   - `https://your-backend-api.com/calendar/google/callback`
+   - `http://localhost:4000/calendar/google/callback` (for development)
+
+**Required OAuth Scopes:**
+```
+https://www.googleapis.com/auth/calendar
+https://www.googleapis.com/auth/userinfo.email
+```
+
+**Environment Variables to Add:**
+```bash
+GOOGLE_CLIENT_ID=your_google_oauth_client_id
+GOOGLE_CLIENT_SECRET=your_google_oauth_client_secret
+GOOGLE_REDIRECT_URI=https://your-backend-api.com/calendar/google/callback
+```
+
+**Verification:**
+- Test OAuth flow: Visit `/calendar/google/auth` endpoint
+- Verify calendar access after authorization
+- Check that events can be created in user's calendar
 
 ---
 
@@ -283,10 +327,13 @@ add_header Strict-Transport-Security "max-age=31536000";
 
 **Must Complete Before Any Customer Access:**
 1. ✅ Analytics schema migration
-2. ⏳ Elasticsearch setup
-3. ⏳ Production environment variables
-4. ⏳ SSL/security configuration
-5. ⏳ Stripe production setup
+2. ✅ Advanced search & notification schemas
+3. ✅ Calendar integration schemas
+4. ⏳ Elasticsearch setup
+5. ⏳ Google Calendar OAuth setup
+6. ⏳ Production environment variables
+7. ⏳ SSL/security configuration
+8. ⏳ Stripe production setup
 
 **Must Complete Before Public Launch:**
 1. ⏳ Load testing

@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef, memo } from 'react';
-import { Bell, Check, X, CheckCheck } from '@phosphor-icons/react';
+import { Bell, Check, X, Checks } from '@phosphor-icons/react';
 import { notificationsAPI } from '../../api/notifications';
 import type { Notification } from '../../api/notifications';
 import { formatDistanceToNow } from 'date-fns';
@@ -153,7 +153,7 @@ const NotificationDropdown = memo(function NotificationDropdown({
                 onClick={handleMarkAllAsRead}
                 className="text-text-light hover:text-text text-sm flex items-center gap-1"
               >
-                <CheckCheck className="w-4 h-4" />
+                <Checks className="w-4 h-4" />
                 Mark all read
               </button>
             )}

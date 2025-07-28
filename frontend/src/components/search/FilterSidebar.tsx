@@ -1,9 +1,9 @@
 import { memo, useState, useEffect } from "react";
+import type { ReactElement } from "react";
 import { 
   Funnel, 
   MapPin, 
   CurrencyDollar, 
-  Calendar, 
   Tag,
   X,
   ChartBar,
@@ -20,7 +20,7 @@ interface FilterOption {
 interface FilterGroup {
   id: string;
   title: string;
-  icon: JSX.Element;
+  icon: ReactElement;
   options: FilterOption[];
   expanded: boolean;
   type: 'checkbox' | 'radio' | 'range' | 'date';

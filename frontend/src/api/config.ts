@@ -10,6 +10,9 @@ export const PDF_ANALYSIS_URL = "http://localhost:4500";
 // Configure axios defaults
 axios.defaults.baseURL = API_BASE_URL;
 
+// Export the configured axios instance as 'api' for compatibility
+export const api = axios;
+
 // Add response interceptor for global error handling
 axios.interceptors.response.use(
   (response) => response,

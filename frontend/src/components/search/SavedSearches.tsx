@@ -1,4 +1,4 @@
-import { memo, useState, useEffect } from "react";
+import { memo, useState } from "react";
 import { 
   BookmarkSimple, 
   Play, 
@@ -11,8 +11,8 @@ import {
   Star
 } from "@phosphor-icons/react";
 import { Link } from "react-router-dom";
-import { searchAPI } from "../../api/search";
-import type { SavedSearch as APISavedSearch } from "../../api/search";
+// import { searchAPI } from "../../api/search";
+// import type { SavedSearch as APISavedSearch } from "../../api/search";
 
 interface SavedSearch {
   id: string;
@@ -355,7 +355,7 @@ const SavedSearches = memo(function SavedSearches({
                       <Star className={`w-4 h-4 ${search.favorite ? 'fill-current' : ''}`} />
                     </button>
                     {search.isAlert && (
-                      <Bell className="w-4 h-4 text-info" title="Alert enabled" />
+                      <Bell className="w-4 h-4 text-info" />
                     )}
                   </div>
 

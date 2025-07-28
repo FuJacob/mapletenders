@@ -1,5 +1,5 @@
 import { useState, useEffect, memo } from 'react';
-import { Bell, Check, X } from '@phosphor-icons/react';
+import { Bell, Check } from '@phosphor-icons/react';
 import { notificationsAPI } from '../../api/notifications';
 import type { NotificationPreference } from '../../api/notifications';
 

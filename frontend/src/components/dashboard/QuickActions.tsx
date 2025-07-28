@@ -1,4 +1,5 @@
 import { memo } from "react";
+import type { ReactElement } from "react";
 import { 
   MagnifyingGlass, 
   Bookmark, 
@@ -16,7 +17,7 @@ interface QuickAction {
   id: string;
   title: string;
   description: string;
-  icon: JSX.Element;
+  icon: ReactElement;
   to: string;
   color: string;
   bgColor: string;

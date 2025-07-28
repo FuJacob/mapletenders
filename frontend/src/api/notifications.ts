@@ -1,4 +1,4 @@
-import { api } from './index';
+import apiClient from '../client/apiClient';
 
 // Types for notifications
 export interface Notification {
@@ -47,7 +47,7 @@ export const notificationsAPI = {
       unreadOnly: unreadOnly.toString(),
     });
 
-    const response = await api.get(`/notifications?${params.toString()}`);
+    const response = await apiClient.get(`/notifications?${params.toString()}`);
     return response.data.data.map((notification: any) => ({
       ...notification,
       createdAt: new Date(notification.createdAt),
@@ -60,21 +60,21 @@ export const notificationsAPI = {
    * Mark notification as read
    */
   async markAsRead(notificationId: string): Promise<void> {
-    await api.put(`/notifications/${notificationId}/read`);
+    await apiClient.put(`/notifications/${notificationId}/read`);
   },
 
   /**
    * Mark all notifications as read
    */
   async markAllAsRead(): Promise<void> {
-    await api.put('/notifications/read-all');
+    await apiClient.put('/notifications/read-all');
   },
 
   /**
    * Delete notification
    */
   async deleteNotification(notificationId: string): Promise<void> {
-    await api.delete(`/notifications/${notificationId}`);
+    await apiClient.delete(`/notifications/${notificationId}`);
   },
 
   /**
@@ -83,7 +83,7 @@ export const notificationsAPI = {
   async createNotification(
     notification: Omit<Notification, 'id' | 'userId' | 'createdAt'>
   ): Promise<Notification> {
-    const response = await api.post('/notifications', notification);
+    const response = await apiClient.post('/notifications', notification);
     return {
       ...response.data.data,
       createdAt: new Date(response.data.data.createdAt),
@@ -96,7 +96,7 @@ export const notificationsAPI = {
    * Get notification preferences
    */
   async getPreferences(): Promise<NotificationPreference[]> {
-    const response = await api.get('/notifications/preferences');
+    const response = await apiClient.get('/notifications/preferences');
     return response.data.data;
   },
 
@@ -104,14 +104,14 @@ export const notificationsAPI = {
    * Update notification preferences
    */
   async updatePreferences(preferences: NotificationPreference[]): Promise<void> {
-    await api.put('/notifications/preferences', preferences);
+    await apiClient.put('/notifications/preferences', preferences);
   },
 
   /**
    * Create test notification (development)
    */
   async createTestNotification(type = 'system_notification', channels = ['in_app']): Promise<Notification> {
-    const response = await api.post('/notifications/test', { type, channels });
+    const response = await apiClient.post('/notifications/test', { type, channels });
     return {
       ...response.data.data,
       createdAt: new Date(response.data.data.createdAt),
@@ -122,14 +122,14 @@ export const notificationsAPI = {
    * Create deadline alerts (admin)
    */
   async createDeadlineAlerts(): Promise<void> {
-    await api.post('/notifications/deadline-alerts');
+    await apiClient.post('/notifications/deadline-alerts');
   },
 
   /**
    * Send pending notifications (admin)
    */
   async sendPendingNotifications(): Promise<void> {
-    await api.post('/notifications/send-pending');
+    await apiClient.post('/notifications/send-pending');
   },
 };
 

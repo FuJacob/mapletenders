@@ -415,9 +415,9 @@ export class SearchService {
 
       // Extract search queries from metadata
       const queries = data
-        ?.map(activity => activity.metadata?.query)
-        .filter(q => q && q.toLowerCase().includes(query.toLowerCase()))
-        .filter((q, index, arr) => arr.indexOf(q) === index) // Remove duplicates
+        ?.map((activity: any) => activity.metadata?.query)
+        .filter((q: any) => q && q.toLowerCase().includes(query.toLowerCase()))
+        .filter((q: any, index: number, arr: any[]) => arr.indexOf(q) === index) // Remove duplicates
         .slice(0, 10) || [];
 
       return queries;

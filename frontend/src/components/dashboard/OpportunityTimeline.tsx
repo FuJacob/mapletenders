@@ -1,7 +1,7 @@
 import { memo, useState, useEffect } from "react";
 import { Clock, TrendUp, Target, Bell, Calendar } from "@phosphor-icons/react";
 import { Link } from "react-router-dom";
-import { analyticsAPI, type PerformanceReport } from "../../api/analytics";
+import { analyticsAPI } from "../../api/analytics";
 
 interface TimelineEvent {
   id: string;

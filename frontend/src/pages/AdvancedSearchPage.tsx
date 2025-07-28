@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from "react";
-import { useSearchParams, useNavigate } from "react-router-dom";
+import { useSearchParams } from "react-router-dom";
 import {
   AdvancedSearchForm,
   FilterSidebar,
@@ -34,7 +34,7 @@ interface SavedSearch {
 
 export default function AdvancedSearchPage() {
   const [searchParams, setSearchParams] = useSearchParams();
-  const navigate = useNavigate();
+  // const navigate = useNavigate();
   const { user } = useAuth();
   const userId = user?.id;
 
@@ -59,7 +59,7 @@ export default function AdvancedSearchPage() {
   const [selectedTender, setSelectedTender] = useState<string | null>(null);
 
   // Filter sidebar state
-  const [sidebarFilters, setSidebarFilters] = useState<Record<string, any>>({});
+  // const [sidebarFilters, setSidebarFilters] = useState<Record<string, any>>({});
 
   // Initialize from URL parameters
   useEffect(() => {
@@ -178,8 +178,9 @@ export default function AdvancedSearchPage() {
 
   // Handle sidebar filter changes
   const handleSidebarFiltersChange = useCallback((filters: Record<string, any>) => {
-    setSidebarFilters(filters);
+    // setSidebarFilters(filters);
     // You could merge these with main search filters if needed
+    console.log('Sidebar filters changed:', filters);
   }, []);
 
   // Handle save search
@@ -344,7 +345,7 @@ export default function AdvancedSearchPage() {
           {viewMode === 'search' && showFilters && (
             <FilterSidebar
               onFiltersChange={handleSidebarFiltersChange}
-              resultsCount={searchResponse?.total || 0}
+              resultsCount={searchResponse?.total_results || 0}
               loading={isLoading}
             />
           )}

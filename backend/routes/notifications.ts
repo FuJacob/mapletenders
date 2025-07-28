@@ -1,11 +1,11 @@
 import express from 'express';
 import { notificationController } from '../controllers/notificationController';
-import { authenticateToken } from '../middleware/auth';
+import { authenticateUser } from '../middleware/authenticateUser';
 
 const router = express.Router();
 
 // Apply authentication middleware to all notification routes
-router.use(authenticateToken);
+router.use(authenticateUser);
 
 /**
  * User Notification Routes

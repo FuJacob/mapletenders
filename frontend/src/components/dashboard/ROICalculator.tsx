@@ -1,5 +1,5 @@
 import { memo, useState, useEffect } from "react";
-import { TrendUp, DollarSign, Clock, Trophy, Calculator } from "@phosphor-icons/react";
+import { TrendUp, CurrencyDollar, Clock, Trophy, Calculator } from "@phosphor-icons/react";
 import { analyticsAPI, type ROIMetrics, type TimeSavingsData } from "../../api/analytics";
 
 interface ROICalculatorProps {
@@ -166,7 +166,7 @@ const ROICalculator = memo(function ROICalculator({ className = "" }: ROICalcula
           {/* Total Return */}
           <div className="text-center">
             <div className="bg-primary/10 p-3 rounded-lg mb-2 mx-auto w-fit">
-              <DollarSign className="w-6 h-6 text-primary" />
+              <CurrencyDollar className="w-6 h-6 text-primary" />
             </div>
             <h4 className="text-2xl font-bold text-text">
               {formatCurrency(roiData.totalReturn)}

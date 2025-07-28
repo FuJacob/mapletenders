@@ -1,3 +1,2 @@
-export { default as TenderEventModal } from './TenderEventModal';
-export { default as CalendarLoadingState } from './CalendarLoadingState';
-export { default as CalendarEmptyState } from './CalendarEmptyState';
+export { default as CalendarConnections } from './CalendarConnections';
+export { default as CalendarSyncSettings } from './CalendarSyncSettings';

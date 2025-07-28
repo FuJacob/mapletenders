@@ -1,4 +1,4 @@
-import { api } from './index';
+import apiClient from '../client/apiClient';
 
 // Types for advanced search
 export interface SearchFilters {
@@ -154,7 +154,7 @@ export const searchAPI = {
       params.append('onlyRecommended', 'true');
     }
 
-    const response = await api.get(`/search?${params.toString()}`);
+    const response = await apiClient.get(`/search?${params.toString()}`);
     return response.data;
   },
 
@@ -166,7 +166,7 @@ export const searchAPI = {
     
     if (filters?.query) params.append('q', filters.query);
     
-    const response = await api.get(`/search/aggregations?${params.toString()}`);
+    const response = await apiClient.get(`/search/aggregations?${params.toString()}`);
     return response.data;
   },
 
@@ -174,7 +174,7 @@ export const searchAPI = {
    * Get search suggestions based on user history
    */
   async getSearchSuggestions(query: string): Promise<string[]> {
-    const response = await api.get(`/search/suggestions?query=${encodeURIComponent(query)}`);
+    const response = await apiClient.get(`/search/suggestions?query=${encodeURIComponent(query)}`);
     return response.data.data;
   },
 
@@ -182,7 +182,7 @@ export const searchAPI = {
    * Save a search for the user
    */
   async saveSearch(searchData: Omit<SavedSearch, 'userId'>): Promise<SavedSearch> {
-    const response = await api.post('/search/saved', searchData);
+    const response = await apiClient.post('/search/saved', searchData);
     return response.data.data;
   },
 
@@ -190,7 +190,7 @@ export const searchAPI = {
    * Get user's saved searches
    */
   async getSavedSearches(): Promise<SavedSearch[]> {
-    const response = await api.get('/search/saved');
+    const response = await apiClient.get('/search/saved');
     return response.data.data;
   },
 
@@ -198,7 +198,7 @@ export const searchAPI = {
    * Update a saved search
    */
   async updateSavedSearch(searchId: string, updates: Partial<SavedSearch>): Promise<SavedSearch> {
-    const response = await api.put(`/search/saved/${searchId}`, updates);
+    const response = await apiClient.put(`/search/saved/${searchId}`, updates);
     return response.data.data;
   },
 
@@ -206,14 +206,14 @@ export const searchAPI = {
    * Delete a saved search
    */
   async deleteSavedSearch(searchId: string): Promise<void> {
-    await api.delete(`/search/saved/${searchId}`);
+    await apiClient.delete(`/search/saved/${searchId}`);
   },
 
   /**
    * Run a saved search
    */
   async runSavedSearch(searchId: string): Promise<SearchResults> {
-    const response = await api.post(`/search/saved/${searchId}/run`);
+    const response = await apiClient.post(`/search/saved/${searchId}/run`);
     return response.data.data;
   },
 };

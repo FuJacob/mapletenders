@@ -16,6 +16,7 @@ import requestRoutes from "./routes/request";
 import analyticsRoutes from "./routes/analytics";
 import searchRoutes from "./routes/search";
 import notificationRoutes from "./routes/notifications";
+import calendarRoutes from "./routes/calendar";
 import { analyticsService } from "./services/analyticsService";
 
 const app = express();
@@ -45,6 +46,7 @@ app.use("/request", requestRoutes);
 app.use("/analytics", analyticsRoutes);
 app.use("/search", searchRoutes);
 app.use("/notifications", notificationRoutes);
+app.use("/calendar", calendarRoutes);
 
 /**
  * Scraping test playground page
