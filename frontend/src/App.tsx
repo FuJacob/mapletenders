@@ -28,6 +28,7 @@ const HomePage = lazy(() => import("./pages/HomePage"));
 const Home = lazy(() => import("./pages/Home"));
 const TableView = lazy(() => import("./pages/TableView"));
 const SearchPage = lazy(() => import("./pages/SearchPage"));
+const AdvancedSearchPage = lazy(() => import("./pages/AdvancedSearchPage"));
 const TablePage = lazy(() => import("./pages/TablePage"));
 const RfpAnalysis = lazy(() => import("./pages/RfpAnalysis"));
 const CalendarPage = lazy(() => import("./pages/CalendarPage"));
@@ -86,6 +87,7 @@ export function App() {
               <Route path="/table-view" element={<TableView />} />
               <Route path="/home" element={<Home />} />
               <Route path="/search" element={<SearchPage />} />
+              <Route path="/search/advanced" element={<AdvancedSearchPage />} />
               <Route path="/table" element={<TablePage />} />
               <Route path="/rfp-analysis" element={<RfpAnalysis />} />
               <Route path="/calendar" element={<CalendarPage />} />

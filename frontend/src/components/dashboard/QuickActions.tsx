@@ -7,7 +7,8 @@ import {
   ChartBar, 
   Download,
   Plus,
-  Lightning
+  Lightning,
+  Funnel
 } from "@phosphor-icons/react";
 import { Link } from "react-router-dom";
 
@@ -42,6 +43,15 @@ const QuickActions = memo(function QuickActions({
       description: 'Find relevant tenders with AI',
       icon: <MagnifyingGlass className="w-5 h-5" />,
       to: '/search',
+      color: 'text-primary',
+      bgColor: 'bg-primary/10 hover:bg-primary/20',
+    },
+    {
+      id: 'advanced-search',
+      title: 'Advanced Search',
+      description: 'Powerful filtering tools',
+      icon: <Funnel className="w-5 h-5" />,
+      to: '/search/advanced',
       color: 'text-primary',
       bgColor: 'bg-primary/10 hover:bg-primary/20',
     },
