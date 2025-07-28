@@ -13,6 +13,8 @@ import bookmarkRoutes from "./routes/bookmarks";
 import subscriptionRoutes from "./routes/subscriptions";
 import scrapingRoutes from "./routes/scraping";
 import requestRoutes from "./routes/request";
+import analyticsRoutes from "./routes/analytics";
+import { analyticsService } from "./services/analyticsService";
 
 const app = express();
 app.use(cors({ origin: "*" })); // Allow all origins
@@ -38,6 +40,7 @@ app.use("/bookmarks", bookmarkRoutes);
 app.use("/subscriptions", subscriptionRoutes);
 app.use("/scraping", scrapingRoutes);
 app.use("/request", requestRoutes);
+app.use("/analytics", analyticsRoutes);
 
 /**
  * Scraping test playground page
@@ -180,7 +183,15 @@ app.get("/test", (req, res) => {
 app.use("/assets", express.static(path.join(__dirname, "assets")));
 
 const PORT = process.env.PORT || 4000;
-const server = app.listen(PORT, () => {
+const server = app.listen(PORT, async () => {
   console.log(`Listening at http://localhost:${PORT}`);
+  
+  // Initialize analytics schema
+  try {
+    await analyticsService.initializeSchema();
+    console.log('Analytics service initialized');
+  } catch (error) {
+    console.warn('Failed to initialize analytics service:', error);
+  }
 });
 server.on("error", console.error);

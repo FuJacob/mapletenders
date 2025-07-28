@@ -4,4 +4,7 @@ export { default as RecentActivity } from "./RecentActivity";
 export { default as ActivityItem } from "./ActivityItem";
 export { default as DashboardStatsGrid } from "./DashboardStatsGrid";
 export { default as ActivityAndRecommendations } from "./ActivityAndRecommendations";
+export { default as ROICalculator } from "./ROICalculator";
+export { default as OpportunityTimeline } from "./OpportunityTimeline";
+export { default as QuickActions } from "./QuickActions";
 export type { Tender, Activity } from "./types";

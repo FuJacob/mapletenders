@@ -9,3 +9,4 @@ export * from "./documents";
 export * from "./auth";
 export * from "./profile";
 export * from "./chat";
+export * from "./analytics";

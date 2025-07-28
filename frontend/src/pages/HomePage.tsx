@@ -2,10 +2,14 @@ import { useState, useEffect } from "react";
 
 import { DashboardStatsGrid } from "../components/dashboard";
 import ActivityAndRecommendations from "../components/dashboard/ActivityAndRecommendations";
+import ROICalculator from "../components/dashboard/ROICalculator";
+import OpportunityTimeline from "../components/dashboard/OpportunityTimeline";
+import QuickActions from "../components/dashboard/QuickActions";
 import QuickActionsSidebar from "../components/search/QuickActionsSidebar";
 import UrgentDeadlines from "../components/search/UrgentDeadlines";
 import { getRecommendedTenders } from "../api/tenders";
 import { getNumberOfBookmarks } from "../api/bookmarks";
+import { analyticsAPI, type DashboardData } from "../api/analytics";
 import type { Activity } from "../components/dashboard/types";
 import type { TenderSearchResult } from "../api/types";
 import { useAuth } from "../hooks/auth";
@@ -76,26 +80,61 @@ export default function HomePage() {
   const [recommendedTenders, setRecommendedTenders] = useState<
     TenderSearchResult[]
   >([]);
-  const [stats, setStats] = useState({
-    newTenders: 12,
-    bookmarks: 8,
-    activeAlerts: 5,
-    deadlinesThisWeek: 3,
-  });
+  const [dashboardData, setDashboardData] = useState<DashboardData | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    const fetchStats = async () => {
+    const fetchDashboardData = async () => {
       try {
-        const bookmarksResponse = await getNumberOfBookmarks();
-        setStats((prevStats) => ({
-          ...prevStats,
-          bookmarks: bookmarksResponse,
-        }));
-      } catch (error) {
-        console.error("Failed to fetch bookmarks:", error);
+        setLoading(true);
+        setError(null);
+
+        // Fetch analytics dashboard data
+        const analytics = await analyticsAPI.getDashboard();
+        setDashboardData(analytics);
+
+        // Track page view
+        await analyticsAPI.trackActivity({
+          actionType: 'page_view',
+          resourceType: 'dashboard',
+          pageUrl: '/home',
+          sessionId: Date.now().toString(),
+        });
+      } catch (err) {
+        console.error("Failed to fetch dashboard data:", err);
+        setError(err instanceof Error ? err.message : 'Failed to load dashboard data');
+        
+        // Fallback to mock data for development
+        setDashboardData({
+          tenderStats: {
+            totalMatches: 42,
+            newToday: 3,
+            expiringSoon: 7,
+            bookmarked: 12,
+            applied: 8,
+            won: 2,
+          },
+          financialMetrics: {
+            totalOpportunityValue: 1250000,
+            averageContractSize: 95000,
+            estimatedROI: 850,
+            contractsWonValue: 320000,
+            subscriptionCost: 99,
+          },
+          performanceMetrics: {
+            winRate: 25.5,
+            responseTime: 2.3,
+            timesSaved: 28.5,
+            opportunitiesPerDay: 5.2,
+          },
+        });
+      } finally {
+        setLoading(false);
       }
     };
-    fetchStats();
+
+    fetchDashboardData();
   }, []);
 
   useEffect(() => {
@@ -111,38 +150,76 @@ export default function HomePage() {
     fetchRecommendedTenders();
   }, []);
 
+  if (error && !dashboardData) {
+    return (
+      <div className="h-full flex flex-col items-center justify-center space-y-4">
+        <div className="text-center">
+          <HouseIcon className="w-16 h-16 text-gray-400 mx-auto mb-4" />
+          <h2 className="text-xl font-semibold text-text mb-2">Dashboard Unavailable</h2>
+          <p className="text-error text-sm mb-4">{error}</p>
+          <button
+            onClick={() => window.location.reload()}
+            className="px-4 py-2 bg-primary text-white rounded-lg hover:bg-primary/90 transition-colors"
+          >
+            Try Again
+          </button>
+        </div>
+      </div>
+    );
+  }
+
   return (
-    <div className="h-full flex flex-col space-y-4">
-      {/* Header Section - Fixed Height */}
-      <div className="flex w-full justify-between items-start gap-6">
+    <div className="h-full flex flex-col space-y-6">
+      {/* Header Section */}
+      <div className="space-y-4">
         <PageHeader
           icon={<HouseIcon className="w-10 h-10 text-primary" />}
-          title="Home"
-          description={`Welcome home, ${profile?.company_name}`}
+          title="Dashboard"
+          description={`Welcome back, ${profile?.company_name || 'User'}`}
         />
-        <DashboardStatsGrid stats={stats} />
+        
+        {/* Stats Grid */}
+        {dashboardData ? (
+          <DashboardStatsGrid data={dashboardData} loading={loading} />
+        ) : (
+          <div className="grid grid-cols-2 lg:grid-cols-6 gap-4">
+            {Array.from({ length: 6 }).map((_, index) => (
+              <div key={index} className="bg-surface border border-border rounded-lg p-4 animate-pulse">
+                <div className="h-8 w-8 bg-gray-300 rounded-lg mb-3"></div>
+                <div className="h-6 bg-gray-300 rounded mb-2"></div>
+                <div className="h-4 bg-gray-300 rounded w-3/4"></div>
+              </div>
+            ))}
+          </div>
+        )}
       </div>
 
-      {/* Main Content Layout - Flexible Height */}
-      <div className="flex gap-6 flex-1 min-h-0">
-        {/* Main Content Area - 2/3 width */}
+      {/* Quick Actions */}
+      <QuickActions
+        newTodayCount={dashboardData?.tenderStats.newToday}
+        bookmarkedCount={dashboardData?.tenderStats.bookmarked}
+        urgentDeadlines={dashboardData?.tenderStats.expiringSoon}
+      />
+
+      {/* Main Dashboard Content */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 flex-1">
+        {/* ROI Calculator - Takes 2 columns on large screens */}
+        <div className="lg:col-span-2">
+          <ROICalculator />
+        </div>
+
+        {/* Opportunity Timeline - Takes 1 column */}
+        <div className="lg:col-span-1">
+          <OpportunityTimeline />
+        </div>
+      </div>
+
+      {/* Legacy Activity Section - Kept for compatibility */}
+      <div className="hidden lg:block">
         <ActivityAndRecommendations
           activities={mockActivities}
           tenders={recommendedTenders}
         />
-
-        {/* Sidebar - 1/3 width */}
-        <div className="w-1/3 flex flex-col gap-4 min-h-0">
-          <div className="bg-surface border border-border rounded-lg p-6 flex-shrink-0">
-            <h3 className="text-lg font-semibold text-text mb-4">
-              Quick Actions
-            </h3>
-            <QuickActionsSidebar />
-          </div>
-          <div className="flex-1">
-            <UrgentDeadlines />
-          </div>
-        </div>
       </div>
     </div>
   );
