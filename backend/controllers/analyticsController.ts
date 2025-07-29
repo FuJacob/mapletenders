@@ -12,7 +12,7 @@ export class AnalyticsController {
    */
   async getDashboard(req: Request, res: Response): Promise<void> {
     try {
-      const userId = req.headers.userId as string;
+      const userId = (req as any).user?.id;
       
       if (!userId) {
         res.status(401).json({ error: 'User not authenticated' });
@@ -40,7 +40,7 @@ export class AnalyticsController {
    */
   async getROI(req: Request, res: Response): Promise<void> {
     try {
-      const userId = req.headers.userId as string;
+      const userId = (req as any).user?.id;
       const { timeFrame = 'monthly' } = req.query;
       
       if (!userId) {
@@ -75,7 +75,7 @@ export class AnalyticsController {
    */
   async getPerformanceReport(req: Request, res: Response): Promise<void> {
     try {
-      const userId = req.headers.userId as string;
+      const userId = (req as any).user?.id;
       const { timeFrame = 'monthly' } = req.query;
       
       if (!userId) {
@@ -109,7 +109,7 @@ export class AnalyticsController {
    */
   async trackActivity(req: Request, res: Response): Promise<void> {
     try {
-      const userId = req.headers.userId as string;
+      const userId = (req as any).user?.id;
       
       if (!userId) {
         res.status(401).json({ error: 'User not authenticated' });
@@ -194,7 +194,7 @@ export class AnalyticsController {
    */
   async getPreferences(req: Request, res: Response): Promise<void> {
     try {
-      const userId = req.headers.userId as string;
+      const userId = (req as any).user?.id;
       
       if (!userId) {
         res.status(401).json({ error: 'User not authenticated' });
@@ -222,7 +222,7 @@ export class AnalyticsController {
    */
   async updatePreferences(req: Request, res: Response): Promise<void> {
     try {
-      const userId = req.headers.userId as string;
+      const userId = (req as any).user?.id;
       
       if (!userId) {
         res.status(401).json({ error: 'User not authenticated' });
@@ -252,7 +252,7 @@ export class AnalyticsController {
    */
   async updateTenderPerformance(req: Request, res: Response): Promise<void> {
     try {
-      const userId = req.headers.userId as string;
+      const userId = (req as any).user?.id;
       const { tenderId } = req.params;
       
       if (!userId) {
@@ -293,7 +293,7 @@ export class AnalyticsController {
    */
   async getSummary(req: Request, res: Response): Promise<void> {
     try {
-      const userId = req.headers.userId as string;
+      const userId = (req as any).user?.id;
       
       if (!userId) {
         res.status(401).json({ error: 'User not authenticated' });
@@ -334,7 +334,7 @@ export class AnalyticsController {
    */
   async getTimeSavings(req: Request, res: Response): Promise<void> {
     try {
-      const userId = req.headers.userId as string;
+      const userId = (req as any).user?.id;
       const { timeFrame = 'monthly' } = req.query;
       
       if (!userId) {
@@ -373,6 +373,38 @@ export class AnalyticsController {
       console.error('Error calculating time savings:', error);
       res.status(500).json({ 
         error: 'Failed to calculate time savings',
+        details: error instanceof Error ? error.message : 'Unknown error'
+      });
+    }
+  }
+
+  /**
+   * Get recent user activities for dashboard
+   * GET /analytics/activities?limit=10
+   */
+  async getUserActivities(req: Request, res: Response): Promise<void> {
+    try {
+      const userId = (req as any).user?.id;
+      
+      if (!userId) {
+        res.status(401).json({ error: 'User not authenticated' });
+        return;
+      }
+
+      const { limit = 10 } = req.query;
+      const activities = await analyticsService.getUserActivities(
+        userId, 
+        parseInt(limit as string)
+      );
+      
+      res.status(200).json({
+        success: true,
+        data: activities
+      });
+    } catch (error) {
+      console.error('Error getting user activities:', error);
+      res.status(500).json({ 
+        error: 'Failed to get user activities',
         details: error instanceof Error ? error.message : 'Unknown error'
       });
     }

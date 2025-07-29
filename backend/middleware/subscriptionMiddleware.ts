@@ -67,7 +67,7 @@ export class SubscriptionMiddleware {
     next: NextFunction
   ) => {
     try {
-      const userId = req.headers.userId || req.body.userId || req.params.userId;
+      const userId = (req as any).user?.id || req.body.userId || req.params.userId;
 
       if (!userId) {
         res.status(401).json({
@@ -258,7 +258,7 @@ export class SubscriptionMiddleware {
     next: NextFunction
   ) => {
     try {
-      const userId = req.headers.userId || req.body.userId || req.params.userId;
+      const userId = (req as any).user?.id || req.body.userId || req.params.userId;
 
       if (!userId) {
         res.status(401).json({

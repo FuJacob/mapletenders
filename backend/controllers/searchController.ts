@@ -12,7 +12,7 @@ export class SearchController {
    */
   async searchTenders(req: Request, res: Response): Promise<void> {
     try {
-      const userId = req.headers.userId as string;
+      const userId = (req as any).user?.id;
       const { 
         limit = 50, 
         offset = 0,
@@ -118,7 +118,7 @@ export class SearchController {
    */
   async saveSearch(req: Request, res: Response): Promise<void> {
     try {
-      const userId = req.headers.userId as string;
+      const userId = (req as any).user?.id;
       const searchData: Omit<SavedSearch, 'userId'> = req.body;
 
       if (!searchData.name || !searchData.query) {
@@ -152,7 +152,7 @@ export class SearchController {
    */
   async getSavedSearches(req: Request, res: Response): Promise<void> {
     try {
-      const userId = req.headers.userId as string;
+      const userId = (req as any).user?.id;
       const savedSearches = await searchService.getSavedSearches(userId);
 
       res.json({
@@ -173,7 +173,7 @@ export class SearchController {
    */
   async updateSavedSearch(req: Request, res: Response): Promise<void> {
     try {
-      const userId = req.headers.userId as string;
+      const userId = (req as any).user?.id;
       const { searchId } = req.params;
       const updates = req.body;
 
@@ -201,7 +201,7 @@ export class SearchController {
    */
   async deleteSavedSearch(req: Request, res: Response): Promise<void> {
     try {
-      const userId = req.headers.userId as string;
+      const userId = (req as any).user?.id;
       const { searchId } = req.params;
 
       await searchService.deleteSavedSearch(searchId, userId);
@@ -224,7 +224,7 @@ export class SearchController {
    */
   async runSavedSearch(req: Request, res: Response): Promise<void> {
     try {
-      const userId = req.headers.userId as string;
+      const userId = (req as any).user?.id;
       const { searchId } = req.params;
 
       const results = await searchService.runSavedSearch(searchId, userId);
@@ -247,7 +247,7 @@ export class SearchController {
    */
   async getSearchSuggestions(req: Request, res: Response): Promise<void> {
     try {
-      const userId = req.headers.userId as string;
+      const userId = (req as any).user?.id;
       const { query } = req.query;
 
       if (!query || typeof query !== 'string') {

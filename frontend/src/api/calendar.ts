@@ -231,10 +231,24 @@ export const calendarAPI = {
   /**
    * Get upcoming calendar events
    */
-  async getUpcomingEvents(_daysAhead = 7): Promise<CalendarEvent[]> {
-    // This would typically be a separate endpoint
-    // For now, return empty array as placeholder
-    return [];
+  async getUpcomingEvents(daysAhead = 7): Promise<CalendarEvent[]> {
+    try {
+      const endDate = new Date();
+      endDate.setDate(endDate.getDate() + daysAhead);
+      
+      const response = await apiClient.get(`/calendar/events/upcoming?days=${daysAhead}&end=${endDate.toISOString()}`);
+      return response.data.data.map((event: any) => ({
+        ...event,
+        startTime: new Date(event.startTime),
+        endTime: new Date(event.endTime),
+        createdAt: new Date(event.createdAt),
+        lastSyncAt: event.lastSyncAt ? new Date(event.lastSyncAt) : undefined,
+      }));
+    } catch (error) {
+      console.error('Error fetching upcoming events:', error);
+      // Return empty array on error - calendar events are optional
+      return [];
+    }
   },
 
   /**

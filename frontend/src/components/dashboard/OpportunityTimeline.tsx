@@ -85,10 +85,54 @@ const OpportunityTimeline = memo(function OpportunityTimeline({ className = "" }
         }
       ];
 
-      // Sort events by date (newest first)
-      mockEvents.sort((a, b) => b.date.getTime() - a.date.getTime());
-      
-      setEvents(mockEvents);
+      // Get real timeline events from user activities and calendar events
+      try {
+        const [userActivities, calendarEvents] = await Promise.all([
+          analyticsAPI.getUserActivities(10),
+          import('../../api/calendar').then(m => m.calendarAPI.getUpcomingEvents(7))
+        ]);
+
+        // Convert activities to timeline events
+        const activityEvents: TimelineEvent[] = userActivities.map(activity => ({
+          id: `activity-${activity.id}`,
+          type: getTimelineType(activity.action),
+          title: `${activity.action}: ${activity.title}`,
+          description: activity.description || `${activity.action} tender: ${activity.title}`,
+          date: new Date(activity.time),
+          status: getTimelineStatus(activity.action),
+          link: activity.action === 'Bookmarked' ? '/bookmarks' : '/search',
+        }));
+
+        // Convert calendar events to timeline events  
+        const calendarTimelineEvents: TimelineEvent[] = calendarEvents.map(event => ({
+          id: `calendar-${event.id}`,
+          type: 'deadline',
+          title: event.title,
+          description: event.description,
+          date: event.startTime,
+          status: 'urgent',
+          link: `/tender/${event.tenderId}`,
+        }));
+
+        // Combine and sort events by date
+        const allEvents = [...activityEvents, ...calendarTimelineEvents]
+          .sort((a, b) => b.date.getTime() - a.date.getTime())
+          .slice(0, 6); // Limit to 6 most recent events
+
+        // Use real events if available, otherwise fallback to mock
+        if (allEvents.length > 0) {
+          setEvents(allEvents);
+        } else {
+          // Sort and use mock events as fallback
+          mockEvents.sort((a, b) => b.date.getTime() - a.date.getTime());
+          setEvents(mockEvents);
+        }
+      } catch (timelineError) {
+        console.error('Error loading real timeline events:', timelineError);
+        // Use mock events as fallback
+        mockEvents.sort((a, b) => b.date.getTime() - a.date.getTime());
+        setEvents(mockEvents);
+      }
     } catch (err) {
       console.error('Error fetching timeline data:', err);
       setError(err instanceof Error ? err.message : 'Failed to load timeline data');
@@ -100,6 +144,35 @@ const OpportunityTimeline = memo(function OpportunityTimeline({ className = "" }
   useEffect(() => {
     fetchTimelineData();
   }, [timeFrame]);
+
+  // Helper functions for mapping activities to timeline events
+  const getTimelineType = (action: string): TimelineEvent['type'] => {
+    switch (action) {
+      case 'Bookmarked':
+        return 'opportunity';
+      case 'Applied':
+        return 'win';
+      case 'Viewed':
+        return 'opportunity';
+      case 'Searched':
+        return 'milestone';
+      default:
+        return 'opportunity';
+    }
+  };
+
+  const getTimelineStatus = (action: string): TimelineEvent['status'] => {
+    switch (action) {
+      case 'Applied':
+        return 'completed';
+      case 'Bookmarked':
+        return 'pending';
+      case 'Viewed':
+        return 'pending';
+      default:
+        return 'pending';
+    }
+  };
 
   const formatRelativeTime = (date: Date) => {
     const now = new Date();

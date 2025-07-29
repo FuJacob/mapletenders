@@ -12,7 +12,7 @@ export class NotificationController {
    */
   async getNotifications(req: Request, res: Response): Promise<void> {
     try {
-      const userId = req.headers.userId as string;
+      const userId = (req as any).user?.id;
       const { 
         limit = 50, 
         offset = 0, 
@@ -44,7 +44,7 @@ export class NotificationController {
    */
   async markAsRead(req: Request, res: Response): Promise<void> {
     try {
-      const userId = req.headers.userId as string;
+      const userId = (req as any).user?.id;
       const { notificationId } = req.params;
 
       await notificationService.markAsRead(notificationId, userId);
@@ -67,7 +67,7 @@ export class NotificationController {
    */
   async markAllAsRead(req: Request, res: Response): Promise<void> {
     try {
-      const userId = req.headers.userId as string;
+      const userId = (req as any).user?.id;
 
       await notificationService.markAllAsRead(userId);
 
@@ -89,7 +89,7 @@ export class NotificationController {
    */
   async deleteNotification(req: Request, res: Response): Promise<void> {
     try {
-      const userId = req.headers.userId as string;
+      const userId = (req as any).user?.id;
       const { notificationId } = req.params;
 
       await notificationService.deleteNotification(notificationId, userId);
@@ -112,7 +112,7 @@ export class NotificationController {
    */
   async createNotification(req: Request, res: Response): Promise<void> {
     try {
-      const userId = req.headers.userId as string;
+      const userId = (req as any).user?.id;
       const notificationData: Omit<Notification, 'id' | 'createdAt' | 'userId'> = req.body;
 
       if (!notificationData.title || !notificationData.message) {
@@ -146,7 +146,7 @@ export class NotificationController {
    */
   async getPreferences(req: Request, res: Response): Promise<void> {
     try {
-      const userId = req.headers.userId as string;
+      const userId = (req as any).user?.id;
 
       const preferences = await notificationService.getNotificationPreferences(userId);
 
@@ -168,7 +168,7 @@ export class NotificationController {
    */
   async updatePreferences(req: Request, res: Response): Promise<void> {
     try {
-      const userId = req.headers.userId as string;
+      const userId = (req as any).user?.id;
       const preferences: NotificationPreference[] = req.body;
 
       if (!Array.isArray(preferences)) {
@@ -239,7 +239,7 @@ export class NotificationController {
    */
   async testNotification(req: Request, res: Response): Promise<void> {
     try {
-      const userId = req.headers.userId as string;
+      const userId = (req as any).user?.id;
       const { type = 'system_notification', channels = ['in_app'] } = req.body;
 
       const notification = await notificationService.createNotification({

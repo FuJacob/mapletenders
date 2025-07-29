@@ -11,6 +11,7 @@ import {
   FileText,
 } from "@phosphor-icons/react";
 import { PageHeader } from "../components/ui";
+import { getRfpAnalysis } from "../api/ai";
 
 interface UploadedFile {
   file: File;
@@ -43,6 +44,18 @@ interface RfpAnalysisResult {
   riskFactors: string[];
   recommendations: string[];
 }
+
+// Helper function to convert file to text
+const fileToText = (file: File): Promise<string> => {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.onload = () => {
+      resolve(reader.result as string);
+    };
+    reader.onerror = () => reject(reader.error);
+    reader.readAsText(file);
+  });
+};
 
 export default function RfpAnalysis() {
   const [uploadedFiles, setUploadedFiles] = useState<UploadedFile[]>([]);
@@ -87,107 +100,87 @@ export default function RfpAnalysis() {
     }, 200);
   };
 
-  const analyzeDocument = (fileId: string) => {
+  const analyzeDocument = async (fileId: string) => {
     setUploadedFiles((prev) =>
       prev.map((file) =>
         file.id === fileId ? { ...file, status: "analyzing" } : file
       )
     );
 
-    // Simulate analysis (replace with actual API call)
-    setTimeout(() => {
-      const mockAnalysis: RfpAnalysisResult = {
-        summary:
-          "This RFP seeks a comprehensive IT infrastructure upgrade for a government agency, including cloud migration, cybersecurity enhancements, and staff training programs.",
-        keyRequirements: [
-          "Cloud infrastructure migration (AWS/Azure)",
-          "Multi-factor authentication implementation",
-          "Staff training on new systems",
-          "24/7 technical support",
-          "Compliance with PIPEDA and SOC 2 standards",
+    try {
+      // Get the file to analyze
+      const fileToAnalyze = uploadedFiles.find(f => f.id === fileId);
+      if (!fileToAnalyze) {
+        throw new Error('File not found');
+      }
+
+      // Convert file to text for analysis
+      const fileText = await fileToText(fileToAnalyze.file);
+      
+      // Call real AI analysis API
+      const analysisResponse = await getRfpAnalysis({
+        title: fileToAnalyze.file.name,
+        description: fileText,
+        requirements: [], // Could be extracted from file content
+        additionalData: {}
+      });
+
+      // Process the API response and map to our interface format
+      const analysis: RfpAnalysisResult = {
+        summary: analysisResponse.analysis || 'Analysis completed. Please review the detailed breakdown below.',
+        keyRequirements: analysisResponse.keyRequirements || [
+          'Requirements could not be extracted from the document'
         ],
         timeline: {
-          proposalDeadline: "2024-02-15",
-          projectStart: "2024-03-01",
-          projectEnd: "2024-08-31",
-          keyMilestones: [
-            {
-              date: "2024-03-15",
-              description: "Infrastructure assessment complete",
-            },
-            { date: "2024-04-30", description: "Cloud migration phase 1" },
-            { date: "2024-06-15", description: "Security implementation" },
-            { date: "2024-07-31", description: "Staff training completion" },
-          ],
+          proposalDeadline: analysisResponse.timeline?.proposalDeadline || "Not specified",
+          projectStart: analysisResponse.timeline?.projectStart || "Not specified", 
+          projectEnd: analysisResponse.timeline?.projectEnd || "Not specified",
+          keyMilestones: analysisResponse.timeline?.keyMilestones || []
         },
-        evaluation: {
-          criteria: [
-            {
-              criterion: "Technical Approach",
-              weight: 30,
-              description: "Quality and feasibility of proposed solution",
-            },
-            {
-              criterion: "Experience",
-              weight: 25,
-              description: "Relevant project experience and references",
-            },
-            {
-              criterion: "Cost",
-              weight: 20,
-              description: "Total cost and value proposition",
-            },
-            {
-              criterion: "Timeline",
-              weight: 15,
-              description: "Realistic project timeline",
-            },
-            {
-              criterion: "Team Qualifications",
-              weight: 10,
-              description: "Team expertise and certifications",
-            },
-          ],
-          scoringMethod: "Weighted scoring with technical threshold of 70%",
+        evaluation: analysisResponse.evaluation || {
+          criteria: [{
+            criterion: "To be determined",
+            weight: 100,
+            description: "Evaluation criteria not specified in document"
+          }],
+          scoringMethod: "Not specified"
         },
-        budgetInfo: {
-          estimatedValue: "$2.5M - $3.2M CAD",
-          paymentTerms: "Net 30 days, milestone-based payments",
-          budgetConstraints: [
-            "Annual budget cannot exceed $1.2M",
-            "Capital expenditure approval required for hardware >$50K",
-            "Training budget separate allocation of $200K",
-          ],
+        budgetInfo: analysisResponse.budgetInfo || {
+          estimatedValue: "Not specified",
+          paymentTerms: "Not specified",
+          budgetConstraints: []
         },
-        complianceRequirements: [
-          "PIPEDA compliance for personal data handling",
-          "SOC 2 Type II certification required",
-          "Government security clearance for key personnel",
-          "ISO 27001 certification preferred",
+        complianceRequirements: analysisResponse.complianceRequirements || [],
+        riskFactors: analysisResponse.riskFactors || [
+          'Risk analysis could not be performed without more document details'
         ],
-        riskFactors: [
-          "Tight timeline may impact quality",
-          "Legacy system integration complexity",
-          "Potential resistance to change from staff",
-          "Budget constraints may limit scope",
-        ],
-        recommendations: [
-          "Emphasize proven cloud migration methodology",
-          "Highlight relevant government sector experience",
-          "Propose phased implementation to reduce risk",
-          "Include comprehensive change management plan",
-          "Demonstrate cost optimization strategies",
+        recommendations: analysisResponse.recommendations || [
+          'Review document details carefully before proceeding',
+          'Consider reaching out to procurement contact for clarification'
         ],
       };
 
       setUploadedFiles((prev) =>
         prev.map((file) =>
           file.id === fileId
-            ? { ...file, status: "completed", analysis: mockAnalysis }
+            ? { ...file, status: "completed", analysis }
             : file
         )
       );
-    }, 3000);
+    } catch (error) {
+      console.error('RFP Analysis failed:', error);
+      setUploadedFiles((prev) =>
+        prev.map((file) =>
+          file.id === fileId
+            ? { 
+                ...file, 
+                status: "error", 
+                error: error instanceof Error ? error.message : 'Analysis failed'
+              }
+            : file
+        )
+      );
+    }
   };
 
   const removeFile = (fileId: string) => {
@@ -195,8 +188,73 @@ export default function RfpAnalysis() {
   };
 
   const downloadReport = (fileId: string) => {
-    // Mock download functionality
-    console.log("Downloading report for file:", fileId);
+    const file = uploadedFiles.find(f => f.id === fileId);
+    if (!file || !file.analysis) return;
+
+    // Create a formatted report
+    const reportContent = `
+RFP ANALYSIS REPORT
+==================
+
+File: ${file.file.name}
+Generated: ${new Date().toLocaleDateString()}
+
+SUMMARY
+-------
+${file.analysis.summary}
+
+KEY REQUIREMENTS
+----------------
+${file.analysis.keyRequirements.map(req => `• ${req}`).join('\n')}
+
+TIMELINE
+--------
+Proposal Deadline: ${file.analysis.timeline.proposalDeadline}
+Project Start: ${file.analysis.timeline.projectStart}
+Project End: ${file.analysis.timeline.projectEnd}
+
+Milestones:
+${file.analysis.timeline.keyMilestones.map(m => `• ${m.date}: ${m.description}`).join('\n')}
+
+EVALUATION CRITERIA
+-------------------
+${file.analysis.evaluation.criteria.map(c => `• ${c.criterion} (${c.weight}%): ${c.description}`).join('\n')}
+
+Scoring Method: ${file.analysis.evaluation.scoringMethod}
+
+BUDGET INFORMATION
+------------------
+Estimated Value: ${file.analysis.budgetInfo.estimatedValue}
+Payment Terms: ${file.analysis.budgetInfo.paymentTerms}
+
+Budget Constraints:
+${file.analysis.budgetInfo.budgetConstraints.map(c => `• ${c}`).join('\n')}
+
+COMPLIANCE REQUIREMENTS
+-----------------------
+${file.analysis.complianceRequirements.map(req => `• ${req}`).join('\n')}
+
+RISK FACTORS
+------------
+${file.analysis.riskFactors.map(risk => `• ${risk}`).join('\n')}
+
+RECOMMENDATIONS
+---------------
+${file.analysis.recommendations.map(rec => `• ${rec}`).join('\n')}
+
+Generated by Mapletenders AI Analysis
+`;
+
+    // Download the report
+    const blob = new Blob([reportContent], { type: 'text/plain' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `rfp-analysis-${file.file.name.replace(/\.[^/.]+$/, '')}.txt`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
   };
 
   return (

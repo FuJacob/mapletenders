@@ -5,7 +5,7 @@ export class BookmarkController {
   constructor(private databaseService: DatabaseService) {}
 
   getNumberOfBookmarks = async (req: Request, res: Response) => {
-    const userId = req.headers.userId as string;
+    const userId = (req as any).user?.id;
     try {
       const result = await this.databaseService.getNumberOfBookmarks(userId);
       res.json(result);

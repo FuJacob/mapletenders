@@ -17,8 +17,34 @@ export interface RfpAnalysisData {
 }
 
 export interface RfpAnalysisResponse {
-  analysis: unknown;
-  success: boolean;
+  analysis: string;
+  keyRequirements?: string[];
+  timeline?: {
+    proposalDeadline?: string;
+    projectStart?: string;
+    projectEnd?: string;
+    keyMilestones?: Array<{
+      date: string;
+      description: string;
+    }>;
+  };
+  evaluation?: {
+    criteria: Array<{
+      criterion: string;
+      weight: number;
+      description: string;
+    }>;
+    scoringMethod: string;
+  };
+  budgetInfo?: {
+    estimatedValue: string;
+    paymentTerms: string;
+    budgetConstraints: string[];
+  };
+  complianceRequirements?: string[];
+  riskFactors?: string[];
+  recommendations?: string[];
+  success?: boolean;
   message?: string;
 }
 

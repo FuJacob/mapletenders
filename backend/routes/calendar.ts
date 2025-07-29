@@ -50,6 +50,9 @@ router.post('/sync', calendarController.syncDeadlines.bind(calendarController));
 // GET /api/calendar/sync/history - Get calendar sync history
 router.get('/sync/history', calendarController.getSyncHistory.bind(calendarController));
 
+// GET /api/calendar/events/upcoming - Get upcoming calendar events
+router.get('/events/upcoming', calendarController.getUpcomingEvents.bind(calendarController));
+
 /**
  * Admin Routes
  */

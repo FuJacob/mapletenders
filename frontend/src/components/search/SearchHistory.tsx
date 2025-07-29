@@ -1,5 +1,6 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { MagnifyingGlass, X } from "@phosphor-icons/react";
+import { analyticsAPI } from "../../api/analytics";
 
 interface SearchHistoryProps {
   onSearchSelect: (query: string) => void;
@@ -17,7 +18,34 @@ export default function SearchHistory({
   onSearchSelect,
   className = "",
 }: SearchHistoryProps) {
-  const [history, setHistory] = useState(mockSearchHistory);
+  const [history, setHistory] = useState<string[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  // Load search history from backend
+  useEffect(() => {
+    const loadSearchHistory = async () => {
+      try {
+        setLoading(true);
+        // Get recent user activities that are searches
+        const activities = await analyticsAPI.getUserActivities(20);
+        const searchActivities = activities
+          .filter(activity => activity.action === 'Searched' && activity.metadata?.query)
+          .map(activity => activity.metadata.query)
+          .filter((query, index, arr) => arr.indexOf(query) === index) // Remove duplicates
+          .slice(0, 10); // Limit to 10 recent searches
+
+        setHistory(searchActivities.length > 0 ? searchActivities : mockSearchHistory);
+      } catch (error) {
+        console.error('Error loading search history:', error);
+        // Fallback to mock data
+        setHistory(mockSearchHistory);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    loadSearchHistory();
+  }, []);
 
   const removeItem = (index: number, e: React.MouseEvent) => {
     e.stopPropagation();
@@ -31,7 +59,11 @@ export default function SearchHistory({
   return (
     <div className={`${className}`}>
       <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-4 gap-3">
-        {history.length === 0 ? (
+        {loading ? (
+          <div className="col-span-full text-center py-4">
+            <p className="text-xs text-text-muted italic">Loading search history...</p>
+          </div>
+        ) : history.length === 0 ? (
           <div className="col-span-full text-center py-4">
             <p className="text-xs text-text-muted italic">No recent searches</p>
           </div>

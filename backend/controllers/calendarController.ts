@@ -12,7 +12,7 @@ export class CalendarController {
    */
   async getGoogleAuthUrl(req: Request, res: Response): Promise<void> {
     try {
-      const userId = req.headers.userId as string;
+      const userId = (req as any).user?.id;
       const authUrl = calendarService.getGoogleAuthUrl(userId);
 
       res.json({
@@ -72,7 +72,7 @@ export class CalendarController {
    */
   async getConnections(req: Request, res: Response): Promise<void> {
     try {
-      const userId = req.headers.userId as string;
+      const userId = (req as any).user?.id;
       const connections = await calendarService.getCalendarConnections(userId);
 
       // Remove sensitive tokens from response
@@ -100,7 +100,7 @@ export class CalendarController {
    */
   async updateConnection(req: Request, res: Response): Promise<void> {
     try {
-      const userId = req.headers.userId as string;
+      const userId = (req as any).user?.id;
       const { connectionId } = req.params;
       const updates = req.body;
 
@@ -141,7 +141,7 @@ export class CalendarController {
    */
   async deleteConnection(req: Request, res: Response): Promise<void> {
     try {
-      const userId = req.headers.userId as string;
+      const userId = (req as any).user?.id;
       const { connectionId } = req.params;
 
       await calendarService.deleteCalendarConnection(connectionId, userId);
@@ -164,7 +164,7 @@ export class CalendarController {
    */
   async syncDeadlines(req: Request, res: Response): Promise<void> {
     try {
-      const userId = req.headers.userId as string;
+      const userId = (req as any).user?.id;
       const syncResults = await calendarService.syncTenderDeadlines(userId);
 
       res.json({
@@ -186,7 +186,7 @@ export class CalendarController {
    */
   async testConnection(req: Request, res: Response): Promise<void> {
     try {
-      const userId = req.headers.userId as string;
+      const userId = (req as any).user?.id;
       const { connectionId } = req.params;
 
       // Get the connection
@@ -236,7 +236,7 @@ export class CalendarController {
    */
   async getSyncHistory(req: Request, res: Response): Promise<void> {
     try {
-      const userId = req.headers.userId as string;
+      const userId = (req as any).user?.id;
       const { limit = 10, offset = 0 } = req.query;
 
       // This would typically query a sync log table
@@ -341,6 +341,44 @@ export class CalendarController {
       res.status(500).json({
         success: false,
         error: 'Failed to initiate bulk sync',
+      });
+    }
+  }
+
+  /**
+   * Get upcoming calendar events for user
+   */
+  async getUpcomingEvents(req: Request, res: Response): Promise<void> {
+    try {
+      const userId = (req as any).user?.id;
+      const { days = 7 } = req.query;
+      
+      if (!userId) {
+        res.status(401).json({
+          success: false,
+          error: 'User not authenticated',
+        });
+        return;
+      }
+
+      // Get user's calendar events from database
+      const daysAhead = parseInt(days as string);
+      const endDate = new Date();
+      endDate.setDate(endDate.getDate() + daysAhead);
+
+      // This would query the calendar_events table
+      // For now, return empty array as the table might not have data yet
+      const events: any[] = [];
+
+      res.json({
+        success: true,
+        data: events,
+      });
+    } catch (error) {
+      console.error('Error getting upcoming events:', error);
+      res.status(500).json({
+        success: false,
+        error: 'Failed to get upcoming events',
       });
     }
   }

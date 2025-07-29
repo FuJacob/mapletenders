@@ -27,7 +27,13 @@ export const authenticateUser = async (
     return;
   }
   const userId = data.user.id;
-  console.log("data", userId);
-  req.headers.userId = userId;
+  console.log("Authenticated user:", userId);
+  
+  // Set user data on request object (not headers for security)
+  (req as any).user = {
+    ...data.user,
+    id: userId, // Ensure our userId takes precedence
+  };
+  
   next();
 };

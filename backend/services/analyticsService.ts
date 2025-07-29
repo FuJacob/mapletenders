@@ -261,6 +261,70 @@ export class AnalyticsService {
   }
 
   /**
+   * Get recent user activities for dashboard
+   */
+  async getUserActivities(userId: string, limit = 10): Promise<any[]> {
+    try {
+      const { data, error } = await supabase
+        .from('user_activity_log')
+        .select(`
+          *,
+          tenders_enhanced:resource_id (
+            title,
+            description,
+            contracting_entity_name,
+            closing_date,
+            published_date,
+            estimated_value_min
+          )
+        `)
+        .eq('user_id', userId)
+        .in('action_type', ['tender_view', 'bookmark', 'search', 'apply'])
+        .order('timestamp', { ascending: false })
+        .limit(limit);
+
+      if (error) {
+        console.error('Error getting user activities:', error);
+        return [];
+      }
+
+      // Format activities for frontend
+      return (data || []).map((activity: any) => ({
+        id: activity.id,
+        action: this.formatActionType(activity.action_type),
+        title: activity.tenders_enhanced?.title || 'Unknown Tender',
+        time: activity.timestamp,
+        description: activity.tenders_enhanced?.description?.substring(0, 150) + '...' || '',
+        location: activity.tenders_enhanced?.contracting_entity_name || '',
+        publishDate: activity.tenders_enhanced?.published_date,
+        closingDate: activity.tenders_enhanced?.closing_date,
+        metadata: activity.metadata,
+      }));
+    } catch (error) {
+      console.error('Error in getUserActivities:', error);
+      return [];
+    }
+  }
+
+  /**
+   * Format action type for display
+   */
+  private formatActionType(actionType: string): string {
+    switch (actionType) {
+      case 'tender_view':
+        return 'Viewed';
+      case 'bookmark':
+        return 'Bookmarked';
+      case 'search':
+        return 'Searched';
+      case 'apply':
+        return 'Applied';
+      default:
+        return 'Activity';
+    }
+  }
+
+  /**
    * Generate detailed performance report for a user
    */
   async generatePerformanceReport(

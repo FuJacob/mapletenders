@@ -185,19 +185,32 @@ export default function AdvancedSearchPage() {
 
   // Handle save search
   const handleSaveSearch = useCallback(async (filters: SearchFilters, name: string) => {
+    if (!userId) {
+      alert("Please log in to save searches.");
+      return;
+    }
+
     try {
-      // In a real implementation, this would save to the backend
-      console.log("Saving search:", name, filters);
+      // Import searchAPI dynamically to avoid circular dependency
+      const { searchAPI } = await import('../api/search');
+      
+      const savedSearch = await searchAPI.saveSearch({
+        name,
+        query: filters.query || '',
+        filters,
+        isAlert: false,
+        tags: [],
+        favorite: false,
+      });
       
       // Track save action
-      if (userId) {
-        await analyticsAPI.trackActivity({
-          actionType: 'save_search',
-          resourceType: 'search',
-          metadata: { searchName: name, filterCount: Object.keys(filters).length },
-          sessionId: Date.now().toString(),
-        });
-      }
+      await analyticsAPI.trackActivity({
+        actionType: 'save_search',
+        resourceType: 'search',
+        resourceId: savedSearch.id,
+        metadata: { searchName: name, filterCount: Object.keys(filters).length },
+        sessionId: Date.now().toString(),
+      });
 
       alert(`Search "${name}" saved successfully!`);
     } catch (error) {

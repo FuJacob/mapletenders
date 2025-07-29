@@ -15,7 +15,7 @@ export class TenderController {
 
   getRecommendedTenders = async (req: Request, res: Response) => {
     try {
-      const userId = req.headers.userId as string;
+      const userId = (req as any).user?.id;
       if (!userId) {
         res.status(401).json({ error: "User ID is required" });
       }

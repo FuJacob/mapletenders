@@ -1,4 +1,4 @@
-import { memo, useState } from "react";
+import { memo, useState, useEffect } from "react";
 import { 
   BookmarkSimple, 
   Play, 
@@ -11,8 +11,8 @@ import {
   Star
 } from "@phosphor-icons/react";
 import { Link } from "react-router-dom";
-// import { searchAPI } from "../../api/search";
-// import type { SavedSearch as APISavedSearch } from "../../api/search";
+import { searchAPI } from "../../api/search";
+import { useAuth } from "../../hooks/auth";
 
 interface SavedSearch {
   id: string;
@@ -45,7 +45,101 @@ const SavedSearches = memo(function SavedSearches({
   onToggleFavorite,
   className = ""
 }: SavedSearchesProps) {
-  const [savedSearches, setSavedSearches] = useState<SavedSearch[]>([
+  const { user } = useAuth();
+  const [savedSearches, setSavedSearches] = useState<SavedSearch[]>([]);
+
+  // Load saved searches from backend
+  useEffect(() => {
+    const loadSavedSearches = async () => {
+      if (!user?.id) {
+        return;
+      }
+
+      try {
+        const apiSearches = await searchAPI.getSavedSearches();
+        
+        // Convert API format to component format
+        const convertedSearches: SavedSearch[] = apiSearches.map(search => ({
+          id: search.id!,
+          name: search.name,
+          query: search.query,
+          filters: search.filters as any, // Convert SearchFilters to Record<string, any>
+          resultCount: search.resultCount || 0,
+          lastRun: search.lastRun || search.createdAt || new Date(),
+          isAlert: search.isAlert,
+          alertFrequency: search.alertFrequency,
+          created: search.createdAt || new Date(),
+          tags: search.tags,
+          favorite: search.favorite,
+        }));
+        
+        setSavedSearches(convertedSearches);
+      } catch (err) {
+        console.error('Error loading saved searches:', err);
+        // Fallback to mock data for development
+        setSavedSearches(getMockSavedSearches());
+      }
+    };
+
+    loadSavedSearches();
+  }, [user?.id]);
+
+  // Handle delete search with backend call
+  const handleDelete = async (searchId: string) => {
+    try {
+      await searchAPI.deleteSavedSearch(searchId);
+      setSavedSearches(prev => prev.filter(search => search.id !== searchId));
+      onDeleteSearch(searchId);
+    } catch (error) {
+      console.error('Error deleting search:', error);
+      alert('Failed to delete search. Please try again.');
+    }
+  };
+
+  // Handle toggle alert with backend call
+  const handleToggleAlert = async (searchId: string, enabled: boolean) => {
+    try {
+      await searchAPI.updateSavedSearch(searchId, {
+        isAlert: enabled,
+        alertFrequency: enabled ? 'daily' : undefined,
+      });
+      setSavedSearches(prev => 
+        prev.map(search => 
+          search.id === searchId 
+            ? { ...search, isAlert: enabled, alertFrequency: enabled ? 'daily' : undefined }
+            : search
+        )
+      );
+      onToggleAlert(searchId, enabled);
+    } catch (error) {
+      console.error('Error toggling alert:', error);
+      alert('Failed to update alert settings. Please try again.');
+    }
+  };
+
+  // Handle toggle favorite with backend call
+  const handleToggleFavorite = async (searchId: string) => {
+    try {
+      const search = savedSearches.find(s => s.id === searchId);
+      if (!search) return;
+      
+      const newFavoriteStatus = !search.favorite;
+      await searchAPI.updateSavedSearch(searchId, { favorite: newFavoriteStatus });
+      
+      setSavedSearches(prev => 
+        prev.map(s => 
+          s.id === searchId ? { ...s, favorite: newFavoriteStatus } : s
+        )
+      );
+      onToggleFavorite(searchId);
+    } catch (error) {
+      console.error('Error toggling favorite:', error);
+      alert('Failed to update favorite status. Please try again.');
+    }
+  };
+
+  // Mock data fallback for development
+  const getMockSavedSearches = (): SavedSearch[] => [
     {
       id: '1',
       name: 'IT Infrastructure Projects',
@@ -113,8 +207,8 @@ const SavedSearches = memo(function SavedSearches({
       created: new Date(Date.now() - 21 * 24 * 60 * 60 * 1000), // 3 weeks ago
       tags: ['security', 'high-value'],
       favorite: true,
-    },
-  ]);
+    }
+  ];
 
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedTag, setSelectedTag] = useState<string | null>(null);
@@ -195,30 +289,6 @@ const SavedSearches = memo(function SavedSearches({
     onRunSearch(search);
   };
 
-  const handleToggleAlert = (searchId: string) => {
-    const search = savedSearches.find(s => s.id === searchId);
-    if (search) {
-      setSavedSearches(prev =>
-        prev.map(s =>
-          s.id === searchId
-            ? { ...s, isAlert: !s.isAlert }
-            : s
-        )
-      );
-      onToggleAlert(searchId, !search.isAlert);
-    }
-  };
-
-  const handleToggleFavorite = (searchId: string) => {
-    setSavedSearches(prev =>
-      prev.map(s =>
-        s.id === searchId
-          ? { ...s, favorite: !s.favorite }
-          : s
-      )
-    );
-    onToggleFavorite(searchId);
-  };
 
   return (
     <div className={`bg-surface border border-border rounded-lg ${className}`}>
@@ -413,7 +483,7 @@ const SavedSearches = memo(function SavedSearches({
                   </button>
                   
                   <button
-                    onClick={() => handleToggleAlert(search.id)}
+                    onClick={() => handleToggleAlert(search.id, !search.isAlert)}
                     className={`p-2 rounded-lg transition-colors ${
                       search.isAlert
                         ? 'text-info hover:bg-info/10'
@@ -433,7 +503,7 @@ const SavedSearches = memo(function SavedSearches({
                   </button>
                   
                   <button
-                    onClick={() => onDeleteSearch(search.id)}
+                    onClick={() => handleDelete(search.id)}
                     className="p-2 text-text-light hover:text-error hover:bg-error/10 rounded-lg transition-colors"
                     title="Delete search"
                   >

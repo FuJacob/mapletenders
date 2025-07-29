@@ -29,6 +29,11 @@ router.post('/track', authenticateUser, (req, res) => {
   analyticsController.trackActivity(req, res);
 });
 
+// Get user activities
+router.get('/activities', authenticateUser, (req, res) => {
+  analyticsController.getUserActivities(req, res);
+});
+
 // Market intelligence (public data)
 router.get('/market-intelligence', (req, res) => {
   analyticsController.getMarketIntelligence(req, res);

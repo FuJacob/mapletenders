@@ -16,7 +16,8 @@ import { useAuth } from "../hooks/auth";
 import { HouseIcon } from "@phosphor-icons/react";
 import { PageHeader } from "../components/ui";
 
-const mockActivities: Activity[] = [
+// Removed mockActivities - now using real API data from analyticsAPI.getUserActivities()
+/*
   {
     id: 1,
     action: "New Match",
@@ -72,8 +73,7 @@ const mockActivities: Activity[] = [
     publishDate: "2024-01-11",
     closingDate: "2024-02-28",
   },
-];
-
+*/
 
 export default function HomePage() {
   const { profile } = useAuth();  
@@ -81,6 +81,7 @@ export default function HomePage() {
     TenderSearchResult[]
   >([]);
   const [dashboardData, setDashboardData] = useState<DashboardData | null>(null);
+  const [activities, setActivities] = useState<Activity[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -94,6 +95,15 @@ export default function HomePage() {
         const analytics = await analyticsAPI.getDashboard();
         setDashboardData(analytics);
 
+        // Load user activities
+        try {
+          const userActivities = await analyticsAPI.getUserActivities(10);
+          setActivities(userActivities);
+        } catch (activityError) {
+          console.error("Failed to fetch user activities:", activityError);
+          setActivities([]); // No fallback data - show empty state
+        }
+
         // Track page view
         await analyticsAPI.trackActivity({
           actionType: 'page_view',
@@ -105,28 +115,38 @@ export default function HomePage() {
         console.error("Failed to fetch dashboard data:", err);
         setError(err instanceof Error ? err.message : 'Failed to load dashboard data');
         
-        // Fallback to mock data for development
+        // Load user activities
+        let activities: Activity[] = [];
+        try {
+          activities = await analyticsAPI.getUserActivities(10);
+        } catch (activityError) {
+          console.error("Failed to fetch user activities:", activityError);
+          activities = []; // No fallback data - show empty state
+        }
+        setActivities(activities);
+
+        // Set default dashboard data when API fails
         setDashboardData({
           tenderStats: {
-            totalMatches: 42,
-            newToday: 3,
-            expiringSoon: 7,
-            bookmarked: 12,
-            applied: 8,
-            won: 2,
+            totalMatches: 0,
+            newToday: 0,
+            expiringSoon: 0,
+            bookmarked: 0,
+            applied: 0,
+            won: 0,
           },
           financialMetrics: {
-            totalOpportunityValue: 1250000,
-            averageContractSize: 95000,
-            estimatedROI: 850,
-            contractsWonValue: 320000,
+            totalOpportunityValue: 0,
+            averageContractSize: 0,
+            estimatedROI: 0,
+            contractsWonValue: 0,
             subscriptionCost: 99,
           },
           performanceMetrics: {
-            winRate: 25.5,
-            responseTime: 2.3,
-            timesSaved: 28.5,
-            opportunitiesPerDay: 5.2,
+            winRate: 0,
+            responseTime: 0,
+            timesSaved: 0,
+            opportunitiesPerDay: 0,
           },
         });
       } finally {
@@ -217,7 +237,7 @@ export default function HomePage() {
       {/* Legacy Activity Section - Kept for compatibility */}
       <div className="hidden lg:block">
         <ActivityAndRecommendations
-          activities={mockActivities}
+          activities={activities}
           tenders={recommendedTenders}
         />
       </div>

@@ -151,6 +151,14 @@ class AnalyticsAPI {
   }
 
   /**
+   * Get recent user activities for dashboard
+   */
+  async getUserActivities(limit = 10): Promise<any[]> {
+    const response = await this.request(`/activities?limit=${limit}`);
+    return Array.isArray(response) ? response : [];
+  }
+
+  /**
    * Get market intelligence data
    */
   async getMarketIntelligence(industry?: string, province?: string): Promise<any[]> {

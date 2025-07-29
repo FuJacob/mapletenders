@@ -100,10 +100,37 @@ export default function TenderNotice() {
     fetchTender();
   }, [tenderId]);
 
-  const handleBookmark = useCallback(() => {
-    setIsBookmarked(!isBookmarked);
-    // TODO: Implement bookmark functionality with backend
-  }, [isBookmarked]);
+  const handleBookmark = useCallback(async () => {
+    if (!tenderId) return;
+    
+    try {
+      // Optimistically update UI
+      setIsBookmarked(!isBookmarked);
+      
+      // Import bookmarks API dynamically
+      const { createBookmark, removeBookmark, getUserBookmarks } = await import('../api/bookmarks');
+      
+      if (!isBookmarked) {
+        // Add bookmark
+        await createBookmark({ 
+          userId: 'current', // Backend will get userId from auth
+          tenderNoticeId: tenderId 
+        });
+      } else {
+        // Remove bookmark - need to get bookmark ID first
+        const bookmarks = await getUserBookmarks('current');
+        const bookmark = bookmarks.bookmarks.find((b: any) => b.tender_notice_id === tenderId);
+        if (bookmark) {
+          await removeBookmark('current', tenderId);
+        }
+      }
+    } catch (error) {
+      console.error('Error toggling bookmark:', error);
+      // Revert optimistic update on error
+      setIsBookmarked(isBookmarked);
+      alert('Failed to update bookmark. Please try again.');
+    }
+  }, [isBookmarked, tenderId]);
 
   const handleShare = useCallback(() => {
     if (navigator.share) {
@@ -113,7 +140,12 @@ export default function TenderNotice() {
       });
     } else {
       navigator.clipboard.writeText(window.location.href);
-      // TODO: Show toast notification
+      // Simple toast notification (could be improved with a toast library)
+      const toast = document.createElement('div');
+      toast.textContent = 'Link copied to clipboard!';
+      toast.style.cssText = 'position:fixed;top:20px;right:20px;background:#22c55e;color:white;padding:12px 20px;border-radius:6px;z-index:9999;';
+      document.body.appendChild(toast);
+      setTimeout(() => document.body.removeChild(toast), 3000);
     }
   }, [selectedTender?.title]);
 
