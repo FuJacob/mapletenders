@@ -1,4 +1,4 @@
-import { DatabaseService } from './databaseService';
+import { DatabaseService } from "./databaseService";
 
 const databaseService = new DatabaseService();
 // Access the Supabase client from the service
@@ -75,18 +75,22 @@ export class AnalyticsService {
     try {
       // Check if analytics tables exist by trying to select from user_analytics
       const { error } = await supabase
-        .from('user_analytics')
-        .select('id')
+        .from("user_analytics")
+        .select("id")
         .limit(1);
 
-      if (error && error.code === '42P01') {
+      if (error && error.code === "42P01") {
         // Table doesn't exist - this would need to be handled differently
         // For now, we'll just log that the schema needs to be applied manually
-        console.warn('Analytics tables do not exist. Please apply the analytics schema manually.');
-        console.warn('Run the SQL script in backend/database/analytics-schema.sql');
+        console.warn(
+          "Analytics tables do not exist. Please apply the analytics schema manually."
+        );
+        console.warn(
+          "Run the SQL script in backend/database/analytics-schema.sql"
+        );
       }
     } catch (error) {
-      console.warn('Could not verify analytics schema:', error);
+      console.warn("Could not verify analytics schema:", error);
     }
   }
 
@@ -96,14 +100,16 @@ export class AnalyticsService {
   async generateUserDashboard(userId: string): Promise<DashboardData> {
     try {
       // Get dashboard summary using the SQL function
-      const { data: summaryData, error: summaryError } = await supabase
-        .rpc('get_dashboard_summary', {
+      const { data: summaryData, error: summaryError } = await supabase.rpc(
+        "get_dashboard_summary",
+        {
           target_user_id: userId,
-          time_period: 'monthly'
-        });
+          time_period: "monthly",
+        }
+      );
 
       if (summaryError) {
-        console.error('Error getting dashboard summary:', summaryError);
+        console.error("Error getting dashboard summary:", summaryError);
         throw summaryError;
       }
 
@@ -111,15 +117,15 @@ export class AnalyticsService {
 
       // Get additional financial data
       const { data: financialData, error: financialError } = await supabase
-        .from('user_analytics')
-        .select('*')
-        .eq('user_id', userId)
-        .eq('period_type', 'monthly')
-        .order('period_start', { ascending: false })
+        .from("user_analytics")
+        .select("*")
+        .eq("user_id", userId)
+        .eq("period_type", "monthly")
+        .order("period_start", { ascending: false })
         .limit(1);
 
       if (financialError) {
-        console.error('Error getting financial data:', financialError);
+        console.error("Error getting financial data:", financialError);
         throw financialError;
       }
 
@@ -127,16 +133,16 @@ export class AnalyticsService {
 
       // Get user preferences for calculations
       const { data: preferencesData, error: preferencesError } = await supabase
-        .from('dashboard_preferences')
-        .select('*')
-        .eq('user_id', userId)
+        .from("dashboard_preferences")
+        .select("*")
+        .eq("user_id", userId)
         .single();
 
-      if (preferencesError && preferencesError.code !== 'PGRST116') {
-        console.error('Error getting preferences:', preferencesError);
+      if (preferencesError && preferencesError.code !== "PGRST116") {
+        console.error("Error getting preferences:", preferencesError);
       }
 
-      const preferences = preferencesData || { hourly_rate: 75.00 };
+      const preferences = preferencesData || { hourly_rate: 75.0 };
 
       return {
         tenderStats: {
@@ -158,12 +164,14 @@ export class AnalyticsService {
           winRate: summary.win_rate || 0,
           responseTime: summary.avg_response_time || 0,
           timesSaved: financial.estimated_time_saved_hours || 0,
-          opportunitiesPerDay: Math.round((summary.total_opportunities || 0) / 30),
+          opportunitiesPerDay: Math.round(
+            (summary.total_opportunities || 0) / 30
+          ),
         },
       };
     } catch (error) {
-      console.error('Error generating dashboard data:', error);
-      throw new Error('Failed to generate dashboard data');
+      console.error("Error generating dashboard data:", error);
+      throw new Error("Failed to generate dashboard data");
     }
   }
 
@@ -171,8 +179,8 @@ export class AnalyticsService {
    * Calculate detailed ROI metrics for a user over a specific time period
    */
   async calculateROI(
-    userId: string, 
-    timeFrame: string = 'monthly'
+    userId: string,
+    timeFrame: string = "monthly"
   ): Promise<ROIMetrics> {
     try {
       const now = new Date();
@@ -181,28 +189,30 @@ export class AnalyticsService {
 
       // Calculate date range based on time frame
       switch (timeFrame) {
-        case 'weekly':
+        case "weekly":
           startDate = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
           break;
-        case 'yearly':
+        case "yearly":
           startDate = new Date(now.getFullYear(), 0, 1);
           break;
-        case 'monthly':
+        case "monthly":
         default:
           startDate = new Date(now.getFullYear(), now.getMonth(), 1);
           break;
       }
 
       // Use the SQL function for ROI calculation
-      const { data: roiData, error: roiError } = await supabase
-        .rpc('calculate_user_roi', {
+      const { data: roiData, error: roiError } = await supabase.rpc(
+        "calculate_user_roi",
+        {
           target_user_id: userId,
           start_date: startDate.toISOString(),
-          end_date: endDate.toISOString()
-        });
+          end_date: endDate.toISOString(),
+        }
+      );
 
       if (roiError) {
-        console.error('Error calculating ROI:', roiError);
+        console.error("Error calculating ROI:", roiError);
         throw roiError;
       }
 
@@ -218,8 +228,8 @@ export class AnalyticsService {
         contractsWonValue: roi.contracts_won_value || 0,
       };
     } catch (error) {
-      console.error('Error calculating ROI:', error);
-      throw new Error('Failed to calculate ROI metrics');
+      console.error("Error calculating ROI:", error);
+      throw new Error("Failed to calculate ROI metrics");
     }
   }
 
@@ -227,35 +237,33 @@ export class AnalyticsService {
    * Track user activity for analytics
    */
   async trackUserActivity(
-    userId: string, 
+    userId: string,
     activity: ActivityLogEntry
   ): Promise<void> {
     try {
-      const { error } = await supabase
-        .from('user_activity_log')
-        .insert([
-          {
-            user_id: userId,
-            action_type: activity.actionType,
-            resource_type: activity.resourceType,
-            resource_id: activity.resourceId,
-            metadata: activity.metadata,
-            session_id: activity.sessionId,
-            ip_address: activity.ipAddress,
-            user_agent: activity.userAgent,
-            duration_seconds: activity.duration,
-            page_url: activity.pageUrl,
-            referrer_url: activity.referrerUrl,
-            response_time_ms: activity.responseTime,
-          }
-        ]);
+      const { error } = await supabase.from("user_activity_log").insert([
+        {
+          user_id: userId,
+          action_type: activity.actionType,
+          resource_type: activity.resourceType,
+          resource_id: activity.resourceId,
+          metadata: activity.metadata,
+          session_id: activity.sessionId,
+          ip_address: activity.ipAddress,
+          user_agent: activity.userAgent,
+          duration_seconds: activity.duration,
+          page_url: activity.pageUrl,
+          referrer_url: activity.referrerUrl,
+          response_time_ms: activity.responseTime,
+        },
+      ]);
 
       if (error) {
-        console.error('Error tracking activity:', error);
+        console.error("Error tracking activity:", error);
         throw error;
       }
     } catch (error) {
-      console.error('Error in trackUserActivity:', error);
+      console.error("Error in trackUserActivity:", error);
       // Don't throw - analytics tracking should not break main functionality
     }
   }
@@ -266,10 +274,11 @@ export class AnalyticsService {
   async getUserActivities(userId: string, limit = 10): Promise<any[]> {
     try {
       const { data, error } = await supabase
-        .from('user_activity_log')
-        .select(`
+        .from("user_activity_log")
+        .select(
+          `
           *,
-          tenders_enhanced:resource_id (
+          tenders:resource_id (
             title,
             description,
             contracting_entity_name,
@@ -277,14 +286,15 @@ export class AnalyticsService {
             published_date,
             estimated_value_min
           )
-        `)
-        .eq('user_id', userId)
-        .in('action_type', ['tender_view', 'bookmark', 'search', 'apply'])
-        .order('timestamp', { ascending: false })
+        `
+        )
+        .eq("user_id", userId)
+        .in("action_type", ["tender_view", "bookmark", "search", "apply"])
+        .order("timestamp", { ascending: false })
         .limit(limit);
 
       if (error) {
-        console.error('Error getting user activities:', error);
+        console.error("Error getting user activities:", error);
         return [];
       }
 
@@ -292,16 +302,17 @@ export class AnalyticsService {
       return (data || []).map((activity: any) => ({
         id: activity.id,
         action: this.formatActionType(activity.action_type),
-        title: activity.tenders_enhanced?.title || 'Unknown Tender',
+        title: activity.tenders?.title || "Unknown Tender",
         time: activity.timestamp,
-        description: activity.tenders_enhanced?.description?.substring(0, 150) + '...' || '',
-        location: activity.tenders_enhanced?.contracting_entity_name || '',
-        publishDate: activity.tenders_enhanced?.published_date,
-        closingDate: activity.tenders_enhanced?.closing_date,
+        description:
+          activity.tenders?.description?.substring(0, 150) + "..." || "",
+        location: activity.tenders?.contracting_entity_name || "",
+        publishDate: activity.tenders?.published_date,
+        closingDate: activity.tenders?.closing_date,
         metadata: activity.metadata,
       }));
     } catch (error) {
-      console.error('Error in getUserActivities:', error);
+      console.error("Error in getUserActivities:", error);
       return [];
     }
   }
@@ -311,16 +322,16 @@ export class AnalyticsService {
    */
   private formatActionType(actionType: string): string {
     switch (actionType) {
-      case 'tender_view':
-        return 'Viewed';
-      case 'bookmark':
-        return 'Bookmarked';
-      case 'search':
-        return 'Searched';
-      case 'apply':
-        return 'Applied';
+      case "tender_view":
+        return "Viewed";
+      case "bookmark":
+        return "Bookmarked";
+      case "search":
+        return "Searched";
+      case "apply":
+        return "Applied";
       default:
-        return 'Activity';
+        return "Activity";
     }
   }
 
@@ -329,20 +340,20 @@ export class AnalyticsService {
    */
   async generatePerformanceReport(
     userId: string,
-    timeFrame: string = 'monthly'
+    timeFrame: string = "monthly"
   ): Promise<PerformanceReport> {
     try {
       const now = new Date();
       let startDate: Date;
 
       switch (timeFrame) {
-        case 'weekly':
+        case "weekly":
           startDate = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
           break;
-        case 'yearly':
+        case "yearly":
           startDate = new Date(now.getFullYear(), 0, 1);
           break;
-        case 'monthly':
+        case "monthly":
         default:
           startDate = new Date(now.getFullYear(), now.getMonth(), 1);
           break;
@@ -350,58 +361,74 @@ export class AnalyticsService {
 
       // Get aggregated analytics data
       const { data: analyticsData, error: analyticsError } = await supabase
-        .from('user_analytics')
-        .select('*')
-        .eq('user_id', userId)
-        .eq('period_type', timeFrame.replace('ly', ''))
-        .gte('period_start', startDate.toISOString())
-        .order('period_start', { ascending: false });
+        .from("user_analytics")
+        .select("*")
+        .eq("user_id", userId)
+        .eq("period_type", timeFrame.replace("ly", ""))
+        .gte("period_start", startDate.toISOString())
+        .order("period_start", { ascending: false });
 
       if (analyticsError) {
-        console.error('Error getting analytics data:', analyticsError);
+        console.error("Error getting analytics data:", analyticsError);
         throw analyticsError;
       }
 
       // Aggregate the data
-      const aggregated = analyticsData.reduce((acc: {
-        searchesPerformed: number;
-        opportunitiesViewed: number;
-        opportunitiesBookmarked: number;
-        opportunitiesApplied: number;
-        opportunitiesWon: number;
-        totalValue: number;
-        timeSaved: number;
-        responseTimeSum: number;
-        responseTimeCount: number;
-      }, curr: any) => ({
-        searchesPerformed: acc.searchesPerformed + (curr.searches_performed || 0),
-        opportunitiesViewed: acc.opportunitiesViewed + (curr.opportunities_viewed || 0),
-        opportunitiesBookmarked: acc.opportunitiesBookmarked + (curr.opportunities_bookmarked || 0),
-        opportunitiesApplied: acc.opportunitiesApplied + (curr.opportunities_applied || 0),
-        opportunitiesWon: acc.opportunitiesWon + (curr.opportunities_won || 0),
-        totalValue: acc.totalValue + (curr.total_opportunity_value || 0),
-        timeSaved: acc.timeSaved + (curr.estimated_time_saved_hours || 0),
-        responseTimeSum: acc.responseTimeSum + (curr.response_time_hours || 0),
-        responseTimeCount: acc.responseTimeCount + (curr.response_time_hours ? 1 : 0),
-      }), {
-        searchesPerformed: 0,
-        opportunitiesViewed: 0,
-        opportunitiesBookmarked: 0,
-        opportunitiesApplied: 0,
-        opportunitiesWon: 0,
-        totalValue: 0,
-        timeSaved: 0,
-        responseTimeSum: 0,
-        responseTimeCount: 0,
-      });
+      const aggregated = analyticsData.reduce(
+        (
+          acc: {
+            searchesPerformed: number;
+            opportunitiesViewed: number;
+            opportunitiesBookmarked: number;
+            opportunitiesApplied: number;
+            opportunitiesWon: number;
+            totalValue: number;
+            timeSaved: number;
+            responseTimeSum: number;
+            responseTimeCount: number;
+          },
+          curr: any
+        ) => ({
+          searchesPerformed:
+            acc.searchesPerformed + (curr.searches_performed || 0),
+          opportunitiesViewed:
+            acc.opportunitiesViewed + (curr.opportunities_viewed || 0),
+          opportunitiesBookmarked:
+            acc.opportunitiesBookmarked + (curr.opportunities_bookmarked || 0),
+          opportunitiesApplied:
+            acc.opportunitiesApplied + (curr.opportunities_applied || 0),
+          opportunitiesWon:
+            acc.opportunitiesWon + (curr.opportunities_won || 0),
+          totalValue: acc.totalValue + (curr.total_opportunity_value || 0),
+          timeSaved: acc.timeSaved + (curr.estimated_time_saved_hours || 0),
+          responseTimeSum:
+            acc.responseTimeSum + (curr.response_time_hours || 0),
+          responseTimeCount:
+            acc.responseTimeCount + (curr.response_time_hours ? 1 : 0),
+        }),
+        {
+          searchesPerformed: 0,
+          opportunitiesViewed: 0,
+          opportunitiesBookmarked: 0,
+          opportunitiesApplied: 0,
+          opportunitiesWon: 0,
+          totalValue: 0,
+          timeSaved: 0,
+          responseTimeSum: 0,
+          responseTimeCount: 0,
+        }
+      );
 
-      const avgResponseTime = aggregated.responseTimeCount > 0 
-        ? aggregated.responseTimeSum / aggregated.responseTimeCount 
-        : 0;
+      const avgResponseTime =
+        aggregated.responseTimeCount > 0
+          ? aggregated.responseTimeSum / aggregated.responseTimeCount
+          : 0;
 
-      const winRate = aggregated.opportunitiesApplied > 0 
-        ? (aggregated.opportunitiesWon / aggregated.opportunitiesApplied) * 100 
-        : 0;
+      const winRate =
+        aggregated.opportunitiesApplied > 0
+          ? (aggregated.opportunitiesWon / aggregated.opportunitiesApplied) *
+            100
+          : 0;
 
       return {
         period: timeFrame,
@@ -418,8 +445,8 @@ export class AnalyticsService {
         },
       };
     } catch (error) {
-      console.error('Error generating performance report:', error);
-      throw new Error('Failed to generate performance report');
+      console.error("Error generating performance report:", error);
+      throw new Error("Failed to generate performance report");
     }
   }
 
@@ -432,30 +459,30 @@ export class AnalyticsService {
   ): Promise<any> {
     try {
       let query = supabase
-        .from('market_intelligence')
-        .select('*')
-        .order('period_start', { ascending: false })
+        .from("market_intelligence")
+        .select("*")
+        .order("period_start", { ascending: false })
         .limit(10);
 
       if (industry) {
-        query = query.eq('industry', industry);
+        query = query.eq("industry", industry);
       }
 
       if (province) {
-        query = query.eq('province', province);
+        query = query.eq("province", province);
       }
 
       const { data, error } = await query;
 
       if (error) {
-        console.error('Error getting market intelligence:', error);
+        console.error("Error getting market intelligence:", error);
         throw error;
       }
 
       return data || [];
     } catch (error) {
-      console.error('Error in getMarketIntelligence:', error);
-      throw new Error('Failed to get market intelligence data');
+      console.error("Error in getMarketIntelligence:", error);
+      throw new Error("Failed to get market intelligence data");
     }
   }
 
@@ -481,9 +508,8 @@ export class AnalyticsService {
     }>
   ): Promise<void> {
     try {
-      const { error } = await supabase
-        .from('dashboard_preferences')
-        .upsert([
+      const { error } = await supabase.from("dashboard_preferences").upsert(
+        [
           {
             user_id: userId,
             enabled_widgets: preferences.enabledWidgets,
@@ -497,21 +523,24 @@ export class AnalyticsService {
             alert_on_won_contracts: preferences.alertOnWonContracts,
             deadline_warning_days: preferences.deadlineWarningDays,
             hourly_rate: preferences.hourlyRate,
-            manual_search_hours_per_opportunity: preferences.manualSearchHoursPerOpportunity,
+            manual_search_hours_per_opportunity:
+              preferences.manualSearchHoursPerOpportunity,
             include_indirect_benefits: preferences.includeIndirectBenefits,
             updated_at: new Date().toISOString(),
-          }
-        ], {
-          onConflict: 'user_id'
-        });
+          },
+        ],
+        {
+          onConflict: "user_id",
+        }
+      );
 
       if (error) {
-        console.error('Error updating preferences:', error);
+        console.error("Error updating preferences:", error);
         throw error;
       }
     } catch (error) {
-      console.error('Error in updateDashboardPreferences:', error);
-      throw new Error('Failed to update dashboard preferences');
+      console.error("Error in updateDashboardPreferences:", error);
+      throw new Error("Failed to update dashboard preferences");
     }
   }
 
@@ -521,34 +550,42 @@ export class AnalyticsService {
   async getDashboardPreferences(userId: string): Promise<any> {
     try {
       const { data, error } = await supabase
-        .from('dashboard_preferences')
-        .select('*')
-        .eq('user_id', userId)
+        .from("dashboard_preferences")
+        .select("*")
+        .eq("user_id", userId)
         .single();
 
-      if (error && error.code !== 'PGRST116') {
-        console.error('Error getting preferences:', error);
+      if (error && error.code !== "PGRST116") {
+        console.error("Error getting preferences:", error);
         throw error;
       }
 
-      return data || {
-        enabled_widgets: ['stats', 'roi', 'timeline', 'performance', 'alerts'],
-        widget_order: [1, 2, 3, 4, 5],
-        default_time_period: 'monthly',
-        show_financial_metrics: true,
-        show_performance_charts: true,
-        show_competitor_analysis: false,
-        alert_on_new_opportunities: true,
-        alert_on_deadlines: true,
-        alert_on_won_contracts: true,
-        deadline_warning_days: [7, 3, 1],
-        hourly_rate: 75.00,
-        manual_search_hours_per_opportunity: 2.5,
-        include_indirect_benefits: true,
-      };
+      return (
+        data || {
+          enabled_widgets: [
+            "stats",
+            "roi",
+            "timeline",
+            "performance",
+            "alerts",
+          ],
+          widget_order: [1, 2, 3, 4, 5],
+          default_time_period: "monthly",
+          show_financial_metrics: true,
+          show_performance_charts: true,
+          show_competitor_analysis: false,
+          alert_on_new_opportunities: true,
+          alert_on_deadlines: true,
+          alert_on_won_contracts: true,
+          deadline_warning_days: [7, 3, 1],
+          hourly_rate: 75.0,
+          manual_search_hours_per_opportunity: 2.5,
+          include_indirect_benefits: true,
+        }
+      );
     } catch (error) {
-      console.error('Error in getDashboardPreferences:', error);
-      throw new Error('Failed to get dashboard preferences');
+      console.error("Error in getDashboardPreferences:", error);
+      throw new Error("Failed to get dashboard preferences");
     }
   }
 
@@ -574,9 +611,8 @@ export class AnalyticsService {
     }>
   ): Promise<void> {
     try {
-      const { error } = await supabase
-        .from('tender_performance')
-        .upsert([
+      const { error } = await supabase.from("tender_performance").upsert(
+        [
           {
             user_id: userId,
             tender_id: tenderId,
@@ -593,18 +629,20 @@ export class AnalyticsService {
             outcome_notes: updates.outcomeNotes,
             lessons_learned: updates.lessonsLearned,
             updated_at: new Date().toISOString(),
-          }
-        ], {
-          onConflict: 'user_id,tender_id'
-        });
+          },
+        ],
+        {
+          onConflict: "user_id,tender_id",
+        }
+      );
 
       if (error) {
-        console.error('Error updating tender performance:', error);
+        console.error("Error updating tender performance:", error);
         throw error;
       }
     } catch (error) {
-      console.error('Error in updateTenderPerformance:', error);
-      throw new Error('Failed to update tender performance');
+      console.error("Error in updateTenderPerformance:", error);
+      throw new Error("Failed to update tender performance");
     }
   }
 }

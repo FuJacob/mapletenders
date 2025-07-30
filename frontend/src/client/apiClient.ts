@@ -1,7 +1,7 @@
 import axios from "axios";
 import { supabaseClient } from "./supabaseClient";
 const apiClient = axios.create({
-  baseURL: import.meta.env.VITE_API_URL || "http://localhost:4000",
+  baseURL: import.meta.env.VITE_API_BASE_URL || "http://localhost:4000",
 });
 
 apiClient.interceptors.request.use(
@@ -10,7 +10,7 @@ apiClient.interceptors.request.use(
       data: { session },
     } = await supabaseClient.auth.getSession();
 
-    console.log("ASIOJDIOASDIOSDIOAJIOD", session);
+    console.log("API Client Session:", session?.user?.email || 'No session');
     if (session && session.access_token) {
       config.headers.Authorization = `Bearer ${session.access_token}`;
     }

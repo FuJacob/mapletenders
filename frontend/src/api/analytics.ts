@@ -1,4 +1,5 @@
-import { API_BASE_URL } from './config';
+import apiClient from '../client/apiClient';
+import { handleApiError } from './config';
 
 export interface DashboardData {
   tenderStats: {
@@ -89,34 +90,37 @@ export interface DashboardPreferences {
 }
 
 class AnalyticsAPI {
-  private baseURL: string;
+  private basePath: string;
 
   constructor() {
-    this.baseURL = `${API_BASE_URL}/analytics`;
+    this.basePath = '/analytics';
   }
 
   private async request<T>(
     endpoint: string,
-    options: RequestInit = {}
+    options: { method?: string; data?: any } = {}
   ): Promise<T> {
-    const token = localStorage.getItem('token');
-    
-    const response = await fetch(`${this.baseURL}${endpoint}`, {
-      ...options,
-      headers: {
-        'Content-Type': 'application/json',
-        ...(token && { Authorization: `Bearer ${token}` }),
-        ...options.headers,
-      },
-    });
-
-    if (!response.ok) {
-      const errorData = await response.json().catch(() => ({}));
-      throw new Error(errorData.error || `HTTP ${response.status}: ${response.statusText}`);
+    try {
+      const { method = 'GET', data } = options;
+      const url = `${this.basePath}${endpoint}`;
+      
+      let response;
+      if (method === 'GET') {
+        response = await apiClient.get(url);
+      } else if (method === 'POST') {
+        response = await apiClient.post(url, data);
+      } else if (method === 'PUT') {
+        response = await apiClient.put(url, data);
+      } else if (method === 'DELETE') {
+        response = await apiClient.delete(url);
+      } else {
+        throw new Error(`Unsupported method: ${method}`);
+      }
+      
+      return response.data?.data || response.data;
+    } catch (error) {
+      return handleApiError(error, `Analytics API ${endpoint}`);
     }
-
-    const data = await response.json();
-    return data.data || data;
   }
 
   /**
@@ -146,7 +150,7 @@ class AnalyticsAPI {
   async trackActivity(activity: ActivityTrackingData): Promise<void> {
     await this.request('/track', {
       method: 'POST',
-      body: JSON.stringify(activity),
+      data: activity,
     });
   }
 
@@ -183,7 +187,7 @@ class AnalyticsAPI {
   async updatePreferences(preferences: Partial<DashboardPreferences>): Promise<void> {
     await this.request('/preferences', {
       method: 'PUT',
-      body: JSON.stringify(preferences),
+      data: preferences,
     });
   }
 
@@ -193,7 +197,7 @@ class AnalyticsAPI {
   async updateTenderPerformance(tenderId: string, updates: any): Promise<void> {
     await this.request(`/tender-performance/${tenderId}`, {
       method: 'PUT',
-      body: JSON.stringify(updates),
+      data: updates,
     });
   }
 

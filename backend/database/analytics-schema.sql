@@ -84,7 +84,7 @@ CREATE TABLE IF NOT EXISTS user_activity_log (
 CREATE TABLE IF NOT EXISTS tender_performance (
   id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
   user_id UUID REFERENCES auth.users(id) ON DELETE CASCADE,
-  tender_id UUID, -- May reference tenders_enhanced or be external
+  tender_id UUID, -- May reference tenders or be external
   
   -- Tender details
   tender_title TEXT,
