@@ -29,14 +29,19 @@ export default function SearchHistory({
         // Get recent user activities that are searches
         const activities = await analyticsAPI.getUserActivities(20);
         const searchActivities = activities
-          .filter(activity => activity.action === 'Searched' && activity.metadata?.query)
-          .map(activity => activity.metadata.query)
+          .filter(
+            (activity) =>
+              activity.action === "Searched" && activity.metadata?.query
+          )
+          .map((activity) => activity.metadata.query)
           .filter((query, index, arr) => arr.indexOf(query) === index) // Remove duplicates
           .slice(0, 10); // Limit to 10 recent searches
 
-        setHistory(searchActivities.length > 0 ? searchActivities : mockSearchHistory);
+        setHistory(
+          searchActivities.length > 0 ? searchActivities : mockSearchHistory
+        );
       } catch (error) {
-        console.error('Error loading search history:', error);
+        console.error("Error loading search history:", error);
         // Fallback to mock data
         setHistory(mockSearchHistory);
       } finally {
@@ -61,7 +66,9 @@ export default function SearchHistory({
       <div className="grid grid-cols-1 lg:grid-cols-2 xl:grid-cols-4 gap-3">
         {loading ? (
           <div className="col-span-full text-center py-4">
-            <p className="text-xs text-text-muted italic">Loading search history...</p>
+            <p className="text-xs text-text-muted italic">
+              Loading search history...
+            </p>
           </div>
         ) : history.length === 0 ? (
           <div className="col-span-full text-center py-4">
@@ -84,12 +91,21 @@ export default function SearchHistory({
                 </p>
               </div>
 
-              <button
+              <div
                 onClick={(e) => removeItem(index, e)}
-                className="absolute top-1 right-1 opacity-0 group-hover:opacity-100 text-text-muted hover:text-error transition-all p-1 rounded"
+                className="absolute top-1 right-1 opacity-0 group-hover:opacity-100 text-text-muted hover:text-error transition-all p-1 rounded cursor-pointer"
+                role="button"
+                tabIndex={0}
+                aria-label={`Remove search: ${query}`}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter" || e.key === " ") {
+                    e.preventDefault();
+                    removeItem(index, e);
+                  }
+                }}
               >
                 <X className="w-3 h-3" />
-              </button>
+              </div>
             </button>
           ))
         )}

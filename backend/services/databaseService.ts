@@ -11,6 +11,10 @@ export class DatabaseService {
     );
   }
 
+  getSupabaseClient() {
+    return this.supabase;
+  }
+
   async requestLiveDemo(email: string) {
     return await this.supabase.from("live_demo_requests").insert({ email });
   }

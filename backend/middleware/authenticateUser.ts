@@ -1,11 +1,8 @@
-import { createClient } from "@supabase/supabase-js";
 import { NextFunction, Request, Response } from "express";
+import { DatabaseService } from "../services/databaseService";
 
-// This is a service key, *never* expose in frontend
-export const supabase = createClient(
-  process.env.SUPABASE_URL || "",
-  process.env.SUPABASE_SERVICE_KEY || ""
-);
+const databaseService = new DatabaseService();
+const supabase = databaseService.getSupabaseClient();
 
 export const authenticateUser = async (
   req: Request,

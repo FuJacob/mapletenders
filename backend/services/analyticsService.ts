@@ -1,8 +1,9 @@
 import { DatabaseService } from "./databaseService";
+import type { Database } from "../database.types";
 
 const databaseService = new DatabaseService();
 // Access the Supabase client from the service
-const supabase = (databaseService as any).supabase;
+const supabase = databaseService.getSupabaseClient();
 
 export interface DashboardData {
   tenderStats: {
@@ -98,81 +99,47 @@ export class AnalyticsService {
    * Generate comprehensive dashboard data for a user
    */
   async generateUserDashboard(userId: string): Promise<DashboardData> {
-    try {
-      // Get dashboard summary using the SQL function
-      const { data: summaryData, error: summaryError } = await supabase.rpc(
-        "get_dashboard_summary",
-        {
-          target_user_id: userId,
-          time_period: "monthly",
-        }
-      );
-
-      if (summaryError) {
-        console.error("Error getting dashboard summary:", summaryError);
-        throw summaryError;
+    const { data: dashboardSummary, error: summaryError } = await supabase.rpc(
+      "get_dashboard_summary",
+      {
+        target_user_id: userId,
+        time_period: "monthly"
       }
+    );
 
-      const summary = summaryData[0] || {};
-
-      // Get additional financial data
-      const { data: financialData, error: financialError } = await supabase
-        .from("user_analytics")
-        .select("*")
-        .eq("user_id", userId)
-        .eq("period_type", "monthly")
-        .order("period_start", { ascending: false })
-        .limit(1);
-
-      if (financialError) {
-        console.error("Error getting financial data:", financialError);
-        throw financialError;
-      }
-
-      const financial = financialData[0] || {};
-
-      // Get user preferences for calculations
-      const { data: preferencesData, error: preferencesError } = await supabase
-        .from("dashboard_preferences")
-        .select("*")
-        .eq("user_id", userId)
-        .single();
-
-      if (preferencesError && preferencesError.code !== "PGRST116") {
-        console.error("Error getting preferences:", preferencesError);
-      }
-
-      const preferences = preferencesData || { hourly_rate: 75.0 };
-
-      return {
-        tenderStats: {
-          totalMatches: summary.total_opportunities || 0,
-          newToday: summary.new_today || 0,
-          expiringSoon: summary.expiring_soon || 0,
-          bookmarked: summary.bookmarked || 0,
-          applied: summary.applied || 0,
-          won: summary.won || 0,
-        },
-        financialMetrics: {
-          totalOpportunityValue: summary.total_value || 0,
-          averageContractSize: financial.average_contract_value || 0,
-          estimatedROI: summary.roi_percentage || 0,
-          contractsWonValue: financial.contracts_won_value || 0,
-          subscriptionCost: financial.subscription_cost || 0,
-        },
-        performanceMetrics: {
-          winRate: summary.win_rate || 0,
-          responseTime: summary.avg_response_time || 0,
-          timesSaved: financial.estimated_time_saved_hours || 0,
-          opportunitiesPerDay: Math.round(
-            (summary.total_opportunities || 0) / 30
-          ),
-        },
-      };
-    } catch (error) {
-      console.error("Error generating dashboard data:", error);
-      throw new Error("Failed to generate dashboard data");
+    if (summaryError) {
+      console.error("get_dashboard_summary function failed:", summaryError);
+      throw new Error(`Dashboard summary function error: ${summaryError.message}`);
     }
+
+    if (!dashboardSummary || dashboardSummary.length === 0) {
+      throw new Error("No dashboard summary data returned from database function");
+    }
+
+    const summary = dashboardSummary[0];
+    return {
+      tenderStats: {
+        totalMatches: summary.total_opportunities,
+        newToday: summary.new_today,
+        expiringSoon: summary.expiring_soon,
+        bookmarked: summary.bookmarked,
+        applied: summary.applied,
+        won: summary.won,
+      },
+      financialMetrics: {
+        totalOpportunityValue: summary.total_value,
+        averageContractSize: summary.total_opportunities > 0 ? summary.total_value / summary.total_opportunities : 0,
+        estimatedROI: summary.roi_percentage,
+        contractsWonValue: summary.won * summary.total_value / Math.max(summary.total_opportunities, 1),
+        subscriptionCost: 99,
+      },
+      performanceMetrics: {
+        winRate: summary.win_rate,
+        responseTime: summary.avg_response_time,
+        timesSaved: summary.bookmarked * 2.5,
+        opportunitiesPerDay: summary.total_opportunities > 0 ? Math.round(summary.total_opportunities / 30) : 0,
+      },
+    };
   }
 
   /**
@@ -182,55 +149,52 @@ export class AnalyticsService {
     userId: string,
     timeFrame: string = "monthly"
   ): Promise<ROIMetrics> {
-    try {
-      const now = new Date();
-      let startDate: Date;
-      let endDate = now;
+    const now = new Date();
+    let startDate: Date;
+    let endDate = now;
 
-      // Calculate date range based on time frame
-      switch (timeFrame) {
-        case "weekly":
-          startDate = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
-          break;
-        case "yearly":
-          startDate = new Date(now.getFullYear(), 0, 1);
-          break;
-        case "monthly":
-        default:
-          startDate = new Date(now.getFullYear(), now.getMonth(), 1);
-          break;
-      }
-
-      // Use the SQL function for ROI calculation
-      const { data: roiData, error: roiError } = await supabase.rpc(
-        "calculate_user_roi",
-        {
-          target_user_id: userId,
-          start_date: startDate.toISOString(),
-          end_date: endDate.toISOString(),
-        }
-      );
-
-      if (roiError) {
-        console.error("Error calculating ROI:", roiError);
-        throw roiError;
-      }
-
-      const roi = roiData[0] || {};
-
-      return {
-        totalInvestment: roi.total_investment || 0,
-        totalReturn: roi.total_return || 0,
-        roiPercentage: roi.roi_percentage || 0,
-        timeSavedHours: roi.time_saved_hours || 0,
-        timeSavedValue: roi.time_saved_value || 0,
-        contractsWon: roi.contracts_won || 0,
-        contractsWonValue: roi.contracts_won_value || 0,
-      };
-    } catch (error) {
-      console.error("Error calculating ROI:", error);
-      throw new Error("Failed to calculate ROI metrics");
+    // Calculate date range based on time frame
+    switch (timeFrame) {
+      case "weekly":
+        startDate = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
+        break;
+      case "yearly":
+        startDate = new Date(now.getFullYear(), 0, 1);
+        break;
+      case "monthly":
+      default:
+        startDate = new Date(now.getFullYear(), now.getMonth(), 1);
+        break;
     }
+
+    const { data: roiData, error: roiError } = await supabase.rpc(
+      "calculate_user_roi",
+      {
+        target_user_id: userId,
+        start_date: startDate.toISOString(),
+        end_date: endDate.toISOString(),
+      }
+    );
+
+    if (roiError) {
+      console.error("calculate_user_roi function failed:", roiError);
+      throw new Error(`ROI calculation function error: ${roiError.message}`);
+    }
+
+    if (!roiData || roiData.length === 0) {
+      throw new Error("No ROI data returned from database function");
+    }
+
+    const roi = roiData[0];
+    return {
+      totalInvestment: roi.total_investment,
+      totalReturn: roi.total_return,
+      roiPercentage: roi.roi_percentage,
+      timeSavedHours: roi.time_saved_hours,
+      timeSavedValue: roi.time_saved_value,
+      contractsWon: roi.contracts_won,
+      contractsWonValue: roi.contracts_won_value,
+    };
   }
 
   /**
@@ -273,42 +237,29 @@ export class AnalyticsService {
    */
   async getUserActivities(userId: string, limit = 10): Promise<any[]> {
     try {
+      // Get activities from the activity log
       const { data, error } = await supabase
         .from("user_activity_log")
-        .select(
-          `
-          *,
-          tenders:resource_id (
-            title,
-            description,
-            contracting_entity_name,
-            closing_date,
-            published_date,
-            estimated_value_min
-          )
-        `
-        )
+        .select("*")
         .eq("user_id", userId)
-        .in("action_type", ["tender_view", "bookmark", "search", "apply"])
-        .order("timestamp", { ascending: false })
+        .order("created_at", { ascending: false })
         .limit(limit);
 
       if (error) {
-        console.error("Error getting user activities:", error);
+        console.warn("Error getting user activities:", error);
         return [];
       }
 
-      // Format activities for frontend
+      // Format activities if available
       return (data || []).map((activity: any) => ({
         id: activity.id,
         action: this.formatActionType(activity.action_type),
-        title: activity.tenders?.title || "Unknown Tender",
-        time: activity.timestamp,
-        description:
-          activity.tenders?.description?.substring(0, 150) + "..." || "",
-        location: activity.tenders?.contracting_entity_name || "",
-        publishDate: activity.tenders?.published_date,
-        closingDate: activity.tenders?.closing_date,
+        title: activity.metadata?.title || `${activity.action_type} activity`,
+        time: activity.created_at || activity.timestamp,
+        description: activity.metadata?.description || `${activity.action_type} activity recorded`,
+        location: activity.metadata?.location || "",
+        publishDate: activity.created_at,
+        closingDate: null,
         metadata: activity.metadata,
       }));
     } catch (error) {
