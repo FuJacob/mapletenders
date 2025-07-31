@@ -52,7 +52,7 @@ export default function SearchHistory({
     loadSearchHistory();
   }, []);
 
-  const removeItem = (index: number, e: React.MouseEvent) => {
+  const removeItem = (index: number, e: React.MouseEvent | React.KeyboardEvent) => {
     e.stopPropagation();
     setHistory(history.filter((_, i) => i !== index));
   };

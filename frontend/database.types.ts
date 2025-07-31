@@ -535,6 +535,83 @@ export type Database = {
         }
         Relationships: []
       }
+      organization_members: {
+        Row: {
+          id: string
+          invited_by: string | null
+          joined_at: string | null
+          organization_id: string | null
+          role: string | null
+          user_id: string | null
+        }
+        Insert: {
+          id?: string
+          invited_by?: string | null
+          joined_at?: string | null
+          organization_id?: string | null
+          role?: string | null
+          user_id?: string | null
+        }
+        Update: {
+          id?: string
+          invited_by?: string | null
+          joined_at?: string | null
+          organization_id?: string | null
+          role?: string | null
+          user_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "organization_members_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      organizations: {
+        Row: {
+          created_at: string | null
+          created_by: string | null
+          description: string | null
+          id: string
+          industry: string | null
+          logo_url: string | null
+          name: string
+          size: string | null
+          slug: string
+          updated_at: string | null
+          website_url: string | null
+        }
+        Insert: {
+          created_at?: string | null
+          created_by?: string | null
+          description?: string | null
+          id?: string
+          industry?: string | null
+          logo_url?: string | null
+          name: string
+          size?: string | null
+          slug: string
+          updated_at?: string | null
+          website_url?: string | null
+        }
+        Update: {
+          created_at?: string | null
+          created_by?: string | null
+          description?: string | null
+          id?: string
+          industry?: string | null
+          logo_url?: string | null
+          name?: string
+          size?: string | null
+          slug?: string
+          updated_at?: string | null
+          website_url?: string | null
+        }
+        Relationships: []
+      }
       plans: {
         Row: {
           created_at: string | null
@@ -712,6 +789,75 @@ export type Database = {
         }
         Relationships: []
       }
+      shared_bookmarks: {
+        Row: {
+          application_deadline: string | null
+          assigned_to: string | null
+          created_at: string | null
+          created_by: string | null
+          estimated_bid_amount: number | null
+          id: string
+          notes: string | null
+          organization_id: string | null
+          priority: string | null
+          status: string | null
+          tags: string[] | null
+          tender_id: string | null
+          title: string | null
+          updated_at: string | null
+          win_probability: number | null
+        }
+        Insert: {
+          application_deadline?: string | null
+          assigned_to?: string | null
+          created_at?: string | null
+          created_by?: string | null
+          estimated_bid_amount?: number | null
+          id?: string
+          notes?: string | null
+          organization_id?: string | null
+          priority?: string | null
+          status?: string | null
+          tags?: string[] | null
+          tender_id?: string | null
+          title?: string | null
+          updated_at?: string | null
+          win_probability?: number | null
+        }
+        Update: {
+          application_deadline?: string | null
+          assigned_to?: string | null
+          created_at?: string | null
+          created_by?: string | null
+          estimated_bid_amount?: number | null
+          id?: string
+          notes?: string | null
+          organization_id?: string | null
+          priority?: string | null
+          status?: string | null
+          tags?: string[] | null
+          tender_id?: string | null
+          title?: string | null
+          updated_at?: string | null
+          win_probability?: number | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "shared_bookmarks_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "shared_bookmarks_tender_id_fkey"
+            columns: ["tender_id"]
+            isOneToOne: false
+            referencedRelation: "tenders"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       subscriptions: {
         Row: {
           billing_cycle: string
@@ -764,6 +910,103 @@ export type Database = {
             columns: ["plan_id"]
             isOneToOne: false
             referencedRelation: "plans"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      team_invitations: {
+        Row: {
+          accepted_at: string | null
+          created_at: string | null
+          email: string
+          expires_at: string
+          id: string
+          invited_by: string | null
+          organization_id: string | null
+          personal_message: string | null
+          role: string | null
+          token: string
+        }
+        Insert: {
+          accepted_at?: string | null
+          created_at?: string | null
+          email: string
+          expires_at: string
+          id?: string
+          invited_by?: string | null
+          organization_id?: string | null
+          personal_message?: string | null
+          role?: string | null
+          token: string
+        }
+        Update: {
+          accepted_at?: string | null
+          created_at?: string | null
+          email?: string
+          expires_at?: string
+          id?: string
+          invited_by?: string | null
+          organization_id?: string | null
+          personal_message?: string | null
+          role?: string | null
+          token?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "team_invitations_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      team_saved_searches: {
+        Row: {
+          alert_frequency: string | null
+          created_at: string | null
+          created_by: string | null
+          description: string | null
+          enable_alerts: boolean | null
+          id: string
+          is_public: boolean | null
+          name: string
+          organization_id: string | null
+          search_query: Json
+          updated_at: string | null
+        }
+        Insert: {
+          alert_frequency?: string | null
+          created_at?: string | null
+          created_by?: string | null
+          description?: string | null
+          enable_alerts?: boolean | null
+          id?: string
+          is_public?: boolean | null
+          name: string
+          organization_id?: string | null
+          search_query: Json
+          updated_at?: string | null
+        }
+        Update: {
+          alert_frequency?: string | null
+          created_at?: string | null
+          created_by?: string | null
+          description?: string | null
+          enable_alerts?: boolean | null
+          id?: string
+          is_public?: boolean | null
+          name?: string
+          organization_id?: string | null
+          search_query?: Json
+          updated_at?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "team_saved_searches_organization_id_fkey"
+            columns: ["organization_id"]
+            isOneToOne: false
+            referencedRelation: "organizations"
             referencedColumns: ["id"]
           },
         ]
@@ -1227,6 +1470,16 @@ export type Database = {
         Args: Record<PropertyKey, never>
         Returns: number
       }
+      create_organization: {
+        Args: {
+          p_name: string
+          p_slug: string
+          p_description?: string
+          p_industry?: string
+          p_size?: string
+        }
+        Returns: string
+      }
       get_dashboard_summary: {
         Args: { target_user_id: string; time_period?: string }
         Returns: {
@@ -1263,6 +1516,23 @@ export type Database = {
           sync_status: string
           total_events: number
           enabled_connections: number
+        }[]
+      }
+      get_user_organizations: {
+        Args: Record<PropertyKey, never>
+        Returns: {
+          id: string
+          name: string
+          slug: string
+          description: string
+          industry: string
+          size: string
+          logo_url: string
+          website_url: string
+          created_at: string
+          updated_at: string
+          role: string
+          member_count: number
         }[]
       }
       match_tenders_by_vector: {

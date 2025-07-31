@@ -36,6 +36,7 @@ const BookmarksPage = lazy(() => import("./pages/BookmarksPage"));
 const AnalyticsPage = lazy(() => import("./pages/AnalyticsPage"));
 const Profile = lazy(() => import("./pages/Profile"));
 const TenderNotice = lazy(() => import("./pages/TenderNoticePage"));
+const TeamManagement = lazy(() => import("./pages/TeamManagement"));
 const Onboarding = lazy(() => import("./pages/Onboarding"));
 const Test = lazy(() => import("./pages/Test"));
 
@@ -93,6 +94,7 @@ export function App() {
               <Route path="/calendar" element={<CalendarPage />} />
               <Route path="/bookmarks" element={<BookmarksPage />} />
               <Route path="/analytics" element={<AnalyticsPage />} />
+              <Route path="/teams" element={<TeamManagement />} />
               <Route path="/profile" element={<Profile />} />
               <Route path="/tender-notice/:tenderId" element={<TenderNotice />} />
             </Route>

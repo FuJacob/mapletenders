@@ -8,6 +8,7 @@ import {
   Bookmark,
   House,
   ChartLineUp,
+  Users,
   List,
   X,
 } from "@phosphor-icons/react";
@@ -55,6 +56,11 @@ export default function Sidebar() {
       label: "Analytics",
       path: "/analytics",
       icon: ChartLineUp,
+    },
+    {
+      label: "Teams",
+      path: "/teams",
+      icon: Users,
     },
   ];
 

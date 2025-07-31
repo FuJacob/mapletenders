@@ -48,12 +48,19 @@ interface MonthlyTrend {
   wins: number;
 }
 
+interface AnalyticsPageData {
+  keyMetrics: AnalyticsMetric[];
+  topCategories: TopPerformingCategory[];
+  regionalData: RegionalData[];
+  monthlyTrends: MonthlyTrend[];
+}
+
 export default function AnalyticsPage() {
   const [timeRange, setTimeRange] = useState<"7d" | "30d" | "90d" | "1y">(
     "30d"
   );
   const [loading, setLoading] = useState(true);
-  const [analyticsData, setAnalyticsData] = useState<any>(null);
+  const [analyticsData, setAnalyticsData] = useState<AnalyticsPageData | null>(null);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
@@ -194,7 +201,7 @@ export default function AnalyticsPage() {
   }, [timeRange]);
 
   // Helper function to generate monthly trends from activities
-  const generateMonthlyTrends = (activities: any[]): MonthlyTrend[] => {
+  const generateMonthlyTrends = (activities: Array<{ time: string; action: string }>): MonthlyTrend[] => {
     const months = ['Aug', 'Sep', 'Oct', 'Nov', 'Dec', 'Jan'];
     return months.map(month => {
       const monthActivities = activities.filter(a => 
