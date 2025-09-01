@@ -85,9 +85,8 @@ export class TenderService {
   ) {}
 
   async getTendersFromBookmarkIds(bookmarkIds: string[]) {
-    const { data, error } = await this.dbService.getTendersFromBookmarkIds(
-      bookmarkIds
-    );
+    const { data, error } =
+      await this.dbService.getTendersFromBookmarkIds(bookmarkIds);
     if (error) {
       throw new Error(
         `Failed to fetch tenders from bookmark ids: ${error.message}`
@@ -164,9 +163,8 @@ export class TenderService {
 
     try {
       // 1. Generate query embedding
-      const embeddingResponse = await this.mlService.generateQueryEmbedding(
-        query
-      );
+      const embeddingResponse =
+        await this.mlService.generateQueryEmbedding(query);
       const vector = embeddingResponse.embedded_query;
 
       // 2. Validate vector
@@ -239,6 +237,14 @@ export class TenderService {
       }
 
       console.log("Starting tender refresh...");
+
+      // first let's delete expired tenders
+      const { error: delError } = await this.dbService.removeExpiredTenders();
+      if (delError) {
+        throw new Error(
+          `Failed to remove expired tenders: ${delError.message}`
+        );
+      }
 
       const scrapers = [
         this.scrapingService.importCanadianTenders(),

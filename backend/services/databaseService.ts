@@ -207,6 +207,14 @@ export class DatabaseService {
       .eq("id", id)
       .single();
   }
+  async removeExpiredTenders() {
+    const expirationDate = new Date();
+
+    return await this.supabase
+      .from("tenders")
+      .delete()
+      .lt("closing_date", expirationDate.toISOString());
+  }
 
   async getTendersByIds(ids: string[]) {
     return await this.supabase.from("tenders").select("*").in("id", ids);
