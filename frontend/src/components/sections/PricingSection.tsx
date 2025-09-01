@@ -34,35 +34,38 @@ const PricingSection = memo(function PricingSection() {
     fetchPlans();
   }, []);
 
-  const handleSubscribe = useCallback(async (plan: Plan) => {
-    if (!user) {
-      window.location.href = "/sign-up";
-      return;
-    }
-
-    setProcessingPlan(plan.id);
-    try {
-      const response = await createCheckoutSession(
-        plan.id,
-        isYearly ? "yearly" : "monthly",
-        user.id,
-        user.email || "",
-        user.user_metadata?.full_name || ""
-      );
-
-      if (response.error) {
-        console.error("Checkout error:", response.error);
-        alert("Something went wrong. Please try again.");
-      } else if (response.url) {
-        window.location.href = response.url;
+  const handleSubscribe = useCallback(
+    async (plan: Plan) => {
+      if (!user) {
+        window.location.href = "/sign-up";
+        return;
       }
-    } catch (error) {
-      console.error("Subscription error:", error);
-      alert("Something went wrong. Please try again.");
-    } finally {
-      setProcessingPlan(null);
-    }
-  }, [user, isYearly]);
+
+      setProcessingPlan(plan.id);
+      try {
+        const response = await createCheckoutSession(
+          plan.id,
+          isYearly ? "yearly" : "monthly",
+          user.id,
+          user.email || "",
+          user.user_metadata?.full_name || ""
+        );
+
+        if (response.error) {
+          console.error("Checkout error:", response.error);
+          alert("Something went wrong. Please try again.");
+        } else if (response.url) {
+          window.location.href = response.url;
+        }
+      } catch (error) {
+        console.error("Subscription error:", error);
+        alert("Something went wrong. Please try again.");
+      } finally {
+        setProcessingPlan(null);
+      }
+    },
+    [user, isYearly]
+  );
 
   const formatFeatures = useCallback((plan: Plan): Feature[] => {
     if (!plan.features || typeof plan.features !== "object") return [];
@@ -139,7 +142,7 @@ const PricingSection = memo(function PricingSection() {
             >
               Yearly
             </span>
-            <span className="bg-primary px-3 py-1 rounded-lg text-xs font-medium shadow-md text-text-muted">
+            <span className="bg-primary px-3 py-1 rounded-lg text-xs font-medium shadow-md text-white">
               20% off
             </span>
           </div>

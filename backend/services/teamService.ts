@@ -1,124 +1,35 @@
 import { DatabaseService } from "./databaseService";
 import { randomBytes } from "crypto";
 import type { Database } from "../database.types";
-
-const databaseService = new DatabaseService();
-const supabase = databaseService.getSupabaseClient();
-
-export interface Organization {
-  id: string;
-  name: string;
-  slug: string;
-  description?: string;
-  logoUrl?: string;
-  websiteUrl?: string;
-  industry?: string;
-  size?: 'startup' | 'small' | 'medium' | 'large' | 'enterprise';
-  billingEmail?: string;
-  subscriptionPlan: 'team' | 'business' | 'enterprise';
-  subscriptionStatus: 'active' | 'cancelled' | 'suspended' | 'trial';
-  trialEndsAt?: Date;
-  maxUsers: number;
-  settings: Record<string, any>;
-  createdAt: Date;
-  updatedAt: Date;
-}
-
-export interface OrganizationMember {
-  id: string;
-  organizationId: string;
-  userId: string;
-  role: 'owner' | 'admin' | 'manager' | 'member' | 'viewer';
-  permissions: string[];
-  status: 'active' | 'pending' | 'suspended';
-  invitedBy?: string;
-  invitedAt?: Date;
-  joinedAt: Date;
-  createdAt: Date;
-  updatedAt: Date;
-  // Joined data
-  user?: {
-    id: string;
-    email: string;
-    name?: string;
-  };
-}
-
-export interface TeamInvitation {
-  id: string;
-  organizationId: string;
-  email: string;
-  role: 'admin' | 'manager' | 'member' | 'viewer';
-  invitedBy: string;
-  invitationToken: string;
-  expiresAt: Date;
-  status: 'pending' | 'accepted' | 'declined' | 'expired';
-  acceptedBy?: string;
-  acceptedAt?: Date;
-  personalMessage?: string;
-  createdAt: Date;
-  updatedAt: Date;
-}
-
-export interface SharedBookmark {
-  id: string;
-  organizationId: string;
-  tenderNoticeId: string;
-  title?: string;
-  notes?: string;
-  tags: string[];
-  priority: 'low' | 'medium' | 'high' | 'urgent';
-  status: 'active' | 'watching' | 'applied' | 'won' | 'lost' | 'archived';
-  assignedTo?: string;
-  assignedBy?: string;
-  assignedAt?: Date;
-  createdBy: string;
-  applicationDeadline?: Date;
-  internalDeadline?: Date;
-  estimatedBidAmount?: number;
-  winProbability?: number;
-  createdAt: Date;
-  updatedAt: Date;
-  // Joined data
-  tender?: any;
-  assignedUser?: any;
-  createdByUser?: any;
-}
-
-export interface TeamSavedSearch {
-  id: string;
-  organizationId: string;
-  createdBy: string;
-  name: string;
-  description?: string;
-  searchQuery: Record<string, any>;
-  isPublic: boolean;
-  sharedWith: string[];
-  enableAlerts: boolean;
-  alertFrequency: 'immediate' | 'daily' | 'weekly';
-  lastAlertSent?: Date;
-  subscriberCount: number;
-  lastUsedAt?: Date;
-  createdAt: Date;
-  updatedAt: Date;
-}
+import {
+  Organization,
+  OrganizationMember,
+  TeamInvitation,
+  SharedBookmark,
+  TeamSavedSearch,
+  CreateOrganizationRequest,
+  InviteUserRequest,
+  CreateSharedBookmarkRequest,
+  CreateTeamSavedSearchRequest
+} from "../types/teams";
+import { TeamManagementError } from "../utils/errorHandler";
 
 export class TeamService {
+  private supabase: any;
+
+  constructor(private databaseService: DatabaseService) {
+    this.supabase = databaseService.getSupabaseClient();
+  }
+
   /**
    * Create a new organization
    */
   async createOrganization(
     userId: string,
-    organizationData: {
-      name: string;
-      slug: string;
-      description?: string;
-      industry?: string;
-      size?: Organization['size'];
-    }
+    organizationData: CreateOrganizationRequest
   ): Promise<Organization> {
     try {
-      const { data, error } = await supabase.rpc('create_organization', {
+      const { data, error } = await this.supabase.rpc('create_organization', {
         p_name: organizationData.name,
         p_slug: organizationData.slug,
         p_description: organizationData.description,
@@ -129,7 +40,7 @@ export class TeamService {
       if (error) throw error;
 
       // Get the created organization
-      const { data: org, error: orgError } = await supabase
+      const { data: org, error: orgError } = await this.supabase
         .from('organizations')
         .select('*')
         .eq('id', data)
@@ -149,7 +60,7 @@ export class TeamService {
    */
   async getUserOrganizations(): Promise<(Organization & { role: string; memberCount: number })[]> {
     try {
-      const { data, error } = await supabase.rpc('get_user_organizations');
+      const { data, error } = await this.supabase.rpc('get_user_organizations');
 
       if (error) throw error;
 
@@ -169,7 +80,7 @@ export class TeamService {
    */
   async getOrganization(organizationId: string): Promise<Organization | null> {
     try {
-      const { data, error } = await supabase
+      const { data, error } = await this.supabase
         .from('organizations')
         .select('*')
         .eq('id', organizationId)
@@ -191,7 +102,7 @@ export class TeamService {
     updates: Partial<Organization>
   ): Promise<Organization> {
     try {
-      const { data, error } = await supabase
+      const { data, error } = await this.supabase
         .from('organizations')
         .update({
           ...updates,
@@ -214,7 +125,7 @@ export class TeamService {
    */
   async getOrganizationMembers(organizationId: string): Promise<OrganizationMember[]> {
     try {
-      const { data, error } = await supabase
+      const { data, error } = await this.supabase
         .from('organization_members')
         .select(`
           *,
@@ -246,20 +157,18 @@ export class TeamService {
   async inviteUserToOrganization(
     organizationId: string,
     invitedBy: string,
-    email: string,
-    role: TeamInvitation['role'],
-    personalMessage?: string
+    inviteData: InviteUserRequest
   ): Promise<TeamInvitation> {
     try {
       // Check if user is already a member by looking up user by email in profiles
-      const { data: userProfile } = await supabase
+      const { data: userProfile } = await this.supabase
         .from('profiles')
         .select('id')
-        .eq('email', email)
+        .eq('email', inviteData.email)
         .single();
 
       if (userProfile) {
-        const { data: existingMember } = await supabase
+        const { data: existingMember } = await this.supabase
           .from('organization_members')
           .select('id')
           .eq('organization_id', organizationId)
@@ -273,11 +182,11 @@ export class TeamService {
 
 
       // Check for existing pending invitation
-      const { data: existingInvitation } = await supabase
+      const { data: existingInvitation } = await this.supabase
         .from('team_invitations')
         .select('id')
         .eq('organization_id', organizationId)
-        .eq('email', email)
+        .eq('email', inviteData.email)
         .is('accepted_at', null)
         .single();
 
@@ -289,16 +198,16 @@ export class TeamService {
       const invitationToken = randomBytes(32).toString('hex');
       const expiresAt = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000); // 7 days
 
-      const { data, error } = await supabase
+      const { data, error } = await this.supabase
         .from('team_invitations')
         .insert([{
           organization_id: organizationId,
-          email,
-          role,
+          email: inviteData.email,
+          role: inviteData.role,
           invited_by: invitedBy,
           token: invitationToken,
           expires_at: expiresAt.toISOString(),
-          personal_message: personalMessage
+          personal_message: inviteData.personalMessage
         }])
         .select()
         .single();
@@ -319,11 +228,11 @@ export class TeamService {
   async acceptInvitation(invitationToken: string, userId: string): Promise<OrganizationMember> {
     try {
       // Get invitation
-      const { data: invitation, error: invError } = await supabase
+      const { data: invitation, error: invError } = await this.supabase
         .from('team_invitations')
         .select('*')
-        .eq('invitation_token', invitationToken)
-        .eq('status', 'pending')
+        .eq('token', invitationToken)
+        .is('accepted_at', null)
         .single();
 
       if (invError || !invitation) {
@@ -335,7 +244,7 @@ export class TeamService {
       }
 
       // Create organization member
-      const { data: member, error: memberError } = await supabase
+      const { data: member, error: memberError } = await this.supabase
         .from('organization_members')
         .insert([{
           organization_id: invitation.organization_id,
@@ -352,11 +261,9 @@ export class TeamService {
       if (memberError) throw memberError;
 
       // Update invitation status
-      await supabase
+      await this.supabase
         .from('team_invitations')
         .update({
-          status: 'accepted',
-          accepted_by: userId,
           accepted_at: new Date().toISOString()
         })
         .eq('id', invitation.id);
@@ -377,7 +284,7 @@ export class TeamService {
     newRole: OrganizationMember['role']
   ): Promise<OrganizationMember> {
     try {
-      const { data, error } = await supabase
+      const { data, error } = await this.supabase
         .from('organization_members')
         .update({
           role: newRole,
@@ -401,7 +308,7 @@ export class TeamService {
    */
   async removeMember(organizationId: string, memberId: string): Promise<void> {
     try {
-      const { error } = await supabase
+      const { error } = await this.supabase
         .from('organization_members')
         .delete()
         .eq('id', memberId)
@@ -420,39 +327,43 @@ export class TeamService {
   async createSharedBookmark(
     organizationId: string,
     userId: string,
-    bookmarkData: {
-      tenderNoticeId: string;
-      title?: string;
-      notes?: string;
-      tags?: string[];
-      priority?: SharedBookmark['priority'];
-      assignedTo?: string;
-    }
+    bookmarkData: CreateSharedBookmarkRequest
   ): Promise<SharedBookmark> {
     try {
-      const { data, error } = await supabase
+      const { data, error } = await this.supabase
         .from('shared_bookmarks')
         .insert([{
           organization_id: organizationId,
-          tender_notice_id: bookmarkData.tenderNoticeId,
+          tender_id: bookmarkData.tenderId,
           title: bookmarkData.title,
           notes: bookmarkData.notes,
           tags: bookmarkData.tags || [],
           priority: bookmarkData.priority || 'medium',
           assigned_to: bookmarkData.assignedTo,
-          assigned_by: bookmarkData.assignedTo ? userId : null,
-          assigned_at: bookmarkData.assignedTo ? new Date().toISOString() : null,
           created_by: userId,
           status: 'active'
         }])
         .select()
         .single();
 
-      if (error) throw error;
+      if (error) {
+        throw new TeamManagementError(
+          error.message || 'Failed to create shared bookmark',
+          400,
+          'CREATE_BOOKMARK_FAILED'
+        );
+      }
+
       return this.mapDatabaseToSharedBookmark(data);
     } catch (error) {
-      console.error('Error creating shared bookmark:', error);
-      throw new Error('Failed to create shared bookmark');
+      if (error instanceof TeamManagementError) {
+        throw error;
+      }
+      throw new TeamManagementError(
+        'Failed to create shared bookmark',
+        500,
+        'CREATE_BOOKMARK_ERROR'
+      );
     }
   }
 
@@ -461,7 +372,7 @@ export class TeamService {
    */
   async getSharedBookmarks(organizationId: string): Promise<SharedBookmark[]> {
     try {
-      const { data, error } = await supabase
+      const { data, error } = await this.supabase
         .from('shared_bookmarks')
         .select(`
           *,
@@ -495,7 +406,7 @@ export class TeamService {
     updates: Partial<SharedBookmark>
   ): Promise<SharedBookmark> {
     try {
-      const { data, error } = await supabase
+      const { data, error } = await this.supabase
         .from('shared_bookmarks')
         .update({
           ...updates,
@@ -529,7 +440,7 @@ export class TeamService {
     }
   ): Promise<TeamSavedSearch> {
     try {
-      const { data, error } = await supabase
+      const { data, error } = await this.supabase
         .from('team_saved_searches')
         .insert([{
           organization_id: organizationId,
@@ -557,7 +468,7 @@ export class TeamService {
    */
   async getTeamSavedSearches(organizationId: string, userId: string): Promise<TeamSavedSearch[]> {
     try {
-      const { data, error } = await supabase
+      const { data, error } = await this.supabase
         .from('team_saved_searches')
         .select('*')
         .eq('organization_id', organizationId)
@@ -578,7 +489,7 @@ export class TeamService {
    */
   async isOrganizationMember(organizationId: string, userId: string): Promise<boolean> {
     try {
-      const { data, error } = await supabase
+      const { data, error } = await this.supabase
         .from('organization_members')
         .select('id')
         .eq('organization_id', organizationId)
@@ -596,7 +507,7 @@ export class TeamService {
    */
   async getUserRole(organizationId: string, userId: string): Promise<string | null> {
     try {
-      const { data } = await supabase
+      const { data } = await this.supabase
         .from('organization_members')
         .select('role')
         .eq('organization_id', organizationId)
@@ -620,14 +531,12 @@ export class TeamService {
       websiteUrl: data.website_url,
       industry: data.industry,
       size: data.size,
-      billingEmail: data.billing_email,
-      subscriptionPlan: data.subscription_plan,
-      subscriptionStatus: data.subscription_status,
-      trialEndsAt: data.trial_ends_at ? new Date(data.trial_ends_at) : undefined,
-      maxUsers: data.max_users,
-      settings: data.settings || {},
+      createdBy: data.created_by,
       createdAt: new Date(data.created_at),
-      updatedAt: new Date(data.updated_at)
+      updatedAt: new Date(data.updated_at),
+      // Additional fields from API responses
+      role: data.role,
+      memberCount: data.member_count
     };
   }
 
@@ -637,13 +546,10 @@ export class TeamService {
       organizationId: data.organization_id,
       userId: data.user_id,
       role: data.role,
-      permissions: data.permissions || [],
-      status: data.status,
       invitedBy: data.invited_by,
-      invitedAt: data.invited_at ? new Date(data.invited_at) : undefined,
       joinedAt: new Date(data.joined_at),
-      createdAt: new Date(data.created_at),
-      updatedAt: new Date(data.updated_at)
+      // Joined data
+      user: data.user
     };
   }
 
@@ -654,14 +560,11 @@ export class TeamService {
       email: data.email,
       role: data.role,
       invitedBy: data.invited_by,
-      invitationToken: data.invitation_token,
+      token: data.token,
       expiresAt: new Date(data.expires_at),
-      status: data.status,
-      acceptedBy: data.accepted_by,
       acceptedAt: data.accepted_at ? new Date(data.accepted_at) : undefined,
       personalMessage: data.personal_message,
-      createdAt: new Date(data.created_at),
-      updatedAt: new Date(data.updated_at)
+      createdAt: new Date(data.created_at)
     };
   }
 
@@ -669,22 +572,23 @@ export class TeamService {
     return {
       id: data.id,
       organizationId: data.organization_id,
-      tenderNoticeId: data.tender_notice_id,
+      tenderId: data.tender_id,
       title: data.title,
       notes: data.notes,
       tags: data.tags || [],
       priority: data.priority,
       status: data.status,
       assignedTo: data.assigned_to,
-      assignedBy: data.assigned_by,
-      assignedAt: data.assigned_at ? new Date(data.assigned_at) : undefined,
       createdBy: data.created_by,
       applicationDeadline: data.application_deadline ? new Date(data.application_deadline) : undefined,
-      internalDeadline: data.internal_deadline ? new Date(data.internal_deadline) : undefined,
       estimatedBidAmount: data.estimated_bid_amount,
       winProbability: data.win_probability,
       createdAt: new Date(data.created_at),
-      updatedAt: new Date(data.updated_at)
+      updatedAt: new Date(data.updated_at),
+      // Joined data
+      tender: data.tender,
+      assignedUser: data.assignedUser,
+      createdByUser: data.createdByUser
     };
   }
 
@@ -697,16 +601,14 @@ export class TeamService {
       description: data.description,
       searchQuery: data.search_query,
       isPublic: data.is_public,
-      sharedWith: data.shared_with || [],
       enableAlerts: data.enable_alerts,
       alertFrequency: data.alert_frequency,
-      lastAlertSent: data.last_alert_sent ? new Date(data.last_alert_sent) : undefined,
-      subscriberCount: data.subscriber_count,
-      lastUsedAt: data.last_used_at ? new Date(data.last_used_at) : undefined,
       createdAt: new Date(data.created_at),
       updatedAt: new Date(data.updated_at)
     };
   }
 }
 
-export const teamService = new TeamService();
+// Export singleton instance
+const databaseService = new DatabaseService();
+export const teamService = new TeamService(databaseService);

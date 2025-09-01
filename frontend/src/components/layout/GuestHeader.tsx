@@ -9,7 +9,7 @@ interface GuestHeaderProps {
 export default function GuestHeader({ className = "" }: GuestHeaderProps) {
   return (
     <div
-      className={`${className} max-w-7xl mx-auto flex items-center justify-between px-6 pt-10`}
+      className={`${className} max-w-7xl mx-auto flex items-center justify-between px-6 py-10`}
     >
       {/* Logo/Brand Section */}
       <div className="flex-shrink-0">

@@ -1,5 +1,18 @@
 import { Request, Response } from 'express';
 import { teamService } from '../services/teamService';
+import { handleControllerError } from '../utils/errorHandler';
+import { 
+  validateAuth, 
+  validateAuthAndOrgMembership, 
+  validateOrgAdminPermissions,
+  validateOrgInvitePermissions 
+} from '../utils/authUtils';
+import type {
+  CreateOrganizationRequest,
+  InviteUserRequest,
+  CreateSharedBookmarkRequest,
+  CreateTeamSavedSearchRequest
+} from '../types/teams';
 
 /**
  * Team Controller
@@ -12,37 +25,27 @@ export class TeamController {
    */
   async createOrganization(req: Request, res: Response): Promise<void> {
     try {
-      const userId = (req as any).user?.id;
-      const { name, slug, description, industry, size } = req.body;
+      const authResult = validateAuth(req, res);
+      if (!authResult.success) return;
 
-      if (!userId) {
-        res.status(401).json({ error: 'User not authenticated' });
+      const organizationData: CreateOrganizationRequest = req.body;
+
+      if (!organizationData.name || !organizationData.slug) {
+        res.status(400).json({ 
+          success: false, 
+          error: 'Organization name and slug are required' 
+        });
         return;
       }
 
-      if (!name || !slug) {
-        res.status(400).json({ error: 'Organization name and slug are required' });
-        return;
-      }
-
-      const organization = await teamService.createOrganization(userId, {
-        name,
-        slug,
-        description,
-        industry,
-        size
-      });
+      const organization = await teamService.createOrganization(authResult.userId, organizationData);
 
       res.status(201).json({
         success: true,
         data: organization
       });
     } catch (error) {
-      console.error('Error creating organization:', error);
-      res.status(500).json({
-        error: 'Failed to create organization',
-        details: error instanceof Error ? error.message : 'Unknown error'
-      });
+      handleControllerError(error, res, 'createOrganization');
     }
   }
 
@@ -52,12 +55,8 @@ export class TeamController {
    */
   async getUserOrganizations(req: Request, res: Response): Promise<void> {
     try {
-      const userId = (req as any).user?.id;
-
-      if (!userId) {
-        res.status(401).json({ error: 'User not authenticated' });
-        return;
-      }
+      const authResult = validateAuth(req, res);
+      if (!authResult.success) return;
 
       const organizations = await teamService.getUserOrganizations();
 
@@ -66,11 +65,7 @@ export class TeamController {
         data: organizations
       });
     } catch (error) {
-      console.error('Error getting user organizations:', error);
-      res.status(500).json({
-        error: 'Failed to get organizations',
-        details: error instanceof Error ? error.message : 'Unknown error'
-      });
+      handleControllerError(error, res, 'getUserOrganizations');
     }
   }
 
@@ -81,23 +76,13 @@ export class TeamController {
   async getOrganization(req: Request, res: Response): Promise<void> {
     try {
       const { organizationId } = req.params;
-      const userId = (req as any).user?.id;
-
-      if (!userId) {
-        res.status(401).json({ error: 'User not authenticated' });
-        return;
-      }
-
-      // Check if user is member
-      const isMember = await teamService.isOrganizationMember(organizationId, userId);
-      if (!isMember) {
-        res.status(403).json({ error: 'Access denied' });
-        return;
-      }
+      
+      const memberResult = await validateAuthAndOrgMembership(req, res, organizationId);
+      if (!memberResult.success || !memberResult.isMember) return;
 
       const organization = await teamService.getOrganization(organizationId);
       if (!organization) {
-        res.status(404).json({ error: 'Organization not found' });
+        res.status(404).json({ success: false, error: 'Organization not found' });
         return;
       }
 
@@ -106,11 +91,7 @@ export class TeamController {
         data: organization
       });
     } catch (error) {
-      console.error('Error getting organization:', error);
-      res.status(500).json({
-        error: 'Failed to get organization',
-        details: error instanceof Error ? error.message : 'Unknown error'
-      });
+      handleControllerError(error, res, 'getOrganization');
     }
   }
 
@@ -121,20 +102,10 @@ export class TeamController {
   async updateOrganization(req: Request, res: Response): Promise<void> {
     try {
       const { organizationId } = req.params;
-      const userId = (req as any).user?.id;
       const updates = req.body;
 
-      if (!userId) {
-        res.status(401).json({ error: 'User not authenticated' });
-        return;
-      }
-
-      // Check if user has admin permissions
-      const userRole = await teamService.getUserRole(organizationId, userId);
-      if (!userRole || !['owner', 'admin'].includes(userRole)) {
-        res.status(403).json({ error: 'Insufficient permissions' });
-        return;
-      }
+      const adminResult = await validateOrgAdminPermissions(req, res, organizationId);
+      if (!adminResult.success || !adminResult.isMember) return;
 
       const organization = await teamService.updateOrganization(organizationId, updates);
 
@@ -143,11 +114,7 @@ export class TeamController {
         data: organization
       });
     } catch (error) {
-      console.error('Error updating organization:', error);
-      res.status(500).json({
-        error: 'Failed to update organization',
-        details: error instanceof Error ? error.message : 'Unknown error'
-      });
+      handleControllerError(error, res, 'updateOrganization');
     }
   }
 
@@ -158,19 +125,9 @@ export class TeamController {
   async getOrganizationMembers(req: Request, res: Response): Promise<void> {
     try {
       const { organizationId } = req.params;
-      const userId = (req as any).user?.id;
-
-      if (!userId) {
-        res.status(401).json({ error: 'User not authenticated' });
-        return;
-      }
-
-      // Check if user is member
-      const isMember = await teamService.isOrganizationMember(organizationId, userId);
-      if (!isMember) {
-        res.status(403).json({ error: 'Access denied' });
-        return;
-      }
+      
+      const memberResult = await validateAuthAndOrgMembership(req, res, organizationId);
+      if (!memberResult.success || !memberResult.isMember) return;
 
       const members = await teamService.getOrganizationMembers(organizationId);
 
@@ -179,11 +136,7 @@ export class TeamController {
         data: members
       });
     } catch (error) {
-      console.error('Error getting organization members:', error);
-      res.status(500).json({
-        error: 'Failed to get organization members',
-        details: error instanceof Error ? error.message : 'Unknown error'
-      });
+      handleControllerError(error, res, 'getOrganizationMembers');
     }
   }
 
@@ -194,32 +147,23 @@ export class TeamController {
   async inviteUser(req: Request, res: Response): Promise<void> {
     try {
       const { organizationId } = req.params;
-      const userId = (req as any).user?.id;
-      const { email, role, personalMessage } = req.body;
+      const inviteData: InviteUserRequest = req.body;
 
-      if (!userId) {
-        res.status(401).json({ error: 'User not authenticated' });
-        return;
-      }
+      const inviteResult = await validateOrgInvitePermissions(req, res, organizationId);
+      if (!inviteResult.success || !inviteResult.isMember) return;
 
-      if (!email || !role) {
-        res.status(400).json({ error: 'Email and role are required' });
-        return;
-      }
-
-      // Check if user has permissions to invite
-      const userRole = await teamService.getUserRole(organizationId, userId);
-      if (!userRole || !['owner', 'admin', 'manager'].includes(userRole)) {
-        res.status(403).json({ error: 'Insufficient permissions to invite users' });
+      if (!inviteData.email || !inviteData.role) {
+        res.status(400).json({ 
+          success: false, 
+          error: 'Email and role are required' 
+        });
         return;
       }
 
       const invitation = await teamService.inviteUserToOrganization(
         organizationId,
-        userId,
-        email,
-        role,
-        personalMessage
+        inviteResult.userId,
+        inviteData
       );
 
       res.status(201).json({
@@ -228,11 +172,7 @@ export class TeamController {
         message: 'Invitation sent successfully'
       });
     } catch (error) {
-      console.error('Error inviting user:', error);
-      res.status(500).json({
-        error: 'Failed to invite user',
-        details: error instanceof Error ? error.message : 'Unknown error'
-      });
+      handleControllerError(error, res, 'inviteUser');
     }
   }
 
@@ -243,14 +183,11 @@ export class TeamController {
   async acceptInvitation(req: Request, res: Response): Promise<void> {
     try {
       const { token } = req.params;
-      const userId = (req as any).user?.id;
+      
+      const authResult = validateAuth(req, res);
+      if (!authResult.success) return;
 
-      if (!userId) {
-        res.status(401).json({ error: 'User not authenticated' });
-        return;
-      }
-
-      const member = await teamService.acceptInvitation(token, userId);
+      const member = await teamService.acceptInvitation(token, authResult.userId);
 
       res.json({
         success: true,
@@ -258,11 +195,7 @@ export class TeamController {
         message: 'Invitation accepted successfully'
       });
     } catch (error) {
-      console.error('Error accepting invitation:', error);
-      res.status(400).json({
-        error: 'Failed to accept invitation',
-        details: error instanceof Error ? error.message : 'Unknown error'
-      });
+      handleControllerError(error, res, 'acceptInvitation');
     }
   }
 
@@ -274,22 +207,15 @@ export class TeamController {
     try {
       const { organizationId, memberId } = req.params;
       const { role } = req.body;
-      const userId = (req as any).user?.id;
 
-      if (!userId) {
-        res.status(401).json({ error: 'User not authenticated' });
-        return;
-      }
+      const adminResult = await validateOrgAdminPermissions(req, res, organizationId);
+      if (!adminResult.success || !adminResult.isMember) return;
 
       if (!role) {
-        res.status(400).json({ error: 'Role is required' });
-        return;
-      }
-
-      // Check if user has permissions to update roles
-      const userRole = await teamService.getUserRole(organizationId, userId);
-      if (!userRole || !['owner', 'admin'].includes(userRole)) {
-        res.status(403).json({ error: 'Insufficient permissions' });
+        res.status(400).json({ 
+          success: false, 
+          error: 'Role is required' 
+        });
         return;
       }
 
@@ -300,11 +226,7 @@ export class TeamController {
         data: member
       });
     } catch (error) {
-      console.error('Error updating member role:', error);
-      res.status(500).json({
-        error: 'Failed to update member role',
-        details: error instanceof Error ? error.message : 'Unknown error'
-      });
+      handleControllerError(error, res, 'updateMemberRole');
     }
   }
 
@@ -315,19 +237,9 @@ export class TeamController {
   async removeMember(req: Request, res: Response): Promise<void> {
     try {
       const { organizationId, memberId } = req.params;
-      const userId = (req as any).user?.id;
 
-      if (!userId) {
-        res.status(401).json({ error: 'User not authenticated' });
-        return;
-      }
-
-      // Check if user has permissions to remove members
-      const userRole = await teamService.getUserRole(organizationId, userId);
-      if (!userRole || !['owner', 'admin'].includes(userRole)) {
-        res.status(403).json({ error: 'Insufficient permissions' });
-        return;
-      }
+      const adminResult = await validateOrgAdminPermissions(req, res, organizationId);
+      if (!adminResult.success || !adminResult.isMember) return;
 
       await teamService.removeMember(organizationId, memberId);
 
@@ -336,11 +248,7 @@ export class TeamController {
         message: 'Member removed successfully'
       });
     } catch (error) {
-      console.error('Error removing member:', error);
-      res.status(500).json({
-        error: 'Failed to remove member',
-        details: error instanceof Error ? error.message : 'Unknown error'
-      });
+      handleControllerError(error, res, 'removeMember');
     }
   }
 
@@ -351,38 +259,27 @@ export class TeamController {
   async createSharedBookmark(req: Request, res: Response): Promise<void> {
     try {
       const { organizationId } = req.params;
-      const userId = (req as any).user?.id;
-      const bookmarkData = req.body;
+      const bookmarkData: CreateSharedBookmarkRequest = req.body;
 
-      if (!userId) {
-        res.status(401).json({ error: 'User not authenticated' });
+      const memberResult = await validateAuthAndOrgMembership(req, res, organizationId);
+      if (!memberResult.success || !memberResult.isMember) return;
+
+      if (!bookmarkData.tenderId) {
+        res.status(400).json({ 
+          success: false, 
+          error: 'Tender ID is required' 
+        });
         return;
       }
 
-      // Check if user is member
-      const isMember = await teamService.isOrganizationMember(organizationId, userId);
-      if (!isMember) {
-        res.status(403).json({ error: 'Access denied' });
-        return;
-      }
-
-      if (!bookmarkData.tenderNoticeId) {
-        res.status(400).json({ error: 'Tender notice ID is required' });
-        return;
-      }
-
-      const bookmark = await teamService.createSharedBookmark(organizationId, userId, bookmarkData);
+      const bookmark = await teamService.createSharedBookmark(organizationId, memberResult.userId, bookmarkData);
 
       res.status(201).json({
         success: true,
         data: bookmark
       });
     } catch (error) {
-      console.error('Error creating shared bookmark:', error);
-      res.status(500).json({
-        error: 'Failed to create shared bookmark',
-        details: error instanceof Error ? error.message : 'Unknown error'
-      });
+      handleControllerError(error, res, 'createSharedBookmark');
     }
   }
 
@@ -393,19 +290,9 @@ export class TeamController {
   async getSharedBookmarks(req: Request, res: Response): Promise<void> {
     try {
       const { organizationId } = req.params;
-      const userId = (req as any).user?.id;
 
-      if (!userId) {
-        res.status(401).json({ error: 'User not authenticated' });
-        return;
-      }
-
-      // Check if user is member
-      const isMember = await teamService.isOrganizationMember(organizationId, userId);
-      if (!isMember) {
-        res.status(403).json({ error: 'Access denied' });
-        return;
-      }
+      const memberResult = await validateAuthAndOrgMembership(req, res, organizationId);
+      if (!memberResult.success || !memberResult.isMember) return;
 
       const bookmarks = await teamService.getSharedBookmarks(organizationId);
 
@@ -414,11 +301,7 @@ export class TeamController {
         data: bookmarks
       });
     } catch (error) {
-      console.error('Error getting shared bookmarks:', error);
-      res.status(500).json({
-        error: 'Failed to get shared bookmarks',
-        details: error instanceof Error ? error.message : 'Unknown error'
-      });
+      handleControllerError(error, res, 'getSharedBookmarks');
     }
   }
 
@@ -429,13 +312,10 @@ export class TeamController {
   async updateSharedBookmark(req: Request, res: Response): Promise<void> {
     try {
       const { bookmarkId } = req.params;
-      const userId = (req as any).user?.id;
       const updates = req.body;
 
-      if (!userId) {
-        res.status(401).json({ error: 'User not authenticated' });
-        return;
-      }
+      const authResult = validateAuth(req, res);
+      if (!authResult.success) return;
 
       // TODO: Add permission check for bookmark access
 
@@ -446,11 +326,7 @@ export class TeamController {
         data: bookmark
       });
     } catch (error) {
-      console.error('Error updating shared bookmark:', error);
-      res.status(500).json({
-        error: 'Failed to update shared bookmark',
-        details: error instanceof Error ? error.message : 'Unknown error'
-      });
+      handleControllerError(error, res, 'updateSharedBookmark');
     }
   }
 
@@ -461,38 +337,27 @@ export class TeamController {
   async createTeamSavedSearch(req: Request, res: Response): Promise<void> {
     try {
       const { organizationId } = req.params;
-      const userId = (req as any).user?.id;
       const searchData = req.body;
 
-      if (!userId) {
-        res.status(401).json({ error: 'User not authenticated' });
-        return;
-      }
-
-      // Check if user is member
-      const isMember = await teamService.isOrganizationMember(organizationId, userId);
-      if (!isMember) {
-        res.status(403).json({ error: 'Access denied' });
-        return;
-      }
+      const memberResult = await validateAuthAndOrgMembership(req, res, organizationId);
+      if (!memberResult.success || !memberResult.isMember) return;
 
       if (!searchData.name || !searchData.searchQuery) {
-        res.status(400).json({ error: 'Name and search query are required' });
+        res.status(400).json({ 
+          success: false, 
+          error: 'Name and search query are required' 
+        });
         return;
       }
 
-      const savedSearch = await teamService.createTeamSavedSearch(organizationId, userId, searchData);
+      const savedSearch = await teamService.createTeamSavedSearch(organizationId, memberResult.userId, searchData);
 
       res.status(201).json({
         success: true,
         data: savedSearch
       });
     } catch (error) {
-      console.error('Error creating team saved search:', error);
-      res.status(500).json({
-        error: 'Failed to create team saved search',
-        details: error instanceof Error ? error.message : 'Unknown error'
-      });
+      handleControllerError(error, res, 'createTeamSavedSearch');
     }
   }
 
@@ -503,32 +368,18 @@ export class TeamController {
   async getTeamSavedSearches(req: Request, res: Response): Promise<void> {
     try {
       const { organizationId } = req.params;
-      const userId = (req as any).user?.id;
 
-      if (!userId) {
-        res.status(401).json({ error: 'User not authenticated' });
-        return;
-      }
+      const memberResult = await validateAuthAndOrgMembership(req, res, organizationId);
+      if (!memberResult.success || !memberResult.isMember) return;
 
-      // Check if user is member
-      const isMember = await teamService.isOrganizationMember(organizationId, userId);
-      if (!isMember) {
-        res.status(403).json({ error: 'Access denied' });
-        return;
-      }
-
-      const savedSearches = await teamService.getTeamSavedSearches(organizationId, userId);
+      const savedSearches = await teamService.getTeamSavedSearches(organizationId, memberResult.userId);
 
       res.json({
         success: true,
         data: savedSearches
       });
     } catch (error) {
-      console.error('Error getting team saved searches:', error);
-      res.status(500).json({
-        error: 'Failed to get team saved searches',
-        details: error instanceof Error ? error.message : 'Unknown error'
-      });
+      handleControllerError(error, res, 'getTeamSavedSearches');
     }
   }
 }
