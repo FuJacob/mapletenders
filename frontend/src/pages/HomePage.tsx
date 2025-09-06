@@ -76,11 +76,13 @@ import { PageHeader } from "../components/ui";
 */
 
 export default function HomePage() {
-  const { profile } = useAuth();  
+  const { profile } = useAuth();
   const [recommendedTenders, setRecommendedTenders] = useState<
     TenderSearchResult[]
   >([]);
-  const [dashboardData, setDashboardData] = useState<DashboardData | null>(null);
+  const [dashboardData, setDashboardData] = useState<DashboardData | null>(
+    null
+  );
   const [activities, setActivities] = useState<Activity[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -106,15 +108,17 @@ export default function HomePage() {
 
         // Track page view
         await analyticsAPI.trackActivity({
-          actionType: 'page_view',
-          resourceType: 'dashboard',
-          pageUrl: '/home',
+          actionType: "page_view",
+          resourceType: "dashboard",
+          pageUrl: "/home",
           sessionId: Date.now().toString(),
         });
       } catch (err) {
         console.error("Failed to fetch dashboard data:", err);
-        setError(err instanceof Error ? err.message : 'Failed to load dashboard data');
-        
+        setError(
+          err instanceof Error ? err.message : "Failed to load dashboard data"
+        );
+
         // Load user activities
         let activities: Activity[] = [];
         try {
@@ -175,7 +179,9 @@ export default function HomePage() {
       <div className="h-full flex flex-col items-center justify-center space-y-4">
         <div className="text-center">
           <HouseIcon className="w-16 h-16 text-gray-400 mx-auto mb-4" />
-          <h2 className="text-xl font-semibold text-text mb-2">Dashboard Unavailable</h2>
+          <h2 className="text-xl font-semibold text-text mb-2">
+            Dashboard Unavailable
+          </h2>
           <p className="text-error text-sm mb-4">{error}</p>
           <button
             onClick={() => window.location.reload()}
@@ -195,16 +201,19 @@ export default function HomePage() {
         <PageHeader
           icon={<HouseIcon className="w-10 h-10 text-primary" />}
           title="Dashboard"
-          description={`Welcome back, ${profile?.company_name || 'User'}`}
+          description={`Welcome back, ${profile?.company_name || "User"}`}
         />
-        
+
         {/* Stats Grid */}
         {dashboardData ? (
           <DashboardStatsGrid data={dashboardData} loading={loading} />
         ) : (
           <div className="grid grid-cols-2 lg:grid-cols-6 gap-4">
             {Array.from({ length: 6 }).map((_, index) => (
-              <div key={index} className="bg-surface border border-border rounded-lg p-4 animate-pulse">
+              <div
+                key={index}
+                className="bg-surface border border-border rounded-lg p-4 animate-pulse"
+              >
                 <div className="h-8 w-8 bg-gray-300 rounded-lg mb-3"></div>
                 <div className="h-6 bg-gray-300 rounded mb-2"></div>
                 <div className="h-4 bg-gray-300 rounded w-3/4"></div>
@@ -213,13 +222,6 @@ export default function HomePage() {
           </div>
         )}
       </div>
-
-      {/* Quick Actions */}
-      <QuickActions
-        newTodayCount={dashboardData?.tenderStats.newToday}
-        bookmarkedCount={dashboardData?.tenderStats.bookmarked}
-        urgentDeadlines={dashboardData?.tenderStats.expiringSoon}
-      />
 
       {/* Main Dashboard Content */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 flex-1">

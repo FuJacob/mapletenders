@@ -68,12 +68,6 @@ export default function Privacy() {
                 </li>
                 
                 <li>
-                  <strong>Job Applications:</strong> If you apply for employment opportunities through our 
-                  careers page, we will collect your name, email address, resume, and any other information 
-                  you provide. We use this information to review and respond to your application.
-                </li>
-                
-                <li>
                   <strong>Marketing Communications:</strong> If you subscribe to our newsletter or marketing 
                   communications, we will collect your name and email address to send you updates about 
                   procurement opportunities, platform features, and industry insights. You may unsubscribe 

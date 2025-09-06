@@ -17,7 +17,6 @@ const ResetPassword = lazy(() => import("./pages/ResetPassword"));
 const UpdatePassword = lazy(() => import("./pages/UpdatePassword"));
 const About = lazy(() => import("./pages/About"));
 const Contact = lazy(() => import("./pages/Contact"));
-const Careers = lazy(() => import("./pages/Careers"));
 const Terms = lazy(() => import("./pages/Terms"));
 const Privacy = lazy(() => import("./pages/Privacy"));
 const SubscriptionSuccess = lazy(() => import("./pages/SubscriptionSuccess"));
@@ -73,7 +72,6 @@ export function App() {
             <Route path="/update-password" element={<UpdatePassword />} />
             <Route path="/about" element={<About />} />
             <Route path="/contact" element={<Contact />} />
-            <Route path="/careers" element={<Careers />} />
             <Route path="/terms" element={<Terms />} />
             <Route path="/privacy" element={<Privacy />} />
             <Route
