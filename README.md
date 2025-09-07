@@ -11,6 +11,15 @@ MapleTenders is a modern procurement portal for Canadian businesses. Stop search
 We help businesses discover, analyze, and manage tender opportunities efficiently using AI-powered tools.  
 
 ---
+<img width="1806" height="1097" alt="image" src="https://github.com/user-attachments/assets/c7c11b1a-1d2e-4e74-a355-b1a857bf09c1" />
+
+<img width="4096" height="2016" alt="image" src="https://github.com/user-attachments/assets/1f0daef8-8704-4a0c-a741-c440536cbb20" />
+<img width="4094" height="1980" alt="image" src="https://github.com/user-attachments/assets/eee14fd7-ad82-4114-b0fb-19d94fa7d987" />
+<img width="4094" height="2006" alt="image" src="https://github.com/user-attachments/assets/aa4142ab-9928-4ba0-92ea-4cc48806cf26" />
+<img width="4092" height="2024" alt="image" src="https://github.com/user-attachments/assets/4f81ebac-facf-494e-9512-bf5857c82005" />
+
+
+
 
 ## Features
 
