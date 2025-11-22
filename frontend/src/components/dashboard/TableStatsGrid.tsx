@@ -41,6 +41,12 @@ export default function TableStatsGrid({ stats, loading = false }: TableStatsGri
     );
   }
 
+  // Guard against invalid stats data
+  if (!Array.isArray(stats)) {
+    console.error("TableStatsGrid: stats is not an array", stats);
+    return null;
+  }
+
   // Create a map of stats for easy lookup
   const statsMap = new Map(stats.map(stat => [stat.source, stat]));
 

@@ -90,9 +90,11 @@ export interface TenderStatistics {
 export const getTenderStatistics = async (): Promise<TenderStatistics[]> => {
   try {
     const response = await apiClient.get("/tenders/statistics");
-    return response.data;
+    return Array.isArray(response.data) ? response.data : [];
   } catch (error) {
-    return handleApiError(error, "Fetch tender statistics");
+    console.error("Failed to fetch tender statistics:", error);
+    // Return empty array instead of throwing
+    return [];
   }
 };
 
