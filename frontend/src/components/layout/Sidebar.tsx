@@ -7,7 +7,6 @@ import {
   Calendar,
   Bookmark,
   House,
-  ChartLineUp,
   Users,
   List,
   X,
@@ -51,11 +50,6 @@ export default function Sidebar() {
       label: "Calendar",
       path: "/calendar",
       icon: Calendar,
-    },
-    {
-      label: "Analytics",
-      path: "/analytics",
-      icon: ChartLineUp,
     },
     {
       label: "Teams",

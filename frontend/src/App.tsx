@@ -23,16 +23,13 @@ const SubscriptionSuccess = lazy(() => import("./pages/SubscriptionSuccess"));
 const SubscriptionCancel = lazy(() => import("./pages/SubscriptionCancel"));
 
 // Protected pages - lazy loaded
-const HomePage = lazy(() => import("./pages/HomePage"));
 const Home = lazy(() => import("./pages/Home"));
 const TableView = lazy(() => import("./pages/TableView"));
 const SearchPage = lazy(() => import("./pages/SearchPage"));
-const AdvancedSearchPage = lazy(() => import("./pages/AdvancedSearchPage"));
 const TablePage = lazy(() => import("./pages/TablePage"));
 const RfpAnalysis = lazy(() => import("./pages/RfpAnalysis"));
-const CalendarPage = lazy(() => import("./pages/CalendarPage"));
 const BookmarksPage = lazy(() => import("./pages/BookmarksPage"));
-const AnalyticsPage = lazy(() => import("./pages/AnalyticsPage"));
+const CalendarPage = lazy(() => import("./pages/CalendarPage"));
 const Profile = lazy(() => import("./pages/Profile"));
 const TenderNotice = lazy(() => import("./pages/TenderNoticePage"));
 const TeamManagement = lazy(() => import("./pages/TeamManagement"));
@@ -87,19 +84,13 @@ export function App() {
               </Route>
               <Route element={<ProtectedRoutes />}>
                 <Route element={<OnboardingRequiredRoutes />}>
-                  <Route path="/home" element={<HomePage />} />
-                  <Route path="/table-view" element={<TableView />} />
                   <Route path="/home" element={<Home />} />
+                  <Route path="/table-view" element={<TableView />} />
                   <Route path="/search" element={<SearchPage />} />
-                  <Route
-                    path="/search/advanced"
-                    element={<AdvancedSearchPage />}
-                  />
                   <Route path="/table" element={<TablePage />} />
                   <Route path="/rfp-analysis" element={<RfpAnalysis />} />
-                  <Route path="/calendar" element={<CalendarPage />} />
                   <Route path="/bookmarks" element={<BookmarksPage />} />
-                  <Route path="/analytics" element={<AnalyticsPage />} />
+                  <Route path="/calendar" element={<CalendarPage />} />
                   <Route path="/teams" element={<TeamManagement />} />
                   <Route path="/profile" element={<Profile />} />
                   <Route

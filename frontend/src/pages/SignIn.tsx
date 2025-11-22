@@ -5,8 +5,6 @@ import {
   Lightning,
   Eye,
   EyeSlash,
-  Leaf,
-  Sparkle,
 } from "@phosphor-icons/react";
 
 import { useSelector } from "react-redux";

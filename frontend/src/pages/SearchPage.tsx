@@ -3,7 +3,6 @@ import { useSearchParams } from "react-router-dom";
 import {
   SearchSection,
   SearchResultsList,
-  SearchHistory,
 } from "../components/search";
 import { searchTenders } from "../api";
 import { createBookmark } from "../api/bookmarks";
@@ -71,15 +70,6 @@ export default function SearchPage() {
     performSearch();
   }, [performSearch]);
 
-  // Handle search history selection
-  const handleHistorySearchSelect = useCallback(
-    (query: string) => {
-      setSearchQuery(query);
-      performSearch(query);
-    },
-    [performSearch]
-  );
-
   // Handle bookmark toggle
   const handleBookmarkToggle = async (tenderId: string) => {
     if (!userId) {
@@ -124,9 +114,6 @@ export default function SearchPage() {
             title="Search"
             description="Discover opportunities using AI"
           />
-          {/* Search History - Horizontal beside header */}
-
-          <SearchHistory onSearchSelect={handleHistorySearchSelect} />
         </div>
 
         {/* Search Section - Full Width */}
