@@ -57,50 +57,61 @@ export function App() {
   return (
     <HelmetProvider>
       <ErrorBoundary>
-        <Suspense fallback={
-          <div className="min-h-screen bg-background flex items-center justify-center">
-            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
-          </div>
-        }>
-      <Routes>
-        <Route element={<Layout />}>
-          <Route element={<GuestRoutes />}>
-            <Route path="/" element={<LandingPage />} />
-            <Route path="/sign-in" element={<SignIn />} />
-            <Route path="/sign-up" element={<SignUp />} />
-            <Route path="/reset-password" element={<ResetPassword />} />
-            <Route path="/update-password" element={<UpdatePassword />} />
-            <Route path="/about" element={<About />} />
-            <Route path="/contact" element={<Contact />} />
-            <Route path="/terms" element={<Terms />} />
-            <Route path="/privacy" element={<Privacy />} />
-            <Route
-              path="/subscription/success"
-              element={<SubscriptionSuccess />}
-            />
-            <Route path="/subscription/cancel" element={<SubscriptionCancel />} />
-          </Route>
-          <Route element={<ProtectedRoutes />}>
-            <Route element={<OnboardingRequiredRoutes />}>
-              <Route path="/home" element={<HomePage />} />
-              <Route path="/table-view" element={<TableView />} />
-              <Route path="/home" element={<Home />} />
-              <Route path="/search" element={<SearchPage />} />
-              <Route path="/search/advanced" element={<AdvancedSearchPage />} />
-              <Route path="/table" element={<TablePage />} />
-              <Route path="/rfp-analysis" element={<RfpAnalysis />} />
-              <Route path="/calendar" element={<CalendarPage />} />
-              <Route path="/bookmarks" element={<BookmarksPage />} />
-              <Route path="/analytics" element={<AnalyticsPage />} />
-              <Route path="/teams" element={<TeamManagement />} />
-              <Route path="/profile" element={<Profile />} />
-              <Route path="/tender-notice/:tenderId" element={<TenderNotice />} />
+        <Suspense
+          fallback={
+            <div className="min-h-screen bg-background flex items-center justify-center">
+              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+            </div>
+          }
+        >
+          <Routes>
+            <Route element={<Layout />}>
+              <Route element={<GuestRoutes />}>
+                <Route path="/" element={<LandingPage />} />
+                <Route path="/sign-in" element={<SignIn />} />
+                <Route path="/sign-up" element={<SignUp />} />
+                <Route path="/reset-password" element={<ResetPassword />} />
+                <Route path="/update-password" element={<UpdatePassword />} />
+                <Route path="/about" element={<About />} />
+                <Route path="/contact" element={<Contact />} />
+                <Route path="/terms" element={<Terms />} />
+                <Route path="/privacy" element={<Privacy />} />
+                <Route
+                  path="/subscription/success"
+                  element={<SubscriptionSuccess />}
+                />
+                <Route
+                  path="/subscription/cancel"
+                  element={<SubscriptionCancel />}
+                />
+              </Route>
+              <Route element={<ProtectedRoutes />}>
+                <Route element={<OnboardingRequiredRoutes />}>
+                  <Route path="/home" element={<HomePage />} />
+                  <Route path="/table-view" element={<TableView />} />
+                  <Route path="/home" element={<Home />} />
+                  <Route path="/search" element={<SearchPage />} />
+                  <Route
+                    path="/search/advanced"
+                    element={<AdvancedSearchPage />}
+                  />
+                  <Route path="/table" element={<TablePage />} />
+                  <Route path="/rfp-analysis" element={<RfpAnalysis />} />
+                  <Route path="/calendar" element={<CalendarPage />} />
+                  <Route path="/bookmarks" element={<BookmarksPage />} />
+                  <Route path="/analytics" element={<AnalyticsPage />} />
+                  <Route path="/teams" element={<TeamManagement />} />
+                  <Route path="/profile" element={<Profile />} />
+                  <Route
+                    path="/tender-notice/:tenderId"
+                    element={<TenderNotice />}
+                  />
+                </Route>
+                <Route path="/onboarding" element={<Onboarding />} />
+              </Route>
+              <Route path="/test" element={<Test />} />
             </Route>
-            <Route path="/onboarding" element={<Onboarding />} />
-          </Route>
-          <Route path="/test" element={<Test />} />
-        </Route>
-        </Routes>
+          </Routes>
         </Suspense>
       </ErrorBoundary>
     </HelmetProvider>

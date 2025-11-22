@@ -1,7 +1,7 @@
 import { useLocation, Link } from "react-router-dom";
 
 const navigationItems = [
-  { path: "#pricing", label: "Pricing", type: "anchor" }
+  { path: "#pricing", label: "Pricing", type: "anchor" },
 ];
 
 export default function GuestNavigation() {
