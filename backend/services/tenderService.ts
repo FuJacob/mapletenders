@@ -123,11 +123,17 @@ export class TenderService {
       entity?: string;
     };
   }) {
-    const { data, error } = await this.dbService.getTendersPaginated(params);
+    const { data, error, total } = await this.dbService.getTendersPaginated({
+      page: Math.floor(params.offset / params.limit) + 1,
+      limit: params.limit,
+      sortBy: params.sortBy,
+      sortOrder: params.sortOrder as "asc" | "desc",
+      filters: params.filters,
+    });
     if (error) {
-      throw new Error(`Failed to fetch paginated tenders: ${error.message}`);
+      throw new Error(`Failed to fetch paginated tenders: ${error}`);
     }
-    return data;
+    return { data, total };
   }
 
   async getTenderStatistics() {

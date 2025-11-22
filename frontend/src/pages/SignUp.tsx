@@ -4,9 +4,7 @@ import {
   Eye,
   EyeSlash,
   Lightning,
-  CheckCircle,
   Leaf,
-  Sparkle,
 } from "@phosphor-icons/react";
 import { signUpUser } from "../api";
 import { useAppDispatch } from "../app/hooks";
@@ -84,16 +82,10 @@ export default function SignUp() {
     agreedToTerms;
 
   return (
-    <div className="min-h-screen flex items-center justify-center p-8">
+    <div className="flex items-center justify-center py-4 px-8 min-h-screen">
       <div className="w-full max-w-md space-y-8">
         {/* Header */}
         <div className="text-center">
-          <div className="inline-flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-maple/10 to-maple/5 text-maple border border-maple/20 rounded-lg text-sm font-medium mb-6">
-            <Leaf className="w-4 h-4" />
-            <Sparkle className="w-3 h-3 animate-pulse" />
-            The #1 Procurement Portal for Canadian Businesses
-          </div>
-
           <Link
             to="/"
             className="inline-block mb-8 hover:opacity-80 transition-opacity"
@@ -108,18 +100,6 @@ export default function SignUp() {
             Join thousands of Canadian businesses discovering opportunities with
             AI
           </p>
-        </div>
-
-        {/* Trust badges */}
-        <div className="flex items-center justify-center gap-6 text-sm text-text-muted">
-          <span className="flex items-center gap-2">
-            <CheckCircle className="w-4 h-4 text-success" />
-            Free 7-day trial
-          </span>
-          <span className="flex items-center gap-2">
-            <CheckCircle className="w-4 h-4 text-success" />
-            No credit card required
-          </span>
         </div>
 
         {/* Error Message */}

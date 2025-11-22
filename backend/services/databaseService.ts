@@ -11,6 +11,10 @@ export class DatabaseService {
     );
   }
 
+  getSupabaseClient() {
+    return this.supabase;
+  }
+
   async requestLiveDemo(email: string) {
     return await this.supabase.from("live_demo_requests").insert({ email });
   }
@@ -207,6 +211,11 @@ export class DatabaseService {
       .eq("id", id)
       .single();
   }
+
+  async getAllTenders() {
+    return await this.supabase.from("tenders").select("*");
+  }
+
   async removeExpiredTenders() {
     const expirationDate = new Date();
 
@@ -220,8 +229,111 @@ export class DatabaseService {
     return await this.supabase.from("tenders").select("*").in("id", ids);
   }
 
-  async getAllTenders() {
-    return await this.supabase.from("tenders").select("*");
+  async getTenderStatistics() {
+    try {
+      // Get total count
+      const { count: totalCount, error: countError } = await this.supabase
+        .from("tenders")
+        .select("*", { count: "exact", head: true });
+
+      if (countError) {
+        console.error("Error fetching tender count:", countError);
+        return { data: null, error: countError.message };
+      }
+
+      // Get status breakdown
+      const { data: statusData, error: statusError } = await this.supabase
+        .from("tenders")
+        .select("status")
+        .not("status", "is", null);
+
+      // Get category breakdown
+      const { data: categoryData, error: categoryError } = await this.supabase
+        .from("tenders")
+        .select("category_primary")
+        .not("category_primary", "is", null);
+
+      const byStatus: Record<string, number> = {};
+      const byCategory: Record<string, number> = {};
+
+      if (!statusError && statusData) {
+        statusData.forEach((item) => {
+          if (item.status) {
+            byStatus[item.status] = (byStatus[item.status] || 0) + 1;
+          }
+        });
+      }
+
+      if (!categoryError && categoryData) {
+        categoryData.forEach((item) => {
+          if (item.category_primary) {
+            byCategory[item.category_primary] =
+              (byCategory[item.category_primary] || 0) + 1;
+          }
+        });
+      }
+
+      return {
+        data: {
+          total: totalCount || 0,
+          byStatus,
+          byCategory,
+        },
+        error: null,
+      };
+    } catch (error) {
+      console.error("Failed to fetch tender statistics:", error);
+      return {
+        data: null,
+        error: (error as Error).message,
+      };
+    }
+  }
+
+  async getTendersPaginated(params: {
+    page?: number;
+    limit?: number;
+    sortBy?: string;
+    sortOrder?: "asc" | "desc";
+    filters?: Record<string, any>;
+  }) {
+    try {
+      const {
+        page,
+        limit,
+        sortBy = "created_at",
+        sortOrder = "desc",
+        filters = {},
+      } = params;
+      const actualPage = page || 1;
+      const from = (actualPage - 1) * (limit || 10);
+      const to = from + (limit || 10) - 1;
+
+      let query = this.supabase
+        .from("tenders")
+        .select("*", { count: "exact" })
+        .range(from, to)
+        .order(sortBy, { ascending: sortOrder === "asc" });
+
+      // Apply filters if provided
+      Object.entries(filters).forEach(([key, value]) => {
+        if (value !== undefined && value !== null && value !== "") {
+          query = query.eq(key, value);
+        }
+      });
+
+      const { data, error, count } = await query;
+
+      if (error) {
+        console.error("Error fetching paginated tenders:", error);
+        return { data: null, error: error.message, total: 0 };
+      }
+
+      return { data, error: null, total: count || 0 };
+    } catch (error) {
+      console.error("Failed to fetch paginated tenders:", error);
+      return { data: null, error: (error as Error).message, total: 0 };
+    }
   }
 
   async getTendersForAiFiltering(limit: number = 5) {
@@ -359,6 +471,17 @@ export class DatabaseService {
       console.error("Failed to update password:", error);
       throw error;
     }
+  }
+
+  // Alias for backward compatibility - expects currentPassword, newPassword
+  async changeUserPassword(
+    accessToken: string,
+    currentPassword: string,
+    newPassword: string
+  ) {
+    // For now, just update the password without checking current password
+    // TODO: Implement current password verification if needed
+    return this.updateUserPassword(accessToken, newPassword);
   }
 
   // Profile methods

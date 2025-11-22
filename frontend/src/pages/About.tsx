@@ -159,7 +159,7 @@ function AboutContent() {
           <div className="grid md:grid-cols-2 gap-12 items-center">
             <div>
               <h2 className="text-3xl font-bold mb-6 text-text">Our Mission</h2>
-              <p className="text-lg text-text-light mb-6">
+              <p className="text-lg text-text-light mb-6"> win contracts
                 Every business should have equal access to government
                 opportunities. We're eliminating the barriers that prevent small
                 and medium businesses from competing for public contracts.
@@ -364,24 +364,6 @@ function AboutContent() {
           </div>
         </div>
       </section>
-
-      {/* Footer */}
-      <footer className="py-8 px-6 border-t text-center text-sm">
-        <div className="max-w-4xl mx-auto flex justify-between items-center">
-          <div>© 2025 Mapletenders</div>
-          <div className="flex gap-6">
-            <Link to="/privacy" className="hover:underline text-text-light">
-              Privacy
-            </Link>
-            <Link to="/terms" className="hover:underline text-text-light">
-              Terms
-            </Link>
-            <Link to="/contact" className="hover:underline text-text-light">
-              Contact
-            </Link>
-          </div>
-        </div>
-      </footer>
     </LandingPageContainer>
   );
 }
