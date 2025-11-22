@@ -12,13 +12,9 @@ import chatRoutes from "./routes/chat";
 import bookmarkRoutes from "./routes/bookmarks";
 import subscriptionRoutes from "./routes/subscriptions";
 import scrapingRoutes from "./routes/scraping";
-import requestRoutes from "./routes/request";
-import analyticsRoutes from "./routes/analytics";
 import searchRoutes from "./routes/search";
 import notificationRoutes from "./routes/notifications";
-import calendarRoutes from "./routes/calendar";
 import teamRoutes from "./routes/teamRoutes";
-import { analyticsService } from "./services/analyticsService";
 
 const app = express();
 app.use(cors({ origin: "*" })); // Allow all origins
@@ -43,11 +39,8 @@ app.use("/chat", chatRoutes);
 app.use("/bookmarks", bookmarkRoutes);
 app.use("/subscriptions", subscriptionRoutes);
 app.use("/scraping", scrapingRoutes);
-app.use("/request", requestRoutes);
-app.use("/analytics", analyticsRoutes);
 app.use("/search", searchRoutes);
 app.use("/notifications", notificationRoutes);
-app.use("/calendar", calendarRoutes);
 app.use("/teams", teamRoutes);
 
 /**
@@ -193,13 +186,5 @@ app.use("/assets", express.static(path.join(__dirname, "assets")));
 const PORT = process.env.PORT || 4000;
 const server = app.listen(PORT, async () => {
   console.log(`Listening at http://localhost:${PORT}`);
-  
-  // Initialize analytics schema
-  try {
-    await analyticsService.initializeSchema();
-    console.log('Analytics service initialized');
-  } catch (error) {
-    console.warn('Failed to initialize analytics service:', error);
-  }
 });
 server.on("error", console.error);

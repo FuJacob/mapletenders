@@ -22,13 +22,4 @@ router.delete('/organizations/:organizationId/members/:memberId', teamController
 // Invitation handling
 router.post('/invitations/:token/accept', teamController.acceptInvitation);
 
-// Shared bookmarks
-router.post('/organizations/:organizationId/bookmarks', teamController.createSharedBookmark);
-router.get('/organizations/:organizationId/bookmarks', teamController.getSharedBookmarks);
-router.put('/bookmarks/:bookmarkId', teamController.updateSharedBookmark);
-
-// Team saved searches
-router.post('/organizations/:organizationId/saved-searches', teamController.createTeamSavedSearch);
-router.get('/organizations/:organizationId/saved-searches', teamController.getTeamSavedSearches);
-
 export default router;

@@ -15,10 +15,6 @@ export class DatabaseService {
     return this.supabase;
   }
 
-  async requestLiveDemo(email: string) {
-    return await this.supabase.from("live_demo_requests").insert({ email });
-  }
-
   async getNumberOfBookmarks(userId: string): Promise<number> {
     const { count } = await this.supabase
       .from("bookmarks")

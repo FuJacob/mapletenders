@@ -9,9 +9,7 @@ import {
 } from '../utils/authUtils';
 import type {
   CreateOrganizationRequest,
-  InviteUserRequest,
-  CreateSharedBookmarkRequest,
-  CreateTeamSavedSearchRequest
+  InviteUserRequest
 } from '../types/teams';
 
 /**
@@ -252,136 +250,7 @@ export class TeamController {
     }
   }
 
-  /**
-   * Create shared bookmark
-   * POST /teams/organizations/:organizationId/bookmarks
-   */
-  async createSharedBookmark(req: Request, res: Response): Promise<void> {
-    try {
-      const { organizationId } = req.params;
-      const bookmarkData: CreateSharedBookmarkRequest = req.body;
 
-      const memberResult = await validateAuthAndOrgMembership(req, res, organizationId);
-      if (!memberResult.success || !memberResult.isMember) return;
-
-      if (!bookmarkData.tenderId) {
-        res.status(400).json({ 
-          success: false, 
-          error: 'Tender ID is required' 
-        });
-        return;
-      }
-
-      const bookmark = await teamService.createSharedBookmark(organizationId, memberResult.userId, bookmarkData);
-
-      res.status(201).json({
-        success: true,
-        data: bookmark
-      });
-    } catch (error) {
-      handleControllerError(error, res, 'createSharedBookmark');
-    }
-  }
-
-  /**
-   * Get shared bookmarks
-   * GET /teams/organizations/:organizationId/bookmarks
-   */
-  async getSharedBookmarks(req: Request, res: Response): Promise<void> {
-    try {
-      const { organizationId } = req.params;
-
-      const memberResult = await validateAuthAndOrgMembership(req, res, organizationId);
-      if (!memberResult.success || !memberResult.isMember) return;
-
-      const bookmarks = await teamService.getSharedBookmarks(organizationId);
-
-      res.json({
-        success: true,
-        data: bookmarks
-      });
-    } catch (error) {
-      handleControllerError(error, res, 'getSharedBookmarks');
-    }
-  }
-
-  /**
-   * Update shared bookmark
-   * PUT /teams/bookmarks/:bookmarkId
-   */
-  async updateSharedBookmark(req: Request, res: Response): Promise<void> {
-    try {
-      const { bookmarkId } = req.params;
-      const updates = req.body;
-
-      const authResult = validateAuth(req, res);
-      if (!authResult.success) return;
-
-      // TODO: Add permission check for bookmark access
-
-      const bookmark = await teamService.updateSharedBookmark(bookmarkId, updates);
-
-      res.json({
-        success: true,
-        data: bookmark
-      });
-    } catch (error) {
-      handleControllerError(error, res, 'updateSharedBookmark');
-    }
-  }
-
-  /**
-   * Create team saved search
-   * POST /teams/organizations/:organizationId/saved-searches
-   */
-  async createTeamSavedSearch(req: Request, res: Response): Promise<void> {
-    try {
-      const { organizationId } = req.params;
-      const searchData = req.body;
-
-      const memberResult = await validateAuthAndOrgMembership(req, res, organizationId);
-      if (!memberResult.success || !memberResult.isMember) return;
-
-      if (!searchData.name || !searchData.searchQuery) {
-        res.status(400).json({ 
-          success: false, 
-          error: 'Name and search query are required' 
-        });
-        return;
-      }
-
-      const savedSearch = await teamService.createTeamSavedSearch(organizationId, memberResult.userId, searchData);
-
-      res.status(201).json({
-        success: true,
-        data: savedSearch
-      });
-    } catch (error) {
-      handleControllerError(error, res, 'createTeamSavedSearch');
-    }
-  }
-
-  /**
-   * Get team saved searches
-   * GET /teams/organizations/:organizationId/saved-searches
-   */
-  async getTeamSavedSearches(req: Request, res: Response): Promise<void> {
-    try {
-      const { organizationId } = req.params;
-
-      const memberResult = await validateAuthAndOrgMembership(req, res, organizationId);
-      if (!memberResult.success || !memberResult.isMember) return;
-
-      const savedSearches = await teamService.getTeamSavedSearches(organizationId, memberResult.userId);
-
-      res.json({
-        success: true,
-        data: savedSearches
-      });
-    } catch (error) {
-      handleControllerError(error, res, 'getTeamSavedSearches');
-    }
-  }
 }
 
 export const teamController = new TeamController();

@@ -5,12 +5,8 @@ import {
   Organization,
   OrganizationMember,
   TeamInvitation,
-  SharedBookmark,
-  TeamSavedSearch,
   CreateOrganizationRequest,
-  InviteUserRequest,
-  CreateSharedBookmarkRequest,
-  CreateTeamSavedSearchRequest
+  InviteUserRequest
 } from "../types/teams";
 import { TeamManagementError } from "../utils/errorHandler";
 
@@ -321,168 +317,7 @@ export class TeamService {
     }
   }
 
-  /**
-   * Create shared bookmark
-   */
-  async createSharedBookmark(
-    organizationId: string,
-    userId: string,
-    bookmarkData: CreateSharedBookmarkRequest
-  ): Promise<SharedBookmark> {
-    try {
-      const { data, error } = await this.supabase
-        .from('shared_bookmarks')
-        .insert([{
-          organization_id: organizationId,
-          tender_id: bookmarkData.tenderId,
-          title: bookmarkData.title,
-          notes: bookmarkData.notes,
-          tags: bookmarkData.tags || [],
-          priority: bookmarkData.priority || 'medium',
-          assigned_to: bookmarkData.assignedTo,
-          created_by: userId,
-          status: 'active'
-        }])
-        .select()
-        .single();
 
-      if (error) {
-        throw new TeamManagementError(
-          error.message || 'Failed to create shared bookmark',
-          400,
-          'CREATE_BOOKMARK_FAILED'
-        );
-      }
-
-      return this.mapDatabaseToSharedBookmark(data);
-    } catch (error) {
-      if (error instanceof TeamManagementError) {
-        throw error;
-      }
-      throw new TeamManagementError(
-        'Failed to create shared bookmark',
-        500,
-        'CREATE_BOOKMARK_ERROR'
-      );
-    }
-  }
-
-  /**
-   * Get organization shared bookmarks
-   */
-  async getSharedBookmarks(organizationId: string): Promise<SharedBookmark[]> {
-    try {
-      const { data, error } = await this.supabase
-        .from('shared_bookmarks')
-        .select(`
-          *,
-          tender:tenders(*),
-          assigned_user:auth.users!shared_bookmarks_assigned_to_fkey(id, email, raw_user_meta_data),
-          created_by_user:auth.users!shared_bookmarks_created_by_fkey(id, email, raw_user_meta_data)
-        `)
-        .eq('organization_id', organizationId)
-        .neq('status', 'archived')
-        .order('created_at', { ascending: false });
-
-      if (error) throw error;
-
-      return (data || []).map((bookmark: any) => ({
-        ...this.mapDatabaseToSharedBookmark(bookmark),
-        tender: bookmark.tender,
-        assignedUser: bookmark.assigned_user,
-        createdByUser: bookmark.created_by_user
-      }));
-    } catch (error) {
-      console.error('Error getting shared bookmarks:', error);
-      throw new Error('Failed to get shared bookmarks');
-    }
-  }
-
-  /**
-   * Update shared bookmark
-   */
-  async updateSharedBookmark(
-    bookmarkId: string,
-    updates: Partial<SharedBookmark>
-  ): Promise<SharedBookmark> {
-    try {
-      const { data, error } = await this.supabase
-        .from('shared_bookmarks')
-        .update({
-          ...updates,
-          updated_at: new Date().toISOString()
-        })
-        .eq('id', bookmarkId)
-        .select()
-        .single();
-
-      if (error) throw error;
-      return this.mapDatabaseToSharedBookmark(data);
-    } catch (error) {
-      console.error('Error updating shared bookmark:', error);
-      throw new Error('Failed to update shared bookmark');
-    }
-  }
-
-  /**
-   * Create team saved search
-   */
-  async createTeamSavedSearch(
-    organizationId: string,
-    userId: string,
-    searchData: {
-      name: string;
-      description?: string;
-      searchQuery: Record<string, any>;
-      isPublic?: boolean;
-      enableAlerts?: boolean;
-      alertFrequency?: TeamSavedSearch['alertFrequency'];
-    }
-  ): Promise<TeamSavedSearch> {
-    try {
-      const { data, error } = await this.supabase
-        .from('team_saved_searches')
-        .insert([{
-          organization_id: organizationId,
-          created_by: userId,
-          name: searchData.name,
-          description: searchData.description,
-          search_query: searchData.searchQuery,
-          is_public: searchData.isPublic || false,
-          enable_alerts: searchData.enableAlerts || false,
-          alert_frequency: searchData.alertFrequency || 'daily'
-        }])
-        .select()
-        .single();
-
-      if (error) throw error;
-      return this.mapDatabaseToTeamSavedSearch(data);
-    } catch (error) {
-      console.error('Error creating team saved search:', error);
-      throw new Error('Failed to create team saved search');
-    }
-  }
-
-  /**
-   * Get team saved searches
-   */
-  async getTeamSavedSearches(organizationId: string, userId: string): Promise<TeamSavedSearch[]> {
-    try {
-      const { data, error } = await this.supabase
-        .from('team_saved_searches')
-        .select('*')
-        .eq('organization_id', organizationId)
-        .or(`is_public.eq.true,created_by.eq.${userId},shared_with.cs.{${userId}}`)
-        .order('created_at', { ascending: false });
-
-      if (error) throw error;
-
-      return (data || []).map(this.mapDatabaseToTeamSavedSearch);
-    } catch (error) {
-      console.error('Error getting team saved searches:', error);
-      throw new Error('Failed to get team saved searches');
-    }
-  }
 
   /**
    * Check if user is member of organization
@@ -568,45 +403,7 @@ export class TeamService {
     };
   }
 
-  private mapDatabaseToSharedBookmark(data: any): SharedBookmark {
-    return {
-      id: data.id,
-      organizationId: data.organization_id,
-      tenderId: data.tender_id,
-      title: data.title,
-      notes: data.notes,
-      tags: data.tags || [],
-      priority: data.priority,
-      status: data.status,
-      assignedTo: data.assigned_to,
-      createdBy: data.created_by,
-      applicationDeadline: data.application_deadline ? new Date(data.application_deadline) : undefined,
-      estimatedBidAmount: data.estimated_bid_amount,
-      winProbability: data.win_probability,
-      createdAt: new Date(data.created_at),
-      updatedAt: new Date(data.updated_at),
-      // Joined data
-      tender: data.tender,
-      assignedUser: data.assignedUser,
-      createdByUser: data.createdByUser
-    };
-  }
 
-  private mapDatabaseToTeamSavedSearch(data: any): TeamSavedSearch {
-    return {
-      id: data.id,
-      organizationId: data.organization_id,
-      createdBy: data.created_by,
-      name: data.name,
-      description: data.description,
-      searchQuery: data.search_query,
-      isPublic: data.is_public,
-      enableAlerts: data.enable_alerts,
-      alertFrequency: data.alert_frequency,
-      createdAt: new Date(data.created_at),
-      updatedAt: new Date(data.updated_at)
-    };
-  }
 }
 
 // Export singleton instance
