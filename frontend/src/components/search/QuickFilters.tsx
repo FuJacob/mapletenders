@@ -177,19 +177,19 @@ const QuickFilters = ({
     if (!activeFilters.find((f) => f.id === filterId)) {
       const newFilters = [...activeFilters, { id: filterId, label, type }];
       setActiveFilters(newFilters);
-      
+
       // Update server-side filters if using pagination
       if (usePagination && onFilterChange) {
         const filterParams: Record<string, string> = {};
-        newFilters.forEach(filter => {
-          const [filterType, filterValue] = filter.id.split('-');
-          if (filterType === 'regions') {
+        newFilters.forEach((filter) => {
+          const [filterType, filterValue] = filter.id.split("-");
+          if (filterType === "regions") {
             filterParams.region = filterValue;
-          } else if (filterType === 'categories') {
+          } else if (filterType === "categories") {
             filterParams.category = filterValue;
-          } else if (filterType === 'statuses') {
+          } else if (filterType === "statuses") {
             filterParams.status = filterValue;
-          } else if (filterType === 'entities') {
+          } else if (filterType === "entities") {
             filterParams.entity = filterValue;
           }
         });
@@ -202,19 +202,19 @@ const QuickFilters = ({
   const removeFilter = (filterId: string) => {
     const newFilters = activeFilters.filter((f) => f.id !== filterId);
     setActiveFilters(newFilters);
-    
+
     // Update server-side filters if using pagination
     if (usePagination && onFilterChange) {
       const filterParams: Record<string, string> = {};
-      newFilters.forEach(filter => {
-        const [filterType, filterValue] = filter.id.split('-');
-        if (filterType === 'regions') {
+      newFilters.forEach((filter) => {
+        const [filterType, filterValue] = filter.id.split("-");
+        if (filterType === "regions") {
           filterParams.region = filterValue;
-        } else if (filterType === 'categories') {
+        } else if (filterType === "categories") {
           filterParams.category = filterValue;
-        } else if (filterType === 'statuses') {
+        } else if (filterType === "statuses") {
           filterParams.status = filterValue;
-        } else if (filterType === 'entities') {
+        } else if (filterType === "entities") {
           filterParams.entity = filterValue;
         }
       });
@@ -225,7 +225,7 @@ const QuickFilters = ({
   const clearAllFilters = () => {
     setActiveFilters([]);
     setSearchQuery("");
-    
+
     if (usePagination && onSearchChange && onFilterChange) {
       onSearchChange("");
       onFilterChange({});
@@ -345,8 +345,8 @@ const QuickFilters = ({
 
       {/* Results Summary - Compact */}
       <div className="text-xs text-text-muted">
-          <span>
-            {rowCount} tender{rowCount !== 1 ? "s" : ""}
+        <span>
+          {rowCount} tender{rowCount !== 1 ? "s" : ""}
           {activeFilters.length > 0 && " filtered"}
         </span>
       </div>

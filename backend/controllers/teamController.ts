@@ -1,16 +1,16 @@
-import { Request, Response } from 'express';
-import { teamService } from '../services/teamService';
-import { handleControllerError } from '../utils/errorHandler';
-import { 
-  validateAuth, 
-  validateAuthAndOrgMembership, 
+import { Request, Response } from "express";
+import { teamService } from "../services/teamService";
+import { handleControllerError } from "../utils/errorHandler";
+import {
+  validateAuth,
+  validateAuthAndOrgMembership,
   validateOrgAdminPermissions,
-  validateOrgInvitePermissions 
-} from '../utils/authUtils';
+  validateOrgInvitePermissions,
+} from "../utils/authUtils";
 import type {
   CreateOrganizationRequest,
-  InviteUserRequest
-} from '../types/teams';
+  InviteUserRequest,
+} from "../types/teams";
 
 /**
  * Team Controller
@@ -29,21 +29,24 @@ export class TeamController {
       const organizationData: CreateOrganizationRequest = req.body;
 
       if (!organizationData.name || !organizationData.slug) {
-        res.status(400).json({ 
-          success: false, 
-          error: 'Organization name and slug are required' 
+        res.status(400).json({
+          success: false,
+          error: "Organization name and slug are required",
         });
         return;
       }
 
-      const organization = await teamService.createOrganization(authResult.userId, organizationData);
+      const organization = await teamService.createOrganization(
+        authResult.userId,
+        organizationData
+      );
 
       res.status(201).json({
         success: true,
-        data: organization
+        data: organization,
       });
     } catch (error) {
-      handleControllerError(error, res, 'createOrganization');
+      handleControllerError(error, res, "createOrganization");
     }
   }
 
@@ -60,10 +63,10 @@ export class TeamController {
 
       res.json({
         success: true,
-        data: organizations
+        data: organizations,
       });
     } catch (error) {
-      handleControllerError(error, res, 'getUserOrganizations');
+      handleControllerError(error, res, "getUserOrganizations");
     }
   }
 
@@ -74,22 +77,28 @@ export class TeamController {
   async getOrganization(req: Request, res: Response): Promise<void> {
     try {
       const { organizationId } = req.params;
-      
-      const memberResult = await validateAuthAndOrgMembership(req, res, organizationId);
+
+      const memberResult = await validateAuthAndOrgMembership(
+        req,
+        res,
+        organizationId
+      );
       if (!memberResult.success || !memberResult.isMember) return;
 
       const organization = await teamService.getOrganization(organizationId);
       if (!organization) {
-        res.status(404).json({ success: false, error: 'Organization not found' });
+        res
+          .status(404)
+          .json({ success: false, error: "Organization not found" });
         return;
       }
 
       res.json({
         success: true,
-        data: organization
+        data: organization,
       });
     } catch (error) {
-      handleControllerError(error, res, 'getOrganization');
+      handleControllerError(error, res, "getOrganization");
     }
   }
 
@@ -102,17 +111,24 @@ export class TeamController {
       const { organizationId } = req.params;
       const updates = req.body;
 
-      const adminResult = await validateOrgAdminPermissions(req, res, organizationId);
+      const adminResult = await validateOrgAdminPermissions(
+        req,
+        res,
+        organizationId
+      );
       if (!adminResult.success || !adminResult.isMember) return;
 
-      const organization = await teamService.updateOrganization(organizationId, updates);
+      const organization = await teamService.updateOrganization(
+        organizationId,
+        updates
+      );
 
       res.json({
         success: true,
-        data: organization
+        data: organization,
       });
     } catch (error) {
-      handleControllerError(error, res, 'updateOrganization');
+      handleControllerError(error, res, "updateOrganization");
     }
   }
 
@@ -123,18 +139,22 @@ export class TeamController {
   async getOrganizationMembers(req: Request, res: Response): Promise<void> {
     try {
       const { organizationId } = req.params;
-      
-      const memberResult = await validateAuthAndOrgMembership(req, res, organizationId);
+
+      const memberResult = await validateAuthAndOrgMembership(
+        req,
+        res,
+        organizationId
+      );
       if (!memberResult.success || !memberResult.isMember) return;
 
       const members = await teamService.getOrganizationMembers(organizationId);
 
       res.json({
         success: true,
-        data: members
+        data: members,
       });
     } catch (error) {
-      handleControllerError(error, res, 'getOrganizationMembers');
+      handleControllerError(error, res, "getOrganizationMembers");
     }
   }
 
@@ -147,13 +167,17 @@ export class TeamController {
       const { organizationId } = req.params;
       const inviteData: InviteUserRequest = req.body;
 
-      const inviteResult = await validateOrgInvitePermissions(req, res, organizationId);
+      const inviteResult = await validateOrgInvitePermissions(
+        req,
+        res,
+        organizationId
+      );
       if (!inviteResult.success || !inviteResult.isMember) return;
 
       if (!inviteData.email || !inviteData.role) {
-        res.status(400).json({ 
-          success: false, 
-          error: 'Email and role are required' 
+        res.status(400).json({
+          success: false,
+          error: "Email and role are required",
         });
         return;
       }
@@ -167,10 +191,10 @@ export class TeamController {
       res.status(201).json({
         success: true,
         data: invitation,
-        message: 'Invitation sent successfully'
+        message: "Invitation sent successfully",
       });
     } catch (error) {
-      handleControllerError(error, res, 'inviteUser');
+      handleControllerError(error, res, "inviteUser");
     }
   }
 
@@ -181,19 +205,22 @@ export class TeamController {
   async acceptInvitation(req: Request, res: Response): Promise<void> {
     try {
       const { token } = req.params;
-      
+
       const authResult = validateAuth(req, res);
       if (!authResult.success) return;
 
-      const member = await teamService.acceptInvitation(token, authResult.userId);
+      const member = await teamService.acceptInvitation(
+        token,
+        authResult.userId
+      );
 
       res.json({
         success: true,
         data: member,
-        message: 'Invitation accepted successfully'
+        message: "Invitation accepted successfully",
       });
     } catch (error) {
-      handleControllerError(error, res, 'acceptInvitation');
+      handleControllerError(error, res, "acceptInvitation");
     }
   }
 
@@ -206,25 +233,33 @@ export class TeamController {
       const { organizationId, memberId } = req.params;
       const { role } = req.body;
 
-      const adminResult = await validateOrgAdminPermissions(req, res, organizationId);
+      const adminResult = await validateOrgAdminPermissions(
+        req,
+        res,
+        organizationId
+      );
       if (!adminResult.success || !adminResult.isMember) return;
 
       if (!role) {
-        res.status(400).json({ 
-          success: false, 
-          error: 'Role is required' 
+        res.status(400).json({
+          success: false,
+          error: "Role is required",
         });
         return;
       }
 
-      const member = await teamService.updateMemberRole(organizationId, memberId, role);
+      const member = await teamService.updateMemberRole(
+        organizationId,
+        memberId,
+        role
+      );
 
       res.json({
         success: true,
-        data: member
+        data: member,
       });
     } catch (error) {
-      handleControllerError(error, res, 'updateMemberRole');
+      handleControllerError(error, res, "updateMemberRole");
     }
   }
 
@@ -236,21 +271,23 @@ export class TeamController {
     try {
       const { organizationId, memberId } = req.params;
 
-      const adminResult = await validateOrgAdminPermissions(req, res, organizationId);
+      const adminResult = await validateOrgAdminPermissions(
+        req,
+        res,
+        organizationId
+      );
       if (!adminResult.success || !adminResult.isMember) return;
 
       await teamService.removeMember(organizationId, memberId);
 
       res.json({
         success: true,
-        message: 'Member removed successfully'
+        message: "Member removed successfully",
       });
     } catch (error) {
-      handleControllerError(error, res, 'removeMember');
+      handleControllerError(error, res, "removeMember");
     }
   }
-
-
 }
 
 export const teamController = new TeamController();

@@ -1,9 +1,6 @@
 import { useState, useEffect, useCallback } from "react";
 import { useSearchParams } from "react-router-dom";
-import {
-  SearchSection,
-  SearchResultsList,
-} from "../components/search";
+import { SearchSection, SearchResultsList } from "../components/search";
 import { searchTenders } from "../api";
 import { createBookmark } from "../api/bookmarks";
 import { useAuth } from "../hooks/auth";

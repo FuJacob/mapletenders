@@ -10,7 +10,10 @@ interface TableStatsGridProps {
   loading?: boolean;
 }
 
-export default function TableStatsGrid({ stats, loading = false }: TableStatsGridProps) {
+export default function TableStatsGrid({
+  stats,
+  loading = false,
+}: TableStatsGridProps) {
   if (loading) {
     return (
       <div className="bg-surface border border-border rounded-lg p-4 min-w-[200px] animate-pulse">
@@ -28,8 +31,14 @@ export default function TableStatsGrid({ stats, loading = false }: TableStatsGri
   }
 
   // Calculate totals
-  const totalAddedToday = stats.reduce((sum, stat) => sum + (stat.numberOfTendersAddedDaily || 0), 0);
-  const totalAvailable = stats.reduce((sum, stat) => sum + (stat.numberOfTendersAvailable || 0), 0);
+  const totalAddedToday = stats.reduce(
+    (sum, stat) => sum + (stat.numberOfTendersAddedDaily || 0),
+    0
+  );
+  const totalAvailable = stats.reduce(
+    (sum, stat) => sum + (stat.numberOfTendersAvailable || 0),
+    0
+  );
 
   return (
     <div className="bg-surface border border-border rounded-lg p-4 min-w-[200px] hover:border-primary hover:bg-primary/5 transition-all">
@@ -37,9 +46,11 @@ export default function TableStatsGrid({ stats, loading = false }: TableStatsGri
         Total Tenders
       </div>
       <div className="flex items-baseline gap-2 mb-3">
-        <span className={`text-3xl font-bold ${
-          totalAddedToday > 0 ? "text-primary" : "text-text"
-        }`}>
+        <span
+          className={`text-3xl font-bold ${
+            totalAddedToday > 0 ? "text-primary" : "text-text"
+          }`}
+        >
           {totalAddedToday}
         </span>
         <span className="text-xs text-text-light">added today</span>

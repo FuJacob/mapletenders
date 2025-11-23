@@ -521,7 +521,9 @@ export default function TenderTable({
         rowCount: usePagination
           ? paginatedData?.pagination.total || 0
           : filteredTenders.length,
-        onFilteredDataChange: usePagination ? undefined : handleFilteredDataChange,
+        onFilteredDataChange: usePagination
+          ? undefined
+          : handleFilteredDataChange,
         usePagination,
         onSearchChange: usePagination
           ? (search: string) => updatePaginationParams({ search })

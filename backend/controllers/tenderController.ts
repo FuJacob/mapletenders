@@ -80,7 +80,7 @@ export class TenderController {
           }
         }
       }
-       // Log search score and match explanation details
+      // Log search score and match explanation details
       if (fullTenderData.length > 0) {
         console.log("Top result details:");
         console.log(`- Search Score: ${fullTenderData[0].search_score}`);
@@ -134,6 +134,8 @@ export class TenderController {
 
       // Let the service handle all the business logic including rate limiting
       const result = await this.tenderService.refreshTendersIfNeeded();
+      const elasticsearchResult =
+        await this.mlService.syncTendersToElasticsearch();
 
       res.json(result);
     } catch (error: any) {
@@ -192,25 +194,31 @@ export class TenderController {
         status,
         category,
         region,
-        entity
+        entity,
       } = req.query;
 
       // Validate pagination parameters
       const pageNum = Math.max(1, parseInt(page as string, 10) || 1);
-      const limitNum = Math.min(100, Math.max(1, parseInt(limit as string, 10) || 25));
+      const limitNum = Math.min(
+        100,
+        Math.max(1, parseInt(limit as string, 10) || 25)
+      );
       const offset = (pageNum - 1) * limitNum;
 
       // Validate sort parameters
       const validSortFields = [
-        'published_date', 
-        'closing_date', 
-        'title', 
-        'estimated_value_min',
-        'contracting_entity_name',
-        'status'
+        "published_date",
+        "closing_date",
+        "title",
+        "estimated_value_min",
+        "contracting_entity_name",
+        "status",
       ];
-      const sortField = validSortFields.includes(sortBy as string) ? sortBy as string : 'published_date';
-      const sortDirection = (sortOrder as string)?.toLowerCase() === 'asc' ? 'asc' : 'desc';
+      const sortField = validSortFields.includes(sortBy as string)
+        ? (sortBy as string)
+        : "published_date";
+      const sortDirection =
+        (sortOrder as string)?.toLowerCase() === "asc" ? "asc" : "desc";
 
       const result = await this.tenderService.getTendersPaginated({
         offset,
@@ -222,8 +230,8 @@ export class TenderController {
           status: status as string,
           category: category as string,
           region: region as string,
-          entity: entity as string
-        }
+          entity: entity as string,
+        },
       });
 
       res.json({
@@ -234,7 +242,7 @@ export class TenderController {
           total: result.total,
           totalPages: Math.ceil(result.total / limitNum),
           hasNext: pageNum < Math.ceil(result.total / limitNum),
-          hasPrev: pageNum > 1
+          hasPrev: pageNum > 1,
         },
         filters: {
           search: search as string,
@@ -243,8 +251,8 @@ export class TenderController {
           status: status as string,
           category: category as string,
           region: region as string,
-          entity: entity as string
-        }
+          entity: entity as string,
+        },
       });
     } catch (error: any) {
       console.error("Error fetching paginated tenders:", error);
@@ -435,9 +443,8 @@ export class TenderController {
       }
 
       console.log(`Manual sync of tender ${tenderId} to Elasticsearch`);
-      const syncResult = await this.mlService.syncSingleTenderToElasticsearch(
-        tenderId
-      );
+      const syncResult =
+        await this.mlService.syncSingleTenderToElasticsearch(tenderId);
 
       res.json({
         message: `Tender ${tenderId} synced to Elasticsearch successfully`,
@@ -465,7 +472,7 @@ export class TenderController {
     try {
       console.log("⚠️  Clearing all tenders from database...");
       const result = await this.databaseService.clearTenders();
-      
+
       if (result.error) {
         res.status(500).json({
           error: "Failed to clear tenders",
@@ -490,10 +497,10 @@ export class TenderController {
   resetRefreshLock = async (req: Request, res: Response) => {
     try {
       console.log("🔓 Resetting refresh lock...");
-      
+
       // Reset the lock by setting refresh_in_progress to false
       const result = await this.databaseService.setRefreshInProgress(false);
-      
+
       if (result.error) {
         res.status(500).json({
           error: "Failed to reset lock",

@@ -1,4 +1,3 @@
-import axios from "axios";
 import { handleApiError } from "./config";
 import {
   type LeadGenerationFormData,
@@ -7,6 +6,7 @@ import {
   type RfpAnalysisResponse,
   type TenderSummaryResponse,
 } from "./types";
+import apiClient from "../client/apiClient";
 
 /**
  * Generate leads based on form data
@@ -50,7 +50,7 @@ export const generateTenderSummary = async (
   tenderData: string
 ): Promise<TenderSummaryResponse> => {
   try {
-    const response = await axios.post("/ai/generateTenderSummary", {
+    const response = await apiClient.post("/ai/generateTenderSummary", {
       tenderId,
       tenderData,
     });

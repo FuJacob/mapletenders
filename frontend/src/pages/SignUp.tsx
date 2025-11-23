@@ -1,11 +1,6 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import {
-  Eye,
-  EyeSlash,
-  Lightning,
-  Leaf,
-} from "@phosphor-icons/react";
+import { Eye, EyeSlash, Lightning, Leaf } from "@phosphor-icons/react";
 import { signUpUser } from "../api";
 import { useAppDispatch } from "../app/hooks";
 

@@ -30,7 +30,7 @@ export interface PaginatedTendersParams {
   limit?: number;
   search?: string;
   sortBy?: string;
-  sortOrder?: 'asc' | 'desc';
+  sortOrder?: "asc" | "desc";
   status?: string;
   category?: string;
   region?: string;
@@ -63,18 +63,20 @@ export const getTendersPaginated = async (
 ): Promise<PaginatedTendersResponse> => {
   try {
     const searchParams = new URLSearchParams();
-    
-    if (params.page) searchParams.append('page', params.page.toString());
-    if (params.limit) searchParams.append('limit', params.limit.toString());
-    if (params.search) searchParams.append('search', params.search);
-    if (params.sortBy) searchParams.append('sortBy', params.sortBy);
-    if (params.sortOrder) searchParams.append('sortOrder', params.sortOrder);
-    if (params.status) searchParams.append('status', params.status);
-    if (params.category) searchParams.append('category', params.category);
-    if (params.region) searchParams.append('region', params.region);
-    if (params.entity) searchParams.append('entity', params.entity);
 
-    const response = await apiClient.get(`/tenders/paginated?${searchParams.toString()}`);
+    if (params.page) searchParams.append("page", params.page.toString());
+    if (params.limit) searchParams.append("limit", params.limit.toString());
+    if (params.search) searchParams.append("search", params.search);
+    if (params.sortBy) searchParams.append("sortBy", params.sortBy);
+    if (params.sortOrder) searchParams.append("sortOrder", params.sortOrder);
+    if (params.status) searchParams.append("status", params.status);
+    if (params.category) searchParams.append("category", params.category);
+    if (params.region) searchParams.append("region", params.region);
+    if (params.entity) searchParams.append("entity", params.entity);
+
+    const response = await apiClient.get(
+      `/tenders/paginated?${searchParams.toString()}`
+    );
     return response.data;
   } catch (error) {
     return handleApiError(error, "Fetch paginated tenders");
@@ -197,5 +199,18 @@ export const resetRefreshLock = async (): Promise<any> => {
     return response.data;
   } catch (error) {
     return handleApiError(error, "Reset refresh lock");
+  }
+};
+
+/**
+ * Sync tenders to Elasticsearch (TEST ONLY)
+ * @returns {Promise<any>} Sync operation result
+ */
+export const syncToElasticsearch = async (): Promise<any> => {
+  try {
+    const response = await apiClient.post("/tenders/syncToElasticsearch");
+    return response.data;
+  } catch (error) {
+    return handleApiError(error, "Sync to Elasticsearch");
   }
 };

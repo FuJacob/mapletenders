@@ -1,11 +1,6 @@
 import { useState } from "react";
 import { Link } from "react-router-dom";
-import {
-  CheckCircle,
-  Lightning,
-  Eye,
-  EyeSlash,
-} from "@phosphor-icons/react";
+import { CheckCircle, Lightning, Eye, EyeSlash } from "@phosphor-icons/react";
 
 import { useSelector } from "react-redux";
 import { selectAuthLoading } from "../features/auth/authSelectors";

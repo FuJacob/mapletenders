@@ -6,7 +6,7 @@ import {
   OrganizationMember,
   TeamInvitation,
   CreateOrganizationRequest,
-  InviteUserRequest
+  InviteUserRequest,
 } from "../types/teams";
 import { TeamManagementError } from "../utils/errorHandler";
 
@@ -25,49 +25,51 @@ export class TeamService {
     organizationData: CreateOrganizationRequest
   ): Promise<Organization> {
     try {
-      const { data, error } = await this.supabase.rpc('create_organization', {
+      const { data, error } = await this.supabase.rpc("create_organization", {
         p_name: organizationData.name,
         p_slug: organizationData.slug,
         p_description: organizationData.description,
         p_industry: organizationData.industry,
-        p_size: organizationData.size
+        p_size: organizationData.size,
       });
 
       if (error) throw error;
 
       // Get the created organization
       const { data: org, error: orgError } = await this.supabase
-        .from('organizations')
-        .select('*')
-        .eq('id', data)
+        .from("organizations")
+        .select("*")
+        .eq("id", data)
         .single();
 
       if (orgError) throw orgError;
 
       return this.mapDatabaseToOrganization(org);
     } catch (error) {
-      console.error('Error creating organization:', error);
-      throw new Error('Failed to create organization');
+      console.error("Error creating organization:", error);
+      throw new Error("Failed to create organization");
     }
   }
 
   /**
    * Get user's organizations
    */
-  async getUserOrganizations(): Promise<(Organization & { role: string; memberCount: number })[]> {
+  async getUserOrganizations(): Promise<
+    (Organization & { role: string; memberCount: number })[]
+  > {
     try {
-      const { data, error } = await this.supabase.rpc('get_user_organizations');
+      const { data, error } = await this.supabase.rpc("get_user_organizations");
 
       if (error) throw error;
 
       return (data || []).map((item: any) => ({
         ...this.mapDatabaseToOrganization(item),
         role: item.role,
-        memberCount: item.member_count
+        memberCount: item.member_count,
       }));
     } catch (error) {
-      console.error('Error getting user organizations:', error);
-      throw new Error('Failed to get user organizations');
+      console.error("Error getting user organizations:", error);
+      throw new Error("Failed to get user organizations");
     }
   }
 
@@ -77,15 +79,15 @@ export class TeamService {
   async getOrganization(organizationId: string): Promise<Organization | null> {
     try {
       const { data, error } = await this.supabase
-        .from('organizations')
-        .select('*')
-        .eq('id', organizationId)
+        .from("organizations")
+        .select("*")
+        .eq("id", organizationId)
         .single();
 
       if (error || !data) return null;
       return this.mapDatabaseToOrganization(data);
     } catch (error) {
-      console.error('Error getting organization:', error);
+      console.error("Error getting organization:", error);
       return null;
     }
   }
@@ -99,51 +101,57 @@ export class TeamService {
   ): Promise<Organization> {
     try {
       const { data, error } = await this.supabase
-        .from('organizations')
+        .from("organizations")
         .update({
           ...updates,
-          updated_at: new Date().toISOString()
+          updated_at: new Date().toISOString(),
         })
-        .eq('id', organizationId)
+        .eq("id", organizationId)
         .select()
         .single();
 
       if (error) throw error;
       return this.mapDatabaseToOrganization(data);
     } catch (error) {
-      console.error('Error updating organization:', error);
-      throw new Error('Failed to update organization');
+      console.error("Error updating organization:", error);
+      throw new Error("Failed to update organization");
     }
   }
 
   /**
    * Get organization members
    */
-  async getOrganizationMembers(organizationId: string): Promise<OrganizationMember[]> {
+  async getOrganizationMembers(
+    organizationId: string
+  ): Promise<OrganizationMember[]> {
     try {
       const { data, error } = await this.supabase
-        .from('organization_members')
-        .select(`
+        .from("organization_members")
+        .select(
+          `
           *,
           user:auth.users(id, email, raw_user_meta_data)
-        `)
-        .eq('organization_id', organizationId)
-        .eq('status', 'active')
-        .order('created_at', { ascending: false });
+        `
+        )
+        .eq("organization_id", organizationId)
+        .eq("status", "active")
+        .order("created_at", { ascending: false });
 
       if (error) throw error;
 
       return (data || []).map((member: any) => ({
         ...this.mapDatabaseToOrganizationMember(member),
-        user: member.user ? {
-          id: member.user.id,
-          email: member.user.email,
-          name: member.user.raw_user_meta_data?.name || member.user.email
-        } : undefined
+        user: member.user
+          ? {
+              id: member.user.id,
+              email: member.user.email,
+              name: member.user.raw_user_meta_data?.name || member.user.email,
+            }
+          : undefined,
       }));
     } catch (error) {
-      console.error('Error getting organization members:', error);
-      throw new Error('Failed to get organization members');
+      console.error("Error getting organization members:", error);
+      throw new Error("Failed to get organization members");
     }
   }
 
@@ -158,53 +166,54 @@ export class TeamService {
     try {
       // Check if user is already a member by looking up user by email in profiles
       const { data: userProfile } = await this.supabase
-        .from('profiles')
-        .select('id')
-        .eq('email', inviteData.email)
+        .from("profiles")
+        .select("id")
+        .eq("email", inviteData.email)
         .single();
 
       if (userProfile) {
         const { data: existingMember } = await this.supabase
-          .from('organization_members')
-          .select('id')
-          .eq('organization_id', organizationId)
-          .eq('user_id', userProfile.id)
+          .from("organization_members")
+          .select("id")
+          .eq("organization_id", organizationId)
+          .eq("user_id", userProfile.id)
           .single();
 
         if (existingMember) {
-          throw new Error('User is already a member of this organization');
+          throw new Error("User is already a member of this organization");
         }
       }
 
-
       // Check for existing pending invitation
       const { data: existingInvitation } = await this.supabase
-        .from('team_invitations')
-        .select('id')
-        .eq('organization_id', organizationId)
-        .eq('email', inviteData.email)
-        .is('accepted_at', null)
+        .from("team_invitations")
+        .select("id")
+        .eq("organization_id", organizationId)
+        .eq("email", inviteData.email)
+        .is("accepted_at", null)
         .single();
 
       if (existingInvitation) {
-        throw new Error('User already has a pending invitation');
+        throw new Error("User already has a pending invitation");
       }
 
       // Create invitation
-      const invitationToken = randomBytes(32).toString('hex');
+      const invitationToken = randomBytes(32).toString("hex");
       const expiresAt = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000); // 7 days
 
       const { data, error } = await this.supabase
-        .from('team_invitations')
-        .insert([{
-          organization_id: organizationId,
-          email: inviteData.email,
-          role: inviteData.role,
-          invited_by: invitedBy,
-          token: invitationToken,
-          expires_at: expiresAt.toISOString(),
-          personal_message: inviteData.personalMessage
-        }])
+        .from("team_invitations")
+        .insert([
+          {
+            organization_id: organizationId,
+            email: inviteData.email,
+            role: inviteData.role,
+            invited_by: invitedBy,
+            token: invitationToken,
+            expires_at: expiresAt.toISOString(),
+            personal_message: inviteData.personalMessage,
+          },
+        ])
         .select()
         .single();
 
@@ -213,7 +222,7 @@ export class TeamService {
       // TODO: Send invitation email
       return this.mapDatabaseToTeamInvitation(data);
     } catch (error) {
-      console.error('Error inviting user:', error);
+      console.error("Error inviting user:", error);
       throw error;
     }
   }
@@ -221,36 +230,41 @@ export class TeamService {
   /**
    * Accept team invitation
    */
-  async acceptInvitation(invitationToken: string, userId: string): Promise<OrganizationMember> {
+  async acceptInvitation(
+    invitationToken: string,
+    userId: string
+  ): Promise<OrganizationMember> {
     try {
       // Get invitation
       const { data: invitation, error: invError } = await this.supabase
-        .from('team_invitations')
-        .select('*')
-        .eq('token', invitationToken)
-        .is('accepted_at', null)
+        .from("team_invitations")
+        .select("*")
+        .eq("token", invitationToken)
+        .is("accepted_at", null)
         .single();
 
       if (invError || !invitation) {
-        throw new Error('Invalid or expired invitation');
+        throw new Error("Invalid or expired invitation");
       }
 
       if (new Date(invitation.expires_at) < new Date()) {
-        throw new Error('Invitation has expired');
+        throw new Error("Invitation has expired");
       }
 
       // Create organization member
       const { data: member, error: memberError } = await this.supabase
-        .from('organization_members')
-        .insert([{
-          organization_id: invitation.organization_id,
-          user_id: userId,
-          role: invitation.role,
-          status: 'active',
-          invited_by: invitation.invited_by,
-          invited_at: invitation.created_at,
-          joined_at: new Date().toISOString()
-        }])
+        .from("organization_members")
+        .insert([
+          {
+            organization_id: invitation.organization_id,
+            user_id: userId,
+            role: invitation.role,
+            status: "active",
+            invited_by: invitation.invited_by,
+            invited_at: invitation.created_at,
+            joined_at: new Date().toISOString(),
+          },
+        ])
         .select()
         .single();
 
@@ -258,15 +272,15 @@ export class TeamService {
 
       // Update invitation status
       await this.supabase
-        .from('team_invitations')
+        .from("team_invitations")
         .update({
-          accepted_at: new Date().toISOString()
+          accepted_at: new Date().toISOString(),
         })
-        .eq('id', invitation.id);
+        .eq("id", invitation.id);
 
       return this.mapDatabaseToOrganizationMember(member);
     } catch (error) {
-      console.error('Error accepting invitation:', error);
+      console.error("Error accepting invitation:", error);
       throw error;
     }
   }
@@ -277,25 +291,25 @@ export class TeamService {
   async updateMemberRole(
     organizationId: string,
     memberId: string,
-    newRole: OrganizationMember['role']
+    newRole: OrganizationMember["role"]
   ): Promise<OrganizationMember> {
     try {
       const { data, error } = await this.supabase
-        .from('organization_members')
+        .from("organization_members")
         .update({
           role: newRole,
-          updated_at: new Date().toISOString()
+          updated_at: new Date().toISOString(),
         })
-        .eq('id', memberId)
-        .eq('organization_id', organizationId)
+        .eq("id", memberId)
+        .eq("organization_id", organizationId)
         .select()
         .single();
 
       if (error) throw error;
       return this.mapDatabaseToOrganizationMember(data);
     } catch (error) {
-      console.error('Error updating member role:', error);
-      throw new Error('Failed to update member role');
+      console.error("Error updating member role:", error);
+      throw new Error("Failed to update member role");
     }
   }
 
@@ -305,30 +319,31 @@ export class TeamService {
   async removeMember(organizationId: string, memberId: string): Promise<void> {
     try {
       const { error } = await this.supabase
-        .from('organization_members')
+        .from("organization_members")
         .delete()
-        .eq('id', memberId)
-        .eq('organization_id', organizationId);
+        .eq("id", memberId)
+        .eq("organization_id", organizationId);
 
       if (error) throw error;
     } catch (error) {
-      console.error('Error removing member:', error);
-      throw new Error('Failed to remove member');
+      console.error("Error removing member:", error);
+      throw new Error("Failed to remove member");
     }
   }
-
-
 
   /**
    * Check if user is member of organization
    */
-  async isOrganizationMember(organizationId: string, userId: string): Promise<boolean> {
+  async isOrganizationMember(
+    organizationId: string,
+    userId: string
+  ): Promise<boolean> {
     try {
       const { data, error } = await this.supabase
-        .from('organization_members')
-        .select('id')
-        .eq('organization_id', organizationId)
-        .eq('user_id', userId)
+        .from("organization_members")
+        .select("id")
+        .eq("organization_id", organizationId)
+        .eq("user_id", userId)
         .single();
 
       return !error && !!data;
@@ -340,13 +355,16 @@ export class TeamService {
   /**
    * Get user's role in organization
    */
-  async getUserRole(organizationId: string, userId: string): Promise<string | null> {
+  async getUserRole(
+    organizationId: string,
+    userId: string
+  ): Promise<string | null> {
     try {
       const { data } = await this.supabase
-        .from('organization_members')
-        .select('role')
-        .eq('organization_id', organizationId)
-        .eq('user_id', userId)
+        .from("organization_members")
+        .select("role")
+        .eq("organization_id", organizationId)
+        .eq("user_id", userId)
         .single();
 
       return data?.role || null;
@@ -371,7 +389,7 @@ export class TeamService {
       updatedAt: new Date(data.updated_at),
       // Additional fields from API responses
       role: data.role,
-      memberCount: data.member_count
+      memberCount: data.member_count,
     };
   }
 
@@ -384,7 +402,7 @@ export class TeamService {
       invitedBy: data.invited_by,
       joinedAt: new Date(data.joined_at),
       // Joined data
-      user: data.user
+      user: data.user,
     };
   }
 
@@ -399,11 +417,9 @@ export class TeamService {
       expiresAt: new Date(data.expires_at),
       acceptedAt: data.accepted_at ? new Date(data.accepted_at) : undefined,
       personalMessage: data.personal_message,
-      createdAt: new Date(data.created_at)
+      createdAt: new Date(data.created_at),
     };
   }
-
-
 }
 
 // Export singleton instance

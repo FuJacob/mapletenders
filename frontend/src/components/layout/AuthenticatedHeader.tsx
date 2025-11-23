@@ -1,6 +1,5 @@
-  import { Link } from "react-router-dom";
+import { Link } from "react-router-dom";
 import {
-
   GearIcon,
   CreditCardIcon,
   Users,
@@ -27,7 +26,6 @@ export default function AuthenticatedHeader({
   const handleSignOut = () => {
     dispatch(signOut());
   };
-
 
   return (
     <header className={`${className} z-50`} role="banner">

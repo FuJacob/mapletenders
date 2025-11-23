@@ -1,5 +1,5 @@
 import apiClient from "../client/apiClient";
-import type { Json } from '../../database.types';
+import type { Json } from "../../database.types";
 
 export interface Organization {
   id: string;
@@ -196,4 +196,3 @@ export const teamsApi = {
     );
   },
 };
-
