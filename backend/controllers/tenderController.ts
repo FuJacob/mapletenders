@@ -460,4 +460,58 @@ export class TenderController {
       }
     }
   };
+
+  clearAllTenders = async (req: Request, res: Response) => {
+    try {
+      console.log("⚠️  Clearing all tenders from database...");
+      const result = await this.databaseService.clearTenders();
+      
+      if (result.error) {
+        res.status(500).json({
+          error: "Failed to clear tenders",
+          details: result.error.message,
+        });
+        return;
+      }
+
+      res.json({
+        message: "✅ All tenders cleared successfully",
+        result,
+      });
+    } catch (error: any) {
+      console.error("Error clearing tenders:", error);
+      res.status(500).json({
+        error: "Failed to clear tenders",
+        details: error.message,
+      });
+    }
+  };
+
+  resetRefreshLock = async (req: Request, res: Response) => {
+    try {
+      console.log("🔓 Resetting refresh lock...");
+      
+      // Reset the lock by setting refresh_in_progress to false
+      const result = await this.databaseService.setRefreshInProgress(false);
+      
+      if (result.error) {
+        res.status(500).json({
+          error: "Failed to reset lock",
+          details: result.error.message,
+        });
+        return;
+      }
+
+      res.json({
+        message: "✅ Refresh lock reset successfully",
+        result,
+      });
+    } catch (error: any) {
+      console.error("Error resetting lock:", error);
+      res.status(500).json({
+        error: "Failed to reset lock",
+        details: error.message,
+      });
+    }
+  };
 }

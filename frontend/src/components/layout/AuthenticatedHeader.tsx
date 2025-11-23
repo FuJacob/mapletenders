@@ -6,7 +6,6 @@ import {
   Users,
   SignOut,
 } from "@phosphor-icons/react";
-import { NotificationButton } from "./";
 import { useAppDispatch } from "../../app/hooks";
 import { signOut } from "../../features/auth/authThunks";
 import type { User } from "@supabase/supabase-js";
@@ -76,9 +75,6 @@ export default function AuthenticatedHeader({
             <Users className="w-5 h-5" />
             <span>Team</span>
           </Link>
-
-          {/* Notifications */}
-          <NotificationButton />
 
           {/* User Avatar - Simple Link */}
           <Link

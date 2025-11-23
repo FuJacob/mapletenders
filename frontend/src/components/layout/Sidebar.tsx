@@ -152,24 +152,6 @@ export default function Sidebar() {
               );
             })}
           </nav>
-
-          {/* Bottom Section */}
-          <div className="absolute bottom-0 left-0 right-0 p-4 border-t border-border">
-            <div className="bg-gradient-to-r from-primary/10 to-accent/10 border border-primary/20 rounded-lg p-3">
-              <div className="text-sm font-medium text-text mb-1">
-                Pro Features
-              </div>
-              <div className="text-xs text-text-muted mb-2">
-                Unlock advanced analytics and AI insights
-              </div>
-              <Link
-                to="/plans"
-                className="inline-flex items-center gap-1 text-xs font-medium text-primary hover:text-primary/80 transition-colors"
-              >
-                Upgrade Now
-              </Link>
-            </div>
-          </div>
         </div>
       </aside>
     </>

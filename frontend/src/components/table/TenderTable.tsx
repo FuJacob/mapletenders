@@ -49,6 +49,16 @@ interface TenderTableProps {
     entity?: string;
   };
   onDataChange?: (data: PaginatedTendersResponse) => void;
+  // Expose filter controls
+  renderFilters?: (props: {
+    setGlobalFilter: (filter: string) => void;
+    tenders: Tender[];
+    rowCount: number;
+    onFilteredDataChange?: (filteredData: Tender[]) => void;
+    usePagination: boolean;
+    onSearchChange?: (search: string) => void;
+    onFilterChange?: (filters: Record<string, string>) => void;
+  }) => React.ReactNode;
 }
 
 const NUMBER_OF_TENDERS_PER_PAGE = 25;
@@ -161,6 +171,7 @@ export default function TenderTable({
   initialSearch = "",
   initialFilters = {},
   onDataChange,
+  renderFilters,
 }: TenderTableProps) {
   const [globalFilter, setGlobalFilter] = useState("");
   const [filteredTenders, setFilteredTenders] = useState<Tender[]>([]);
@@ -505,32 +516,21 @@ export default function TenderTable({
 
   return (
     <div className="h-full flex flex-col">
-      <div className="flex-shrink-0 mb-4">
-        <QuickFilters
-          setGlobalFilter={setGlobalFilter}
-          tenders={usePagination ? [] : tenders || []}
-          rowCount={
-            usePagination
-              ? paginatedData?.pagination.total || 0
-              : filteredTenders.length
-          }
-          onFilteredDataChange={
-            usePagination ? undefined : handleFilteredDataChange
-          }
-          usePagination={usePagination}
-          onSearchChange={
-            usePagination
-              ? (search: string) => updatePaginationParams({ search })
-              : undefined
-          }
-          onFilterChange={
-            usePagination
-              ? (filters: Record<string, string>) =>
-                  updatePaginationParams(filters)
-              : undefined
-          }
-        />
-      </div>
+      {renderFilters?.({
+        setGlobalFilter,
+        tenders: usePagination ? [] : tenders || [],
+        rowCount: usePagination
+          ? paginatedData?.pagination.total || 0
+          : filteredTenders.length,
+        onFilteredDataChange: usePagination ? undefined : handleFilteredDataChange,
+        usePagination,
+        onSearchChange: usePagination
+          ? (search: string) => updatePaginationParams({ search })
+          : undefined,
+        onFilterChange: usePagination
+          ? (filters: Record<string, string>) => updatePaginationParams(filters)
+          : undefined,
+      })}
       <div className="flex-1 min-h-0">
         <TenderTableInner />
       </div>

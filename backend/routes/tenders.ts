@@ -31,6 +31,24 @@ router.post("/refreshTenders", (req, res) =>
   tenderController.refreshTenders(req, res)
 );
 
+/**
+ * Clear all tenders from database (TEST ONLY)
+ * @route POST /clearAllTenders
+ * @returns {Object} Clear operation result
+ */
+router.post("/clearAllTenders", (req, res) =>
+  tenderController.clearAllTenders(req, res)
+);
+
+/**
+ * Reset refresh lock (TEST ONLY)
+ * @route POST /resetRefreshLock
+ * @returns {Object} Reset operation result
+ */
+router.post("/resetRefreshLock", (req, res) =>
+  tenderController.resetRefreshLock(req, res)
+);
+
 router.get("/getTenderById/:id", (req, res) =>
   tenderController.getTenderById(req, res)
 );

@@ -8,11 +8,13 @@ import type {
 } from "../api/tenders";
 import { getTenderStatistics } from "../api/tenders";
 import TableStatsGrid from "../components/dashboard/TableStatsGrid";
+import { QuickFilters } from "../components/search";
 
 export default function TablePage() {
   const [, setPaginationData] = useState<PaginatedTendersResponse | null>(null);
   const [statistics, setStatistics] = useState<TenderStatistics[]>([]);
   const [statsLoading, setStatsLoading] = useState(true);
+  const [filterProps, setFilterProps] = useState<any>(null);
 
   // Fetch real statistics from the backend
   useEffect(() => {
@@ -60,13 +62,18 @@ export default function TablePage() {
 
   return (
     <div className="h-full flex flex-col">
-      <div className="flex w-full justify-between items-start gap-6">
-        <PageHeader
-          icon={<Table className="w-10 h-10 text-primary" />}
-          title="Tender Table"
-          description="Browse all procurement opportunities in a comprehensive table view"
-        />
-        <TableStatsGrid stats={statistics} loading={statsLoading} />
+      <div className="flex w-full justify-between items-start gap-4 mb-4">
+        <div className="flex-shrink-0">
+          <PageHeader
+            icon={<Table className="w-10 h-10 text-primary" />}
+            title="Tender Table"
+            description="Browse all procurement opportunities in a comprehensive table view"
+          />
+        </div>
+        <div className="flex items-start gap-4 flex-shrink-0">
+          {filterProps && <QuickFilters {...filterProps} />}
+          <TableStatsGrid stats={statistics} loading={statsLoading} />
+        </div>
       </div>
 
       <div className="flex-1 min-h-0">
@@ -74,6 +81,10 @@ export default function TablePage() {
           usePagination={true}
           onDataChange={handleDataChange}
           initialLimit={25}
+          renderFilters={(props) => {
+            if (!filterProps) setFilterProps(props);
+            return null;
+          }}
         />
       </div>
     </div>

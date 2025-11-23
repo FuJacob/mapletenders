@@ -266,9 +266,9 @@ const QuickFilters = ({
   );
 
   return (
-    <div className="bg-surface border border-border rounded-lg p-6 mb-6">
-      {/* Search Bar Row */}
-      <div className="mb-4">
+    <div className="bg-surface border border-border rounded-lg p-3 flex-1">
+      {/* Search Bar Row - Compact */}
+      <div className="mb-2">
         <div className="relative">
           <input
             type="text"
@@ -279,32 +279,32 @@ const QuickFilters = ({
                 handleSearch();
               }
             }}
-            placeholder="Search tenders by title, description, or organization..."
-            className="w-full pl-10 pr-24 py-3 border border-border rounded-lg focus:outline-none focus:border-primary bg-surface text-text placeholder-text-muted"
+            placeholder="Search tenders..."
+            className="w-full pl-8 pr-20 py-2 text-sm border border-border rounded-lg focus:outline-none focus:border-primary bg-surface text-text placeholder-text-muted"
           />
-          <MagnifyingGlass className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-text-muted" />
+          <MagnifyingGlass className="absolute left-2.5 top-1/2 transform -translate-y-1/2 w-3.5 h-3.5 text-text-muted" />
           <button
             onClick={handleSearch}
-            className="absolute right-2 top-1/2 transform -translate-y-1/2 bg-primary text-white px-4 py-1.5 rounded-lg hover:bg-primary/90 transition-colors text-sm font-medium"
+            className="absolute right-1.5 top-1/2 transform -translate-y-1/2 bg-primary text-white px-3 py-1 rounded text-xs font-medium hover:bg-primary/90 transition-colors"
           >
             Search
           </button>
         </div>
       </div>
 
-      {/* Filter Buttons Row */}
-      <div className="flex items-center gap-4 mb-4 flex-wrap" ref={dropdownRef}>
+      {/* Filter Buttons Row - Compact */}
+      <div className="flex items-center gap-2 mb-2 flex-wrap" ref={dropdownRef}>
         {filterButtons.map((filter) => (
           <div key={filter.key} className="relative">
             <button
               onClick={() =>
                 setShowDropdown(showDropdown === filter.key ? null : filter.key)
               }
-              className="flex items-center gap-2 px-4 py-2 text-sm font-medium border border-border rounded-lg hover:bg-surface-muted transition-colors"
+              className="flex items-center gap-1.5 px-2.5 py-1.5 text-xs font-medium border border-border rounded hover:bg-surface-muted transition-colors"
             >
-              <filter.icon className="w-4 h-4" />
+              <filter.icon className="w-3 h-3" />
               {filter.label}
-              <CaretDown className="w-3 h-3" />
+              <CaretDown className="w-2.5 h-2.5" />
             </button>
             {showDropdown === filter.key && <FilterDropdown filter={filter} />}
           </div>
@@ -313,29 +313,29 @@ const QuickFilters = ({
         {activeFilters.length > 0 && (
           <button
             onClick={clearAllFilters}
-            className="text-sm text-text-muted hover:text-text transition-colors"
+            className="text-xs text-text-muted hover:text-text transition-colors"
           >
             Clear all
           </button>
         )}
       </div>
 
-      {/* Active Filters Row */}
+      {/* Active Filters Row - Compact */}
       {activeFilters.length > 0 && (
         <div className="flex items-center gap-2 mb-2">
-          <span className="text-sm font-medium text-text">Filtered by:</span>
-          <div className="flex flex-wrap gap-2">
+          <span className="text-xs font-medium text-text">Filters:</span>
+          <div className="flex flex-wrap gap-1.5">
             {activeFilters.map((filter) => (
               <div
                 key={filter.id}
-                className="flex items-center gap-2 px-3 py-1 bg-primary/10 text-primary text-sm rounded-lg border border-primary/20"
+                className="flex items-center gap-1.5 px-2 py-0.5 bg-primary/10 text-primary text-xs rounded border border-primary/20"
               >
                 <span>{filter.label}</span>
                 <button
                   onClick={() => removeFilter(filter.id)}
-                  className="hover:bg-primary/20 rounded-lg p-0.5 transition-colors"
+                  className="hover:bg-primary/20 rounded p-0.5 transition-colors"
                 >
-                  <X className="w-3 h-3" />
+                  <X className="w-2.5 h-2.5" />
                 </button>
               </div>
             ))}
@@ -343,11 +343,11 @@ const QuickFilters = ({
         </div>
       )}
 
-      {/* Results Summary */}
-      <div className="text-sm text-text-muted">
+      {/* Results Summary - Compact */}
+      <div className="text-xs text-text-muted">
           <span>
-            Showing {rowCount} tender{rowCount !== 1 ? "s" : ""}
-          {activeFilters.length > 0 && " with active filters"}
+            {rowCount} tender{rowCount !== 1 ? "s" : ""}
+          {activeFilters.length > 0 && " filtered"}
         </span>
       </div>
     </div>

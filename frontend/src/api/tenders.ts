@@ -173,3 +173,29 @@ export const refreshTenders = async (): Promise<RefreshTendersResponse> => {
     return handleApiError(error, "Refresh tenders");
   }
 };
+
+/**
+ * Clear all tenders from database (TEST ONLY)
+ * @returns {Promise<any>} Clear operation result
+ */
+export const clearAllTenders = async (): Promise<any> => {
+  try {
+    const response = await apiClient.post("/tenders/clearAllTenders");
+    return response.data;
+  } catch (error) {
+    return handleApiError(error, "Clear all tenders");
+  }
+};
+
+/**
+ * Reset refresh lock (TEST ONLY)
+ * @returns {Promise<any>} Reset operation result
+ */
+export const resetRefreshLock = async (): Promise<any> => {
+  try {
+    const response = await apiClient.post("/tenders/resetRefreshLock");
+    return response.data;
+  } catch (error) {
+    return handleApiError(error, "Reset refresh lock");
+  }
+};
