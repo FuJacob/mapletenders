@@ -24,7 +24,6 @@ import {
 import { useState, useMemo, useCallback, useEffect } from "react";
 import TablePaginationControls from "./TablePaginationControls";
 import "./tableStyles.css";
-import { QuickFilters } from "../search";
 import type { Tender } from "../../api/types";
 import { Link } from "react-router-dom";
 import {
